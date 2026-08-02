@@ -1,5 +1,6 @@
 import { BadgeCheck, Scale, RefreshCw, HandCoins } from "lucide-react";
 import Reveal from "./Reveal";
+import { CARDS_ARE_EXAMPLE_DATA } from "@/lib/data";
 
 const POINTS = [
   {
@@ -14,8 +15,8 @@ const POINTS = [
   },
   {
     icon: RefreshCw,
-    title: "Ajantasaiset tiedot",
-    text: "Korttien ehdot tarkistetaan säännöllisesti pankkien omista lähteistä. Näet aina, milloin vertailu on viimeksi päivitetty.",
+    title: "Tarkista aina pankilta",
+    text: "Korttien ehdot muuttuvat, ja lopullisen hinnan päättää aina pankki. Siksi kehotamme varmistamaan korko-, kulu- ja etutiedot pankin omilta sivuilta ennen hakemuksen lähettämistä.",
   },
   {
     icon: BadgeCheck,
@@ -53,6 +54,16 @@ export default function TrustSection() {
             </Reveal>
           ))}
         </div>
+
+        {CARDS_ARE_EXAMPLE_DATA && (
+          <Reveal delay={0.24}>
+            <p className="mx-auto mt-8 max-w-3xl rounded-2xl border border-gold/30 bg-gold/[0.07] px-5 py-4 text-[13.5px] leading-relaxed text-ink/80">
+              <span className="font-bold text-gold">Huom.</span> Vertailun korko-, kulu- ja
+              etutiedot ovat toistaiseksi esimerkkilukuja, eivät pankkien tarkistettuja ehtoja.
+              Tarkista lopulliset tiedot pankin omilta sivuilta ennen hakemuksen lähettämistä.
+            </p>
+          </Reveal>
+        )}
       </div>
     </section>
   );

@@ -4,7 +4,7 @@ import Reveal from "./Reveal";
 const ITEMS = [
   { icon: Gift, title: "100 % ilmainen", text: "Palvelu ei maksa sinulle mitään." },
   { icon: Scale, title: "Puolueeton vertailu", text: "Emme myy kortteja – vertailumme on riippumatonta." },
-  { icon: RefreshCw, title: "Ajantasaiset tiedot", text: "Korttien edut ja hinnat päivitetään jatkuvasti." },
+  { icon: RefreshCw, title: "Avoin laskenta", text: "Kerromme jokaisen luvun oletukset — ei pikkupränttiä." },
   { icon: Zap, title: "Nopea ja helppo", text: "Vertailu vie vain muutaman minuutin." },
 ];
 

@@ -3,10 +3,16 @@
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
-const STATS = [
-  { value: 20, suffix: "+", label: "korttia vertailussa" },
-  { value: 10000, suffix: "+", label: "kuukausittaista kävijää" },
-  { value: 98, suffix: " %", label: "käyttäjistä löysi sopivan kortin" },
+/**
+ * Vain lukuja, jotka pitävät paikkansa ja jotka lukija voi itse tarkistaa.
+ * Aiemmat "10 000+ kuukausittaista kävijää" ja "98 % käyttäjistä löysi
+ * sopivan kortin" olivat keksittyjä. Älä palauta mitään lukua tähän ennen
+ * kuin se on mitattu ja lähde on kerrottavissa.
+ */
+const buildStats = (cardCount: number) => [
+  { value: cardCount, suffix: "", label: "korttia vertailussa" },
+  { value: 0, suffix: " €", label: "mitä vertailu maksaa sinulle" },
+  { value: 14, suffix: " vrk", label: "peruutusoikeus verkkohaussa" },
 ];
 
 function CountUp({ value, suffix }: { value: number; suffix: string }) {
@@ -36,11 +42,11 @@ function CountUp({ value, suffix }: { value: number; suffix: string }) {
   );
 }
 
-export default function Stats() {
+export default function Stats({ cardCount }: { cardCount: number }) {
   return (
     <section aria-label="Tilastot" className="px-4 py-4 sm:px-6">
       <div className="mx-auto grid max-w-[1180px] gap-10 rounded-3xl border border-line bg-den px-8 py-14 md:grid-cols-3 md:py-16">
-        {STATS.map((s, i) => (
+        {buildStats(cardCount).map((s, i) => (
           <motion.div
             key={s.label}
             initial={{ opacity: 0, y: 14 }}

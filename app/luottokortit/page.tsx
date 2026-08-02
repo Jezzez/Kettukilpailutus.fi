@@ -5,7 +5,6 @@ import Steps from "@/components/Steps";
 import Stats from "@/components/Stats";
 import CardComparison from "@/components/CardComparison";
 import ComparisonTable from "@/components/ComparisonTable";
-import Testimonials from "@/components/Testimonials";
 import GuideBoxes from "@/components/GuideBoxes";
 import TrustSection from "@/components/TrustSection";
 import Faq from "@/components/Faq";
@@ -46,7 +45,7 @@ export default function CreditCardsPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
-      <Hero />
+      <Hero cardCount={cards.length} />
 
       {/* Vertailupaneeli heti heron alla — mockupin mukaan */}
       <section id="vertailu" className="relative z-10 -mt-6 scroll-mt-24 pb-8">
@@ -76,9 +75,7 @@ export default function CreditCardsPage() {
         </div>
       </section>
 
-      <Stats />
-
-      <Testimonials />
+      <Stats cardCount={cards.length} />
 
       <GuideBoxes />
 

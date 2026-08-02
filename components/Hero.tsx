@@ -2,29 +2,19 @@
 
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Check, Play, Star } from "lucide-react";
+import { ArrowRight, Check, Play, Scale } from "lucide-react";
 import HeroKettu from "./mascot/HeroKettu";
 
-const CHECKS = ["Puolueetonta vertailua", "Ajantasaiset edut", "Ilmainen palvelu"];
-const MEDIA = ["Iltalehti", "Taloussanomat", "mtv", "Kauppalehti"];
+const CHECKS = ["Puolueetonta vertailua", "Avoin laskenta", "Ilmainen palvelu"];
 
-/** Pienet käyttäjäkasvot: piirretty SVG:nä, ei kuvatiedostoja. */
-function Avatars() {
-  const tones = ["#E7C9A9", "#C99B76", "#EBD3B8", "#B98457"];
-  return (
-    <div className="flex -space-x-2.5" aria-hidden>
-      {tones.map((t, i) => (
-        <svg key={i} width="30" height="30" viewBox="0 0 32 32" className="rounded-full ring-2 ring-den">
-          <circle cx="16" cy="16" r="16" fill={t} />
-          <circle cx="16" cy="12.5" r="5.5" fill="#5B4534" opacity="0.55" />
-          <path d="M4 32 C6 23 26 23 28 32 Z" fill="#5B4534" opacity="0.55" />
-        </svg>
-      ))}
-    </div>
-  );
-}
-
-export default function Hero() {
+/**
+ * HUOM: tästä herosta on poistettu keksitty sosiaalinen todiste —
+ * medialogot, käyttäjämäärä, tähtiarvio ja nimetty asiakaskommentti.
+ * Palvelu ei ole ollut esillä noissa medioissa eikä sillä ole arvioita,
+ * joten väitteet olivat harhaanjohtavaa markkinointia (KSL 2 luku).
+ * Älä palauta mitään lukua tähän ennen kuin se on todennettavissa.
+ */
+export default function Hero({ cardCount }: { cardCount: number }) {
   const reduce = useReducedMotion();
   const fadeUp = (delay: number) =>
     reduce
@@ -85,51 +75,37 @@ export default function Hero() {
             </Link>
           </motion.div>
 
-          <motion.div {...fadeUp(0.26)} className="mt-7 flex items-center gap-3">
-            <Avatars />
-            <p className="text-[13.5px] text-cream/68">
-              Yli <span className="font-data font-bold text-cream">45 000</span> suomalaista
-              löytänyt paremman kortin
-            </p>
-          </motion.div>
-
-          <motion.ul {...fadeUp(0.32)} className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">
-            {MEDIA.map((m) => (
-              <li
-                key={m}
-                className="font-display text-[15px] font-bold tracking-tight text-cream/25"
-              >
-                {m}
-              </li>
-            ))}
-          </motion.ul>
+          {/* Todennettava tosiasia keksityn käyttäjämäärän tilalla. */}
+          <motion.p {...fadeUp(0.26)} className="mt-7 text-[13.5px] text-cream/68">
+            <span className="font-data font-bold text-cream">{cardCount}</span> korttia
+            vertailussa · järjestys perustuu sopivuuteen, ei palkkioon
+          </motion.p>
         </div>
 
         {/* Kettu + arviolaatikko */}
         <motion.div {...fadeUp(0.15)} className="relative mx-auto w-full max-w-[520px]">
           <div className="ember-glow relative"><HeroKettu height={540} /></div>
 
-          <motion.figure
+          {/*
+            Keksityn asiakaskommentin tilalla lupaus, jonka voimme pitää.
+            Tämä on myös sivuston ainoa oikea kilpailuetu: rehellisyys.
+          */}
+          <motion.div
             {...fadeUp(0.5)}
             className="absolute -bottom-2 -left-4 w-[17.5rem] rounded-2xl border border-line bg-white p-4 shadow-cardHover sm:left-0"
           >
-            <div className="flex items-center gap-2">
-              <span className="grid h-7 w-7 place-items-center rounded-full bg-accent/15 text-[13px] font-bold text-accent">
-                4
+            <p className="flex items-center gap-2 font-display text-[13px] font-bold text-ink">
+              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-accent/15 text-accent">
+                <Scale size={14} aria-hidden />
               </span>
-              <span className="font-display text-[15px] font-bold text-ink">4,9 / 5</span>
-              <span className="flex" aria-hidden>
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} size={13} className="fill-star text-star" />
-                ))}
-              </span>
-            </div>
-            <p className="mt-0.5 text-[11px] text-ink/58">2 382 arviota</p>
-            <blockquote className="mt-2.5 text-[14px] font-medium leading-snug text-ink">
-              ”Säästin 480 € vuodessa vaihtamalla korttia.”
-            </blockquote>
-            <figcaption className="mt-1.5 text-[12px] text-ink/62">– Joni, Helsinki</figcaption>
-          </motion.figure>
+              Järjestys ei ole myynnissä
+            </p>
+            <p className="mt-2 text-[13px] leading-snug text-ink/72">
+              Saamme palkkion vasta kun haet kortin. Se ei muuta lukuja eikä
+              paikkoja vertailussa — myöskään silloin, kun paras kortti on se,
+              josta emme saa mitään.
+            </p>
+          </motion.div>
         </motion.div>
       </div>
     </section>

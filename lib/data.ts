@@ -12,6 +12,14 @@ export function getCards(): Card[] {
   return cardsJson.cards as Card[];
 }
 
+/**
+ * Kertoo, ovatko korttien korot, kulut ja arviot vielä esimerkkilukuja.
+ * Niin kauan kuin tämä on tosi, sivustolla näytetään siitä huomautus —
+ * keksityillä luvuilla markkinointi on kuluttajansuojariski. Kun oikeat
+ * ehdot on syötetty, aseta `isExampleData: false` data/cards.json:iin.
+ */
+export const CARDS_ARE_EXAMPLE_DATA: boolean = cardsJson.isExampleData === true;
+
 export function getCard(slug: string): Card | undefined {
   return getCards().find((c) => c.slug === slug);
 }
