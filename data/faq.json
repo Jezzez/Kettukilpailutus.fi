@@ -1,0 +1,28 @@
+{
+  "items": [
+    {
+      "q": "Mikä on paras luottokortti?",
+      "a": "Parasta korttia ei ole olemassa – on vain paras kortti sinun käyttöösi. Jos maksat laskun aina kokonaan, painota etuja ja vuosimaksua. Jos käytät maksuaikaa, painota matalaa korkoa. Vertailumme auttaa löytämään sopivan vaihtoehdon minuuteissa."
+    },
+    {
+      "q": "Voiko opiskelija saada luottokortin?",
+      "a": "Kyllä. Useat pankit myöntävät luottokortin opiskelijalle, kun hakijalla on säännöllisiä tuloja – esimerkiksi palkkatuloja osa-aikatyöstä. Luottoraja on tyypillisesti aluksi maltillinen, esimerkiksi 1 000–2 000 euroa."
+    },
+    {
+      "q": "Miten luottokortin korko toimii?",
+      "a": "Korkoa maksat vain, jos et maksa koko laskua eräpäivään mennessä. Jäljelle jäävälle saldolle kertyy korkoa, joka on tyypillisesti viitekorko (esim. 3 kk euribor) plus pankin marginaali. Kun maksat laskun aina kokonaan, luoton käyttö on käytännössä korotonta."
+    },
+    {
+      "q": "Vaikuttaako luottokortin hakeminen luottotietoihin?",
+      "a": "Pankki tekee hakemuksen yhteydessä luottotietokyselyn, joka näkyy luottorekisterissä. Yksittäinen kysely ei yleensä heikennä luottokelpoisuutta, mutta useat hakemukset lyhyessä ajassa voivat vaikuttaa siihen, miten pankit arvioivat hakemustasi."
+    },
+    {
+      "q": "Mitä koroton maksuaika tarkoittaa?",
+      "a": "Koroton maksuaika on aika ostoksesta laskun eräpäivään, jonka aikana luotosta ei peritä korkoa. Se on tyypillisesti 30–58 päivää kortista riippuen. Hyödynnät sen täysimääräisesti maksamalla laskun kokonaan eräpäivänä."
+    },
+    {
+      "q": "Kannattaako valita Visa vai Mastercard?",
+      "a": "Käytännössä erolla ei ole arjessa merkitystä – molemmat hyväksytään lähes kaikkialla maailmassa. Kortin todelliset erot syntyvät myöntävän pankin ehdoista: koroista, maksuista, vakuutuksista ja eduista."
+    }
+  ]
+}

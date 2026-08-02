@@ -1,0 +1,76 @@
+{
+  "topics": [
+    {
+      "slug": "porssisahko",
+      "title": "Pörssisähkö – vertaa marginaalit ja perusmaksut 2026",
+      "h1": "Pörssisähkösopimukset vertailussa",
+      "intro": "Pörssisähkössä maksat sähköstä sen todellisen tuntihinnan – yhtiöiden ainoat erot ovat marginaali ja perusmaksu. Siksi vertailu on helppoa: pienin marginaali voittaa lähes aina.",
+      "presetType": "spot",
+      "presetKwh": null,
+      "content": [
+        "Pörssisähkö (spot-sähkö) seuraa pohjoismaisen sähköpörssin tuntihintaa. Kun tuulee ja aurinko paistaa, sähkö voi maksaa lähes nolla – kylminä ja tyyninä talvipäivinä hinta voi hetkellisesti nousta korkeaksi.",
+        "Pitkällä aikavälillä pörssisähkö on historiallisesti ollut keskimäärin kiinteitä sopimuksia edullisempaa, koska et maksa yhtiölle riskipreemiota hintasuojasta. Vastineeksi kannat hintariskin itse.",
+        "Pörssisähkö sopii parhaiten, jos voit siirtää kulutusta halvoille tunneille: astian- ja pyykinpesu yöllä, sähköauton lataus ajastettuna ja lämminvesivaraajan ohjaus tekevät suurimman eron.",
+        "Vertailussa ratkaisee kaksi lukua: marginaali (c/kWh) ja perusmaksu (€/kk). Kaikki muu on markkinointia."
+      ],
+      "faq": [
+        ["Kuinka paljon pörssisähkön hinta vaihtelee?", "Tuntihinta vaihtelee tyypillisesti muutamasta sentistä muutamaan kymmeneen senttiin. Vuosikeskiarvo on viime vuosina asettunut noin 5–8 c/kWh tasolle, mutta yksittäiset tunnit voivat poiketa tästä paljon."],
+        ["Tarvitsenko pörssisähköön erillisen mittarin?", "Et. Kaikissa suomalaisissa kohteissa on etäluettava tuntimittaus, joten pörssisopimuksen voi tehdä mihin tahansa käyttöpaikkaan."]
+      ]
+    },
+    {
+      "slug": "maaraaikainen-sahkosopimus",
+      "title": "Määräaikainen sähkösopimus – kiinteät hinnat vertailussa 2026",
+      "h1": "Määräaikaiset sähkösopimukset vertailussa",
+      "intro": "Kiinteä hinta suojaa talven hintapiikeiltä ja tekee sähkölaskusta ennustettavan. Vertailemme 12 ja 24 kuukauden sopimukset – katso, mitä hintavakaus juuri nyt maksaa.",
+      "presetType": "fixed",
+      "presetKwh": null,
+      "content": [
+        "Määräaikaisessa sopimuksessa energian hinta (c/kWh) on lukittu koko sopimuskaudeksi. Sähkölaskusi vaihtelee vain kulutuksen mukaan – ei markkinahinnan.",
+        "Kiinteä hinta on käytännössä vakuutus: maksat pientä preemiota siitä, ettei talven kallis tunti koskaan yllätä. Preemion suuruus vaihtelee markkinatilanteen mukaan, ja siksi kiinteitä kannattaa vertailla juuri ennen sopimuksen tekoa.",
+        "Tärkein muistettava asia: merkitse kalenteriin sopimuksen päättymispäivä. Päättyvä määräaikainen jatkuu usein listahintaisena jatkosopimuksena, joka on lähes aina kilpailutettua kalliimpi.",
+        "Määräaikaista sopimusta ei pääsääntöisesti voi irtisanoa kesken kauden ilman kuluja – poikkeuksena muutto, jolloin sopimuksen voi yleensä siirtää tai päättää."
+      ],
+      "faq": [
+        ["12 vai 24 kuukautta?", "Lyhyempi kausi antaa joustavuutta kilpailuttaa useammin, pidempi kausi pidemmän hintasuojan. Jos hintataso on matala, pidempi lukitus on perustellumpi."],
+        ["Voinko irtisanoa määräaikaisen sopimuksen muuton takia?", "Kyllä, muutto on hyväksytty peruste päättää tai siirtää määräaikainen sopimus. Ilmoita yhtiölle hyvissä ajoin ennen muuttoa."]
+      ]
+    },
+    {
+      "slug": "omakotitalon-sahkosopimus",
+      "title": "Omakotitalon sähkösopimus – sähkölämmittäjän vertailu 2026",
+      "h1": "Paras sähkösopimus omakotitaloon",
+      "intro": "Sähkölämmitteisessä omakotitalossa kulutus on tyypillisesti 15 000–25 000 kWh vuodessa – silloin yhden sentin ero kWh-hinnassa tarkoittaa 150–250 euroa vuodessa. Kilpailutus kannattaa täällä eniten.",
+      "presetType": null,
+      "presetKwh": 18000,
+      "content": [
+        "Suurkuluttajan vertailussa energian hinta (c/kWh tai spot-marginaali) ratkaisee lähes kaiken – perusmaksun osuus kokonaislaskusta jää pieneksi. Tämä on päinvastoin kuin kerrostaloasunnossa.",
+        "Sähkölämmittäjälle pörssisähkö yhdistettynä lämmityksen ohjaukseen (esim. varaava lämmitys yötunneille) on usein kokonaisedullisin ratkaisu. Jos ohjausta ei ole, kiinteä hinta poistaa talven riskin.",
+        "Lämpöpumppu muuttaa laskelmaa: ilmavesilämpöpumppu tai maalämpö pudottaa kulutusta jopa 40–60 %, jolloin myös sopimustyypin merkitys pienenee.",
+        "Muista myös siirtoyhtiö: siirtomaksuja ei voi kilpailuttaa, mutta siirtotuotteen (yleis-, yö- vai kausisähkö) voi usein valita – sähkölämmittäjälle yösiirto on tyypillisesti edullisin."
+      ],
+      "faq": [
+        ["Paljonko omakotitalo kuluttaa sähköä?", "Sähkölämmitteinen omakotitalo kuluttaa tyypillisesti 15 000–25 000 kWh vuodessa talon koosta, iästä ja perheen koosta riippuen. Ilman sähkölämmitystä kulutus on usein 5 000–8 000 kWh."],
+        ["Kannattaako omakotitaloon pörssi vai kiinteä?", "Jos pystyt ohjaamaan lämmitystä halvoille tunneille, pörssi on usein edullisin. Ilman ohjausta kiinteä hinta antaa mielenrauhan – vertaile molemmat laskurillamme omalla kulutuksellasi."]
+      ]
+    },
+    {
+      "slug": "opiskelijan-sahkosopimus",
+      "title": "Opiskelijan sähkösopimus – edullisin sähkö pieneen asuntoon 2026",
+      "h1": "Edullisin sähkösopimus opiskelijalle",
+      "intro": "Yksiössä sähköä kuluu tyypillisesti vain 1 500–2 500 kWh vuodessa. Silloin perusmaksu on laskusi suurin yksittäinen erä – ja vertailun tärkein luku.",
+      "presetType": null,
+      "presetKwh": 2000,
+      "content": [
+        "Pienkuluttajan matematiikka on erilainen: 2 000 kWh vuosikulutuksella yhden sentin ero kWh-hinnassa on vain 20 € vuodessa, mutta kahden euron ero perusmaksussa on 24 € vuodessa. Katso siis ensin perusmaksu.",
+        "Ensimmäinen oma sähkösopimus tehdään yleensä muuton yhteydessä. Tee sopimus viimeistään pari päivää ennen muuttopäivää – sähköt kytketään käyttöpaikkaan sopimuksen alkaessa, eikä katkoa tule.",
+        "Pörssisähkö on pienessä asunnossa matalariskinen valinta: vaikka hinta heiluu, euromäärät pysyvät pieninä, ja edullisina kuukausina lasku voi olla yllättävän pieni.",
+        "Muista, että sähkösopimus ja siirto laskutetaan erikseen. Siirtoyhtiötä et voi valita – se määräytyy asunnon sijainnin mukaan."
+      ],
+      "faq": [
+        ["Paljonko yksiön sähkölasku on kuukaudessa?", "Tyypillisesti 15–35 € kuukaudessa sisältäen sekä sähköenergian että siirron, kulutuksesta ja sopimuksesta riippuen."],
+        ["Miten teen ensimmäisen sähkösopimuksen?", "Valitse sopimus vertailusta, täytä uuden yhtiön tilauslomake (käyttöpaikan osoite riittää) ja sähköt ovat päällä muuttopäivänä. Koko prosessi vie noin viisi minuuttia."]
+      ]
+    }
+  ]
+}

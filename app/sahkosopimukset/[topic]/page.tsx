@@ -1,0 +1,135 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ChevronRight } from "lucide-react";
+import ElectricityExperience from "@/components/energy/ElectricityExperience";
+import Faq from "@/components/Faq";
+import Reveal from "@/components/Reveal";
+import CtaSection from "@/components/CtaSection";
+import { getEnergyTopic, getEnergyTopics, getPlans } from "@/lib/energy";
+import { SITE } from "@/lib/data";
+
+export function generateStaticParams() {
+  return getEnergyTopics().map((t) => ({ topic: t.slug }));
+}
+
+export function generateMetadata({ params }: { params: { topic: string } }): Metadata {
+  const topic = getEnergyTopic(params.topic);
+  if (!topic) return {};
+  return {
+    title: `${topic.title} | Kettukilpailutus`,
+    description: topic.intro,
+    alternates: { canonical: `/sahkosopimukset/${topic.slug}` },
+  };
+}
+
+export default function TopicPage({ params }: { params: { topic: string } }) {
+  const topic = getEnergyTopic(params.topic);
+  if (!topic) notFound();
+
+  const plans = getPlans();
+
+  const faqJsonLd = topic.faq.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: topic.faq.map(([q, a]) => ({
+          "@type": "Question",
+          name: q,
+          acceptedAnswer: { "@type": "Answer", text: a },
+        })),
+      }
+    : null;
+  const breadcrumb = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Etusivu", item: SITE.url },
+      { "@type": "ListItem", position: 2, name: "Sähkösopimukset", item: `${SITE.url}/sahkosopimukset` },
+      { "@type": "ListItem", position: 3, name: topic.h1, item: `${SITE.url}/sahkosopimukset/${topic.slug}` },
+    ],
+  };
+
+  return (
+    <div className="pb-4">
+      {faqJsonLd && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+      )}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
+
+      <div className="mx-auto max-w-[1180px] px-4 pt-8 sm:px-6">
+        <nav aria-label="Murupolku" className="flex items-center gap-1.5 text-[13px] text-ink/62">
+          <Link href="/" className="hover:text-ink">Etusivu</Link>
+          <ChevronRight size={13} aria-hidden />
+          <Link href="/sahkosopimukset" className="hover:text-ink">Sähkösopimukset</Link>
+          <ChevronRight size={13} aria-hidden />
+          <span className="text-ink/85">{topic.h1}</span>
+        </nav>
+
+        <Reveal>
+          <h1 className="mt-6 max-w-2xl font-display text-4xl font-bold leading-[1.1] tracking-tight text-ink">
+            {topic.h1}
+          </h1>
+          <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-ink/80">{topic.intro}</p>
+        </Reveal>
+      </div>
+
+      {/* Esisuodatettu vertailu heti otsikon alle */}
+      <div className="pt-8">
+        <ElectricityExperience
+          plans={plans}
+          initialType={topic.presetType}
+          initialKwh={topic.presetKwh ?? 5000}
+          withHero={false}
+        />
+      </div>
+
+      {/* Opasteksti */}
+      <section className="bg-white py-14">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6">
+          <Reveal>
+            <div className="space-y-5">
+              {topic.content.map((p, i) => (
+                <p key={i} className="text-[16px] leading-relaxed text-ink/82">{p}</p>
+              ))}
+            </div>
+          </Reveal>
+
+          {topic.faq.length > 0 && (
+            <Reveal className="mt-10">
+              <h2 className="font-display text-2xl font-semibold text-ink">Usein kysyttyä</h2>
+              <div className="mt-5">
+                <Faq items={topic.faq.map(([q, a]) => ({ q, a }))} />
+              </div>
+            </Reveal>
+          )}
+
+          {/* Sisäinen linkitys muihin oppaisiin */}
+          <Reveal className="mt-10">
+            <h2 className="font-display text-lg font-semibold text-ink">Katso myös</h2>
+            <div className="mt-4 grid gap-3 sm:grid-cols-3">
+              {getEnergyTopics()
+                .filter((t) => t.slug !== topic.slug)
+                .map((t) => (
+                  <Link
+                    key={t.slug}
+                    href={`/sahkosopimukset/${t.slug}`}
+                    className="rounded-2xl border border-line bg-white p-4 text-[13.5px] font-semibold leading-snug text-ink transition-all hover:-translate-y-0.5 hover:shadow-cardHover"
+                  >
+                    {t.h1}
+                  </Link>
+                ))}
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <CtaSection
+        href="/sahkosopimukset#vertailu"
+        title="Katso, paljonko sinä säästäisit"
+        text="Kulutusarvio, todelliset vuosihinnat ja paras sopimus — parissa minuutissa."
+        button="Kilpailuta sähkösopimus"
+      />
+    </div>
+  );
+}

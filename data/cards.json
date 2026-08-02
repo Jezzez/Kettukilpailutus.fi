@@ -1,0 +1,585 @@
+{
+  "cards": [
+    {
+      "id": "nordea-gold",
+      "slug": "nordea-gold",
+      "name": "Nordea Gold",
+      "issuer": "Nordea",
+      "network": "Mastercard",
+      "rating": 4.6,
+      "reviews": 812,
+      "annualFee": "69 €/v",
+      "annualFeeNumeric": 69,
+      "interest": "9,0 % + 3 kk euribor",
+      "interestNumeric": 9.0,
+      "creditLimit": "2 000 – 17 000 €",
+      "creditLimitMax": 17000,
+      "interestFreeDays": "Jopa 45 pv",
+      "cashback": "–",
+      "hasCashback": false,
+      "bonuses": "Ostoturva ja tuoteturvavakuutus",
+      "travelInsurance": true,
+      "applePay": true,
+      "googlePay": true,
+      "bonusProgram": false,
+      "tags": [
+        "matkailu",
+        "matala-korko",
+        "premium"
+      ],
+      "featured": false,
+      "affiliateUrl": "https://example.com/aff/nordea-gold",
+      "gradient": [
+        "#1E3A5F",
+        "#33598C"
+      ],
+      "summary": "Kattava matkavakuutus ja ostoturva tekevät Nordea Goldista vahvan yleiskortin säännöllisesti matkustavalle.",
+      "pros": [
+        "Laaja matkavakuutus koko perheelle",
+        "Ostoturva ja tuoteturva sisältyvät",
+        "Jopa 45 päivää korotonta maksuaikaa",
+        "Toimii Apple Payn ja Google Payn kanssa"
+      ],
+      "cons": [
+        "Vuosimaksu 69 €",
+        "Ei cashback- tai bonusohjelmaa"
+      ],
+      "bestFor": "Sopii parhaiten säännöllisesti matkustavalle, joka haluaa vakuutukset ja maksuajan yhdellä kortilla.",
+      "fees": [
+        [
+          "Vuosimaksu",
+          "69 €"
+        ],
+        [
+          "Nosto käteisautomaatilta",
+          "3 € + 2,5 %"
+        ],
+        [
+          "Laskutuslisä (paperilasku)",
+          "2,50 €"
+        ],
+        [
+          "Valuuttalisä",
+          "2,45 %"
+        ]
+      ],
+      "faq": [
+        [
+          "Kuuluuko Nordea Goldiin matkavakuutus?",
+          "Kyllä. Korttiin sisältyy matkustaja- ja matkatavaravakuutus, joka kattaa myös samassa taloudessa asuvat perheenjäsenet, kun matka on maksettu kortilla."
+        ],
+        [
+          "Kuinka pitkä koroton maksuaika kortissa on?",
+          "Korotonta maksuaikaa kertyy ostoksille enimmillään noin 45 päivää, kun maksat koko laskun eräpäivään mennessä."
+        ],
+        [
+          "Voinko liittää kortin Apple Payhin?",
+          "Kyllä, kortti toimii sekä Apple Payssä että Google Payssa."
+        ]
+      ]
+    },
+    {
+      "id": "op-visa-gold",
+      "slug": "op-visa-gold",
+      "name": "OP-Visa Gold",
+      "issuer": "OP",
+      "network": "Visa",
+      "rating": 4.5,
+      "reviews": 947,
+      "annualFee": "75 €/v",
+      "annualFeeNumeric": 75,
+      "interest": "8,55 % + 3 kk euribor",
+      "interestNumeric": 8.55,
+      "creditLimit": "2 000 – 20 000 €",
+      "creditLimitMax": 20000,
+      "interestFreeDays": "Jopa 45 pv",
+      "cashback": "–",
+      "hasCashback": false,
+      "bonuses": "OP-bonukset kerryttävät etuja",
+      "travelInsurance": true,
+      "applePay": true,
+      "googlePay": true,
+      "bonusProgram": true,
+      "tags": [
+        "matkailu",
+        "suuri-luottoraja",
+        "polttoaine",
+        "premium"
+      ],
+      "featured": false,
+      "affiliateUrl": "https://example.com/aff/op-visa-gold",
+      "gradient": [
+        "#C45A17",
+        "#E07B36"
+      ],
+      "summary": "OP:n omistaja-asiakkaalle vahva kokonaisuus: laaja vakuutusturva ja luottoraja jopa 20 000 euroon asti.",
+      "pros": [
+        "Luottoraja jopa 20 000 €",
+        "Matkustaja- ja matkatavaravakuutus",
+        "OP:n omistaja-asiakkaan edut",
+        "Laaja hyväksyntä Visa-verkossa"
+      ],
+      "cons": [
+        "Vuosimaksu 75 €",
+        "Parhaat edut vain omistaja-asiakkaille"
+      ],
+      "bestFor": "Sopii parhaiten OP:n omistaja-asiakkaalle, joka haluaa suuren luottorajan ja kattavat vakuutukset.",
+      "fees": [
+        [
+          "Vuosimaksu",
+          "75 €"
+        ],
+        [
+          "Käteisnosto",
+          "3 € + 2,5 %"
+        ],
+        [
+          "Paperilasku",
+          "2,90 €"
+        ],
+        [
+          "Valuuttalisä",
+          "2,75 %"
+        ]
+      ],
+      "faq": [
+        [
+          "Tarvitsenko OP:n tilin saadakseni kortin?",
+          "Et välttämättä, mutta omistaja-asiakkuus tuo korttiin parhaat edut ja bonuskertymän."
+        ],
+        [
+          "Mikä on kortin enimmäisluottoraja?",
+          "Luottorajaa voi hakea 20 000 euroon asti maksukyvyn mukaan."
+        ]
+      ]
+    },
+    {
+      "id": "s-pankki-visa",
+      "slug": "s-pankki-visa-credit",
+      "name": "S-Pankki Visa Credit",
+      "issuer": "S-Pankki",
+      "network": "Visa",
+      "rating": 4.7,
+      "reviews": 1204,
+      "annualFee": "0 €",
+      "annualFeeNumeric": 0,
+      "interest": "7,95 % + 3 kk euribor",
+      "interestNumeric": 7.95,
+      "creditLimit": "1 000 – 10 000 €",
+      "creditLimitMax": 10000,
+      "interestFreeDays": "Jopa 44 pv",
+      "cashback": "S-ryhmän Bonus jopa 5 %",
+      "hasCashback": true,
+      "bonuses": "Bonusta kaikista S-ryhmän ostoista",
+      "travelInsurance": false,
+      "applePay": true,
+      "googlePay": true,
+      "bonusProgram": true,
+      "tags": [
+        "ei-vuosimaksua",
+        "cashback",
+        "opiskelija",
+        "matala-korko",
+        "polttoaine"
+      ],
+      "featured": true,
+      "affiliateUrl": "https://example.com/aff/s-pankki-visa",
+      "gradient": [
+        "#0B6E38",
+        "#159A52"
+      ],
+      "summary": "Ilmainen kortti, matala korko ja S-ryhmän Bonus samassa paketissa – siksi suosituin valintamme arjen ostoksiin.",
+      "pros": [
+        "Ei vuosimaksua",
+        "Bonus jopa 5 % S-ryhmän ostoista",
+        "Vertailun matalimpia korkoja",
+        "Helppo hakea verkossa"
+      ],
+      "cons": [
+        "Ei matkavakuutusta",
+        "Maltillinen enimmäisluottoraja"
+      ],
+      "bestFor": "Sopii parhaiten arjen ostoksiin ja kaikille, jotka asioivat S-ryhmän kaupoissa – myös ensimmäiseksi luottokortiksi.",
+      "fees": [
+        [
+          "Vuosimaksu",
+          "0 €"
+        ],
+        [
+          "Käteisnosto",
+          "2 € + 2 %"
+        ],
+        [
+          "Paperilasku",
+          "2,00 €"
+        ],
+        [
+          "Valuuttalisä",
+          "2,25 %"
+        ]
+      ],
+      "faq": [
+        [
+          "Onko kortti oikeasti ilmainen?",
+          "Kortilla ei ole vuosimaksua eikä kuukausimaksua. Kuluja syntyy vain, jos käytät luottoa maksuaikaa pidempään tai nostat käteistä."
+        ],
+        [
+          "Voiko opiskelija saada kortin?",
+          "Kyllä, säännölliset tulot (myös opintotuki ja palkkatulot yhdessä) riittävät usein maltilliseen luottorajaan."
+        ],
+        [
+          "Miten Bonus kertyy?",
+          "Bonus kertyy normaalisti S-Etukortin tapaan, kun maksat ostokset kortilla S-ryhmän toimipaikoissa."
+        ]
+      ]
+    },
+    {
+      "id": "danske-mc-platinum",
+      "slug": "danske-mastercard-platinum",
+      "name": "Danske Mastercard Platinum",
+      "issuer": "Danske Bank",
+      "network": "Mastercard",
+      "rating": 4.3,
+      "reviews": 431,
+      "annualFee": "120 €/v",
+      "annualFeeNumeric": 120,
+      "interest": "8,95 % + 3 kk euribor",
+      "interestNumeric": 8.95,
+      "creditLimit": "5 000 – 30 000 €",
+      "creditLimitMax": 30000,
+      "interestFreeDays": "Jopa 40 pv",
+      "cashback": "–",
+      "hasCashback": false,
+      "bonuses": "Priority Pass -loungeoikeus, concierge",
+      "travelInsurance": true,
+      "applePay": true,
+      "googlePay": true,
+      "bonusProgram": false,
+      "tags": [
+        "matkailu",
+        "suuri-luottoraja",
+        "yritys",
+        "premium"
+      ],
+      "featured": false,
+      "affiliateUrl": "https://example.com/aff/danske-platinum",
+      "gradient": [
+        "#20304D",
+        "#3A5685"
+      ],
+      "summary": "Premium-kortti paljon matkustavalle: loungeoikeudet, laajin vakuutusturva ja luottoraja jopa 30 000 €.",
+      "pros": [
+        "Luottoraja jopa 30 000 €",
+        "Lentokenttäloungejen käyttöoikeus",
+        "Laajin matkavakuutus vertailussa",
+        "Concierge-palvelu"
+      ],
+      "cons": [
+        "Korkea vuosimaksu 120 €",
+        "Ylimitoitettu satunnaiselle käyttäjälle"
+      ],
+      "bestFor": "Sopii parhaiten työkseen tai muuten paljon matkustavalle, joka hyödyntää lounge- ja vakuutusedut täysimääräisesti.",
+      "fees": [
+        [
+          "Vuosimaksu",
+          "120 €"
+        ],
+        [
+          "Käteisnosto",
+          "4 € + 3 %"
+        ],
+        [
+          "Paperilasku",
+          "2,50 €"
+        ],
+        [
+          "Valuuttalisä",
+          "2,45 %"
+        ]
+      ],
+      "faq": [
+        [
+          "Mitä Priority Pass sisältää?",
+          "Pääsyn yli 1 300 lentokenttäloungeen maailmanlaajuisesti. Käyntikohtaiset ehdot vaihtelevat kortin ehtojen mukaan."
+        ],
+        [
+          "Kenelle Platinum-taso kannattaa?",
+          "Jos matkustat useita kertoja vuodessa, lounge- ja vakuutusedut kattavat vuosimaksun helposti."
+        ]
+      ]
+    },
+    {
+      "id": "norwegian-bank",
+      "slug": "norwegian-luottokortti",
+      "name": "Norwegian-luottokortti",
+      "issuer": "Bank Norwegian",
+      "network": "Visa",
+      "rating": 4.4,
+      "reviews": 1580,
+      "annualFee": "0 €",
+      "annualFeeNumeric": 0,
+      "interest": "17,99 %",
+      "interestNumeric": 17.99,
+      "creditLimit": "Jopa 15 000 €",
+      "creditLimitMax": 15000,
+      "interestFreeDays": "Jopa 45 pv",
+      "cashback": "CashPoints kaikista ostoista",
+      "hasCashback": true,
+      "bonuses": "CashPoints-pisteet lentoihin",
+      "travelInsurance": true,
+      "applePay": true,
+      "googlePay": true,
+      "bonusProgram": true,
+      "tags": [
+        "ei-vuosimaksua",
+        "cashback",
+        "matkailu"
+      ],
+      "featured": false,
+      "affiliateUrl": "https://example.com/aff/norwegian",
+      "gradient": [
+        "#8F1D2C",
+        "#B53344"
+      ],
+      "summary": "Ilmainen kortti, joka kerryttää CashPoints-pisteitä Norwegianin lentoihin ja sisältää matkavakuutuksen.",
+      "pros": [
+        "Ei vuosimaksua",
+        "CashPoints-pisteet kaikista ostoista",
+        "Matkavakuutus ilman lisämaksua",
+        "Ei valuuttalisää ulkomailla"
+      ],
+      "cons": [
+        "Korkea korko luotolle",
+        "Pisteiden arvo sidottu Norwegianin lentoihin"
+      ],
+      "bestFor": "Sopii parhaiten Norwegianilla lentävälle, joka maksaa laskun aina kokonaan eräpäivänä.",
+      "fees": [
+        [
+          "Vuosimaksu",
+          "0 €"
+        ],
+        [
+          "Käteisnosto",
+          "45 kr / 5 € tyyppinen kiinteä + %"
+        ],
+        [
+          "Paperilasku",
+          "3,00 €"
+        ],
+        [
+          "Valuuttalisä",
+          "0 %"
+        ]
+      ],
+      "faq": [
+        [
+          "Onko kortissa oikeasti 0 % valuuttalisä?",
+          "Kyllä, kortilla maksaminen ulkomailla ei sisällä erillistä valuuttalisää, mikä tekee siitä edullisen matkakortin."
+        ],
+        [
+          "Mihin CashPoints-pisteitä voi käyttää?",
+          "Pisteillä voi maksaa Norwegianin lentolippuja, laukkumaksuja ja paikkavarauksia."
+        ]
+      ]
+    },
+    {
+      "id": "handelsbanken-platinum",
+      "slug": "handelsbanken-mastercard",
+      "name": "Handelsbanken Mastercard",
+      "issuer": "Handelsbanken",
+      "network": "Mastercard",
+      "rating": 4.2,
+      "reviews": 268,
+      "annualFee": "45 €/v",
+      "annualFeeNumeric": 45,
+      "interest": "7,5 % + 3 kk euribor",
+      "interestNumeric": 7.5,
+      "creditLimit": "2 000 – 15 000 €",
+      "creditLimitMax": 15000,
+      "interestFreeDays": "Jopa 45 pv",
+      "cashback": "–",
+      "hasCashback": false,
+      "bonuses": "Ostoturva",
+      "travelInsurance": true,
+      "applePay": true,
+      "googlePay": false,
+      "bonusProgram": false,
+      "tags": [
+        "matala-korko",
+        "matkailu"
+      ],
+      "featured": false,
+      "affiliateUrl": "https://example.com/aff/handelsbanken",
+      "gradient": [
+        "#123D6B",
+        "#2B5E97"
+      ],
+      "summary": "Vertailun matalin korko ja maltillinen vuosimaksu – järkevä valinta, jos käytät luottoa maksuaikaa pidempään.",
+      "pros": [
+        "Vertailun matalin korko",
+        "Kohtuullinen 45 € vuosimaksu",
+        "Matkavakuutus sisältyy"
+      ],
+      "cons": [
+        "Ei Google Pay -tukea",
+        "Ei bonus- tai cashback-ohjelmaa"
+      ],
+      "bestFor": "Sopii parhaiten sinulle, jos maksat ostoksia erissä ja haluat minimoida korkokulut.",
+      "fees": [
+        [
+          "Vuosimaksu",
+          "45 €"
+        ],
+        [
+          "Käteisnosto",
+          "3 € + 2 %"
+        ],
+        [
+          "Paperilasku",
+          "2,50 €"
+        ],
+        [
+          "Valuuttalisä",
+          "2,45 %"
+        ]
+      ],
+      "faq": [
+        [
+          "Miksi matala korko on tärkeä?",
+          "Jos et maksa koko laskua eräpäivänä, korkoa kertyy jäljellä olevalle saldolle. Matala korko pienentää kuluja merkittävästi pitkällä aikavälillä."
+        ]
+      ]
+    },
+    {
+      "id": "aktia-credit",
+      "slug": "aktia-visa-credit",
+      "name": "Aktia Visa Credit",
+      "issuer": "Aktia",
+      "network": "Visa",
+      "rating": 4.0,
+      "reviews": 152,
+      "annualFee": "40 €/v",
+      "annualFeeNumeric": 40,
+      "interest": "9,5 % + 3 kk euribor",
+      "interestNumeric": 9.5,
+      "creditLimit": "1 500 – 10 000 €",
+      "creditLimitMax": 10000,
+      "interestFreeDays": "Jopa 43 pv",
+      "cashback": "–",
+      "hasCashback": false,
+      "bonuses": "–",
+      "travelInsurance": false,
+      "applePay": true,
+      "googlePay": true,
+      "bonusProgram": false,
+      "tags": [],
+      "featured": false,
+      "affiliateUrl": "https://example.com/aff/aktia",
+      "gradient": [
+        "#44506B",
+        "#66748F"
+      ],
+      "summary": "Suoraviivainen perusluottokortti ilman ylimääräisiä ominaisuuksia – ja ilman ylimääräisiä kuluja.",
+      "pros": [
+        "Edullinen vuosimaksu",
+        "Selkeä hinnoittelu",
+        "Apple Pay ja Google Pay"
+      ],
+      "cons": [
+        "Ei vakuutuksia",
+        "Ei etuohjelmaa"
+      ],
+      "bestFor": "Sopii parhaiten perusluottokortin hakijalle, joka arvostaa yksinkertaisuutta.",
+      "fees": [
+        [
+          "Vuosimaksu",
+          "40 €"
+        ],
+        [
+          "Käteisnosto",
+          "2,50 € + 2 %"
+        ],
+        [
+          "Paperilasku",
+          "2,50 €"
+        ],
+        [
+          "Valuuttalisä",
+          "2,50 %"
+        ]
+      ],
+      "faq": []
+    },
+    {
+      "id": "amex-business",
+      "slug": "american-express-business",
+      "name": "American Express Business",
+      "issuer": "American Express",
+      "network": "Amex",
+      "rating": 4.1,
+      "reviews": 203,
+      "annualFee": "150 €/v",
+      "annualFeeNumeric": 150,
+      "interest": "Ei luotto-ominaisuutta (charge)",
+      "interestNumeric": 0,
+      "creditLimit": "Joustava, ei ennalta määritetty",
+      "creditLimitMax": 50000,
+      "interestFreeDays": "Jopa 58 pv",
+      "cashback": "Membership Rewards -pisteet",
+      "hasCashback": true,
+      "bonuses": "Pisteet kaikista yritysostoista",
+      "travelInsurance": true,
+      "applePay": true,
+      "googlePay": true,
+      "bonusProgram": true,
+      "tags": [
+        "yritys",
+        "suuri-luottoraja",
+        "cashback",
+        "premium"
+      ],
+      "featured": false,
+      "affiliateUrl": "https://example.com/aff/amex-business",
+      "gradient": [
+        "#14615A",
+        "#268B80"
+      ],
+      "summary": "Yrityksen kulujen hallintaan: pitkä maksuaika, kulujen erittely ja Membership Rewards -pisteet kaikista ostoista.",
+      "pros": [
+        "Jopa 58 päivän maksuaika",
+        "Membership Rewards -pisteohjelma",
+        "Kulujen hallintatyökalut yrityksille",
+        "Ei ennalta rajattua käyttörajaa"
+      ],
+      "cons": [
+        "Korkea vuosimaksu",
+        "Amexin hyväksyntä suppeampi kuin Visan/Mastercardin"
+      ],
+      "bestFor": "Sopii parhaiten yritykselle, joka keskittää hankinnat yhdelle kortille ja hyödyntää pisteet.",
+      "fees": [
+        [
+          "Vuosimaksu",
+          "150 €"
+        ],
+        [
+          "Lisäkortti",
+          "50 €/v"
+        ],
+        [
+          "Paperilasku",
+          "0 €"
+        ],
+        [
+          "Valuuttalisä",
+          "2,5 %"
+        ]
+      ],
+      "faq": [
+        [
+          "Mikä on charge-kortti?",
+          "Charge-kortissa lasku maksetaan aina kokonaan eräpäivänä, eikä luottoa voi jättää korolliseksi. Tämä pitää yrityksen kulut kurissa."
+        ]
+      ]
+    }
+  ]
+}
