@@ -18,6 +18,11 @@ export default function AdminPage() {
   async function load() {
     setStatus("Ladataan…");
     const res = await fetch("/api/admin/cards", { headers: { "x-admin-token": token } });
+    if (res.status === 404) {
+      return setStatus(
+        "Hallinta ei ole käytössä tässä ympäristössä. Paneeli toimii vain paikallisessa devissä — tuotannossa sisältö päivitetään muokkaamalla data/-tiedostoja ja pushaamalla."
+      );
+    }
     if (!res.ok) return setStatus("Väärä tunnus. Tarkista admin-token.");
     const data = await res.json();
     setCards(data.cards);
@@ -32,7 +37,12 @@ export default function AdminPage() {
       headers: { "x-admin-token": token, "Content-Type": "application/json" },
       body: JSON.stringify({ cards, posts }),
     });
-    setStatus(res.ok ? "Tallennettu. Muutokset näkyvät seuraavassa buildissa/uudelleenlatauksessa." : "Tallennus epäonnistui.");
+    if (res.ok) {
+      return setStatus("Tallennettu. Muutokset näkyvät seuraavassa buildissa/uudelleenlatauksessa.");
+    }
+    // Serverless-ympäristö kertoo itse, miksi tallennus ei onnistu.
+    const data = await res.json().catch(() => null);
+    setStatus(data?.message ?? "Tallennus epäonnistui.");
   }
 
   const update = (i: number, patch: Partial<Card>) =>
@@ -131,7 +141,7 @@ export default function AdminPage() {
                 <input className={`${input} font-data`} value={card.affiliateUrl} onChange={(e) => update(i, { affiliateUrl: e.target.value })} />
               </label>
               <label className="flex items-end gap-2 pb-2 text-sm text-ink/80">
-                <input type="checkbox" checked={card.featured} onChange={(e) => update(i, { featured: e.target.checked })} className="h-4 w-4 accent-[#2563EB]" />
+                <input type="checkbox" checked={card.featured} onChange={(e) => update(i, { featured: e.target.checked })} className="h-4 w-4 accent-[#E8691B]" />
                 Suosituin-merkintä
               </label>
             </div>
@@ -140,7 +150,7 @@ export default function AdminPage() {
               <button onClick={() => move(i, 1)} aria-label="Siirrä alas" className="rounded-lg border border-line p-1.5 text-ink/72 hover:text-ink"><ArrowDown size={15} /></button>
               <button
                 onClick={() => confirm(`Poistetaanko ${card.name}?`) && setCards((p) => p!.filter((_, x) => x !== i))}
-                className="ml-auto inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm text-red-600 hover:bg-red-50"
+                className="ml-auto inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm text-red-400 hover:bg-red-500/10"
               >
                 <Trash2 size={15} aria-hidden /> Poista
               </button>
@@ -165,7 +175,7 @@ export default function AdminPage() {
             </div>
             <button
               onClick={() => confirm("Poistetaanko artikkeli?") && setPosts((p) => p.filter((_, x) => x !== i))}
-              className="mt-3 inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm text-red-600 hover:bg-red-50"
+              className="mt-3 inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm text-red-400 hover:bg-red-500/10"
             >
               <Trash2 size={15} aria-hidden /> Poista
             </button>
