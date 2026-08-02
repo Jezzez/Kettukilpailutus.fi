@@ -1,84 +1,136 @@
-# Kortio — Design System v3 "Clarity"
+# Kettukilpailutus — design-järjestelmä "Ketun kolo"
 
 ## Periaate
 
-Yksi paletti. Yksi kirjasin. Ei koristeita. Jokainen elementti joko auttaa
-käyttäjää vertailemaan tai se on poistettu. Luottamus syntyy selkeydestä,
-ilmavuudesta ja johdonmukaisuudesta — ei tehosteista.
+Sivusto on kokonaan tumma. Syvyys tehdään **valoarvoilla, ei väreillä**:
+pinta on sitä vaaleampi mitä lähempänä käyttäjää se on. Värejä on
+tarkoituksella vain kaksi — kettuoranssi ja kulta. Kaikki muu on lämpimän
+harmaan sävyjä, ja juuri se pitää ilmeen asiallisena. Uuden värin lisääminen
+tekee ilmeestä halvan, joten sitä ei tehdä.
+
+Luottamus syntyy selkeydestä ja johdonmukaisuudesta. Jokainen elementti joko
+auttaa käyttäjää vertailemaan tai se poistetaan.
 
 ## Väripaletti
 
-Täsmälleen viisi väriä. Mitään muuta ei käytetä missään — ei kirjavia
-korttilogoja, ei kultaa, ei vihreää, ei keltaisia tähtiä.
+Kaikki tokenit määritellään `tailwind.config.ts`-tiedostossa.
 
-| Token        | Hex       | Käyttö |
-|--------------|-----------|--------|
-| valkoinen    | `#FFFFFF` | Pääpinta |
-| `mist`       | `#F6F8FA` | Vaihtoehtoinen pinta (hero, tilastot, footer) |
-| `line`       | `#E6EAEF` | Reunaviivat |
-| `ink`        | `#0F1B2D` | Teksti, tumma päätösblokki. Sävyt opasiteetilla 45/55/60/75 % |
-| `accent`     | `#2563EB` | Ainoa korosteväri: CTA:t, valitut tilat, mittari, tähdet, linkkikorostukset. Tumma hover `#1D4ED8`, vaalea tausta `#EFF4FF` |
+### Pinnat, tummimmasta vaaleimpaan
 
-Korttien kuvakkeet piirretään sinisen-slaten sävyillä samasta perheestä,
-jotta ruudukko pysyy rauhallisena.
+| Token | Hex | Käyttö |
+|---|---|---|
+| `den` | `#0A0807` | Syvin — herot, footer, upotetut laatikot |
+| `paper` | `#0D0A08` | Sivun pohja (`body`) |
+| `white` | `#1A1512` | **Ylikirjoitettu.** Kortin pinta |
+| `mist` | `#241C16` | Kohotettu paneeli |
+| `peach` | `#2A1D13` | Lämmin sävytetty paneeli |
+| `night` | `#312619` | Chipit, ikonilaatat |
+| `navy` | `#342820` | Hover kohotetulla pinnalla |
+| `line` | `#332A21` | Reunaviivat |
+| `lineDark` | `#43372B` | Vahvempi reunaviiva |
+
+> **Tailwindin `white` on ylikirjoitettu tummaksi.** Se on tarkoituksellinen
+> ratkaisu: koko olemassa oleva `bg-white`-koodi kääntyi kerralla tummaksi.
+> `bg-white` = kortin tumma pinta. Älä "korjaa" tätä vaaleaksi.
+
+### Tekstit
+
+| Token | Hex | Käyttö |
+|---|---|---|
+| `ink` | `#F2EADF` | Ensisijainen teksti (lämmin kerma) |
+| `cream` | `#F7F1E8` | Kirkkain teksti tummalla |
+
+Toissijainen teksti tehdään opasiteetilla: `text-ink/72` leipätekstille,
+`text-ink/58` ja `text-ink/55` vaimennetulle. Ei erillisiä harmaita tokeneita.
+
+### Korosteet
+
+| Token | Hex | Käyttö |
+|---|---|---|
+| `accent` | `#E8691B` | Kettuoranssi — ainoa varsinainen väri. CTA:t, valitut tilat, fokusrengas |
+| `accentDark` | `#FF8C3C` | Tekstioranssi tummalla + napin hover |
+| `accentSoft` | `#2E1C0E` | Oranssin sävytetty pohja chipeille |
+| `gold` | `#D9A24F` | Vain hiusviivat ja pienet merkit |
+| `star` | `#E8B04A` | Arviotähdet |
+
+`ok` ja `mint` osoittavat molemmat oranssiin — vihreää ei ole paletissa,
+joten myös "hyvä"-tilat käyttävät kettuoranssia.
 
 ## Typografia
 
-Yksi perhe: **Inter**, kolme painoa.
-- Bold + `tracking-tight`: otsikot (48/36/28/20)
-- Semibold: painikkeet, korostukset, nimet
-- Regular/Medium: leipäteksti 15–16/1.6, toissijainen teksti opasiteetilla
+Kaksi perhettä, molemmat `next/font/google`-latauksella `layout.tsx`:ssä.
 
-Kaikki numerot tabulaarisina (`font-variant-numeric: tabular-nums`), jolloin
-hinnat ja korot pysyvät sarakkeissa linjassa.
+- **Schibsted Grotesk** (`font-display`) — otsikot, napit, korostukset.
+  Pohjoismainen mediagrotesk: tiivis ja luottamusta herättävä.
+  Painot 500/600/700/800.
+- **Inter** (`font-body`) — leipäteksti ja numerot.
 
-## Spacing, muodot, varjot
+Otsikoissa `letter-spacing: -0.02em` (globals.css). Numerot tabulaarisina
+`.font-data`-luokalla, jolloin hinnat pysyvät sarakkeissa linjassa.
 
-- 4 px -ruudukko. Sektiot `py-20 md:py-28`, sisältö `max-w-6xl`.
-- Kortit `rounded-2xl`, napit täyspyöreät, sirut täyspyöreät.
-- Kaksi varjoa: `card` (lepo) ja `cardHover` (nosto). Ei muita.
-- Reunaviiva + kevyt varjo yhdessä — ei koskaan kovaa varjoa.
+## Apuluokat
+
+Nämä ovat `app/globals.css`-tiedostossa, eivät Tailwind-tokeneita:
+
+- `.den-surface` — syvin pinta. Kohinatekstuuri estää tumman latistumisen
+  litteäksi mustaksi; lämpimät hehkut nurkissa antavat tilalle valonlähteen.
+- `.btn-ember` — ensisijainen nappi. Kevyt pystygradientti `#F0752A → #DC5A11`
+  tekee napista veistetyn; tasainen täyttöväri näyttää tummalla halvalta.
+- `.ember-glow` — oranssi hehku maskotin taakse.
+- `.gold-rule` — kultainen hiusviiva, häivytys molemmista päistä.
+- `.glass-dark` — headerin tumma lasi (blur + saturaatio).
+- `.scrollbar-none` — piilottaa vaakavierityksen palkin.
+
+## Muodot ja varjot
+
+4 px -ruudukko. Kortit `rounded-2xl` tai `rounded-3xl`, napit `rounded-xl`,
+chipit täyspyöreät. Sisältö `max-w-[1180px]`.
+
+Tummalla varjo yksin ei riitä syvyyteen, joten jokaisessa varjossa on
+**yläreunan valojuova** (`inset 0 1px 0`), joka saa pinnat näyttämään
+veistetyiltä eikä litteiltä laatikoilta.
+
+| Varjo | Käyttö |
+|---|---|
+| `card` | Lepotila |
+| `cardHover` | Nosto |
+| `lift` | Voimakas nosto, modaalit |
+| `ember` | Oranssi hehku CTA:n alla |
 
 ## Motion
 
 Vähän ja luonnollisesti: 150–250 ms mikrointeraktiot, nappien
-`active:scale-98`, korttien uudelleenjärjestys jousella (320/32),
-polun siirtymät 250 ms, mittarin kaari jousella. `prefers-reduced-motion`
-poistaa kaiken.
+`active:scale-[0.98]`, korttien uudelleenjärjestys jousella, maskotin
+asennonvaihto jousella (stiffness 220 / damping 22). Framer Motion.
 
-## Vertailukokemus
-
-1. **Polku** (3 kysymystä valkoisella kortilla, sininen eteneminen) täyttää
-   suodattimet käyttäjän puolesta.
-2. **Kortit järjestyvät** animoiden; paras osuma saa sinisen reunuksen ja
-   "Sinun valintasi" -merkinnän.
-3. **Sopivuus-mittari** (yksi sininen kaari, 0–100) päivittyy jokaisesta
-   valinnasta.
-4. **Hienosäätösirut** samalla logiikalla: valittu = sininen, muu = valkoinen.
+`prefers-reduced-motion` poistaa kaiken liikkeen — sekä globaalisti
+(globals.css) että komponenteissa `useReducedMotion`-hookilla. Uusi animaatio
+ei ole valmis ennen kuin se kunnioittaa tätä.
 
 ## Saavutettavuus
 
-Fokus: 2 px sininen rengas kaikkialla. Kontrastit: ink/valkoinen 15.4:1,
-accent/valkoinen 4.9:1 (AA). Tila ei koskaan pelkän värin varassa
-(✓/– -soluissa sr-only-tekstit). Kosketusalueet ≥ 44 px.
+Fokus: 2 px kettuoranssi rengas kaikkialla (`:focus-visible`, globals.css).
+Tila ei koskaan pelkän värin varassa — ✓/– -soluissa on `sr-only`-tekstit.
+Kosketusalueet ≥ 44 px. Mobile-first. `color-scheme: dark` kerrotaan
+selaimelle, jotta lomakekentät ja vierityspalkit noudattavat teemaa.
 
-## Repo — maskotti
+## Kettu — maskotti
 
-**Hahmo:** Repo on itsevarma ja fiksu kettu, joka pitelee luottokorttia.
-Turkki on täsmälleen brändioranssi (#EA6A1F), yksityiskohdat navya —
-Repo *on* paletti, joten se ei koskaan riitele muun ilmeen kanssa.
-Tunnisteet: navy-huivi, itsevarmat kulmakarvat, valkokärkinen häntä.
+**Hahmo:** 3D-renderöity kettu. Karismaattinen, älykäs, premium — **ei
+koskaan lapsellinen.** Turkki on brändioranssi, joten Kettu *on* paletti
+eikä koskaan riitele muun ilmeen kanssa.
 
-**Persoona:** puhuu lyhyesti, sinuttelee, opastaa mutta ei tuputa.
-Ei huutomerkkejä hintoihin, ei myyntipuhetta — Repo on opas, ei myyjä.
+**Persoona:** puhuu lyhyesti, sinuttelee, opastaa mutta ei tuputa. Ei
+huutomerkkejä hintoihin, ei myyntipuhetta — Kettu on opas, ei myyjä.
 
-**Käyttäytyminen sivustolla:**
-- Istuu vasemmassa alakulmassa; häntä heiluu, silmät räpsyvät.
-- Scrollatessa Repo juoksee (nopea pomppu + häntä hulmuaa) ja kupla piiloutuu.
-- Pysähtyessä kupla kertoo osiokohtaisen vinkin (hero/vertailu/taulukko/UKK).
-- Klikkaus vie seuraavaan osioon — Repo kirjaimellisesti näyttää mihin mennä.
-- Aina suljettavissa; piilossa mobiilissa ja admin-sivulla;
-  `prefers-reduced-motion` pysäyttää kaiken liikkeen.
+**Slogan:** "Ketuttaako maksaa liikaa? Anna Ketun kilpailuttaa puolestasi!"
 
-**Säännöt:** yksi Repo per näkymä, ei koskaan CTA:n päällä, ei ääntä,
-ei automaattisia ponnahduksia sisällön päälle.
+**Tekninen toteutus** (`components/mascot/Kettu.tsx`): kolme asentoa —
+`kortti`, `osoittaa`, `peukku` — WebP-kuvina `public/`-kansiossa. Asennon
+vaihto on ristiinhäivytys + pieni pomppu, jolloin hahmo tuntuu elävältä
+ilman kehysanimaatiota. Kevyt leijunta (`float`) toimii "hengityksenä".
+Heron iso esiintyminen: `components/mascot/HeroKettu.tsx`.
+
+**Säännöt:** yksi Kettu per näkymä, ei koskaan CTA:n päällä, ei ääntä, ei
+automaattisia ponnahduksia sisällön päälle, `ember-glow` taakse kun hahmo on
+tummalla pinnalla.
