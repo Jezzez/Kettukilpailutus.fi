@@ -19,13 +19,19 @@ export default function Reveal({
   const reduce = useReducedMotion();
   if (reduce) return <div className={className}>{children}</div>;
 
+  /*
+   * Laukaisu 40 px ENNEN kuin elementti on ruudussa (positiivinen margin),
+   * jotta sisältö on jo paikallaan kun katse osuu siihen. Aiempi -80px +
+   * 0,6 s + porrastus tarkoitti, että nopeasti vierittävä näki tyhjää tilaa
+   * siinä missä sisällön piti olla. Liike on nyt lyhyempi ja matalampi.
+   */
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.6, delay, ease: [0.21, 0.65, 0.36, 1] }}
+      viewport={{ once: true, margin: "40px" }}
+      transition={{ duration: 0.4, delay: Math.min(delay, 0.18), ease: [0.21, 0.65, 0.36, 1] }}
     >
       {children}
     </motion.div>

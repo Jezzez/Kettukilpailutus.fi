@@ -75,12 +75,16 @@ export default function PlanCard({
             </h3>
             <p className="mt-0.5 text-[13px] text-ink/62">{plan.name}</p>
           </div>
+          {/*
+            Laatta on tarkoituksella neutraali. Palveluntarjoajan omat
+            brändivärit toisivat sivulle 4–5 uutta väriä, ja paletissa on
+            vain oranssi ja kulta. Erottelu tehdään valoarvolla ja tekstillä.
+          */}
           <span
-            className="grid h-10 w-10 shrink-0 place-items-center rounded-xl shadow-sm"
-            style={{ background: `linear-gradient(135deg, ${plan.gradient[0]}, ${plan.gradient[1]})` }}
+            className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-line bg-den"
             aria-hidden
           >
-            <Zap size={17} className="text-cream" />
+            <Zap size={17} className="text-accent" />
           </span>
         </div>
 

@@ -1,6 +1,6 @@
 import { BadgeCheck, Calculator, Coins, PawPrint, Scale } from "lucide-react";
 import Reveal from "../Reveal";
-import { ASSUMED_SPOT_AVG, PRICE_DATE } from "@/lib/energy";
+import { ASSUMED_SPOT_AVG, IS_EXAMPLE_DATA, PRICE_DATE, getPlans } from "@/lib/energy";
 
 /**
  * Läpinäkyvyysosio.
@@ -85,9 +85,17 @@ export default function EnergyTrust() {
                 </span>
               </span>
               <span>
-                Sopimuksia vertailussa <span className="font-data font-bold text-cream/85">6</span>
+                Sopimuksia vertailussa{" "}
+                <span className="font-data font-bold text-cream/85">{getPlans().length}</span>
               </span>
             </div>
+            {IS_EXAMPLE_DATA && (
+              <p className="mt-4 rounded-2xl border border-gold/30 bg-gold/[0.07] px-4 py-3 text-[13px] leading-relaxed text-cream/78">
+                <span className="font-bold text-gold">Huom.</span> Vertailun hinnat ovat
+                toistaiseksi esimerkkilukuja, eivät palveluntarjoajien tarkistettuja ehtoja.
+                Tarkista aina lopullinen hinta sähköyhtiön omilta sivuilta ennen sopimuksen tekoa.
+              </p>
+            )}
           </Reveal>
         </div>
       </div>

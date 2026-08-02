@@ -31,6 +31,16 @@ const ENERGY_FAQ: { q: string; a: string }[] = [
   { q: "Voinko vaihtaa, vaikka minulla on maksuhäiriömerkintä?", a: "Useimmat yhtiöt tekevät luottotietotarkistuksen. Merkintä voi johtaa vakuusmaksun vaatimiseen tai hylkäykseen, mutta käytännöt vaihtelevat yhtiöittäin." },
 ];
 
+/**
+ * Korttitekstin katkaisu lauseen rajalta. line-clamp katkaisi keskeltä
+ * lausetta ja jätti irrallisen "…", joka näytti keskeneräiseltä.
+ * Ensimmäinen lause riittää korttiin — loput luetaan oppaasta.
+ */
+function firstSentence(text: string): string {
+  const m = text.match(/^[^.!?]+[.!?]/);
+  return (m ? m[0] : text).trim();
+}
+
 const STEPS = [
   ["Kerro kulutuksesi", "Valitse asumismuoto tai syötä kWh-lukema laskusta. Kettu laskee todelliset vuosihinnat."],
   ["Valitse sopimus", "Vertaa euroja, älä senttejä. Halvin on merkitty ja hintapalkit näyttävät erot heti."],
@@ -143,13 +153,13 @@ export default function ElectricityPage() {
 
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {topics.map((t, i) => (
-              <Reveal key={t.slug} delay={i * 0.06}>
+              <Reveal key={t.slug} delay={i * 0.06} className="h-full">
                 <Link
                   href={`/sahkosopimukset/${t.slug}`}
                   className="group flex h-full flex-col rounded-3xl border border-line bg-white p-6 transition-all hover:-translate-y-1.5 hover:border-den/15 hover:shadow-cardHover"
                 >
-                  <h3 className="font-display text-[16px] font-bold leading-snug text-ink">{t.h1}</h3>
-                  <p className="mt-2.5 flex-1 text-[13.5px] leading-relaxed text-ink/68 line-clamp-3">{t.intro}</p>
+                  <h3 className="min-h-[2.6em] font-display text-[16px] font-bold leading-snug text-ink">{t.h1}</h3>
+                  <p className="mt-2.5 flex-1 text-[13.5px] leading-relaxed text-ink/68">{firstSentence(t.intro)}</p>
                   <span className="mt-4 inline-flex items-center gap-1.5 font-display text-[13.5px] font-bold text-accentDark">
                     Lue opas
                     <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" aria-hidden />

@@ -70,11 +70,10 @@ export default function PlanPage({ params }: { params: { slug: string } }) {
             <div>
               <div className="flex items-center gap-3">
                 <span
-                  className="grid h-12 w-12 place-items-center rounded-xl"
-                  style={{ background: `linear-gradient(135deg, ${plan.gradient[0]}, ${plan.gradient[1]})` }}
+                  className="grid h-12 w-12 place-items-center rounded-xl border border-line bg-den"
                   aria-hidden
                 >
-                  <Zap size={20} className="text-cream" />
+                  <Zap size={20} className="text-accent" />
                 </span>
                 <div>
                   <h1 className="font-display text-3xl font-bold tracking-tight text-ink">

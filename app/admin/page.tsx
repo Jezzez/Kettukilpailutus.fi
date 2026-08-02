@@ -66,7 +66,7 @@ export default function AdminPage() {
         creditLimit: "1 000 – 5 000 €", creditLimitMax: 5000, interestFreeDays: "Jopa 30 pv",
         cashback: "–", hasCashback: false, bonuses: "–", travelInsurance: false,
         applePay: true, googlePay: true, bonusProgram: false, tags: [], featured: false,
-        affiliateUrl: "https://example.com/aff/uusi", gradient: ["#334155", "#64748B"],
+        affiliateUrl: "https://example.com/aff/uusi", gradient: ["#2A231E", "#4A3C33"],
         summary: "", pros: [], cons: [], bestFor: "", fees: [], faq: [],
       } as Card,
       ...(prev ?? []),

@@ -40,6 +40,14 @@ export interface EnergyTopic {
 export const ASSUMED_SPOT_AVG: number = electricityJson.assumedSpotAverage;
 export const PRICE_DATE: string = electricityJson.priceDate;
 
+/**
+ * Kertoo, ovatko luvut vielä esimerkkidataa. Päivämäärän korottaminen ilman
+ * että hinnat on oikeasti tarkistettu olisi kuluttajalle valehtelua, joten
+ * vanhentumista ei piiloteta — se kerrotaan. Kun `data/electricity.json`
+ * saa todelliset hinnat, aseta `isExampleData: false` ja huomautus katoaa.
+ */
+export const IS_EXAMPLE_DATA: boolean = electricityJson.isExampleData === true;
+
 export function getPlans(): ElectricityPlan[] {
   return electricityJson.plans as ElectricityPlan[];
 }

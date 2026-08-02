@@ -30,8 +30,8 @@
       "featured": false,
       "affiliateUrl": "https://example.com/aff/nordea-gold",
       "gradient": [
-        "#1E3A5F",
-        "#33598C"
+        "#8A6A2E",
+        "#D9A24F"
       ],
       "summary": "Kattava matkavakuutus ja ostoturva tekevät Nordea Goldista vahvan yleiskortin säännöllisesti matkustavalle.",
       "pros": [
@@ -185,8 +185,8 @@
       "featured": true,
       "affiliateUrl": "https://example.com/aff/s-pankki-visa",
       "gradient": [
-        "#0B6E38",
-        "#159A52"
+        "#1F1A16",
+        "#3A322B"
       ],
       "summary": "Ilmainen kortti, matala korko ja S-ryhmän Bonus samassa paketissa – siksi suosituin valintamme arjen ostoksiin.",
       "pros": [
@@ -264,8 +264,8 @@
       "featured": false,
       "affiliateUrl": "https://example.com/aff/danske-platinum",
       "gradient": [
-        "#20304D",
-        "#3A5685"
+        "#2A231E",
+        "#4A3C33"
       ],
       "summary": "Premium-kortti paljon matkustavalle: loungeoikeudet, laajin vakuutusturva ja luottoraja jopa 30 000 €.",
       "pros": [
@@ -338,8 +338,8 @@
       "featured": false,
       "affiliateUrl": "https://example.com/aff/norwegian",
       "gradient": [
-        "#8F1D2C",
-        "#B53344"
+        "#33291F",
+        "#5C4A38"
       ],
       "summary": "Ilmainen kortti, joka kerryttää CashPoints-pisteitä Norwegianin lentoihin ja sisältää matkavakuutuksen.",
       "pros": [
@@ -411,8 +411,8 @@
       "featured": false,
       "affiliateUrl": "https://example.com/aff/handelsbanken",
       "gradient": [
-        "#123D6B",
-        "#2B5E97"
+        "#3E3227",
+        "#6B5745"
       ],
       "summary": "Vertailun matalin korko ja maltillinen vuosimaksu – järkevä valinta, jos käytät luottoa maksuaikaa pidempään.",
       "pros": [
@@ -476,8 +476,8 @@
       "featured": false,
       "affiliateUrl": "https://example.com/aff/aktia",
       "gradient": [
-        "#44506B",
-        "#66748F"
+        "#4A3C2E",
+        "#7C6552"
       ],
       "summary": "Suoraviivainen perusluottokortti ilman ylimääräisiä ominaisuuksia – ja ilman ylimääräisiä kuluja.",
       "pros": [
@@ -541,8 +541,8 @@
       "featured": false,
       "affiliateUrl": "https://example.com/aff/amex-business",
       "gradient": [
-        "#14615A",
-        "#268B80"
+        "#564636",
+        "#8B735E"
       ],
       "summary": "Yrityksen kulujen hallintaan: pitkä maksuaika, kulujen erittely ja Membership Rewards -pisteet kaikista ostoista.",
       "pros": [

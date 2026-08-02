@@ -110,7 +110,6 @@ export default function ElectricityExperience({
     [plans, type, greenOnly, kwh, sort]
   );
 
-  const priciest = useMemo(() => Math.max(...plans.map((p) => annualCost(p, kwh))), [plans, kwh]);
   const cheapestCost = useMemo(() => Math.min(...plans.map((p) => annualCost(p, kwh))), [plans, kwh]);
   const maxShown = Math.max(...filtered.map((p) => annualCost(p, kwh)), 1);
 
@@ -130,9 +129,16 @@ export default function ElectricityExperience({
 
   /** Rehellisyys ennen konversiota: jos asiakkaan oma sopimus voittaa, se sanotaan. */
   const alreadyGood = currentAnnual !== null && currentAnnual <= cheapestCost;
-  const savingsBase = currentAnnual ?? priciest;
-  const savingsLabel = currentAnnual ? "vuodessa nykyiseen sopimukseesi verrattuna" : "vuodessa vertailun kalleimpaan verrattuna";
-  const headlineSaving = useCountUp(Math.max(0, savingsBase - cheapestCost));
+  /**
+   * Säästö lasketaan VAIN asiakkaan omaan sopimukseen. Vertailu listan
+   * kalleimpaan on vertailusivujen vanha temppu: se tuottaa ison oranssin
+   * luvun jokaiseen korttiin riippumatta siitä, maksaako asiakas oikeasti
+   * liikaa. Ennen kuin oma hinta on annettu, säästölukua ei näytetä
+   * lainkaan — sen tilalla on kehotus syöttää oma hinta.
+   */
+  const savingsBase = currentAnnual;
+  const savingsLabel = "vuodessa nykyiseen sopimukseesi verrattuna";
+  const headlineSaving = useCountUp(savingsBase === null ? 0 : Math.max(0, savingsBase - cheapestCost));
   const cheapestMonthly = useCountUp(cheapestCost / 12);
 
   /** Suosituksen tulos — vain kun molempiin on vastattu. */
@@ -265,7 +271,13 @@ export default function ElectricityExperience({
     <>
       {withHero && (
         <>
-        <section className="den-surface relative overflow-hidden pb-28 pt-12 md:pb-32 md:pt-16">
+        {/*
+          Hero on tarkoituksella matala: laskurin pitää näkyä ilman
+          vieritystä myös 900 px korkealla näytöllä (CRO-sääntö 1 —
+          työkalu ennen myyntipuhetta). Älä kasvata pystypaddingeja
+          tai otsikon kokoa tarkistamatta taitetta uudelleen.
+        */}
+        <section className="den-surface relative overflow-hidden pb-24 pt-8 md:pb-24 md:pt-9">
           <div className="relative mx-auto max-w-[1180px] px-4 sm:px-6">
             <div className="grid items-center gap-8 md:grid-cols-[1.06fr_0.94fr]">
               <div>
@@ -276,41 +288,58 @@ export default function ElectricityExperience({
                   <span className="gold-rule w-16" aria-hidden />
                 </div>
 
-                <h1 className="mt-4 font-display text-[2.5rem] font-extrabold leading-[1.04] tracking-tight text-cream sm:text-[3.3rem]">
+                <h1 className="mt-3 font-display text-[2.3rem] font-extrabold leading-[1.04] tracking-tight text-cream sm:text-[2.9rem]">
                   Halvin sähkö löytyy<br />
                   <span className="text-accent">laskemalla</span>, ei arvaamalla.
                 </h1>
 
-                <p className="mt-5 max-w-md text-[16.5px] leading-relaxed text-cream/72">
-                  Anna Ketun kilpailuttaa puolestasi: kerro kulutuksesi, niin laskemme
-                  jokaisen sopimuksen todellisen vuosihinnan — ja kerromme, paljonko
-                  vaihtaminen tuo takaisin.
+                <p className="mt-4 max-w-md text-[16px] leading-relaxed text-cream/72">
+                  Kerro kulutuksesi, niin laskemme jokaisen sopimuksen todellisen
+                  vuosihinnan — ja kerromme euroina, paljonko vaihtaminen tuo takaisin.
                 </p>
 
-                <ul className="mt-7 flex items-end gap-4">
-                  <li className="flex flex-1 flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:gap-x-5">
+                {/* Mobiilissa Kettu ja luottamusrivi vierekkäin, jotta CTA mahtuu alle. */}
+                <div className="mt-5 flex items-end gap-4">
+                  <ul className="flex flex-1 flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:gap-x-5">
                     {[
                       { icon: Plug, text: "Sähkö ei katkea" },
                       { icon: RefreshCw, text: "Vanha sopimus irtisanotaan puolestasi" },
                       { icon: Timer, text: "Vie noin 5 minuuttia" },
                     ].map((t) => (
-                      <span key={t.text} className="flex items-center gap-2 text-[13.5px] font-medium text-cream/78">
+                      <li key={t.text} className="flex items-center gap-2 text-[13.5px] font-medium text-cream/78">
                         <t.icon size={15} className="shrink-0 text-gold" aria-hidden />
                         {t.text}
-                      </span>
+                      </li>
                     ))}
-                  </li>
-                  <li className="ember-glow relative shrink-0 md:hidden">
+                  </ul>
+                  <div className="ember-glow relative shrink-0 md:hidden">
                     <Image
-                      src="/kettu-kortti.webp"
+                      src="/kettu-osoittaa.webp"
                       alt="Kettu, Kettukilpailutuksen maskotti"
-                      width={657}
-                      height={1400}
+                      width={416}
+                      height={1000}
                       priority
-                      className="relative h-[168px] w-auto drop-shadow-[0_16px_28px_rgba(0,0,0,0.5)]"
+                      className="relative h-[150px] w-auto drop-shadow-[0_16px_28px_rgba(0,0,0,0.5)]"
                     />
-                  </li>
-                </ul>
+                  </div>
+                </div>
+
+                {/*
+                  Mobiilissa herossa ei ollut lainkaan näkyvää toimintakehotusta.
+                  Tämä nappi vie suoraan laskuriin, joka on heti heron alla.
+                */}
+                <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2">
+                  <a
+                    href="#vertailu"
+                    className="btn-ember inline-flex items-center gap-2 rounded-full px-6 py-3 font-display text-[15px] font-bold text-cream md:hidden"
+                  >
+                    Laske oma hintani
+                    <TrendingDown size={16} aria-hidden />
+                  </a>
+                  <p className="text-[12.5px] text-cream/58">
+                    Ilmainen ja puolueeton · ei vaadi tunnuksia
+                  </p>
+                </div>
               </div>
 
               <div className="ember-glow relative mx-auto hidden md:block">
@@ -320,16 +349,20 @@ export default function ElectricityExperience({
                   transition={{ type: "spring", stiffness: 120, damping: 18 }}
                   className="relative"
                 >
+                  {/*
+                    Poosi "osoittaa", ei "kortti": sähkösivulla maskotti ei voi
+                    pidellä luottokorttia — se kertoo väärästä vertikaalista.
+                  */}
                   <Image
-                    src="/kettu-kortti.webp"
+                    src="/kettu-osoittaa.webp"
                     alt="Kettu, Kettukilpailutuksen maskotti"
-                    width={657}
-                    height={1400}
+                    width={416}
+                    height={1000}
                     priority
-                    className="relative h-[440px] w-auto drop-shadow-[0_28px_48px_rgba(0,0,0,0.55)]"
+                    className="relative h-[360px] w-auto drop-shadow-[0_28px_48px_rgba(0,0,0,0.55)]"
                   />
                   <span
-                    className="absolute right-2 top-12 grid h-16 w-16 rotate-[8deg] place-items-center rounded-2xl border border-gold/30 bg-den/90 shadow-ember backdrop-blur"
+                    className="absolute right-2 top-10 grid h-16 w-16 rotate-[8deg] place-items-center rounded-2xl border border-gold/30 bg-den/90 shadow-ember backdrop-blur"
                     aria-hidden
                   >
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
@@ -392,10 +425,10 @@ export default function ElectricityExperience({
                   Älä vaihda nyt. Tarkista tilanne uudelleen, kun sopimuksesi lähestyy loppuaan.
                 </p>
               </div>
-            ) : (
+            ) : currentAnnual ? (
               <div className="rounded-2xl border border-gold/25 bg-den px-6 py-5 text-right shadow-lift">
                 <p className="text-[11.5px] font-semibold uppercase tracking-[0.14em] text-gold">
-                  {currentAnnual ? "Säästö nykyiseen" : "Säästö kalleimpaan"}
+                  Säästö nykyiseen sopimukseesi
                 </p>
                 <p className="mt-1 font-display text-[2.1rem] font-extrabold leading-none text-cream">
                   <span className="font-data">
@@ -403,6 +436,26 @@ export default function ElectricityExperience({
                   </span>
                   <span className="ml-1 text-[15px] font-semibold text-cream/58">/ vuosi</span>
                 </p>
+              </div>
+            ) : (
+              /* Ei omaa hintaa vielä — kehotus, ei keksitty säästöluku. */
+              <div className="max-w-sm rounded-2xl border border-gold/25 bg-den px-6 py-5 shadow-lift">
+                <p className="flex items-center gap-2 text-[11.5px] font-semibold uppercase tracking-[0.14em] text-gold">
+                  <Wallet size={14} aria-hidden /> Säästösi euroina
+                </p>
+                <p className="mt-2 text-[13.5px] leading-relaxed text-cream/78">
+                  Emme arvaa säästöäsi. Syötä nykyinen hintasi, niin näet todellisen
+                  eron omaan sopimukseesi — myös silloin, jos vaihtaminen ei kannata.
+                </p>
+                <button
+                  onClick={() => {
+                    setShowCurrent(true);
+                    document.getElementById("vertailu")?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+                  }}
+                  className="mt-3 inline-flex items-center gap-2 rounded-full border border-gold/40 px-4 py-2 font-display text-[13px] font-bold text-gold transition-colors hover:bg-gold/10"
+                >
+                  Syötä nykyinen hintani
+                </button>
               </div>
             )}
           </div>
@@ -527,7 +580,7 @@ export default function ElectricityExperience({
                         plan={plan}
                         kwh={kwh}
                         badge={sort === "cost" ? badge : null}
-                        savings={Math.max(0, savingsBase - cost)}
+                        savings={savingsBase === null ? 0 : Math.max(0, savingsBase - cost)}
                         savingsLabel={savingsLabel}
                         maxCost={maxShown}
                       />
