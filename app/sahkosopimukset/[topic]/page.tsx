@@ -116,7 +116,7 @@ export default function TopicPage({ params }: { params: { topic: string } }) {
                   <Link
                     key={t.slug}
                     href={`/sahkosopimukset/${t.slug}`}
-                    className="rounded-2xl border border-line bg-white p-4 text-[13.5px] font-semibold leading-snug text-ink transition-all hover:-translate-y-0.5 hover:shadow-cardHover"
+                    className="lift rounded-2xl border border-line bg-white p-4 text-[13.5px] font-semibold leading-snug text-ink shadow-card hover:border-accent/35"
                   >
                     {t.h1}
                   </Link>

@@ -54,7 +54,7 @@ export default function BlogList({ posts }: { posts: Post[] }) {
               >
                 <Link
                   href={`/blogi/${post.slug}`}
-                  className="group flex h-full flex-col rounded-2xl border border-line bg-white p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-cardHover"
+                  className="lift group flex h-full flex-col rounded-2xl border border-line bg-white p-6 shadow-card hover:border-accent/35"
                 >
                   <span className="inline-flex w-fit rounded-full bg-accentSoft px-3 py-1 text-[11px] font-semibold text-accentDark">
                     {post.category}

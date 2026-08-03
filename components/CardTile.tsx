@@ -55,7 +55,7 @@ export default function CardTile({
   const badge = topMatch ? "Sinun valintasi" : card.featured ? "Suosituin" : null;
 
   return (
-    <article className="group flex h-full flex-col rounded-2xl border border-line bg-white p-5 shadow-card transition-all duration-200 hover:-translate-y-1 hover:border-accent/35 hover:shadow-cardHover">
+    <article className="lift group flex h-full flex-col rounded-2xl border border-line bg-white p-5 shadow-card hover:border-accent/35">
       {/* Nimi + merkintä */}
       <div className="flex items-start justify-between gap-2">
         <h3 className="font-display text-[17px] font-semibold leading-tight text-ink">

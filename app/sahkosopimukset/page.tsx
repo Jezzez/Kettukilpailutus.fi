@@ -151,8 +151,13 @@ export default function ElectricityPage() {
 
       <EnergyTrust />
 
-      {/* UKK — vastaa epäröintiin ennen kuin oppaat vievät pois sivulta */}
-      <section id="ukk" className="scroll-mt-24 border-t border-line py-16 md:py-20">
+      {/*
+        UKK — vastaa epäröintiin ennen kuin oppaat vievät pois sivulta.
+        Ei `border-t`: tämän osion yläpuolella on nyt tumman
+        luottamusvyöhykkeen hännänveto, ja suora hiusviiva heti kaaren alla
+        pyyhkisi kaaren pois — silmä lukisi vain sen viivan.
+      */}
+      <section id="ukk" className="scroll-mt-24 py-16 md:py-20">
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
           <Reveal>
             <SectionHead

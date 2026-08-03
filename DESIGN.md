@@ -2,85 +2,135 @@
 
 ## Periaate
 
-Sivusto on kokonaan tumma. Syvyys tehdään **valoarvoilla, ei väreillä**:
-pinta on sitä vaaleampi mitä lähempänä käyttäjää se on. Värejä on
-tarkoituksella vain kaksi — kettuoranssi ja kulta. Kaikki muu on lämpimän
-harmaan sävyjä, ja juuri se pitää ilmeen asiallisena. Uuden värin lisääminen
-tekee ilmeestä halvan, joten sitä ei tehdä.
+Sivusto on **lämpimän vaalea, ja sen rytmin tekevät täysleveät oranssit
+vyöt.** Syvyys tehdään valoarvoilla, ei väreillä: pinta on sitä vaaleampi
+mitä lähempänä käyttäjää se on. Värejä on tarkoituksella vain kaksi —
+kettuoranssi ja kulta. Kaikki muu on lämpimän hiekan sävyjä.
+
+**Miksi ei enää tumma.** Tumma versio vei brändiltä sen ainoan aseen. Kettu
+on oranssi, ja oranssi loistaa vaaleaa vasten; mustalla pohjalla oranssi
+hehkuu, mutta niin hehkuu kaikki muukin — eikä yksikään nappi erotu. Tumma
+jää käyttöön vain alatunnisteessa ja yksittäisissä korostuslaatikoissa.
+
+**Miksi vyöt.** Vaalea pinta yksinään on sekin ongelma: jos koko ruutu on
+välillä 92–100 % vaaleutta, silmä ei löydä mitään mihin laskeutua. Siksi
+vaaleus on porrastettu (paperi → hiekka → kortti) ja sivun tärkeimmät
+kohdat — hero ja loppukehotus — on maalattu täyteen brändiväriin. Täysi
+väripinta on voimakkain mahdollinen ankkuri, eikä se maksa latausaikaa.
+
+**Reunat ovat pakollisia.** Ryhmittelyä ei tehdä pelkillä väleillä. Väli
+kertoo mikä on erillään, ei mikä kuuluu yhteen — siksi reunaton sivu
+tuntuu sekalaiselta vaikka jokainen osio olisi erikseen siisti.
 
 Luottamus syntyy selkeydestä ja johdonmukaisuudesta. Jokainen elementti joko
 auttaa käyttäjää vertailemaan tai se poistetaan.
 
 ## Väripaletti
 
-Kaikki tokenit määritellään `tailwind.config.ts`-tiedostossa.
+Tokenit ovat `tailwind.config.ts`-tiedostossa, arvot CSS-muuttujina
+`app/globals.css`-tiedostossa. Arvot ovat RGB-kolmikkoja ilman `rgb()`-
+kääreitä, jotta Tailwindin läpinäkyvyysmerkinnät (`text-ink/70`) toimivat.
 
-### Pinnat, tummimmasta vaaleimpaan
+### Pinnat, vaaleimmasta tummimpaan (`.theme-light`, oletus)
 
-| Token | Hex | Käyttö |
+| Token | RGB | Käyttö |
 |---|---|---|
-| `den` | `#0A0807` | Syvin — herot, footer, upotetut laatikot |
-| `paper` | `#0D0A08` | Sivun pohja (`body`) |
-| `white` | `#1A1512` | **Ylikirjoitettu.** Kortin pinta |
-| `mist` | `#241C16` | Kohotettu paneeli |
-| `peach` | `#2A1D13` | Lämmin sävytetty paneeli |
-| `night` | `#312619` | Chipit, ikonilaatat |
-| `navy` | `#342820` | Hover kohotetulla pinnalla |
-| `line` | `#332A21` | Reunaviivat |
-| `lineDark` | `#43372B` | Vahvempi reunaviiva |
+| `white` | `255 253 249` | **Ylikirjoitettu.** Kortin pinta, vaalein taso |
+| `paper` | `251 246 237` | Sivun pohja (`body`) — luonnonvalkoinen, ei valkoinen |
+| `mist` | `247 240 229` | Kohotettu paneeli |
+| `night` | `244 234 217` | Hiekka — vyöhykerytmin keskitaso |
+| `peach` | `253 235 220` | Oranssin haalein taso: "tämä liittyy Kettuun" |
+| `navy` | `236 223 201` | Hover kohotetulla pinnalla |
+| `line` | `226 212 189` | Reunaviiva — tarkoituksella NÄKYVÄ |
+| `lineDark` | `199 178 145` | Vahvempi reunaviiva |
 
-> **Tailwindin `white` on ylikirjoitettu tummaksi.** Se on tarkoituksellinen
-> ratkaisu: koko olemassa oleva `bg-white`-koodi kääntyi kerralla tummaksi.
-> `bg-white` = kortin tumma pinta. Älä "korjaa" tätä vaaleaksi.
+> **Tailwindin `white` on ylikirjoitettu.** Se osoittaa CSS-muuttujaan
+> `--c-card`, joten sama `bg-white` piirtyy vaaleana, tummana tai
+> oranssina sen mukaan, minkä teemaluokan sisällä se on. Älä "korjaa"
+> tätä kiinteäksi valkoiseksi.
 
 ### Tekstit
 
-| Token | Hex | Käyttö |
-|---|---|---|
-| `ink` | `#F2EADF` | Ensisijainen teksti (lämmin kerma) |
-| `cream` | `#F7F1E8` | Kirkkain teksti tummalla |
+| Token | Käyttö |
+|---|---|
+| `ink` | Ensisijainen teksti |
+| `cream` | Kirkkain/tummin ääripää — kääntyy teeman mukana |
 
-Toissijainen teksti tehdään opasiteetilla: `text-ink/72` leipätekstille,
-`text-ink/58` ja `text-ink/55` vaimennetulle. Ei erillisiä harmaita tokeneita.
+Toissijainen teksti tehdään opasiteetilla: `text-ink/70` leipätekstille,
+`text-ink/55` vaimennetulle. Oranssilla vyöllä nostetaan `/85`:een, koska
+kylläinen pohja syö kontrastia. Ei erillisiä harmaita tokeneita.
 
 ### Korosteet
 
 | Token | Hex | Käyttö |
 |---|---|---|
-| `accent` | `#E8691B` | Kettuoranssi — ainoa varsinainen väri. CTA:t, valitut tilat, fokusrengas |
-| `accentDark` | `#FF8C3C` / `#B84D08` | Tekstioranssi. Tummenee vaalealla pinnalla |
-| `accentSoft` | `#2E1C0E` / `#FDEEE2` | Oranssin sävytetty pohja chipeille |
-| `gold` | `#D9A24F` | Vain hiusviivat, reunat ja taustasävytykset |
-| `goldInk` | `#D9A24F` / `#7A5214` | Kulta **tekstinä**. Tummenee vaalealla |
-| `onEmber` | `#FFF3E9` | Teksti oranssin napin päällä. Kiinteä, ei käänny |
+| `accent` | `#E8691B` | Kettuoranssi — ainoa varsinainen väri. Kiinteä, ei käänny |
+| `gold` | `#D9A24F` | Vain hiusviivat, reunat ja taustasävytykset. Kiinteä |
+| `accentDark` | vaihtuva | Oranssi **tekstinä**. Tummenee vaalealla |
+| `goldInk` | vaihtuva | Kulta **tekstinä**. Tummenee vaalealla |
+| `accentSoft` | vaihtuva | Oranssin sävytetty pohja chipeille |
+| `onEmber` | `#FFF3E9` | Teksti oranssin napin päällä. Kiinteä |
+| `den` | `#0A0807` | Aina tumma — alatunnisteen pohja |
 | `star` | `#E8B04A` | Arviotähdet |
 
-`ok` ja `mint` osoittavat molemmat oranssiin — vihreää ei ole paletissa,
-joten myös "hyvä"-tilat käyttävät kettuoranssia.
+Vihreää ei ole paletissa: myös "hyvä"-tilat käyttävät kettuoranssia.
 
-### Miksi kolme "kaksoistokenia"
+### Miksi kaksoistokenit
 
-Brändikulta `#D9A24F` ja vaalea oranssi `#FF8C3C` on suunniteltu tummalle
-pinnalle. Valkoisella ne jäävät noin 2:1 kontrastiin eli lukukelvottomiksi.
-Siksi `goldInk` ja `accentDark` ovat CSS-muuttujia, jotka tummenevat
-`.theme-light`-osion sisällä — kyse on saman värin tummemmasta valoarvosta,
-ei uudesta väristä. `onEmber` taas on kiinteä, koska nappi on oranssi
-molemmilla pinnoilla eikä sen teksti saa koskaan kääntyä tummaksi.
+Brändikulta `#D9A24F` ja brändioranssi `#E8691B` jäävät vaalealla noin
+3:1 kontrastiin eli liian heikoiksi leipätekstiin. Siksi `goldInk` ja
+`accentDark` ovat CSS-muuttujia, jotka tummenevat vaalealla — kyse on
+saman värin tummemmasta valoarvosta, ei uudesta väristä.
 
-## Kaksi pintaa: `.theme-light` ja `.theme-dark`
+## Kolme teemaa: `.theme-light`, `.theme-ember`, `.theme-dark`
 
-Sivusto on oletuksena tumma. `app/globals.css` määrittelee pinnat ja tekstit
-CSS-muuttujina, joten sama luokka (`bg-white`, `text-ink`, `border-line`)
-piirtyy tummana tai vaaleana sen mukaan, onko esivanhemmassa `.theme-light`.
+Sama luokka (`bg-white`, `text-ink`, `border-line`) piirtyy eri värisenä
+sen mukaan, minkä teemaluokan sisällä se on. `.theme-light` on oletus.
 
-**Sähkösivun tuloslista on vaalea.** Perustelu on tuotto: palkkio syntyy
-"Tee sopimus" -klikistä, ja se nappi on tuloslistassa. Lista on tiheää
-numeroiden silmäilyä, joka on nopeampaa tummalla tekstillä vaalealla
-pohjalla. Hero ja footer pysyvät tummina, koska ne kantavat brändin.
+- **`.theme-ember`** — täysleveä oranssi vyö. Käytössä heroissa,
+  loppukehotuksessa ja 404-sivulla. Käyttöpari on aina
+  `theme-ember ember-surface`.
+- **`.theme-dark`** — vain alatunniste ja yksittäiset korostuslaatikot
+  vaalean osion sisällä. Ilman luokkaa `text-cream` kääntyy vääriin päin
+  ja teksti katoaa pohjaan.
 
-**`.theme-dark` on pakollinen jokaisessa pysyvästi tummassa laatikossa, joka
-on vaalean osion sisällä** (`.den-surface`-paneelit, `bg-den`-tuloslaatikot).
-Ilman sitä `text-cream` kääntyy tummaksi ja teksti katoaa pohjaan.
+### Ember-ansa — lue tämä ennen kuin lisäät mitään oranssille vyölle
+
+Ember-teemassa kaksi muuttujaa **vaihtavat merkityksensä**:
+
+| Luokka | Merkitys vaalealla | Merkitys ember-vyöllä |
+|---|---|---|
+| `bg-white` | lähes valkoinen kortti | **oranssi** `rgb(199 76 14)` |
+| `text-accentDark` | tumma oranssi teksti | **vaalea kerma** |
+
+Siksi jokainen vaalealle pinnalle suunniteltu komponentti on tarkistettava
+näiden kahden varalta, kun se pudotetaan oranssille vyölle. Kaksi
+vakioratkaisua:
+
+1. **Kermanapin teksti on kiinteä `text-[#A83E0A]`**, ei `text-accentDark`.
+   Sama sävy kuin `.ember-surface`-pohjassa, eli ei uutta väriä palettiin.
+2. **Vaalea kortti oranssin päällä kääritään `theme-light`-luokkaan**,
+   jolloin `bg-white` ratkeaa taas vaaleaksi.
+
+### Vyöhykkeiden rajat
+
+Oranssi vyö ei lopu suoraan viivaan vaan `TailSweep`-kaareen. Kaaren
+`fill` on **naapurivyöhykkeen** väri, ja se saadaan käärimällä kaari
+naapurin teemaluokkaan:
+
+```tsx
+<div className="theme-light">
+  <TailSweep fill="rgb(var(--c-paper))" height={64} />
+</div>
+```
+
+Näin väri on määritelty vain yhdessä paikassa eikä kahdesti kovakoodattuna.
+
+### Miksi tuloslistat ovat vaaleita
+
+Palkkio syntyy "Tee sopimus" -klikistä, ja se nappi on tuloslistassa.
+Lista on tiheää numeroiden silmäilyä, joka on nopeampaa tummalla tekstillä
+vaalealla pohjalla.
 
 ## Typografia
 
@@ -98,13 +148,27 @@ Otsikoissa `letter-spacing: -0.02em` (globals.css). Numerot tabulaarisina
 
 Nämä ovat `app/globals.css`-tiedostossa, eivät Tailwind-tokeneita:
 
-- `.den-surface` — syvin pinta. Kohinatekstuuri estää tumman latistumisen
-  litteäksi mustaksi; lämpimät hehkut nurkissa antavat tilalle valonlähteen.
-- `.btn-ember` — ensisijainen nappi. Kevyt pystygradientti `#F0752A → #DC5A11`
-  tekee napista veistetyn; tasainen täyttöväri näyttää tummalla halvalta.
-- `.ember-glow` — oranssi hehku maskotin taakse.
+- `.ember-surface` — oranssi vyö. Pohja on brändioranssia **tummempi**
+  (`#A83E0A`) tarkoituksella: maskotti on kirkkaan oranssi, ja samalla
+  kirkkaudella se katoaisi pohjaan. Nyt Kettu on vyön vaalein kohta.
+  Kohinakalvo `::after` estää suuren väripinnan latistumisen.
+- `.den-surface` — syvin tumma pinta (alatunniste). Kohinatekstuuri estää
+  tumman latistumisen litteäksi mustaksi. `::after`-kohinakalvo piirtyy
+  asemoimattomien lasten päälle, joten lapset tarvitsevat `relative`.
+- `.pelt-surface` — lämmin turkinsävyinen laatikko vaalealla.
+- `.btn-ember` — oranssi nappi. **Vain vaalealla pinnalla.** Oranssilla
+  vyöllä ensisijainen nappi on kermanvalkoinen (`bg-cream`), koska nappi
+  on siellä ruudun ainoa vaalea piste — se on koko vyön tarkoitus.
+- `.lift` — **yksi yhteinen nostoefekti kaikille korteille** (140 ms,
+  `translateY(-3px)` + `--sh-card-hover`). Älä kirjoita korteille omia
+  `transition-all duration-300` -sääntöjä: eri nopeuksilla liikkuva sivu
+  tuntuu tehdyltä eri käsillä, ja juuri se lukee "ei ole sulava".
+  Kunnioittaa `prefers-reduced-motion`.
+- `.halo-glow` — kermanvaalea hehku maskotin taakse **oranssilla** vyöllä.
+- `.dawn-glow` / `.ember-glow` — hehkut vaalealla pinnalla.
 - `.gold-rule` — kultainen hiusviiva, häivytys molemmista päistä.
-- `.glass-dark` — headerin tumma lasi (blur + saturaatio).
+- `.glass-light` / `.glass-dark` — headerin lasi (blur + saturaatio).
+- `.font-hero`, `.font-data` (tabulaariset numerot), `.font-price`.
 - `.scrollbar-none` — piilottaa vaakavierityksen palkin.
 
 ## Muodot ja varjot
@@ -112,9 +176,10 @@ Nämä ovat `app/globals.css`-tiedostossa, eivät Tailwind-tokeneita:
 4 px -ruudukko. Kortit `rounded-2xl` tai `rounded-3xl`, napit `rounded-xl`,
 chipit täyspyöreät. Sisältö `max-w-[1180px]`.
 
-Tummalla varjo yksin ei riitä syvyyteen, joten jokaisessa varjossa on
-**yläreunan valojuova** (`inset 0 1px 0`), joka saa pinnat näyttämään
-veistetyiltä eikä litteiltä laatikoilta.
+Vaalealla syvyys tehdään **terävällä lähivarjolla**, ei laajalla usvalla:
+ruskeaan taittava leveä varjo lukee likana. Tummalla (alatunniste) varjo
+yksin ei riitä, joten siellä jokaisessa varjossa on **yläreunan valojuova**
+(`inset 0 1px 0`), joka saa pinnat näyttämään veistetyiltä.
 
 | Varjo | Käyttö |
 |---|---|
@@ -158,5 +223,15 @@ ilman kehysanimaatiota. Kevyt leijunta (`float`) toimii "hengityksenä".
 Heron iso esiintyminen: `components/mascot/HeroKettu.tsx`.
 
 **Säännöt:** yksi Kettu per näkymä, ei koskaan CTA:n päällä, ei ääntä, ei
-automaattisia ponnahduksia sisällön päälle, `ember-glow` taakse kun hahmo on
-tummalla pinnalla.
+automaattisia ponnahduksia sisällön päälle. Hehku valitaan pohjan mukaan:
+`halo-glow` oranssilla vyöllä, `dawn-glow` vaalealla.
+
+**Mobiilissa Kettu ei saa omaa ruudullistaan.** Iso maskotti vei puhelimessa
+kokonaisen näytöllisen ennen ensimmäistäkään korttia, eli käyttäjän piti
+selata koristeen ohi päästäkseen työkaluun. Mobiilissa hahmo on pienenä
+tekstin vieressä: brändi näkyy, mutta ei maksa klikkiä.
+
+**Placeholderit** (`components/fox/FoxSlot.tsx`): rekisteri kertoo jokaisen
+paikan koon ja kuvausbriiffin. Kun `src` on `null`, paikalle piirtyy
+kultainen katkoviivalaatikko, jossa lukee mitä kuvaa siihen odotetaan.
+Kytkin `SHOW_PLACEHOLDERS` sammuttaa ne kerralla ennen julkaisua.

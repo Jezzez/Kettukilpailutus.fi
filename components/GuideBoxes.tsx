@@ -32,7 +32,7 @@ export default function GuideBoxes() {
             <Reveal key={post.slug} delay={i * 0.05}>
               <Link
                 href={`/blogi/${post.slug}`}
-                className="group flex h-full flex-col rounded-2xl border border-line bg-white p-7 shadow-card transition-all duration-200 hover:-translate-y-1 hover:border-lineDark hover:shadow-cardHover"
+                className="lift group flex h-full flex-col rounded-2xl border border-line bg-white p-7 shadow-card hover:border-lineDark"
               >
                 <div className="flex items-start justify-between gap-4">
                   <h3 className="font-display text-lg font-semibold leading-snug text-ink">

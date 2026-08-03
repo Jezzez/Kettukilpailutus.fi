@@ -1,6 +1,8 @@
 import { BadgeCheck, Calculator, Coins, PawPrint, Scale } from "lucide-react";
 import Reveal from "../Reveal";
 import BrushRule from "../BrushRule";
+import TailSweep from "../fox/TailSweep";
+import FoxRosette from "../fox/FoxRosette";
 import { ASSUMED_SPOT_AVG, IS_EXAMPLE_DATA, PRICE_DATE, getPlans } from "@/lib/energy";
 
 /**
@@ -38,35 +40,94 @@ const POINTS = [
   },
 ];
 
+/**
+ * LEIMAT. Jokainen väite on joko avattu kriteeri tai tarkistettavissa
+ * oleva tosiasia — sama sääntö kuin `FoxRosette`-komponentin ohjeessa.
+ * "Emme myy tietojasi" vastaa sanatarkasti tietosuojaselostetta, eli
+ * käyttäjä voi tarkistaa sen sivustolta itse.
+ */
+const SEALS = [
+  { label: "Ketun valinta", sub: "hinta 72 % · arvio 28 %" },
+  { label: "Järjestys", sub: "ei ostettavissa" },
+  { label: "Tietosi", sub: "emme myy niitä" },
+];
+
 export default function EnergyTrust() {
   return (
-    <section className="py-20">
+    /*
+      LUOTTAMUSVYÖHYKE = PERSIKKAVYÖ.
+
+      Vyöhykerytmi: oranssi hero → luonnonvalkoinen laskuri ja tulokset →
+      hiekkainen "näin toimii" → TÄMÄ persikkavyö → luonnonvalkoinen UKK →
+      oranssi loppukehotus → tumma alatunniste.
+
+      MIKSI JUURI TÄMÄ OSIO SAA OMAN POHJAN: tässä lopetetaan vertailu ja
+      vastataan kysymykseen "voinko luottaa näihin lukuihin". Vaihtuva
+      pohja pysäyttää selaamisen ja kertoo ilman otsikkoa, että puheenaihe
+      vaihtui. Tuoton kannalta tämä on se osio, joka ratkaisee klikkaako
+      käyttäjä "Tee sopimus" vai avaako hän uuden välilehden tarkistaakseen
+      hinnan muualta.
+
+      MIKSI EI TUMMA: tumma paneeli kokeiltiin. Se toimi erottumisena,
+      mutta se myös sammutti oranssin: kun ympärillä on musta, oranssi
+      nappi lakkaa olemasta ruudun kuumin piste. Persikka tekee saman
+      erottumisen ja vahvistaa oranssia sen sijaan että kilpailisi sen
+      kanssa.
+
+      Reunat hoidetaan hännänvedolla molemmissa päissä — ylempi on
+      180 asteen käännös samasta kaaresta, jolloin sivu näyttää siltä kuin
+      sama häntä olisi vetänyt molemmat rajat.
+    */
+    <section className="pelt-surface relative overflow-hidden py-24 md:py-28">
+      {/*
+        Hännänvetojen `fill` on NAAPURIVYÖHYKKEEN pohjaväri, ei tämän.
+        Muuttujaviittaus pitää arvon yhdessä paikassa, joten vaalean
+        pohjasävyn säätö ei jätä rajoihin vanhaa väriä.
+      */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-16 rotate-180">
+        <TailSweep fill="rgb(var(--c-paper))" height={64} />
+      </div>
+
       <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
-        {/*
-          Paneeli oli aiemmin tumma. Vaalean sivun keskellä musta laatikko
-          leikkasi sivun kahtia juuri siinä kohdassa, jonka tehtävä on
-          rauhoittaa lukija ennen "Tee sopimus" -klikkiä. Nyt sama osio on
-          lämmin kettupinta: erottuu rytmillisesti, mutta pysyy samassa
-          maailmassa ja teksti on tummaa eli maksimikontrastilla luettavaa.
-        */}
-        <div className="pelt-surface rounded-[2rem] border border-gold/25 px-6 py-14 sm:px-12 md:py-16">
+        <div className="rounded-[2rem] border-2 border-gold/35 bg-white/70 px-6 py-14 shadow-card backdrop-blur-sm sm:px-12 md:py-16">
           <Reveal>
-            <div className="flex items-center gap-3">
-              <span className="font-display text-[12px] font-bold uppercase tracking-[0.2em] text-goldInk">
-                Avoin laskenta
-              </span>
-              <BrushRule className="text-gold" width={64} />
+            <div className="flex flex-wrap items-start justify-between gap-8">
+              <div className="min-w-[16rem] flex-1">
+                <div className="flex items-center gap-3">
+                  <span className="font-display text-[12px] font-bold uppercase tracking-[0.2em] text-goldInk">
+                    Avoin laskenta
+                  </span>
+                  <BrushRule className="text-gold" width={64} />
+                </div>
+                <h2 className="mt-4 max-w-xl font-hero text-[2.2rem] leading-[1.08] text-ink sm:text-[2.7rem]">
+                  Kettu näyttää laskukaavan, ei vain lopputulosta.
+                </h2>
+              </div>
+
+              {/* Leimat. Vinot kulmat vuorottelevat, jotta rivi ei lue napeiksi. */}
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+                {SEALS.map((s, i) => (
+                  <FoxRosette
+                    key={s.label}
+                    label={s.label}
+                    sub={s.sub}
+                    size={104}
+                    tilt={i % 2 === 0 ? -7 : 6}
+                  />
+                ))}
+              </div>
             </div>
-            <h2 className="mt-4 max-w-xl font-hero text-[2.2rem] leading-[1.08] text-ink sm:text-[2.7rem]">
-              Kettu näyttää laskukaavan, ei vain lopputulosta.
-            </h2>
           </Reveal>
 
           <div className="mt-10 grid gap-x-10 gap-y-8 sm:grid-cols-2">
             {POINTS.map((p, i) => (
               <Reveal key={p.title} delay={i * 0.07}>
                 <div className="flex gap-4">
-                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-accent/25 bg-accentSoft text-accentDark">
+                  {/* Ikonilaatta on TÄYSI oranssi, ei haalea sävy. Viisi
+                      kylläistä laattaa muodostavat pystyrivin, joka vetää
+                      katseen osion läpi — sama ele kuin
+                      sahkon-kilpailutus.fi:n numeroiduissa askelissa. */}
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-accent text-onEmber shadow-ember">
                     <p.icon size={19} aria-hidden />
                   </span>
                   <div>
@@ -107,6 +168,8 @@ export default function EnergyTrust() {
           </Reveal>
         </div>
       </div>
+
+      <TailSweep fill="rgb(var(--c-paper))" height={64} flip />
     </section>
   );
 }

@@ -14,6 +14,10 @@ import SpotPriceLive from "./SpotPriceLive";
 import EnergyStickyBar from "./EnergyStickyBar";
 import BrushRule from "../BrushRule";
 import FoxPaw from "../FoxPaw";
+import TailSweep from "../fox/TailSweep";
+import PawTrail from "../fox/PawTrail";
+import FoxSlot from "../fox/FoxSlot";
+import FoxComputing, { useFoxComputing } from "../fox/FoxComputing";
 
 /**
  * Heron kolme lupausta ja niiden perustelut.
@@ -163,6 +167,15 @@ export default function ElectricityExperience({
 
   /** Ankkuri, jonka ohittaminen näyttää mobiilin tulospalkin. */
   const resultsRef = useRef<HTMLDivElement>(null);
+
+  /*
+    "Kettu laskee" -tila. Laukeaa aina kun jokin laskennan lähtöarvo
+    muuttuu: kulutus, sopimustyyppi, vihreä suodatin tai järjestys.
+    Ilman tätä hinnat vain vaihtuvat, eikä käyttäjä näe että työtä
+    tehtiin — ja koko sloganin lupaus ("Kettu kilpailuttaa puolestasi")
+    jää käyttöliittymässä lunastamatta. Ks. FoxComputing.tsx.
+  */
+  const computing = useFoxComputing(`${kwh}|${type}|${greenOnly}|${sort}`);
 
   /** Ketun valinta: hinta 72 %, käyttäjäarvio 28 %. Kaava kerrotaan avoimesti. */
   const foxId = useMemo(() => {
@@ -370,7 +383,21 @@ export default function ElectricityExperience({
           työkalu ennen myyntipuhetta). Älä kasvata pystypaddingeja
           tai otsikon kokoa tarkistamatta taitetta uudelleen.
         */}
-        <section className="theme-light dawn-surface relative overflow-hidden pb-28 pt-9 md:pb-28 md:pt-12">
+        {/*
+          HERO ON ORANSSI VYÖ.
+
+          Tumma hero kokeiltiin ja hylättiin: se hehkui kokonaisuudessaan,
+          jolloin oranssi nappi lakkasi olemasta ruudun kuumin piste eikä
+          katse pysähtynyt mihinkään. Vaalea hero taas katosi vaaleaan
+          sivuun. Täyteen brändiväriin maalattu vyö ratkaisee molemmat:
+          se on suurin mahdollinen väripinta-ala, se lukkoaa katseen
+          välittömästi, ja se erottuu jyrkästi sen alla alkavasta
+          luonnonvalkoisesta sisältöalueesta.
+
+          Pohja on maskottia tummempi (ks. `.theme-ember` globals.css:ssä),
+          jotta kettu on vyön vaalein kohta eikä sulaudu siihen.
+        */}
+        <section className="theme-ember ember-surface relative overflow-hidden pb-28 pt-9 md:pb-28 md:pt-12">
           <div className="relative z-[1] mx-auto max-w-[1180px] px-5 sm:px-6">
             <div className="grid items-center gap-6 md:grid-cols-[1.08fr_0.92fr] md:gap-8">
               <div>
@@ -387,13 +414,15 @@ export default function ElectricityExperience({
                   oranssi nappi — ja katse menee sinne, mistä palkkio tulee.
                   Kursivoitu "laskemalla" on sivun ainoa koristeellinen ele.
                 */}
-                <h1 className="mt-4 max-w-[13ch] font-hero text-[2.5rem] leading-[1.03] text-ink sm:max-w-[14ch] sm:text-[3.3rem] md:text-[3.75rem]">
+                <h1 className="mt-4 max-w-[13ch] font-hero text-[2.5rem] leading-[1.03] text-cream sm:max-w-[14ch] sm:text-[3.3rem] md:text-[3.75rem]">
                   Halvin sähkö löytyy{" "}
-                  <em className="text-accentDark">laskemalla</em>, ei
+                  {/* Korostus on lämmintä kultaa, ei toista oranssia:
+                      oranssilla pohjalla oranssi korostus ei erotu. */}
+                  <em className="text-goldInk">laskemalla</em>, ei
                   arvaamalla.
                 </h1>
 
-                <p className="mt-5 max-w-[46ch] text-[15.5px] leading-relaxed text-ink/70 sm:text-[16.5px]">
+                <p className="mt-5 max-w-[46ch] text-[15.5px] leading-relaxed text-ink/85 sm:text-[16.5px]">
                   Kerro kulutuksesi, niin laskemme jokaisen sopimuksen todellisen
                   vuosihinnan — ja kerromme euroina, paljonko vaihtaminen tuo takaisin.
                 </p>
@@ -434,26 +463,37 @@ export default function ElectricityExperience({
                           <button
                             onClick={() => setOpenClaim(open ? null : i)}
                             aria-expanded={open}
-                            className={`flex items-center gap-2 rounded-lg text-left text-[13.5px] font-medium transition-colors ${
-                              open ? "text-ink" : "text-ink/70 hover:text-ink"
+                            /*
+                              Lupaukset ovat nyt reunustettuja pillereitä.
+                              Pelkkänä tekstirivinä ne lukivat luettelona,
+                              jonka silmä ohittaa; reunus tekee niistä
+                              kosketeltavia, ja juuri se saa lukijan
+                              avaamaan perustelun. Avattu perustelu on
+                              sivun uskottavin hetki, joten sen avaamisen
+                              todennäköisyys on suoraan tuottoa.
+                            */
+                            className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-left text-[13.5px] font-semibold transition-colors ${
+                              open
+                                ? "border-goldInk/70 bg-cream/15 text-cream"
+                                : "border-line/60 text-ink/85 hover:border-line hover:bg-cream/10 hover:text-cream"
                             }`}
                           >
-                            <t.icon size={15} className={`shrink-0 ${open ? "text-accentDark" : "text-ink/40"}`} aria-hidden />
+                            <t.icon size={15} className={`shrink-0 ${open ? "text-goldInk" : "text-ink/65"}`} aria-hidden />
                             {t.text}
-                            <Info size={12} className={`shrink-0 ${open ? "text-accentDark" : "text-ink/35"}`} aria-hidden />
+                            <Info size={12} className={`shrink-0 ${open ? "text-goldInk" : "text-ink/55"}`} aria-hidden />
                           </button>
                         </li>
                       );
                     })}
                   </ul>
-                  <div className="dawn-glow relative -mb-10 -mt-3 shrink-0 md:hidden">
+                  <div className="halo-glow relative -mb-10 -mt-3 shrink-0 md:hidden">
                     <Image
                       src="/kettu-osoittaa.webp"
                       alt="Kettu, Kettukilpailutuksen maskotti"
                       width={416}
                       height={1000}
                       priority
-                      className="relative h-[152px] w-auto drop-shadow-[0_14px_24px_rgba(60,45,30,0.22)]"
+                      className="relative h-[152px] w-auto drop-shadow-[0_14px_24px_rgba(80,28,2,0.38)]"
                     />
                   </div>
                 </div>
@@ -468,7 +508,7 @@ export default function ElectricityExperience({
                       transition={{ duration: 0.22, ease: "easeOut" }}
                       className="overflow-hidden"
                     >
-                      <p className="mt-3 max-w-[52ch] border-l-[3px] border-accent bg-white/60 py-2 pl-3.5 text-[13px] leading-relaxed text-ink/75">
+                      <p className="mt-3 max-w-[52ch] rounded-r-lg border-l-[3px] border-goldInk bg-cream/12 py-2.5 pl-3.5 pr-3 text-[13px] leading-relaxed text-ink/90">
                         {HERO_CLAIMS[openClaim].why}
                       </p>
                     </motion.div>
@@ -487,7 +527,7 @@ export default function ElectricityExperience({
                     Laske oma hintani
                     <TrendingDown size={16} aria-hidden />
                   </a>
-                  <p className="text-[12.5px] text-ink/55">
+                  <p className="text-[12.5px] text-ink/75">
                     Ilmainen ja puolueeton · ei vaadi tunnuksia
                   </p>
                 </div>
@@ -513,11 +553,18 @@ export default function ElectricityExperience({
                   initial={reduce ? false : { opacity: 0, y: 24, scale: 0.97 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ type: "spring", stiffness: 120, damping: 18 }}
-                  className="dawn-glow order-1 hidden shrink-0 md:order-2 md:flex"
+                  className="halo-glow order-1 hidden shrink-0 md:order-2 md:flex"
                 >
                   {/*
                     Poosi "osoittaa", ei "kortti": sähkösivulla maskotti ei voi
                     pidellä luottokorttia — se kertoo väärästä vertikaalista.
+
+                    HEHKU ON KERMAA, EI ORANSSIA. Aiemmin maskotin takana
+                    oli oranssi `ember-glow`. Oranssilla vyöllä se ei tee
+                    mitään — hehku on samaa väriä kuin pohja. `halo-glow`
+                    on kermanvaalea, eli kettu irtoaa vyöstä valoarvolla.
+                    Varjo on tummanruskea samasta syystä: musta varjo
+                    oranssilla lukisi likana.
                   */}
                   <Image
                     src="/kettu-osoittaa.webp"
@@ -525,7 +572,7 @@ export default function ElectricityExperience({
                     width={416}
                     height={1000}
                     priority
-                    className="relative h-[400px] w-auto drop-shadow-[0_26px_40px_rgba(60,45,30,0.20)] lg:h-[430px]"
+                    className="relative h-[400px] w-auto drop-shadow-[0_26px_44px_rgba(80,28,2,0.5)] lg:h-[430px]"
                   />
                 </motion.div>
               </div>
@@ -533,18 +580,40 @@ export default function ElectricityExperience({
           </div>
 
           <SpotCurve className="pointer-events-none absolute inset-x-0 bottom-0 opacity-40" />
+
+          {/* Oranssi vyö kaartuu vaaleaan vertailuun ketunhännän muotoisena.
+              `theme-light` kääreessä, jotta `--c-paper` ratkeaa alapuolisen
+              vyöhykkeen vaaleaksi eikä tämän osion oranssiksi. */}
+          <div className="theme-light">
+            <TailSweep fill="rgb(var(--c-paper))" height={64} />
+          </div>
         </section>
 
         {/*
-          Laskuri on puhtaan valkoinen kortti kermanvärisen heron päällä.
-          Se on ruudun kirkkain pinta, joten katse osuu työkaluun eikä
-          otsikkoon — ja työkalun käyttö on ainoa polku palkkioklikkiin.
+          Laskuri on puhtaan valkoinen kortti TUMMAN heron päällä, ja se
+          istuu tarkoituksella vyöhykkeiden rajan päällä.
+
+          MIKSI NÄIN: tämä on koko sivun vahvin ankkuri. Kirkas kortti
+          tummaa vasten on suurin valoarvoero, mitä sivulla on, joten katse
+          osuu työkaluun ennen kuin se ehtii lukea otsikkoa — ja työkalun
+          käyttö on ainoa polku palkkioklikkiin. Sama laite on käytössä
+          sahkon-kilpailutus.fi:llä (valkoinen logokortti tumman heron
+          rajalla), ja se on heidän sivunsa toimivin yksittäinen elementti:
+          rajan päälle asetettu kortti sitoo kaksi vyöhykettä yhteen sen
+          sijaan että ne näyttäisivät kahdelta eri sivulta.
+
+          `theme-light` tekee kortista vaalean saarekkeen tummalla sivulla.
+          Ulompi `bg-paper`-kääre kantaa vaalean taustan siitä eteenpäin;
+          `pt-px` estää negatiivista marginaalia romahtamasta kääreen läpi,
+          jolloin kortti nousee heron päälle mutta tausta pysyy paikallaan.
         */}
-        <div
-          id="vertailu"
-          className="theme-light relative z-10 mx-auto -mt-20 max-w-[1180px] scroll-mt-24 px-4 sm:px-6 md:-mt-24"
-        >
-          {estimator(true)}
+        <div className="theme-light bg-paper pt-px">
+          <div
+            id="vertailu"
+            className="relative z-20 mx-auto -mt-20 max-w-[1180px] scroll-mt-24 px-4 sm:px-6 md:-mt-24"
+          >
+            {estimator(true)}
+          </div>
         </div>
         </>
       )}
@@ -562,32 +631,61 @@ export default function ElectricityExperience({
           {/* Tulos */}
           <div className="flex flex-wrap items-end justify-between gap-6 rounded-2xl border border-line bg-white px-5 py-6 shadow-card sm:rounded-[20px] sm:px-8 sm:py-7">
             <div>
-              <p className="flex items-center gap-2 font-display text-[11.5px] font-bold uppercase tracking-[0.16em] text-accentDark">
-                <TrendingDown size={14} aria-hidden /> Askel 2 / 2 · tuloksesi
-              </p>
+              {/*
+                OVELA TEKSTILINJA. Tässä luki aiemmin "Askel 2 / 2 · tuloksesi"
+                ja "Edullisin sopimus". Molemmat ovat totta mutta persoonattomia:
+                ne kuulostavat siltä, että taulukko lajitteli itsensä.
+
+                Kun sama asia sanotaan Ketun tekemänä työnä ("Kettu löysi",
+                "Kettu nuuski läpi kuusi sopimusta"), lupaus ja tuote menevät
+                vihdoin yksiin — slogan lupaa, että Kettu kilpailuttaa
+                käyttäjän puolesta, ja nyt käyttöliittymä näyttää hänen
+                tekevän sen. Tämä on koko sivuston halvin kettuisuuden lähde:
+                se ei maksa yhtään pikseliä eikä latausaikaa.
+
+                Luku on yhä sama laskettu luku; vain tekijä on nimetty.
+              */}
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                <p className="flex items-center gap-2 font-display text-[11.5px] font-bold uppercase tracking-[0.16em] text-accentDark">
+                  <TrendingDown size={14} aria-hidden /> Askel 2 / 2 · Ketun löytö
+                </p>
+                <FoxComputing show={computing} />
+              </div>
               <p className="mt-3 font-hero text-[2rem] leading-[1.1] text-ink sm:text-[2.5rem]">
-                Edullisin sopimus{" "}
+                Kettu löysi{" "}
                 <span className="font-display font-data font-price font-extrabold tracking-tight text-accent">
                   {/* Sama tarkkuus kuin korteissa — ks. perustelu PlanCard.tsx */}
                   {cheapestMonthly.toLocaleString("fi-FI", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} €
                 </span>
                 /kk
               </p>
-              <p className="mt-2 text-[14px] text-ink/60">
-                {kwh.toLocaleString("fi-FI")} kWh vuosikulutuksella · {plans.length} sopimusta laskettu
+              <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[14px] text-ink/60">
+                <PawTrail count={3} size={9} className="text-accent/55" />
+                Nuuski läpi {plans.length} sopimusta {kwh.toLocaleString("fi-FI")} kWh kulutuksellasi
               </p>
             </div>
             {alreadyGood ? (
-              <div className="pelt-surface w-full max-w-sm rounded-2xl border border-gold/35 px-6 py-5 shadow-card sm:rounded-[20px]">
-                <p className="flex items-center gap-2 text-[11.5px] font-semibold uppercase tracking-[0.14em] text-goldInk">
-                  <ShieldCheck size={14} aria-hidden /> Ketun rehellinen vastaus
-                </p>
-                <p className="mt-2 font-display text-[16px] font-bold leading-snug text-ink">
-                  Nykyinen sopimuksesi on jo edullisempi kuin yksikään vertailun sopimus.
-                </p>
-                <p className="mt-1.5 text-[13px] leading-relaxed text-ink/70">
-                  Älä vaihda nyt. Tarkista tilanne uudelleen, kun sopimuksesi lähestyy loppuaan.
-                </p>
+              /*
+                SIVUN TÄRKEIN LUOTTAMUSHETKI. Tässä palvelu sanoo "älä osta"
+                — eli luopuu omasta palkkiostaan. Juuri siksi tämä on ainoa
+                paikka, jossa käyttäjä oikeasti uskoo kaiken muunkin sivulla
+                sanotun. Kettu tulee mukaan kämmen ylöspäin: kuva tekee
+                kieltäytymisestä lupauksen sijaan luonteenpiirteen, ja se on
+                se asia, jonka takia käyttäjä palaa ensi vuonna takaisin.
+              */
+              <div className="pelt-surface flex w-full max-w-md items-center gap-5 rounded-2xl border border-gold/35 px-6 py-5 shadow-card sm:rounded-[20px]">
+                <FoxSlot id="alaVaihda" height={150} className="hidden shrink-0 sm:block" />
+                <div>
+                  <p className="flex items-center gap-2 text-[11.5px] font-semibold uppercase tracking-[0.14em] text-goldInk">
+                    <ShieldCheck size={14} aria-hidden /> Ketun rehellinen vastaus
+                  </p>
+                  <p className="mt-2 font-display text-[16px] font-bold leading-snug text-ink">
+                    Nykyinen sopimuksesi on jo edullisempi kuin yksikään vertailun sopimus.
+                  </p>
+                  <p className="mt-1.5 text-[13px] leading-relaxed text-ink/70">
+                    Älä vaihda nyt. Tarkista tilanne uudelleen, kun sopimuksesi lähestyy loppuaan.
+                  </p>
+                </div>
               </div>
             ) : currentAnnual ? (
               <div className="pelt-surface w-full rounded-2xl border border-gold/35 px-6 py-5 shadow-card sm:w-auto sm:rounded-[20px] sm:text-right">
@@ -817,19 +915,30 @@ export default function ElectricityExperience({
           </LayoutGroup>
 
           {filtered.length === 0 && (
-            <div className="mt-4 rounded-3xl border border-dashed border-line bg-white p-12 text-center">
-              <p className="font-display text-lg font-bold text-ink">
-                Näillä rajauksilla ei löydy sopimuksia
-              </p>
-              <p className="mx-auto mt-1.5 max-w-sm text-[14.5px] text-ink/70">
-                Poista uusiutuva-rajaus tai valitse toinen sopimustyyppi.
-              </p>
-              <button
-                onClick={() => { setType(null); setGreenOnly(false); }}
-                className="btn-ember mt-5 rounded-xl px-6 py-3 font-display text-[14px] font-bold text-onEmber transition-all active:scale-[0.98]"
-              >
-                Näytä kaikki sopimukset
-              </button>
+            /*
+              TYHJÄ TULOS ON POISTUMISKOHTA. Käyttäjä on juuri rajannut
+              listan tyhjäksi, eikä ruudulla ole mitään mihin klikata —
+              se on sivun todennäköisin poistumishetki heti ennen "Tee
+              sopimus" -nappia. Siksi tähän tulee Kettu etsimässä: kuva
+              kertoo että haku oli tosissaan tehty eikä sivu ole rikki,
+              ja katse ohjautuu vieressä olevaan nollausnappiin.
+            */
+            <div className="mt-4 flex flex-col items-center gap-8 rounded-3xl border border-dashed border-line bg-white p-12 text-center sm:flex-row sm:justify-center sm:text-left">
+              <FoxSlot id="tyhja" height={168} className="shrink-0" />
+              <div>
+                <p className="font-display text-lg font-bold text-ink">
+                  Näillä rajauksilla ei löydy sopimuksia
+                </p>
+                <p className="mt-1.5 max-w-sm text-[14.5px] text-ink/70">
+                  Poista uusiutuva-rajaus tai valitse toinen sopimustyyppi.
+                </p>
+                <button
+                  onClick={() => { setType(null); setGreenOnly(false); }}
+                  className="btn-ember mt-5 rounded-xl px-6 py-3 font-display text-[14px] font-bold text-onEmber transition-all active:scale-[0.98]"
+                >
+                  Näytä kaikki sopimukset
+                </button>
+              </div>
             </div>
           )}
 

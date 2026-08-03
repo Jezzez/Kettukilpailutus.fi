@@ -1,17 +1,23 @@
 import type { Config } from "tailwindcss";
 
 /**
- * Kettukilpailutus design tokens — tumma "ketun kolo" -teema.
+ * Kettukilpailutus design tokens — lämmin vaalea teema, oranssit vyöt.
  *
- * Koko sivusto on tumma. Syvyys tehdään VALOARVOILLA, ei väreillä:
- *   den    #0A0807  syvin — herot, footer, upotetut laatikot
- *   paper  #100C0A  sivun pohja
- *   white  #17120F  kortin pinta (Tailwindin white on tarkoituksella ylikirjoitettu,
- *                   jotta koko olemassa oleva bg-white-koodi muuttuu kerralla)
- *   mist   #1E1712  kohotettu paneeli
- *   night  #2A2018  chipit ja ikonilaatat
+ * VAALEUSPORTAAT (oletusteema, ks. globals.css):
+ *   paper  #FBF6ED  sivun pohja, luonnonvalkoinen
+ *   night  #F4EAD9  hiekkavyö — rytmin keskitaso
+ *   white  #FFFDF9  kortin pinta (Tailwindin `white` on tarkoituksella
+ *                   ylikirjoitettu, jotta koko olemassa oleva bg-white-koodi
+ *                   seuraa teemaa — älä "korjaa" tätä)
+ *   peach  #FDEBDC  ketun oma haalea korostuslaatikko
+ *   line   #E2D4BD  NÄKYVÄ reunaviiva
+ *
+ * Kolme teemaluokkaa kääntävät samat muuttujat: oletus on vaalea,
+ * `.theme-dark` tumma (alatunniste), `.theme-ember` oranssi (vyöt).
+ *
  * Värejä on tarkoituksella vain kaksi: kettuoranssi ja kulta. Kaikki muu on
- * lämpimän harmaan sävyjä — se pitää ilmeen asiallisena.
+ * lämpimän hiekan sävyjä — se pitää ilmeen asiallisena silloinkin kun
+ * oranssia on paljon.
  */
 const config: Config = {
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],

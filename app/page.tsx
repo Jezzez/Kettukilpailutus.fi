@@ -6,6 +6,7 @@ import BrushRule from "@/components/BrushRule";
 import SectionHead from "@/components/SectionHead";
 import HeroKettu from "@/components/mascot/HeroKettu";
 import Kettu from "@/components/mascot/Kettu";
+import TailSweep from "@/components/fox/TailSweep";
 import GuideBoxes from "@/components/GuideBoxes";
 import { SITE } from "@/lib/data";
 
@@ -54,26 +55,37 @@ export default function HubPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
 
       {/*
-        HERO — vaalea, kuten sähkösivu.
-        Aiemmin hubi oli tumma ja sähkösivu vaalea. Käyttäjä, joka klikkaa
-        hubista sähköön, näki kaksi eri sivustoa peräkkäin; se syö juuri sitä
-        luottamusta, jonka varassa "Tee sopimus" -klikki on. Yhtenäinen vaalea
-        maailma + tumma footer ankkurina on rauhallisempi, ja vaalealla
-        oranssi nappi on ruudun ainoa kuuma piste.
+        HERO ON TÄYSLEVEÄ ORANSSI VYÖ — SAMA KUIN SÄHKÖ- JA KORTTISIVULLA.
+
+        MIKSI MUUTETTIIN: hero oli vaalea hiekkapinta vaalealla sivulla.
+        Se ei antanut silmälle mitään mihin tarttua, ja etusivun tehtävä
+        on nimenomaan ottaa kiinni ensimmäisessä sekunnissa — hubissa ei
+        ole työkalua, vain kaksi nappia, joten koko sivun tuotto riippuu
+        siitä, osuuko katse niihin.
+
+        MIKSI TÄMÄ NOSTAA TUOTTOA: kun vyö on oranssi ja napit kermaa,
+        napit ovat ruudun ainoat vaaleat pisteet. Silmä hakeutuu suurimman
+        valoarvoeron kohtaan ennen kuin se ehtii lukea otsikkoa. Sama vyö
+        kaikilla kolmella sisääntulosivulla tekee myös sen, että hubista
+        sähköön klikkaava tunnistaa jatkavansa saman talon sisällä — juuri
+        ne ristiinklikkaukset kasvattavat toista vertikaalia ilman uutta
+        kävijähankintaa.
       */}
-      <section className="theme-light dawn-surface relative overflow-hidden">
+      <section className="theme-ember ember-surface relative overflow-hidden">
         <div className="relative z-[1] mx-auto grid max-w-[1180px] items-center gap-6 px-4 pb-20 pt-14 sm:px-6 md:grid-cols-[1.08fr_0.92fr] md:pb-24 md:pt-20">
           <div>
             <div className="flex items-center gap-3">
-              <span className="font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-accentDark">
+              {/* `accentDark` kääntyy ember-vyöllä vaaleaksi kermaksi ja
+                  katoaisi; `goldInk` on teeman luettava kulta. */}
+              <span className="font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-goldInk">
                 Ketuttaako maksaa liikaa?
               </span>
-              <BrushRule className="text-accent/70" width={64} />
+              <BrushRule className="text-goldInk/70" width={64} />
             </div>
             {/* Antiikva ja normaalipaino: kun otsikko ei ole lihava, sivun
-                painavin elementti on oranssi nappi. */}
-            <h1 className="mt-4 font-hero text-[2.6rem] leading-[1.04] text-ink sm:text-[3.5rem]">
-              Yksi kettu.<br />Kaikki <em className="text-accentDark">kilpailutukset</em>.
+                painavin elementti on kermanvalkoinen nappi. */}
+            <h1 className="mt-4 font-hero text-[2.6rem] leading-[1.04] text-cream sm:text-[3.5rem]">
+              Yksi kettu.<br />Kaikki <em className="text-goldInk">kilpailutukset</em>.
             </h1>
             {/*
               Mobiilissa Kettu on ingressin vieressä, ei omana ruudullisenaan.
@@ -82,33 +94,55 @@ export default function HubPage() {
               taitteen alle. Sama kuvio kuin sähkö- ja korttisivulla.
             */}
             <div className="mt-5 flex items-start gap-3">
-              <p className="max-w-md flex-1 text-[16px] leading-relaxed text-ink/70">
+              <p className="max-w-md flex-1 text-[16px] leading-relaxed text-ink/85">
                 Anna Ketun kilpailuttaa puolestasi. Laskemme sopimustesi todelliset
                 hinnat omilla luvuillasi — puolueettomasti, ilmaiseksi ja selvällä suomella.
               </p>
-              <div className="dawn-glow relative -mb-6 -mt-4 shrink-0 md:hidden">
+              {/* Kermanvalkoinen hehku, ei aamunkajo: oranssilla pohjalla
+                  vain vaaleampi hehku irrottaa hahmon taustasta. */}
+              <div className="halo-glow relative -mb-6 -mt-4 shrink-0 md:hidden">
                 <Kettu pose="kortti" height={150} priority />
               </div>
             </div>
+            {/*
+              KAKSI NAPPIA, KAKSI ERI PAINOA.
+
+              Sähkö on päävertikaali ja saa täytetyn kermanapin; kortit
+              saavat ääriviivanapin. Jos molemmat olisivat yhtä painavia,
+              kävijä joutuisi tekemään valinnan itse, ja valinta hidastaa
+              — hub menettää klikkejä juuri epäröintiin. Nyt sivu ehdottaa
+              yhtä polkua ja jättää toisen näkyviin niille, jotka tulivat
+              korttien takia.
+
+              Tekstin väri on kiinteä `#A83E0A`: `accentDark` kääntyisi
+              ember-teemassa kermaksi ja katoaisi kermanapin sisään.
+            */}
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="/sahkosopimukset"
-                className="group inline-flex items-center gap-2.5 btn-ember rounded-xl px-7 py-4 font-display text-[15.5px] font-bold text-onEmber transition-all active:scale-[0.98]"
+                className="group inline-flex items-center gap-2.5 rounded-xl bg-cream px-7 py-4 font-display text-[15.5px] font-bold text-[#A83E0A] shadow-lift transition-all hover:bg-white active:scale-[0.98]"
               >
                 <Zap size={18} aria-hidden /> Kilpailuta sähkö
                 <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" aria-hidden />
               </Link>
               <Link
                 href="/luottokortit"
-                className="inline-flex items-center gap-2.5 rounded-xl border border-lineDark bg-white px-7 py-4 font-display text-[15.5px] font-bold text-ink shadow-card transition-all hover:border-ink/30 active:scale-[0.98]"
+                className="inline-flex items-center gap-2.5 rounded-xl border border-cream/45 px-7 py-4 font-display text-[15.5px] font-bold text-cream transition-all hover:border-cream hover:bg-cream/10 active:scale-[0.98]"
               >
-                <CreditCard size={18} className="text-ink/45" aria-hidden /> Vertaa kortit
+                <CreditCard size={18} className="text-cream/70" aria-hidden /> Vertaa kortit
               </Link>
             </div>
           </div>
-          <div className="dawn-glow relative mx-auto hidden md:block">
+          <div className="halo-glow relative mx-auto hidden md:block">
             <HeroKettu height={440} />
           </div>
+        </div>
+
+        {/* Vyö päättyy ketunhännän kaareen. `theme-light` pakottaa
+            `--c-paper`-muuttujan ratkeamaan alapuolisen vyöhykkeen
+            vaaleaksi eikä tämän osion oranssiksi. */}
+        <div className="theme-light">
+          <TailSweep fill="rgb(var(--c-paper))" height={64} />
         </div>
       </section>
 
@@ -121,7 +155,11 @@ export default function HubPage() {
                 {c.live ? (
                   <Link
                     href={c.href}
-                    className="group relative flex h-full flex-col rounded-3xl border border-line bg-white p-7 shadow-card transition-all hover:-translate-y-1.5 hover:shadow-cardHover"
+                    /* Nosto tulee yhteisestä `.lift`-säännöstä, ei kortin
+                       omasta ajoituksesta. Kun jokainen kortti sivustolla
+                       liikkuu samalla nopeudella, sivu tuntuu tehdyltä
+                       yhdellä kädellä — se on se "smooth", jota haettiin. */
+                    className="lift group relative flex h-full flex-col rounded-3xl border border-line bg-white p-7 shadow-card hover:border-accent/35"
                   >
                     {c.highlight && (
                       <span className="absolute right-4 top-4 rounded-full bg-accentSoft px-2.5 py-1 text-[11px] font-bold text-accentDark">

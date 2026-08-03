@@ -2,44 +2,66 @@ import Link from "next/link";
 import { ArrowRight, Zap } from "lucide-react";
 import Kettu from "@/components/mascot/Kettu";
 import BrushRule from "@/components/BrushRule";
+import TailSweep from "@/components/fox/TailSweep";
 
+/**
+ * 404 ON PALUUSIVU, EI VIRHEILMOITUS.
+ *
+ * MIKSI TÄMÄKIN ON ORANSSI VYÖ: tälle sivulle tullaan yleensä Googlen
+ * vanhentuneesta hakutuloksesta tai rikkinäisestä linkistä. Kävijä on
+ * siis oikea, maksava kävijä, joka on jo osoittanut kiinnostuksensa —
+ * mutta hän on yhden klikin päässä paluunapista. Vaalealla pohjalla
+ * "Kilpailuta sähkö" oli yksi vaalea laatikko muiden joukossa; oranssi
+ * vyö tekee kermanvalkoisesta napista ruudun ainoan kirkkaan pisteen,
+ * eli sen mihin katse menee ennen kuin käsi ehtii selaimen nuoleen.
+ *
+ * Kettu osoittaa: hahmo suuntaa katseen nappeihin päin, ja samalla
+ * virhesivu näyttää tehdyltä eikä rikkoutuneelta. Se on brändin puolustus
+ * juuri siinä hetkessä, jossa palvelu näyttää huonoimmalta.
+ */
 export default function NotFound() {
   return (
-    <section className="theme-light dawn-surface relative overflow-hidden">
-      <div className="relative mx-auto grid max-w-[1180px] items-center gap-8 px-4 py-20 sm:px-6 md:grid-cols-[1.1fr_0.9fr] md:py-28">
+    <section className="theme-ember ember-surface relative overflow-hidden">
+      <div className="relative z-[1] mx-auto grid max-w-[1180px] items-center gap-8 px-4 py-20 sm:px-6 md:grid-cols-[1.1fr_0.9fr] md:py-28">
         <div>
           <div className="flex items-center gap-3">
             <span className="font-display text-[12px] font-bold uppercase tracking-[0.2em] text-goldInk">
               Virhe 404
             </span>
-            <BrushRule className="text-gold" width={64} />
+            <BrushRule className="text-goldInk/70" width={64} />
           </div>
-          <h1 className="mt-4 font-hero text-[2.4rem] leading-[1.06] text-ink sm:text-[3rem]">
+          <h1 className="mt-4 font-hero text-[2.4rem] leading-[1.06] text-cream sm:text-[3rem]">
             Tätä sivua Kettu ei löydä.
           </h1>
-          <p className="mt-5 max-w-md text-[16.5px] leading-relaxed text-ink/70">
+          <p className="mt-5 max-w-md text-[16.5px] leading-relaxed text-ink/85">
             Osoite on voinut muuttua tai sivu on poistettu. Kilpailutus onnistuu silti —
             aloita alta.
           </p>
+          {/* Kiinteä `#A83E0A`: `accentDark` kääntyy ember-teemassa kermaksi
+              ja teksti katoaisi kermanvalkoisen napin sisään. */}
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="/sahkosopimukset"
-              className="btn-ember group inline-flex items-center gap-2.5 rounded-xl px-7 py-4 font-display text-[15.5px] font-bold text-onEmber transition-all active:scale-[0.98]"
+              className="group inline-flex items-center gap-2.5 rounded-xl bg-cream px-7 py-4 font-display text-[15.5px] font-bold text-[#A83E0A] shadow-lift transition-all hover:bg-white active:scale-[0.98]"
             >
               <Zap size={18} aria-hidden /> Kilpailuta sähkö
               <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" aria-hidden />
             </Link>
             <Link
               href="/"
-              className="inline-flex items-center gap-2.5 rounded-xl border border-lineDark bg-white px-7 py-4 font-display text-[15.5px] font-bold text-ink shadow-card transition-all hover:border-ink/30"
+              className="inline-flex items-center gap-2.5 rounded-xl border border-cream/45 px-7 py-4 font-display text-[15.5px] font-bold text-cream transition-all hover:border-cream hover:bg-cream/10"
             >
               Etusivulle
             </Link>
           </div>
         </div>
-        <div className="dawn-glow relative mx-auto hidden md:block">
+        <div className="halo-glow relative mx-auto hidden md:block">
           <Kettu pose="osoittaa" height={380} />
         </div>
+      </div>
+
+      <div className="theme-light">
+        <TailSweep fill="rgb(var(--c-paper))" height={64} />
       </div>
     </section>
   );

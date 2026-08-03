@@ -43,18 +43,26 @@ export default function Footer() {
 
   return (
     /*
-      Footer on tarkoituksella VIILEIN ja vaalein pinta koko sivulla.
+      FOOTER ON KOKO SIVUSTON AINOA TUMMA PINTA.
 
-      MIKSI: aiemmin läpinäkyvyysosio, loppu-CTA ja footer olivat kaikki
-      samaa lämmintä persikkaa peräkkäin. Kolme samanlaista pintaa sulautuu
-      yhdeksi puuroksi, jolloin viimeinen "Kilpailuta sähkösopimus" -nappi
-      hukkuu — ja juuri se nappi on sivun viimeinen tilaisuus ansaita.
-      Nyt lämmin pinta on varattu CTA:lle ja footer sammuttaa sivun
-      rauhallisesti. Ylhäällä kultaviiva erottaa footerin selvästi omaksi
-      tasokseen, jotta lukija tietää saapuneensa loppuun.
+      MIKSI TUMMA, KUN MUU SIVUSTO ON VAALEA: footerin tehtävä on olla
+      piste, ei virke. Kun se oli hiekanvärinen, sivun alaosa oli yhtä
+      yhtenäistä beigeä loppukehotuksesta tekijänoikeusriville asti —
+      lukija ei saanut mistään merkkiä siitä, että sisältö loppui, ja
+      selasi ohi myös viimeisen napin.
+
+      MIKSI TÄMÄ NOSTAA TUOTTOA: tumma pohja alkaa heti oranssin
+      loppukehotusvyön alta. Se on sivuston jyrkin valoraja, ja se tekee
+      oranssista vyöstä ruudun kirkkaimman kohdan juuri silloin, kun
+      käyttäjä on lopettamassa selaamisen. Sama tumma pinta antaa myös
+      ylläpitäjätiedoille ja mainostajan ilmoitukselle oman, virallisen
+      sävyn — ne luetaan asiakirjana, ei mainoksena.
+
+      Teemaluokka kääntää muuttujat; yksikään alla oleva luokka ei muutu.
     */
-    <footer className="border-t-2 border-gold/35 bg-mist">
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-4">
+    <footer className="theme-dark den-surface">
+      {/* `relative` nostaa sisällön den-surfacen kohinakalvon yläpuolelle. */}
+      <div className="relative mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-4">
         <div className="md:col-span-2">
           <p className="flex items-center gap-2.5 font-display text-lg font-bold uppercase tracking-wide text-ink">
             <FoxMark size={30} /> Kettukilpailutus
@@ -105,7 +113,7 @@ export default function Footer() {
           </ul>
         </nav>
       </div>
-      <div className="border-t border-ink/12 py-5 text-center text-xs text-ink/65">
+      <div className="relative border-t border-ink/15 py-5 text-center text-xs text-ink/65">
         © {new Date().getFullYear()} {SITE.name}. Vertailu on tiedoksi, ei henkilökohtaista neuvontaa.
       </div>
     </footer>

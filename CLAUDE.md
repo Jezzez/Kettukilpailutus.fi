@@ -86,13 +86,25 @@ tulossa: /lainat /vakuutukset /internet
 
 ## Design — älä riko tätä
 
-Sivusto on **kokonaan tumma**. Syvyys tehdään valoarvoilla, ei väreillä.
-Vain kaksi väriä: **kettuoranssi `#E8691B` ja kulta `#D9A24F`**. Kaikki muu on
-lämpimän harmaan sävyjä. Uusien värien lisääminen tekee ilmeestä halvan.
+Sivusto on **lämpimän vaalea, ja rytmin tekevät täysleveät oranssit vyöt**
+(hero, loppukehotus, 404). Ainoa tumma pinta on alatunniste. Syvyys tehdään
+valoarvoilla, ei väreillä. Vain kaksi väriä: **kettuoranssi `#E8691B` ja
+kulta `#D9A24F`**. Kaikki muu on lämpimän hiekan sävyjä. Uusien värien
+lisääminen tekee ilmeestä halvan.
 
-**Huom:** Tailwindin `white` on tarkoituksella ylikirjoitettu tummaksi
-(`#1A1512`). `bg-white` tarkoittaa tässä projektissa kortin tummaa pintaa —
-älä "korjaa" sitä.
+**Huom 1:** Tailwindin `white` osoittaa CSS-muuttujaan, ei kiinteään
+valkoiseen. `bg-white` piirtyy vaaleana, tummana tai oranssina sen mukaan,
+minkä teemaluokan sisällä se on — älä "korjaa" sitä kiinteäksi.
+
+**Huom 2 — ember-ansa:** `.theme-ember`-vyöllä `bg-white` on **oranssi** ja
+`text-accentDark` on **vaalea kerma**. Kumpikin siis kääntyy päinvastoin.
+Kun pudotat vaalealle suunnitellun komponentin oranssille vyölle, tarkista
+aina nämä kaksi. Kermanapin teksti on kiinteä `text-[#A83E0A]`, ja vaalea
+kortti oranssin päällä kääritään `theme-light`-luokkaan.
+
+**Huom 3:** korttien hover-nosto tulee yhteisestä `.lift`-luokasta. Älä
+kirjoita komponenttikohtaisia `transition-all duration-300` -sääntöjä — eri
+nopeuksilla liikkuva sivu tuntuu tehdyltä eri käsillä.
 
 Täydet tokenit, apuluokat ja perustelut: `DESIGN.md`.
 

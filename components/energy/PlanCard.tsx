@@ -41,8 +41,16 @@ export default function PlanCard({
   const barWidth = Math.max(8, Math.round((yearly / maxCost) * 100));
 
   return (
+    /*
+      Nosto tulee yhteisestä `.lift`-säännöstä (globals.css), ei kortin
+      omasta `transition-all duration-300` -määrittelystä. Kortilla oli
+      oma ajoitus, laskurilla toinen ja oppailla kolmas — eri nopeuksilla
+      liikkuva sivu tuntuu tehdyltä eri käsillä, ja juuri se on se
+      "ei ole sulava" -vaikutelma. Yksi sääntö, yksi nopeus, koko sivusto.
+      `.lift` kunnioittaa myös `prefers-reduced-motion`-asetusta.
+    */
     <article
-      className={`group relative flex h-full flex-col overflow-hidden rounded-2xl border bg-white transition-all duration-300 hover:-translate-y-1.5 hover:border-accent/35 hover:shadow-cardHover ${
+      className={`lift group relative flex h-full flex-col overflow-hidden rounded-2xl border bg-white hover:border-accent/35 ${
         badge?.kind === "cheapest"
           ? "border-accent/50 shadow-cardHover"
           : badge?.kind === "fox"
@@ -50,13 +58,26 @@ export default function PlanCard({
             : "border-line shadow-card"
       }`}
     >
-      {badge?.kind === "cheapest" && (
-        <div className="bg-accent px-5 py-2.5">
+      {/*
+        MERKKIPALKKI ON AINA 44 PIKSELIÄ KORKEA — MYÖS TYHJÄNÄ.
+
+        Kaksi korttia kuudesta saa merkin. Jos merkitön kortti jättää
+        palkin kokonaan pois, sen sisältö nousee palkin verran ylemmäs,
+        ja kuuden kortin hintaluvut asettuvat kolmelle eri vaakalinjalle.
+        Vertailu tehdään pyyhkäisemällä katse rivin yli: kun luvut ovat
+        samalla linjalla, erot lukee pysähtymättä; kun eivät, jokainen
+        kortti pitää lukea erikseen. Tyhjä palkki maksaa 44 pikseliä
+        korkeutta ja ostaa sillä koko listan luettavuuden.
+      */}
+      {badge?.kind === "cheapest" ? (
+        <div className="flex h-11 items-center bg-accent px-5">
           <p className="flex items-center gap-1.5 font-display text-[11.5px] font-bold uppercase tracking-[0.14em] text-den">
             <Zap size={12} aria-hidden /> Edullisin kulutuksellasi
           </p>
         </div>
-      )}
+      ) : badge?.kind !== "fox" ? (
+        <div className="h-11 border-b border-line bg-mist/40" aria-hidden />
+      ) : null}
       {/*
         "KETUN VALINTA" -SINETTI.
 
@@ -79,7 +100,7 @@ export default function PlanCard({
         laskennan tulos, kulta on Ketun oma kannanotto.
       */}
       {badge?.kind === "fox" && (
-        <div className="flex items-center gap-2.5 border-b border-gold/30 bg-gold/[0.09] px-4 py-2.5 sm:px-5">
+        <div className="flex h-11 items-center gap-2.5 border-b border-gold/30 bg-gold/[0.09] px-4 sm:px-5">
           <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-gold/55 bg-white text-goldInk">
             <FoxPaw size={12} />
           </span>
@@ -161,10 +182,6 @@ export default function PlanCard({
       </div>
 
       <div className="flex flex-1 flex-col p-5">
-        {badge?.note && (
-          <p className="mb-3 text-[12px] leading-snug text-ink/70">{badge.note}</p>
-        )}
-
         <div>
           {/*
             YKSI DESIMAALI, EI PYÖRISTYSTÄ KOKONAISIIN EUROIHIN.
@@ -205,6 +222,27 @@ export default function PlanCard({
             </p>
           )}
         </div>
+
+        {/*
+          MERKIN PERUSTELU TULEE HINNAN JÄLKEEN, EI ENNEN SITÄ.
+
+          Teksti oli aiemmin hintaluvun yläpuolella. Koska vain yhdessä
+          kortissa kuudesta on perustelu, se työnsi juuri sen kortin
+          hinnan noin kaksi riviä alemmas kuin naapureiden. Vertailu
+          tehdään silmällä vaakasuoraan: kun kuusi jättinumeroa ovat
+          samalla linjalla, hintaerot näkee pysähtymättä, ja poikkeava
+          kortti luetaan eri kohdasta eli hitaammin. Hinta on kortin
+          tärkein tieto, joten se lukitaan paikalleen ja perustelu
+          siirtyy sen alle omaksi lainaukseksi.
+
+          Reunaviiva vasemmalla erottaa perustelun laskennasta: se on
+          Ketun mielipide, ei euromäärä.
+        */}
+        {badge?.note && (
+          <p className="mt-3 border-l-2 border-gold/60 pl-3 text-[12px] leading-snug text-ink/70">
+            {badge.note}
+          </p>
+        )}
 
         <dl className="mt-5 space-y-2 rounded-xl border border-line bg-mist p-3.5">
           <div className="flex justify-between text-[12.5px]">

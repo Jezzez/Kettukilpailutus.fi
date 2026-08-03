@@ -23,19 +23,68 @@ html {
    komponenttikoodi (bg-white, text-ink, border-line …) toimii sekä tummalla
    että vaalealla pohjalla, eikä yhtään luokkaa tarvitse kirjoittaa kahdesti.
 
-   OLETUS ON VAALEA. `.theme-dark` kääntää pinnat tummiksi.
+   OLETUS ON VAALEA JA LÄMMIN. `.theme-dark` kääntää osion tummaksi,
+   `.theme-ember` oranssiksi.
 
-   MIKSI: palkkio syntyy vasta "Tee sopimus" -klikistä. Vertailu on tiheää
-   numeroiden silmäilyä, joka on nopeampaa tummalla tekstillä vaalealla
-   pohjalla — ja vaalealla ympäristöllä oranssi nappi on ruudun ainoa kuuma
-   piste. Tumma jää brändin ankkureiksi: footer ja yksittäiset paneelit.
+   KOLME VIRHETTÄ, JOTKA TÄSSÄ KORJATAAN.
+
+   1) Vaalea versio oli kalpea. Pohja oli lähes neutraali kivensävy ja
+   kortit puhtaan valkoisia, jolloin koko ruutu asettui välille 92–100 %
+   vaaleutta. Silmä ei löytänyt mitään mihin laskeutua. Nyt vaaleus on
+   PORRASTETTU: pohja on selvästi keltaiseen taittava luonnonvalkoinen,
+   sen päällä on hiekansävyisiä vöitä ja vasta niiden päällä lähes
+   valkoinen kortti. Kolme askelmaa riittää tekemään kerroksellisuuden
+   näkyväksi ilman yhtään uutta sävyä.
+
+   2) Tumma versio vei brändiltä sen ainoan aseen. Kettu on oranssi ja
+   oranssi loistaa vaaleaa vasten; mustalla pohjalla oranssi hehkuu, mutta
+   kaikki muukin hehkuu, eikä yksikään nappi erotu. Tumma jää siksi
+   käyttöön VAIN alatunnisteessa ja yksittäisissä korostuslaatikoissa.
+
+   3) Reunat puuttuivat. Ryhmittely tehtiin väleillä, ja väli on heikko
+   ryhmittelijä: se kertoo mikä on erillään, ei mikä kuuluu yhteen. Siksi
+   sivu tuntui "sekalaiselta" vaikka jokainen osio oli erikseen siisti.
+   `--c-line` on nyt selvästi näkyvä lämmin reunaviiva, ei arvausta.
 
    Arvot ovat RGB-kolmikkoja ilman rgb()-kääreitä, jotta Tailwindin
-   läpinäkyvyysmerkinnät (text-ink/70) toimivat edelleen.
+   läpinäkyvyysmerkinnät (text-ink/70) toimivat edelleen. */
+:root,
+.theme-light {
+  /* Luonnonvalkoinen, ei valkoinen. Keltainen taitto on se, mikä tekee
+     tästä lämpimän eikä sairaalan. */
+  --c-paper: 251 246 237;
+  --c-card: 255 253 249;
+  --c-mist: 247 240 229;
+  /* Persikka = oranssin haalein taso. Käytetään laatikoissa, joiden pitää
+     lukea "tämä liittyy Kettuun" ilman että ne huutavat. */
+  --c-peach: 253 235 220;
+  /* Hiekka. Tämä on vyöhykerytmin toinen taso: paperi → hiekka → kortti. */
+  --c-night: 244 234 217;
+  --c-navy: 236 223 201;
+  /* NÄKYVÄ reunaviiva. Aiempi 224 220 212 katosi omaan pohjaansa. */
+  --c-line: 226 212 189;
+  --c-line-dark: 199 178 145;
+  --c-ink: 32 26 20;
+  --c-cream: 15 12 9;
+  --c-accent-soft: 253 234 219;
+  /* Oranssi TEKSTINÄ vaalealla. Brändioranssi #E8691B jää valkoisella noin
+     3,2:1 kontrastiin eli liian heikoksi leipätekstiin. Tämä on saman
+     värin tummempi valoarvo, ei uusi väri. */
+  --c-accent-dark: 186 74 8;
+  /* Kulta TEKSTINÄ vaalealla, samasta syystä. */
+  --c-gold-ink: 130 88 22;
 
-   `.theme-dark` on pakollinen jokaisessa kovakoodatusti tummassa
-   laatikossa (`bg-den`, `.den-surface`) — muuten sen `text-cream`
-   kääntyisi tummaksi ja teksti katoaisi pohjaan. */
+  /* Vaalealla syvyys tehdään TERÄVÄLLÄ lähivarjolla, ei laajalla usvalla.
+     Ruskeaan taittava leveä varjo näytti likaiselta; neutraali ja tiukka
+     varjo saa kortin näyttämään veistetyltä eikä leijuvalta. */
+  --sh-card: 0 1px 1px rgba(60,38,14,0.05), 0 2px 6px -1px rgba(60,38,14,0.07);
+  --sh-card-hover: 0 1px 2px rgba(60,38,14,0.07), 0 14px 32px -10px rgba(60,38,14,0.18);
+  --sh-lift: 0 2px 4px rgba(60,38,14,0.06), 0 20px 50px -18px rgba(60,38,14,0.24);
+
+  color-scheme: light;
+}
+
+/* TUMMA PINTA. Enää alatunniste ja yksittäiset korostuslaatikot. */
 .theme-dark {
   --c-paper: 13 10 8;
   --c-card: 26 21 18;
@@ -43,55 +92,52 @@ html {
   --c-peach: 42 29 19;
   --c-night: 49 38 25;
   --c-navy: 52 40 32;
-  --c-line: 51 42 33;
-  --c-line-dark: 67 55 43;
+  --c-line: 62 51 40;
+  --c-line-dark: 82 67 52;
   --c-ink: 242 234 223;
   --c-cream: 247 241 232;
   --c-accent-soft: 46 28 14;
-  /* Oranssi TEKSTINÄ. Tummalla vaalea #FF8C3C erottuu, mutta valkoisella se
-     jää n. 2,3:1 kontrastiin. Vaalealla käytetään tummempaa oranssia. */
   --c-accent-dark: 255 140 60;
-  /* Kulta TEKSTINÄ. Tummalla brändikulta toimii, mutta valkoisella #D9A24F
-     jää n. 2:1 kontrastiin eli lukukelvottomaksi. Vaalealla käytetään saman
-     kullan tummempaa sävyä — ei uutta väriä, vain tummempi valoarvo. */
   --c-gold-ink: 217 162 79;
 
   --sh-card: inset 0 1px 0 rgba(255,244,235,0.04), 0 1px 2px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.3);
   --sh-card-hover: inset 0 1px 0 rgba(255,244,235,0.07), 0 2px 6px rgba(0,0,0,0.45), 0 22px 48px rgba(0,0,0,0.45);
   --sh-lift: inset 0 1px 0 rgba(255,244,235,0.06), 0 28px 70px -14px rgba(0,0,0,0.75);
+
+  color-scheme: dark;
 }
 
-/* VAALEA PINTA.
-   Ensimmäinen versio oli kauttaaltaan beige: pohja #FAF6F0 ja kortti #FFFFFF
-   erosivat toisistaan vain parin prosentin verran, joten mikään ei näyttänyt
-   kortilta — koko ruutu oli yhtä lämmintä puuroa. Nyt pohja on selvästi
-   tummempi ja LÄHES NEUTRAALI kivensävy, kortit puhtaan valkoisia. Lämpö
-   tulee vain oranssista. Kun ympäristö on viileä, oranssi nappi on ruudun
-   ainoa kuuma piste — ja juuri siitä napista tulee palkkio. */
-:root,
-.theme-light {
-  --c-paper: 240 238 233;
-  --c-card: 255 255 255;
-  --c-mist: 248 247 244;
-  --c-peach: 253 241 232;
-  --c-night: 235 232 226;
-  --c-navy: 231 228 221;
-  --c-line: 224 220 212;
-  --c-line-dark: 196 190 180;
-  --c-ink: 26 24 21;
-  --c-cream: 12 11 9;
-  --c-accent-soft: 253 238 226;
-  --c-accent-dark: 178 72 6;
-  --c-gold-ink: 116 78 18;
+/* ORANSSI PINTA — sivuston kovin ele.
+   Tämä on vastaus siihen, ettei katse lukkiudu mihinkään. Täyteen
+   brändiväriin maalattu vyö on voimakkain mahdollinen ankkuri, ja se on
+   ilmainen: se ei vie latausaikaa eikä vaadi kuvaa. Kilpailijoilla on
+   sama ele omalla värillään (check24 sininen, sahkon-kilpailutus.fi
+   laivastonsininen) — heillä se on yritysväri, meillä se on maskotin
+   turkki, eli sama ele tekee meillä enemmän töitä.
 
-  /* Vaalealla syvyys tehdään TERÄVÄLLÄ lähivarjolla, ei laajalla usvalla.
-     Ruskeaan taittava leveä varjo näytti likaiselta; neutraali ja tiukka
-     varjo saa kortin näyttämään veistetyltä eikä leijuvalta. */
-  --sh-card: 0 1px 1px rgba(20,18,15,0.04), 0 2px 6px -1px rgba(20,18,15,0.06);
-  --sh-card-hover: 0 1px 2px rgba(20,18,15,0.06), 0 14px 32px -10px rgba(20,18,15,0.16);
-  --sh-lift: 0 2px 4px rgba(20,18,15,0.05), 0 20px 50px -18px rgba(20,18,15,0.22);
+   Pohja on brändioranssia TUMMEMPI. Se on tahallista: maskotti on
+   kirkkaan oranssi, ja jos pohja olisi samaa kirkkautta, kettu katoaisi
+   siihen. Nyt kettu on vyön vaalein kohta. */
+.theme-ember {
+  --c-paper: 168 62 10;
+  --c-card: 199 76 14;
+  --c-mist: 186 70 12;
+  --c-peach: 214 92 26;
+  --c-night: 156 56 8;
+  --c-navy: 143 50 6;
+  --c-line: 226 128 62;
+  --c-line-dark: 247 176 116;
+  --c-ink: 255 248 240;
+  --c-cream: 255 252 247;
+  --c-accent-soft: 255 233 214;
+  --c-accent-dark: 255 226 200;
+  --c-gold-ink: 255 226 168;
 
-  color-scheme: light;
+  --sh-card: 0 1px 2px rgba(74,26,2,0.28), 0 10px 26px -8px rgba(74,26,2,0.32);
+  --sh-card-hover: 0 2px 6px rgba(74,26,2,0.3), 0 22px 48px -12px rgba(74,26,2,0.42);
+  --sh-lift: 0 28px 70px -18px rgba(74,26,2,0.55);
+
+  color-scheme: dark;
 }
 
 .theme-light input[type="number"],
@@ -160,9 +206,31 @@ h1, h2, h3 { letter-spacing: -0.02em; }
 /* Headerin lasi. Vaalea, koska sivu on vaalea — musta palkki kermanvärisen
    heron päällä leikkaisi ruudun kahtia heti ensisilmäyksellä. */
 .glass-light {
-  background: rgba(251, 248, 243, 0.82);
-  backdrop-filter: saturate(1.15) blur(16px);
-  -webkit-backdrop-filter: saturate(1.15) blur(16px);
+  background: rgba(251, 246, 237, 0.86);
+  backdrop-filter: saturate(1.2) blur(16px);
+  -webkit-backdrop-filter: saturate(1.2) blur(16px);
+}
+
+/* KORTIN NOSTO.
+   Sama liike joka paikassa: 140 ms, sama kiihtyvyyskäyrä, sama matka.
+   "Ei tunnu sulavalta" johtuu useimmiten siitä, että jokainen komponentti
+   on saanut oman satunnaisen kestonsa — silloin sivu liikkuu epätahdissa
+   itsensä kanssa. Yksi jaettu sääntö korjaa sen kerralla.
+
+   `transform` ja `box-shadow` ovat ainoat animoidut ominaisuudet, koska
+   ne eivät pakota selainta laskemaan taittoa uudelleen. Reunavärin
+   vaihto on mukana, koska se on maalausvaiheen työtä eikä sekään maksa. */
+@media (prefers-reduced-motion: no-preference) {
+  .lift {
+    transition:
+      transform 140ms cubic-bezier(0.22, 0.61, 0.36, 1),
+      box-shadow 140ms cubic-bezier(0.22, 0.61, 0.36, 1),
+      border-color 140ms linear;
+  }
+  .lift:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--sh-card-hover);
+  }
 }
 
 /* Headerin tumma lasi (jäljellä tummia osioita varten) */
@@ -189,6 +257,39 @@ h1, h2, h3 { letter-spacing: -0.02em; }
   pointer-events: none;
   opacity: 0.04;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* --- HIILLOS: oranssi vyö ---
+   Käytä yhdessä `.theme-ember`-luokan kanssa, jotta teksti kääntyy
+   kermaksi. Gradientti kulkee vinosti tummasta kirkkaampaan, jolloin
+   vyössä on valon suunta eikä se lue litteältä väripalkilta. */
+.ember-surface {
+  background-color: #A83E0A;
+  background-image:
+    radial-gradient(90% 130% at 78% -20%, rgba(255, 150, 70, 0.55) 0%, rgba(255, 150, 70, 0) 62%),
+    radial-gradient(80% 110% at 4% 108%, rgba(120, 38, 4, 0.55) 0%, rgba(120, 38, 4, 0) 60%),
+    linear-gradient(160deg, #C2500F 0%, #A83E0A 52%, #8E3206 100%);
+  position: relative;
+}
+.ember-surface::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* --- HIEKKA: vyöhykerytmin keskitaso ---
+   Paperin ja kortin väliin jäävä porras. Ilman tätä sivulla on vain kaksi
+   vaaleustasoa, ja kaksi tasoa ei riitä tekemään rytmiä — se on vain
+   tausta ja laatikko. */
+.sand-surface {
+  background-color: #F4EAD9;
+  background-image:
+    radial-gradient(60% 80% at 92% -8%, rgba(232, 105, 27, 0.14) 0%, rgba(232, 105, 27, 0) 62%),
+    radial-gradient(70% 70% at 2% 106%, rgba(217, 162, 79, 0.16) 0%, rgba(217, 162, 79, 0) 64%);
+  position: relative;
 }
 
 /* --- AAMUNKOITTO: vaalea hero ---
@@ -228,10 +329,10 @@ h1, h2, h3 { letter-spacing: -0.02em; }
    maailmassa — ja teksti pysyy tummana, eli luettavana ilman
    teemanvaihtoa. */
 .pelt-surface {
-  background-color: #F6EDE1;
+  background-color: #FBEADA;
   background-image:
-    radial-gradient(62% 86% at 92% -6%, rgba(232, 105, 27, 0.20) 0%, rgba(232, 105, 27, 0) 60%),
-    radial-gradient(72% 70% at 2% 104%, rgba(217, 162, 79, 0.22) 0%, rgba(217, 162, 79, 0) 62%);
+    radial-gradient(62% 86% at 92% -6%, rgba(232, 105, 27, 0.28) 0%, rgba(232, 105, 27, 0) 60%),
+    radial-gradient(72% 70% at 2% 104%, rgba(217, 162, 79, 0.26) 0%, rgba(217, 162, 79, 0) 62%);
   position: relative;
   overflow: hidden;
 }
@@ -257,6 +358,22 @@ h1, h2, h3 { letter-spacing: -0.02em; }
   transform: translate(-50%, -50%);
   border-radius: 9999px;
   background: radial-gradient(circle, rgba(232, 105, 27, 0.14) 0%, rgba(217, 162, 79, 0.10) 44%, rgba(232, 105, 27, 0) 70%);
+  pointer-events: none;
+}
+
+/* Kermahehku maskotin taakse ORANSSILLA pinnalla.
+   Oranssi hehku oranssia vasten ei tee mitään — se on sama väri. Kettu
+   irtoaa vyöstä vain valoarvolla, joten hehku on kermanvaalea. */
+.halo-glow::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  width: 88%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(255, 240, 220, 0.30) 0%, rgba(255, 226, 190, 0.13) 45%, rgba(255, 226, 190, 0) 70%);
   pointer-events: none;
 }
 
