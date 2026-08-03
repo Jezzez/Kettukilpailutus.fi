@@ -40,6 +40,29 @@ export default function PlanCard({
   const monthly = yearly / 12;
   const barWidth = Math.max(8, Math.round((yearly / maxCost) * 100));
 
+  /*
+    YKSI KORTTI KUUDESTA ON ORANSSI — EI KAIKKI.
+
+    Oranssi kortti on listan vahvin katseankkuri, ja siksi se annetaan
+    sille kortille, jonka haluamme klikattavan: halvimmalle käyttäjän
+    omalla kulutuksella. Kun kaikki kuusi olisivat oransseja, väri ei
+    enää erottaisi mitään — ja pahempaa: "Tee sopimus" -nappi on
+    oranssi, joten oranssilla kortilla se katoaisi pohjaansa. Sivun
+    ainoa ostonappi vaihdettaisiin heikommaksi vain, jotta lista
+    näyttäisi värikkäämmältä. Väärä vaihtokauppa.
+
+    Tällä kortilla nappi on siis kermanvalkoinen (`inverse` +
+    `theme-light`), jolloin se on koko listan kirkkain piste — juuri
+    siinä kortissa, jonka klikkaus tuottaa eniten.
+
+    EMBER-ANSA: `theme-ember` kääntää `bg-white`-luokan oranssiksi ja
+    `text-accentDark`-luokan vaaleaksi kermaksi. Alla merkityt kohdat
+    ovat ne, joissa käännös olisi rikkonut jotain: yhtiön logo tarvitsee
+    aidosti valkoisen pohjan, ja "Uusiutuva"-merkki olisi ollut kermaa
+    kermalla eli näkymätön.
+  */
+  const ember = badge?.kind === "cheapest";
+
   return (
     /*
       Nosto tulee yhteisestä `.lift`-säännöstä (globals.css), ei kortin
@@ -50,12 +73,12 @@ export default function PlanCard({
       `.lift` kunnioittaa myös `prefers-reduced-motion`-asetusta.
     */
     <article
-      className={`lift group relative flex h-full flex-col overflow-hidden rounded-2xl border bg-white hover:border-accent/35 ${
-        badge?.kind === "cheapest"
-          ? "border-accent/50 shadow-cardHover"
+      className={`lift group relative flex h-full flex-col overflow-hidden rounded-2xl border ${
+        ember
+          ? "theme-ember ember-surface border-line shadow-cardHover hover:border-cream/55"
           : badge?.kind === "fox"
-            ? "border-lineDark shadow-cardHover"
-            : "border-line shadow-card"
+            ? "bg-white border-lineDark shadow-cardHover hover:border-accent/35"
+            : "bg-white border-line shadow-card hover:border-accent/35"
       }`}
     >
       {/*
@@ -69,9 +92,11 @@ export default function PlanCard({
         kortti pitää lukea erikseen. Tyhjä palkki maksaa 44 pikseliä
         korkeutta ja ostaa sillä koko listan luettavuuden.
       */}
-      {badge?.kind === "cheapest" ? (
-        <div className="flex h-11 items-center bg-accent px-5">
-          <p className="flex items-center gap-1.5 font-display text-[11.5px] font-bold uppercase tracking-[0.14em] text-den">
+      {ember ? (
+        /* Kermanauha, ei kirkkaanoranssi: oranssi nauha oranssilla
+           kortilla olisi kaksi lähes samaa sävyä päällekkäin. */
+        <div className="flex h-11 items-center bg-cream px-5">
+          <p className="flex items-center gap-1.5 font-display text-[11.5px] font-bold uppercase tracking-[0.14em] text-[#A83E0A]">
             <Zap size={12} aria-hidden /> Edullisin kulutuksellasi
           </p>
         </div>
@@ -139,7 +164,9 @@ export default function PlanCard({
           <span
             className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg font-data text-[13px] font-extrabold tabular-nums ${
               rank === 1
-                ? "bg-accent text-onEmber"
+                ? ember
+                  ? "bg-cream text-[#A83E0A]"
+                  : "bg-accent text-onEmber"
                 : "border border-line bg-white text-ink/45"
             }`}
             aria-hidden
@@ -175,7 +202,9 @@ export default function PlanCard({
           {plan.fixedTermMonths ? ` · ${plan.fixedTermMonths} kk` : ""}
         </span>
         {plan.green && (
-          <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-md border border-accent/25 bg-accentSoft px-2 py-0.5 text-[11px] font-semibold text-accentDark">
+          /* `theme-light`: ilman sitä tausta ja teksti olisivat ember-vyöllä
+             molemmat vaaleaa kermaa, eli merkki olisi tyhjä laatikko. */
+          <span className="theme-light inline-flex items-center gap-1 whitespace-nowrap rounded-md border border-accent/25 bg-accentSoft px-2 py-0.5 text-[11px] font-semibold text-accentDark">
             <Leaf size={11} aria-hidden /> Uusiutuva
           </span>
         )}
@@ -206,9 +235,9 @@ export default function PlanCard({
             <span className="font-display text-[14px] font-semibold text-ink/60">/ kk</span>
           </div>
 
-          <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-night">
+          <div className={`mt-3 h-1.5 w-full overflow-hidden rounded-full ${ember ? "bg-cream/25" : "bg-night"}`}>
             <div
-              className={`h-full rounded-full transition-all duration-500 ${badge?.kind === "cheapest" ? "bg-accent" : "bg-ink/25"}`}
+              className={`h-full rounded-full transition-all duration-500 ${ember ? "bg-cream" : "bg-ink/25"}`}
               style={{ width: `${barWidth}%` }}
             />
           </div>
@@ -270,7 +299,7 @@ export default function PlanCard({
         <ul className="mt-4 flex-1 space-y-1.5">
           {plan.features.slice(0, 3).map((f) => (
             <li key={f} className="flex items-start gap-2 text-[13px] leading-snug text-ink/80">
-              <span className="mt-[3px] shrink-0 text-accent/70" aria-hidden>
+              <span className={`mt-[3px] shrink-0 ${ember ? "text-cream/75" : "text-accent/70"}`} aria-hidden>
                 <FoxPaw />
               </span>
               {f}
@@ -291,8 +320,14 @@ export default function PlanCard({
           </Link>
         </div>
 
-        <div className="mt-3">
-          <AffiliateButton href={plan.affiliateUrl} cardId={plan.id} placement="energy-grid" className="w-full">
+        <div className={`mt-3 ${ember ? "theme-light" : ""}`}>
+          <AffiliateButton
+            href={plan.affiliateUrl}
+            cardId={plan.id}
+            placement="energy-grid"
+            variant={ember ? "inverse" : "primary"}
+            className="w-full"
+          >
             Tee sopimus
           </AffiliateButton>
         </div>
@@ -316,7 +351,10 @@ export default function PlanCard({
 function ProviderLogo({ provider, logo }: { provider: string; logo?: string }) {
   if (logo) {
     return (
-      <span className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-xl border border-line bg-white p-1.5">
+      /* `theme-light`: yhtiöiden logot on tehty valkoiselle pohjalle. Ember-
+         kortilla `bg-white` olisi oranssi ja logo vääristyisi — se olisi
+         tavaramerkin väärinkäyttöä, ei tyylivalinta. */
+      <span className="theme-light grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-xl border border-line bg-white p-1.5">
         <Image
           src={logo}
           alt={`${provider} logo`}
