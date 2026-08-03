@@ -4,12 +4,13 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from "framer-motion";
 import {
-  ArrowLeft, ArrowRight, Building2, Flame, Home, House, Info, Leaf, Lock, Plug, RefreshCw,
-  ShieldCheck, Timer, TrendingDown, Wallet, X,
+  ArrowLeft, ArrowRight, Building2, Check, Flame, Home, House, Info, Leaf, Lock, MapPin,
+  Pencil, Plug, RefreshCw, ShieldCheck, Timer, TrendingDown, Wallet, X,
 } from "lucide-react";
 import type { ElectricityPlan } from "@/lib/energy";
 import { annualCost, ASSUMED_SPOT_AVG, DWELLINGS, PRICE_DATE } from "@/lib/energy";
 import PlanCard, { type PlanBadge } from "./PlanCard";
+import AffiliateButton from "../AffiliateButton";
 import SpotCurve from "./SpotCurve";
 import SpotPriceLive from "./SpotPriceLive";
 import EnergyStickyBar from "./EnergyStickyBar";
@@ -167,8 +168,28 @@ export default function ElectricityExperience({
   /** Mikä heron lupauksista on auki. Ks. perustelu HERO_CLAIMS-listan yllä. */
   const [openClaim, setOpenClaim] = useState<number | null>(null);
   const [showAdvisor, setShowAdvisor] = useState(false);
-  const [canShift, setCanShift] = useState<boolean | null>(null);
-  const [wantsSteady, setWantsSteady] = useState<boolean | null>(null);
+
+  /*
+    YKSI KYSYMYS KAHDEN SIJASTA.
+
+    Aiemmin sopimustyyppi pääteltiin kahdesta kysymyksestä: "voitko
+    ajoittaa kulutusta halvoille tunneille" ja "kumpi on tärkeämpää".
+    Molemmat olettavat, että vastaaja tietää mitä pörssisähkö on ja
+    miksi tunnin ajoituksella olisi väliä. Kohderyhmän vanhin pää ei
+    tiedä, ja tuntematon kysymys ei jää väliin vaan pysäyttää koko
+    kyselyn — vastaamatta jättäminen tuntuu virheeltä.
+
+    Nyt kysytään yksi asia, jonka jokainen osaa vastata omasta
+    elämästään: haluatko tietää laskun etukäteen vai haluatko halvimman.
+    Sähkötermi ei esiinny kysymyksessä lainkaan, vaan vasta vastauksen
+    perusteluna. "En osaa sanoa" on tarkoituksella oikea vastaus, koska
+    arvattu vastaus rajaisi listan väärin.
+  */
+  const [pricePref, setPricePref] = useState<"steady" | "cheapest" | "unsure" | null>(null);
+  /** Postinumero. Ks. `postcodeBlock` — mihin sitä käytetään ja mihin ei. */
+  const [postcode, setPostcode] = useState("");
+  /** Tietääkö käyttäjä nykyisen hintansa. `null` = ei vastattu vielä. */
+  const [knowsCurrent, setKnowsCurrent] = useState<boolean | null>(null);
 
   const reduce = useReducedMotion();
 
@@ -271,6 +292,25 @@ export default function ElectricityExperience({
     return scored.sort((a, b) => b.score - a.score)[0].id;
   }, [filtered, kwh, cheapestCost]);
 
+  /*
+    KETUN SUOSITUS = YKSI NIMETTY SOPIMUS.
+
+    Kyselyn jälkeen ruudulla on kuusi korttia, ja kuusi vaihtoehtoa on
+    juuri se määrä, jossa päätös lykkääntyy. Vertailusivun tuotto syntyy
+    vasta klikistä, joten listan yläpuolella pitää olla yksi vastaus
+    kysymykseen "no mikä minun pitäisi ottaa".
+
+    Ensisijaisesti Ketun valinta (hinta 72 % · arvio 28 %), koska se on
+    sama kaava kuin korttien merkissä — kaksi eri suositusta samalla
+    sivulla lukisi sekaannukseksi. Jos aineisto on niin pieni, ettei
+    valintaa lasketa (alle 3 sopimusta), suositellaan halvinta.
+  */
+  const recommendedPlan = useMemo(
+    () => (foxId ? filtered.find((p) => p.id === foxId) ?? cheapestPlan : cheapestPlan),
+    [foxId, filtered, cheapestPlan]
+  );
+  const recommendedIsCheapest = recommendedPlan !== null && recommendedPlan.id === cheapestId;
+
   /** Rehellisyys ennen konversiota: jos asiakkaan oma sopimus voittaa, se sanotaan. */
   const alreadyGood = currentAnnual !== null && currentAnnual <= cheapestCost;
   /**
@@ -285,16 +325,25 @@ export default function ElectricityExperience({
   const headlineSaving = useCountUp(savingsBase === null ? 0 : Math.max(0, savingsBase - bestVisibleCost));
   const cheapestMonthly = useCountUp(bestVisibleCost / 12);
 
-  /** Suosituksen tulos — vain kun molempiin on vastattu. */
-  const advice = canShift === null || wantsSteady === null
-    ? null
-    : wantsSteady && !canShift
-      ? { type: "fixed" as const, title: "Kettu suosittelee kiinteää hintaa", why: "Haluat ennustettavan laskun etkä pysty siirtämään kulutusta halvoille tunneille — silloin hintasuoja on rahan arvoinen." }
-      : canShift && !wantsSteady
-        ? { type: "spot" as const, title: "Kettu suosittelee pörssisähköä", why: "Pystyt ajoittamaan kulutusta ja kestät vaihtelun. Pörssi on pitkällä aikavälillä ollut keskimäärin edullisempi, koska et maksa hintasuojasta." }
-        : canShift && wantsSteady
-          ? { type: "fixed" as const, title: "Kettu suosittelee kiinteää hintaa", why: "Pystyisit hyödyntämään halpoja tunteja, mutta arvostat ennustettavuutta enemmän. Kiinteä antaa mielenrauhan pienellä lisähinnalla." }
-          : { type: "spot" as const, title: "Kettu suosittelee pörssisähköä", why: "Et kaipaa hintalukkoa etkä halua maksaa siitä. Katso silti, ettei talven piikki yllätä — laskurin arvio on vuosikeskiarvo." };
+  /**
+   * Suositus sopimustyypistä. `unsure` ei tuota suositusta eikä rajaa
+   * listaa: se on rehellinen vastaus, ja rehelliseen "en tiedä" -vastaukseen
+   * keksitty suositus olisi arvaus käyttäjän puolesta.
+   */
+  const advice =
+    pricePref === null || pricePref === "unsure"
+      ? null
+      : pricePref === "steady"
+        ? {
+            type: "fixed" as const,
+            title: "Kettu suosittelee kiinteää hintaa",
+            why: "Halusit tietää laskun etukäteen. Kiinteässä sopimuksessa hinta lukitaan koko sopimuskaudeksi, joten lasku ei yllätä talvellakaan. Ennustettavuudesta maksetaan yleensä pieni lisä.",
+          }
+        : {
+            type: "spot" as const,
+            title: "Kettu suosittelee pörssisähköä",
+            why: "Halusit halvimman etkä pelkää vaihtelua. Pörssisähkön hinta seuraa sähköpörssiä tunneittain ja on pitkällä aikavälillä ollut keskimäärin edullisempi, koska et maksa hintasuojasta. Talvella yksittäinen kuukausi voi silti olla kallis.",
+          };
 
   /* ── Kyselyn palaset ────────────────────────────────────────────────
      Samat kentät esiintyvät kahdessa tilassa: portin takana yksi vaihe
@@ -465,35 +514,269 @@ export default function ElectricityExperience({
   );
 
   /*
-    KYSELYN KOLMAS VAIHE ON SAMA KAKSI KYSYMYSTÄ KUIN SUOSITTELIJASSA.
+    HINTATOIVE — KYSELYN AINOA "VAIKEA" KYSYMYS, KIRJOITETTUNA AUKI.
 
-    Ne olivat aiemmin tuloslistan yläpuolella suljettuna paneelina, jonka
-    avasi vain se, joka jo tiesi epäröivänsä. Pörssi vai kiinteä on
-    kuitenkin asiakkaan vaikein päätös, ja vastaamattomana se jää
-    roikkumaan koko listan yli — silloin ei paineta mitään. Kyselyn
-    vaiheena siihen vastaa lähes jokainen, ja vastaus tuottaa
-    suosituksen, joka rajaa listan. Rajattu lista on lyhyempi ja
-    lyhyemmästä listasta valitaan useammin.
+    Pörssi vai kiinteä on asiakkaan vaikein päätös, ja vastaamattomana se
+    jää roikkumaan koko listan yli — silloin ei paineta mitään. Siksi
+    siihen vastataan työkalussa eikä oppaassa jossain muualla.
 
-    Ohitus on tarkoituksella näkyvissä: pakotettu vastaus arvataan, ja
+    Kysymys ei kysy sopimustyyppiä vaan elämäntapaa: haluatko tietää
+    laskun etukäteen vai haluatko halvimman. Sähkötermi mainitaan vasta
+    vaihtoehdon perustelurivillä, eli vastaaja ei joudu tietämään
+    termiä vastatakseen. Kolmas vaihtoehto ("En osaa sanoa") ei ole
+    kohteliaisuus vaan välttämättömyys: pakotettu vastaus arvataan, ja
     arvattu vastaus rajaisi listan väärin.
   */
+  const PREFS = [
+    {
+      key: "steady" as const,
+      icon: Lock,
+      title: "Haluan tietää etukäteen, paljonko lasku on",
+      hint: "Sama hinta koko sopimuskauden. Ei yllätyksiä talvella.",
+    },
+    {
+      key: "cheapest" as const,
+      icon: TrendingDown,
+      title: "Haluan mahdollisimman halvan",
+      hint: "Hinta elää sähköpörssin mukaan. Keskimäärin halvempi, mutta yksittäinen kuukausi voi olla kallis.",
+    },
+    {
+      key: "unsure" as const,
+      icon: Info,
+      title: "En osaa sanoa",
+      hint: "Ei haittaa. Kettu näyttää silloin kaikki sopimukset.",
+    },
+  ];
+
   const prefBlock = (
-    <div className="grid gap-4 sm:grid-cols-2">
-      <Question
-        label="Voitko ajoittaa kulutusta yölle tai halvoille tunneille?"
-        value={canShift}
-        onChange={setCanShift}
-        yes="Kyllä, onnistuu"
-        no="En käytännössä"
-      />
-      <Question
-        label="Kumpi on sinulle tärkeämpää?"
-        value={wantsSteady}
-        onChange={setWantsSteady}
-        yes="Ennustettava lasku"
-        no="Pienin mahdollinen hinta"
-      />
+    <div className="grid gap-2.5">
+      {PREFS.map((o) => (
+        <BigOption
+          key={o.key}
+          icon={o.icon}
+          title={o.title}
+          hint={o.hint}
+          selected={pricePref === o.key}
+          onClick={() => setPricePref(o.key)}
+        />
+      ))}
+    </div>
+  );
+
+  /* ── Kyselyn isot vaihenäkymät ─────────────────────────────────────────
+     Nämä ovat kyselyä varten kirjoitetut versiot samoista kysymyksistä,
+     jotka `fullForm` näyttää tuloslistan yhteydessä tiiviinä. Ero on
+     tarkoituksellinen: kyselyssä ruudulla on YKSI kysymys, joten
+     kosketuskohteet ovat vähintään 64 px korkeita ja teksti 17 px, kun
+     taas tuloslistan vieressä samat kentät ovat säätimiä ja saavat olla
+     pieniä. Kaksi eri kokoa samasta kysymyksestä on halvempaa kuin yksi
+     kompromissikoko, joka on kummassakin paikassa väärä. */
+
+  const dwellingBig = (
+    <div className="grid gap-2.5 sm:grid-cols-2">
+      {DWELLINGS.map((d) => (
+        <BigOption
+          key={d.key}
+          icon={DWELLING_ICONS[d.key as keyof typeof DWELLING_ICONS]}
+          title={d.label}
+          hint={`Yleensä noin ${d.kwh.toLocaleString("fi-FI")} kWh vuodessa`}
+          selected={dwelling === d.key}
+          onClick={() => { setDwelling(d.key); setKwh(d.kwh); setKwhTouched(false); }}
+        />
+      ))}
+    </div>
+  );
+
+  /** Vaiheessa 1 valitun asumismuodon arvio — käytetään vaiheen 2 ohjeessa. */
+  const dwellingGuess = DWELLINGS.find((d) => d.key === dwelling) ?? null;
+
+  const kwhBig = (
+    <div>
+      <div className="flex flex-wrap items-center gap-3">
+        <input
+          id="kwh-quiz"
+          type="number"
+          inputMode="numeric"
+          min={500}
+          max={40000}
+          step={100}
+          value={kwh}
+          onChange={(e) => { setKwh(Math.max(0, Number(e.target.value))); setKwhTouched(true); }}
+          aria-label="Vuosikulutus kilowattitunteina"
+          className="w-44 rounded-2xl border-2 border-lineDark bg-mist px-4 py-3.5 text-right font-data text-[26px] font-bold text-ink transition-colors focus:border-accent focus:outline-none"
+        />
+        <span className="font-display text-[16px] font-semibold text-ink/70">kWh vuodessa</span>
+      </div>
+
+      {/*
+        ARVIO ON JO KENTÄSSÄ, JA SE SANOTAAN ÄÄNEEN.
+
+        Kenttä on esitäytetty vaiheen 1 vastauksen perusteella. Ilman tätä
+        riviä esitäyttö näyttää siltä, että palvelu tietää käyttäjän
+        kulutuksen jostain — mikä on juuri se vaikutelma, joka saa
+        varovaisen kävijän poistumaan. Kun arvio kerrotaan arvioksi,
+        sama luku muuttuu epäilyttävästä avuliaaksi.
+      */}
+      {dwellingGuess && !kwhTouched && (
+        <p className="mt-3 flex items-start gap-2 rounded-xl border border-gold/30 bg-gold/[0.07] px-3.5 py-2.5 text-[14px] leading-relaxed text-ink/80">
+          <Check size={15} className="mt-0.5 shrink-0 text-goldInk" aria-hidden />
+          <span>
+            Laitoimme tähän valmiiksi arvion ({dwellingGuess.label.toLowerCase()}).
+            <strong className="font-semibold"> Voit jatkaa suoraan</strong> — tai kirjoittaa
+            tarkan luvun, jos se on käsillä.
+          </span>
+        </p>
+      )}
+
+      <p className="mt-3 text-[14px] leading-relaxed text-ink/65">
+        Tarkka luku lukee sähkölaskusi erittelyssä kohdassa &quot;kulutus&quot; tai
+        &quot;sähköenergia&quot;, muodossa esimerkiksi 5 200 kWh.
+      </p>
+    </div>
+  );
+
+  /*
+    POSTINUMERO — MITÄ SILLÄ TEHDÄÄN JA MITÄ EI.
+
+    REHELLISYYS ENSIN: sähkön MYYNTIhinta on Suomessa sama riippumatta
+    siitä, missä asut, joten postinumero ei muuta yhtäkään tämän sivun
+    lukua. Vain siirtomaksu on alueellinen, eikä sitä voi kilpailuttaa.
+    Siksi tässä ei väitetä "räätälöimme tuloksesi asuinalueesi mukaan" —
+    se olisi keksitty väite, ja keksityt väitteet ovat tällä sivustolla
+    kiellettyjä myös silloin kun ne toimisivat.
+
+    MIKSI SITÄ SILTI KYSYTÄÄN: postinumero on yksi niistä tiedoista,
+    jotka sopimuksen tekeminen vaatii, ja kysely on juuri se hetki, jossa
+    käyttäjä kokoaa tietonsa. Kysymys palvelee samaa tarkoitusta kuin
+    sivun "Ota nämä esiin" -lista: kun tiedot ovat valmiina, sopimuksen
+    teko ei katkea siihen, että joutuu etsimään laskun kaapista.
+
+    KENTTÄ ON VAPAAEHTOINEN, eikä sitä lähetetä mihinkään. Se on osa
+    "Ei tunnuksia, ei yhteystietoja" -lupausta: postinumero ei yksin
+    yksilöi ketään, ja se jää selaimeen.
+  */
+  const postcodeBlock = (
+    <div>
+      <div className="flex flex-wrap items-center gap-3">
+        <input
+          type="text"
+          inputMode="numeric"
+          autoComplete="postal-code"
+          maxLength={5}
+          value={postcode}
+          onChange={(e) => setPostcode(e.target.value.replace(/\D/g, "").slice(0, 5))}
+          placeholder="00100"
+          aria-label="Postinumero"
+          className="w-44 rounded-2xl border-2 border-lineDark bg-mist px-4 py-3.5 text-center font-data text-[26px] font-bold tracking-[0.18em] text-ink placeholder:font-normal placeholder:tracking-[0.18em] placeholder:text-ink/30 focus:border-accent focus:outline-none"
+        />
+        <span className="rounded-full border border-line bg-mist px-3 py-1 font-display text-[12.5px] font-semibold text-ink/60">
+          vapaaehtoinen
+        </span>
+      </div>
+
+      <p className="mt-4 flex items-start gap-2 rounded-xl border border-line bg-mist px-3.5 py-3 text-[14px] leading-relaxed text-ink/75">
+        <Info size={15} className="mt-0.5 shrink-0 text-ink/45" aria-hidden />
+        <span>
+          Sanotaan suoraan: <strong className="font-semibold">postinumero ei muuta hintoja.</strong>{" "}
+          Sähkön myyntihinta on sama koko Suomessa. Kysymme sen siksi, että tarvitset sitä
+          sopimusta tehdessäsi — ja jotta se on jo valmiina, kun tulet siihen kohtaan.
+          Numero jää selaimeesi eikä sitä lähetetä minnekään.
+        </span>
+      </p>
+    </div>
+  );
+
+  /*
+    NYKYINEN HINTA KYSYTÄÄN KAHDESSA OSASSA.
+
+    Aiemmin vaiheessa 2 oli suoraan kaksi numerokenttää otsikolla
+    "Nykyinen sopimuksesi (vapaaehtoinen)". Se, joka ei tiennyt lukujaan,
+    näki kaksi tyhjää kenttää eikä tiennyt saako niistä jatkaa —
+    tyhjä pakollisen näköinen kenttä pysäyttää kyselyn varmemmin kuin
+    vaikea kysymys. Nyt ensin kysytään tiedätkö, ja kentät ilmestyvät
+    vasta myöntävän vastauksen jälkeen. "En tiedä" on yhtä iso ja yhtä
+    laillinen vastaus kuin "kyllä".
+
+    Tämä kysymys kannattaa kysyä, vaikka se pidentää kyselyä: se on
+    ainoa lähde sivun rehellisimmälle hetkelle ("älä vaihda, sinulla on
+    jo halvempi") ja ainoa tapa näyttää säästö euroina keksimättä sitä.
+  */
+  const currentChoiceBlock = (
+    <div>
+      <div className="grid gap-2.5 sm:grid-cols-2">
+        <BigOption
+          icon={Wallet}
+          title="Kyllä, lasku on käsillä"
+          hint="Kirjoitat kaksi lukua laskustasi."
+          selected={knowsCurrent === true}
+          onClick={() => { setKnowsCurrent(true); setShowCurrent(true); }}
+        />
+        <BigOption
+          icon={X}
+          title="En tiedä juuri nyt"
+          hint="Ei haittaa — hinnat näkyvät silti."
+          selected={knowsCurrent === false}
+          onClick={() => { setKnowsCurrent(false); setCurPrice(""); setCurBasic(""); }}
+        />
+      </div>
+
+      <AnimatePresence initial={false}>
+        {knowsCurrent === true && (
+          <motion.div
+            initial={reduce ? false : { opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={reduce ? undefined : { opacity: 0, height: 0 }}
+            className="overflow-hidden"
+          >
+            <div className="mt-4 rounded-2xl border border-line bg-mist p-4 sm:p-5">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="block">
+                  <span className="block font-display text-[14.5px] font-bold text-ink">
+                    1. Sähkön hinta
+                  </span>
+                  <span className="mt-0.5 block text-[13px] text-ink/60">
+                    Laskussa senttiä kilowattitunnilta
+                  </span>
+                  <span className="mt-2 flex items-center gap-2">
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      placeholder="8,90"
+                      value={curPrice}
+                      onChange={(e) => setCurPrice(e.target.value)}
+                      className="w-32 rounded-xl border-2 border-lineDark bg-white px-3 py-3 text-right font-data text-[20px] font-bold text-ink placeholder:font-normal placeholder:text-ink/30 focus:border-accent focus:outline-none"
+                    />
+                    <span className="font-display text-[14px] font-semibold text-ink/65">c/kWh</span>
+                  </span>
+                </label>
+                <label className="block">
+                  <span className="block font-display text-[14.5px] font-bold text-ink">
+                    2. Perusmaksu
+                  </span>
+                  <span className="mt-0.5 block text-[13px] text-ink/60">
+                    Kiinteä kuukausimaksu laskussa
+                  </span>
+                  <span className="mt-2 flex items-center gap-2">
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      placeholder="4,50"
+                      value={curBasic}
+                      onChange={(e) => setCurBasic(e.target.value)}
+                      className="w-32 rounded-xl border-2 border-lineDark bg-white px-3 py-3 text-right font-data text-[20px] font-bold text-ink placeholder:font-normal placeholder:text-ink/30 focus:border-accent focus:outline-none"
+                    />
+                    <span className="font-display text-[14px] font-semibold text-ink/65">€/kk</span>
+                  </span>
+                </label>
+              </div>
+              <p className="mt-3 text-[13.5px] leading-relaxed text-ink/65">
+                Molemmat luvut ovat sähkölaskusi erittelyssä otsikon
+                &quot;sähköenergia&quot; alla. Jos toinen ei löydy, jätä se tyhjäksi.
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 
@@ -541,16 +824,82 @@ export default function ElectricityExperience({
       </div>
   );
 
-  /* ── Kyselyn ohjaus ─────────────────────────────────────────────────── */
+  /* ── Kyselyn ohjaus ───────────────────────────────────────────────────
+
+     KUUSI VAIHETTA, YKSI KYSYMYS RUUDULLA.
+
+     Kysely oli kolmivaiheinen, mutta vaiheet 2 ja 3 sisälsivät kaksi
+     kysymystä kumpikin — eli ruudulla oli kaksi päätöstä yhtä aikaa,
+     eri kokoisina ja eri muotoisina (numerokenttä + nappipari). Se on
+     täsmälleen se tilanne, jossa iäkkäämpi käyttäjä ei tiedä mihin
+     vastata ensin eikä siihen, onko tyhjä kenttä virhe.
+
+     Pidempi kysely EI ole tässä huonompi. Poistumista ei aiheuta
+     vaiheiden määrä vaan epätietoisuus siitä, mitä pitäisi tehdä:
+     kuusi ruutua, joilla kullakin on yksi selvä kysymys ja yksi iso
+     oranssi nappi, täytetään loppuun useammin kuin kolme ruutua, joilla
+     on kaksi kysymystä ja epäselvä eteneminen. Jokainen vaihe kertoo
+     lisäksi lyhyesti MIKSI kysytään — perusteltu kysymys ei tunnu
+     tietojen keräämiseltä.
+
+     Vaihe 6 on yhteenveto. Se ei kysy mitään, vaan näyttää vastaukset
+     ja antaa muuttaa niitä. Se on tämän kyselyn tärkein yksittäinen
+     ruutu iäkkäälle käyttäjälle: se poistaa pelon siitä, että jotain
+     tuli vastattua väärin eikä sitä enää saa korjattua. */
 
   const STEPS_Q = [
-    { n: 1, title: "Millaisessa asunnossa asut?", hint: "Arvio riittää — tarkennat kulutuksen seuraavaksi." },
-    { n: 2, title: "Paljonko käytät sähköä vuodessa?", hint: "Luku löytyy sähkölaskusi erittelystä." },
-    { n: 3, title: "Mikä on sinulle tärkeintä?", hint: "Kaksi kysymystä, joilla Kettu rajaa listan." },
+    {
+      n: 1,
+      title: "Millaisessa kodissa asut?",
+      hint: "Tästä Kettu päättelee, paljonko sähköä kuluu. Arvio riittää.",
+    },
+    {
+      n: 2,
+      title: "Paljonko käytät sähköä vuodessa?",
+      hint: "Laitoimme valmiiksi arvion. Voit jatkaa suoraan tai korjata luvun.",
+    },
+    {
+      n: 3,
+      title: "Mikä on kotisi postinumero?",
+      hint: "Ei pakollinen. Kerromme alla, mihin sitä käytetään.",
+    },
+    {
+      n: 4,
+      title: "Mikä näistä on sinulle tärkeintä?",
+      hint: "Tämä ratkaisee, millaisia sopimuksia Kettu ehdottaa.",
+    },
+    {
+      n: 5,
+      title: "Tiedätkö, paljonko maksat sähköstä nyt?",
+      hint: "Vain tällä Kettu voi laskea säästösi euroina — emme arvaa sitä.",
+    },
+    {
+      n: 6,
+      title: "Tarkista vastauksesi",
+      hint: "Voit muuttaa mitä tahansa kohtaa. Sen jälkeen Kettu näyttää sopimukset.",
+    },
   ] as const;
 
+  const LAST_STEP = STEPS_Q.length;
+
   const stepValid =
-    step === 1 ? dwelling !== null || kwhTouched : step === 2 ? kwh >= 500 : true;
+    step === 1 ? dwelling !== null || kwhTouched
+    : step === 2 ? kwh >= 500
+    : step === 3 ? postcode.length === 0 || postcode.length === 5
+    : step === 4 ? pricePref !== null
+    : step === 5 ? knowsCurrent !== null
+    : true;
+
+  /** Miksi "Jatka" ei vielä toimi. Sanotaan ääneen — harmaa nappi ilman
+   *  selitystä on iäkkäälle käyttäjälle rikkinäinen nappi. */
+  const stepBlocker =
+    stepValid ? null
+    : step === 1 ? "Valitse yksi vaihtoehto yltä, niin pääset eteenpäin."
+    : step === 2 ? "Kirjoita kulutus (vähintään 500 kWh) tai palaa taaksepäin valitsemaan koti."
+    : step === 3 ? "Postinumerossa on viisi numeroa. Voit myös tyhjentää kentän ja jatkaa."
+    : step === 4 ? "Valitse yksi kolmesta vaihtoehdosta."
+    : "Valitse kyllä tai en — molemmat käyvät.";
+
   const activeStep = STEPS_Q[step - 1];
 
   const submitQuiz = () => {
@@ -559,13 +908,70 @@ export default function ElectricityExperience({
        tuloksissa. Muuten säästöluku näkyisi ruudulla ilman että sen
        lähtöarvo olisi missään näkyvissä — eli tarkistamattomana. */
     if (curPrice.trim() !== "") setShowCurrent(true);
-    /* Jos suositukseen vastattiin, se avataan valmiiksi tuloksissa —
-       muuten vastaus katoaisi eikä käyttäjä näkisi mitä siitä seurasi. */
-    if (canShift !== null && wantsSteady !== null) {
+    /* Jos hintatoiveeseen vastattiin, suositus avataan valmiiksi
+       tuloksissa — muuten vastaus katoaisi eikä käyttäjä näkisi mitä
+       siitä seurasi. "En osaa sanoa" ei rajaa listaa. */
+    if (advice) {
       setShowAdvisor(true);
-      setType(advice!.type);
+      setType(advice.type);
     }
   };
+
+  /** Yhteenvetorivi vaiheessa 6. */
+  const summaryRow = (n: number, label: string, value: string) => (
+    <div
+      key={label}
+      className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-line py-3 last:border-b-0"
+    >
+      <div className="min-w-0">
+        <p className="text-[13px] font-medium text-ink/55">{label}</p>
+        <p className="mt-0.5 font-display text-[16px] font-bold text-ink">{value}</p>
+      </div>
+      <button
+        onClick={() => setStep(n)}
+        className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-line bg-white px-3.5 py-2 font-display text-[13.5px] font-semibold text-ink/75 transition-colors hover:border-accent/50 hover:text-ink"
+      >
+        <Pencil size={13} aria-hidden /> Muuta
+      </button>
+    </div>
+  );
+
+  const summaryBlock = (
+    <div>
+      <div className="rounded-2xl border border-line bg-mist px-4 py-1 sm:px-5">
+        {summaryRow(1, "Kotisi", dwellingGuess ? dwellingGuess.label : "Kerroit kulutuksen suoraan")}
+        {summaryRow(2, "Sähkön kulutus", `${kwh.toLocaleString("fi-FI")} kWh vuodessa`)}
+        {summaryRow(3, "Postinumero", postcode.length === 5 ? postcode : "Ei annettu")}
+        {summaryRow(
+          4,
+          "Tärkeintä sinulle",
+          pricePref === "steady" ? "Ennustettava lasku"
+            : pricePref === "cheapest" ? "Halvin mahdollinen"
+            : "Et osannut sanoa — näytämme kaikki"
+        )}
+        {summaryRow(
+          5,
+          "Nykyinen hintasi",
+          currentAnnual !== null
+            ? `${currentAnnual.toLocaleString("fi-FI", { maximumFractionDigits: 0 })} € vuodessa`
+            : "Ei tiedossa — säästöä ei lasketa"
+        )}
+      </div>
+
+      {advice && (
+        <p className="mt-4 flex items-start gap-2.5 rounded-2xl border border-gold/30 bg-gold/[0.07] px-4 py-3.5 text-[14.5px] leading-relaxed text-ink/85">
+          <FoxPaw className="mt-0.5 shrink-0 text-goldInk" />
+          <span>
+            Vastaustesi perusteella Kettu näyttää ensin{" "}
+            <strong className="font-semibold text-goldInk">
+              {advice.type === "fixed" ? "kiinteähintaiset sopimukset" : "pörssisopimukset"}
+            </strong>
+            . Pääset näkemään myös muut yhdellä napilla.
+          </span>
+        </p>
+      )}
+    </div>
+  );
 
   /** Kysely: yksi vaihe kerrallaan, portin takana. */
   const wizard = (
@@ -576,8 +982,8 @@ export default function ElectricityExperience({
         Vaihenumero oli aiemmin 11 px versaali harmaalla ("Askel 1 / 2"),
         eli tismalleen se elementti, jonka silmä ohittaa. Portin takana
         vaihe on kuitenkin tärkein yksittäinen tieto ruudulla: se kertoo
-        että kysymyksiä on kolme eikä kolmekymmentä. Se on suora syy
-        siihen, aloittaako käyttäjä täyttämisen vai vierittääkö ohi.
+        montako kysymystä on jäljellä. Se on suora syy siihen,
+        aloittaako käyttäjä täyttämisen vai vierittääkö ohi.
 
         Numero on haalea (`text-accent/[0.14]`) ja `aria-hidden`:
         ruudunlukija saa saman tiedon viereisestä tekstistä, ja silmälle
@@ -593,23 +999,36 @@ export default function ElectricityExperience({
         </span>
 
         <div className="relative">
-          <p className="flex items-center gap-2.5 font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-accentDark">
-            Ketun kysely · vaihe {step} / 3
+          <p className="flex items-center gap-2.5 font-display text-[12px] font-bold uppercase tracking-[0.18em] text-accentDark">
+            Kysymys {step} / {LAST_STEP}
             <BrushRule className="text-accent/70" width={40} />
           </p>
-          <p className="mt-2 font-display text-[19px] font-bold leading-snug text-ink sm:text-[21px]">
-            {activeStep.title}
-          </p>
-          <p className="mt-1 text-[13px] text-ink/65">{activeStep.hint}</p>
 
-          {/* Edistymispalkki. Kolme palaa, ei liukuva viiva: paloista
-              näkee yhdellä silmäyksellä montako on jäljellä. */}
-          <div className="mt-4 flex gap-1.5">
-            {STEPS_Q.map((s) => (
+          {/*
+            KYSYMYS ON RUUDUN SUURIN TEKSTI.
+
+            Se oli 19 px lihavoitua leipätekstiä, eli samaa kokoluokkaa
+            kuin sen alla olevat vastausvaihtoehdot. Kun kysymys ja
+            vastaus näyttävät samalta, ruudulta ei näe mikä on kysymys —
+            ja juuri se on se hetki, jossa iäkkäämpi käyttäjä lopettaa.
+            25/30 px erottaa kysymyksen yksiselitteisesti kaikesta
+            muusta ruudulla.
+          */}
+          <h3 className="mt-2.5 font-display text-[25px] font-bold leading-[1.15] text-ink sm:text-[30px]">
+            {activeStep.title}
+          </h3>
+          <p className="mt-2 max-w-[46ch] text-[15px] leading-relaxed text-ink/70">
+            {activeStep.hint}
+          </p>
+
+          {/* Edistymispalkki. Paloista näkee yhdellä silmäyksellä montako
+              on jäljellä; liukuva viiva ei kerro sitä. */}
+          <div className="mt-4 flex gap-1.5" aria-hidden>
+            {STEPS_Q.map((sq) => (
               <span
-                key={s.n}
-                className={`h-1.5 flex-1 rounded-full transition-colors ${
-                  s.n <= step ? "bg-accent" : "bg-line"
+                key={sq.n}
+                className={`h-2 flex-1 rounded-full transition-colors ${
+                  sq.n < step ? "bg-accent" : sq.n === step ? "bg-accent" : "bg-line"
                 }`}
               />
             ))}
@@ -617,64 +1036,75 @@ export default function ElectricityExperience({
         </div>
       </div>
 
-      <div className="mt-5">
-        {step === 1 && dwellingBlock}
-        {step === 2 && (
-          <div className="space-y-4">
-            {kwhBlockEl(false)}
-            <div className="border-t border-line pt-4">{currentBlockEl(true)}</div>
-          </div>
-        )}
-        {step === 3 && prefBlock}
+      <div className="mt-6">
+        {step === 1 && dwellingBig}
+        {step === 2 && kwhBig}
+        {step === 3 && postcodeBlock}
+        {step === 4 && prefBlock}
+        {step === 5 && currentChoiceBlock}
+        {step === 6 && summaryBlock}
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-line pt-5">
-        {step > 1 && (
+      {/*
+        NAVIGOINTI ON AINA SAMASSA PAIKASSA JA SAMAN NÄKÖINEN.
+
+        Iso oranssi nappi oikealla vie eteenpäin, harmaampi vasemmalla
+        taakse — joka ainoalla ruudulla, myös ensimmäisellä. Vaiheessa 1
+        "Takaisin" oli aiemmin kokonaan piilossa, jolloin napit siirtyivät
+        paikaltaan heti ensimmäisen klikin jälkeen. Liikkuva nappi on
+        pahin mahdollinen asia käyttäjälle, joka etsii sitä katseella.
+        Nyt se on ensimmäisellä ruudulla näkyvissä mutta pois käytöstä.
+      */}
+      <div className="mt-7 border-t border-line pt-5">
+        <div className="flex flex-wrap items-center gap-3">
           <button
-            onClick={() => setStep(step - 1)}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-line bg-white px-4 py-3 font-display text-[13.5px] font-semibold text-ink/75 transition-colors hover:border-lineDark hover:text-ink"
+            onClick={() => setStep(Math.max(1, step - 1))}
+            disabled={step === 1}
+            className="inline-flex items-center gap-2 rounded-xl border border-line bg-white px-5 py-3.5 font-display text-[15px] font-semibold text-ink/75 transition-colors hover:border-lineDark hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
           >
-            <ArrowLeft size={15} aria-hidden /> Takaisin
+            <ArrowLeft size={16} aria-hidden /> Takaisin
           </button>
+
+          {step < LAST_STEP ? (
+            <button
+              onClick={() => setStep(step + 1)}
+              disabled={!stepValid}
+              className="btn-ember inline-flex flex-1 items-center justify-center gap-2 rounded-xl px-7 py-4 font-display text-[16.5px] font-bold text-onEmber transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 sm:flex-none"
+            >
+              Jatka <ArrowRight size={17} aria-hidden />
+            </button>
+          ) : (
+            <button
+              onClick={submitQuiz}
+              className="btn-ember inline-flex flex-1 items-center justify-center gap-2 rounded-xl px-7 py-4 font-display text-[16.5px] font-bold text-onEmber transition-all active:scale-[0.98] sm:flex-none"
+            >
+              Näytä sopimukset <ArrowRight size={17} aria-hidden />
+            </button>
+          )}
+        </div>
+
+        {stepBlocker && (
+          <p className="mt-3 text-[14px] text-ink/60">{stepBlocker}</p>
         )}
 
-        {step < 3 ? (
-          <button
-            onClick={() => setStep(step + 1)}
-            disabled={!stepValid}
-            className="btn-ember inline-flex flex-1 items-center justify-center gap-2 rounded-xl px-6 py-3.5 font-display text-[15px] font-bold text-onEmber transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 sm:flex-none"
-          >
-            Jatka <ArrowRight size={16} aria-hidden />
-          </button>
-        ) : (
-          <button
-            onClick={submitQuiz}
-            className="btn-ember inline-flex flex-1 items-center justify-center gap-2 rounded-xl px-7 py-3.5 font-display text-[15.5px] font-bold text-onEmber transition-all active:scale-[0.98] sm:flex-none"
-          >
-            Näytä sopimukset <ArrowRight size={16} aria-hidden />
-          </button>
-        )}
+        {/*
+          OHITUS TULEE NÄKYVIIN VASTA VAIHEESTA 3.
 
-        {step === 3 && (
+          Vaiheet 1–2 tuottavat ne kaksi lukua, joilla koko tuloslista
+          lasketaan; ilman niitä ohitus veisi käyttäjän hintataulukkoon,
+          jota vain selataan. Vaiheesta 3 eteenpäin loput kysymykset ovat
+          tarkennuksia, ja silloin ulospääsy on tuoton kannalta parempi
+          kuin umpikuja: ohittanut kävijä näkee silti omilla luvuillaan
+          lasketun listan ja voi painaa "Tee sopimus". Loukkuun jäänyt
+          poistuu sivustolta.
+        */}
+        {step >= 3 && (
           <button
-            onClick={() => { setCanShift(null); setWantsSteady(null); setSubmitted(true); }}
-            /*
-              `basis-full` kapealla ruudulla: kolme elementtiä samalla
-              rivillä puristi "Näytä sopimukset" -napin kahdelle
-              riville jo 500 px:ssä. Sivun tärkein nappi ei saa olla se,
-              joka joustaa, kun tilaa on vähän — ohituslinkki saa oman
-              rivinsä, ja nappi säilyttää täyden leveytensä.
-            */
-            className="basis-full text-center text-[13px] font-medium text-ink/60 underline underline-offset-4 hover:text-ink sm:basis-auto sm:text-left"
+            onClick={() => setSubmitted(true)}
+            className="mt-3 text-[13.5px] font-medium text-ink/55 underline underline-offset-4 hover:text-ink"
           >
-            Ohita ja näytä kaikki
+            Ohita loput kysymykset ja näytä sopimukset
           </button>
-        )}
-
-        {step === 1 && !stepValid && (
-          <span className="basis-full text-[12.5px] text-ink/55 sm:basis-auto">
-            Valitse yksi vaihtoehto jatkaaksesi.
-          </span>
         )}
       </div>
     </>
@@ -1107,6 +1537,147 @@ export default function ElectricityExperience({
             )}
           </div>
 
+          {/*
+            KETUN SUOSITUS — kyselyn palkinto.
+
+            MIKSI TÄMÄ ON OLEMASSA: kysely kysyy nyt kuusi kertaa jotain.
+            Jos vastauksena on pelkkä lajiteltu lista, käyttäjä on tehnyt
+            työtä eikä saanut mitään takaisin — ja seuraavalla käynnillä
+            hän ohittaa kyselyn. Yksi nimetty sopimus perusteluineen on se
+            vastaus, jota kuusi kysymystä lupasi.
+
+            MIKSI SE ON TUOTON KANNALTA SIVUN TÄRKEIN LAATIKKO: kuusi
+            korttia on juuri se määrä vaihtoehtoja, jossa päätös
+            lykkääntyy "mietin illalla" -tilaan. Tämä paneeli tekee
+            päätöksen valmiiksi ja tarjoaa napin samaan ruutuun.
+
+            MIKSI SE ON REHELLINEN: valintaperuste luetellaan tässä auki
+            (hinta 72 % · arvio 28 %), se on sama kaava kuin korttien
+            merkissä, ja halvin vaihtoehto on aina merkitty erikseen. Jos
+            asiakkaan oma sopimus on jo halvempi, tätä paneelia ei
+            näytetä lainkaan — silloin ruudulla on "älä vaihda", eikä sen
+            viereen kuulu ostokehotus.
+
+            ANIMAATIO: pelkkä sisääntulo, ei odotusta eikä laskennan
+            teatteria. Tekaistu "Kettu miettii…" -viive on käytetty
+            temppu, mutta se on valehtelua sekunneista ja iäkkäälle
+            käyttäjälle se näyttää jumittuneelta sivulta.
+          */}
+          {recommendedPlan && !alreadyGood && (
+            <motion.div
+              initial={reduce ? false : { opacity: 0, y: 22 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="theme-ember ember-surface relative mt-4 overflow-hidden rounded-3xl border border-line shadow-lift"
+            >
+              <div className="relative z-[1] flex flex-col gap-6 p-5 sm:p-7 md:flex-row md:items-center">
+                {/* Kettu tulee mukaan omalla ajoituksellaan: sama suunta,
+                    hitusen myöhemmin, jotta katse osuu ensin tekstiin ja
+                    vasta sitten hahmoon. */}
+                <motion.div
+                  initial={reduce ? false : { opacity: 0, scale: 0.9, rotate: -6 }}
+                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                  transition={{ duration: 0.5, delay: reduce ? 0 : 0.12, ease: [0.22, 1, 0.36, 1] }}
+                  className="shrink-0"
+                >
+                  <Image
+                    src="/kettu-osoittaa.webp"
+                    alt=""
+                    width={520}
+                    height={640}
+                    className="mx-auto h-32 w-auto object-contain md:h-40"
+                  />
+                </motion.div>
+
+                <div className="min-w-0 flex-1">
+                  <p className="flex items-center gap-2.5 font-display text-[12px] font-bold uppercase tracking-[0.18em] text-goldInk">
+                    <FoxPaw /> Ketun suositus sinulle
+                    <BrushRule className="text-goldInk/70" width={40} />
+                  </p>
+
+                  <h3 className="mt-3 font-hero text-[1.7rem] leading-[1.12] text-cream sm:text-[2.1rem]">
+                    {recommendedPlan.provider} — {recommendedPlan.name}
+                  </h3>
+
+                  <p className="mt-2.5 max-w-[54ch] text-[15px] leading-relaxed text-ink/85">
+                    {recommendedIsCheapest
+                      ? "Tämä on suoraan halvin sopimus sinun kulutuksellasi. Sitä ei tarvitse perustella sen kummemmin."
+                      : "Tämä ei ole listan halvin, mutta se on paras kokonaisuus: hinta painaa valinnassa 72 % ja muiden asiakkaiden arvio 28 %."}
+                    {recommendedPlan.type === "fixed"
+                      ? " Hinta on lukittu, joten lasku pysyy samana koko sopimuskauden."
+                      : recommendedPlan.type === "spot"
+                        ? " Hinta seuraa sähköpörssiä, joten se elää kuukausittain."
+                        : " Sopimus on voimassa toistaiseksi, ja yhtiö voi muuttaa hintaa ilmoitusajalla."}
+                  </p>
+
+                  {/* Luvut nostetaan omaksi rivikseen: suosituksen pitää
+                      kestää tarkistus samassa ruudussa, jossa se annetaan. */}
+                  <div className="mt-5 flex flex-wrap items-center gap-x-7 gap-y-3">
+                    <div>
+                      <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-goldInk">
+                        Arvio sinulle
+                      </p>
+                      <p className="mt-0.5 font-display font-data font-price text-[2rem] font-extrabold leading-none tracking-tight text-cream">
+                        {(annualCost(recommendedPlan, kwh) / 12).toLocaleString("fi-FI", {
+                          minimumFractionDigits: 1,
+                          maximumFractionDigits: 1,
+                        })}{" "}
+                        €
+                        <span className="ml-1 text-[15px] font-semibold text-ink/75">/ kk</span>
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-goldInk">
+                        Vuodessa
+                      </p>
+                      <p className="mt-0.5 font-display font-data text-[1.35rem] font-bold leading-none text-cream">
+                        {annualCost(recommendedPlan, kwh).toLocaleString("fi-FI", {
+                          maximumFractionDigits: 0,
+                        })}{" "}
+                        €
+                      </p>
+                    </div>
+                    {currentAnnual !== null && currentAnnual > annualCost(recommendedPlan, kwh) && (
+                      <div>
+                        <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-goldInk">
+                          Säästö nykyiseesi
+                        </p>
+                        <p className="mt-0.5 font-display font-data text-[1.35rem] font-bold leading-none text-cream">
+                          {(currentAnnual - annualCost(recommendedPlan, kwh)).toLocaleString("fi-FI", {
+                            maximumFractionDigits: 0,
+                          })}{" "}
+                          € / v
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mt-6 flex flex-wrap items-center gap-3">
+                    {/* `theme-light` kääre: kermanapin sisällä `bg-white`
+                        pitää piirtyä vaaleana eikä oranssina. Ks. CLAUDE.md
+                        huomautus ember-ansasta. */}
+                    <div className="theme-light">
+                      <AffiliateButton
+                        href={recommendedPlan.affiliateUrl}
+                        cardId={recommendedPlan.id}
+                        placement="energy-suositus"
+                        variant="inverse"
+                      >
+                        Tee sopimus
+                      </AffiliateButton>
+                    </div>
+                    <a
+                      href={`/sahkosopimukset/sopimus/${recommendedPlan.slug}`}
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-cream/40 px-5 py-3.5 font-display text-[14.5px] font-bold text-cream transition-colors hover:bg-cream/10"
+                    >
+                      Lue ehdot ensin <ArrowRight size={15} aria-hidden />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
           {/* Suosittelija: kiinni oletuksena, auki yhdellä klikillä */}
           {!showAdvisor ? (
             <button
@@ -1125,7 +1696,7 @@ export default function ElectricityExperience({
                   Epäröitkö, kumpi sopii: pörssisähkö vai kiinteä?
                 </span>
                 <span className="mt-0.5 block text-[13px] text-ink/70">
-                  Vastaa kahteen kysymykseen, niin Kettu suosittelee ja rajaa listan.
+                  Vastaa yhteen kysymykseen, niin Kettu suosittelee ja rajaa listan.
                 </span>
               </span>
               <span className="shrink-0 font-display text-[13.5px] font-bold text-accentDark">Avaa</span>
@@ -1143,22 +1714,11 @@ export default function ElectricityExperience({
                 <X size={13} aria-hidden /> Sulje
               </button>
             </div>
-            <div className="mt-4 grid gap-4 sm:grid-cols-2">
-              <Question
-                label="Voitko ajoittaa kulutusta yölle tai halvoille tunneille?"
-                value={canShift}
-                onChange={setCanShift}
-                yes="Kyllä, onnistuu"
-                no="En käytännössä"
-              />
-              <Question
-                label="Kumpi on sinulle tärkeämpää?"
-                value={wantsSteady}
-                onChange={setWantsSteady}
-                yes="Ennustettava lasku"
-                no="Pienin mahdollinen hinta"
-              />
-            </div>
+            {/* SAMA PALIKKA KUIN KYSELYN VAIHEESSA 4. Kaksi eri versiota
+                samasta kysymyksestä tuottaisi kaksi totuuden lähdettä:
+                kyselyssä annettu vastaus ei näkyisi täällä valittuna, ja
+                käyttäjä vastaisi samaan asiaan kahdesti eri sanoilla. */}
+            <div className="mt-4">{prefBlock}</div>
 
             <AnimatePresence>
               {advice && (
@@ -1354,36 +1914,75 @@ export default function ElectricityExperience({
   );
 }
 
-/** Kahden vaihtoehdon kysymys suosittelijaan. */
-function Question({
-  label, value, onChange, yes, no,
+/**
+ * ISO VALINTAPAINIKE — kyselyn koko käytettävyys lepää tämän varassa.
+ *
+ * MIKSI NÄIN ISO: kohderyhmän vanhin pää käyttää sivua puhelimella
+ * ilman lukulaseja. Vanha vaihtoehtonappi oli 13 px tekstiä 2,5 rivin
+ * korkuisessa laatikossa — luettavissa, mutta juuri ja juuri, ja
+ * kosketuskohde jäi alle suositellun 44 px:n. Tässä rivin korkeus on yli
+ * 68 px, otsikko 17 px ja perustelu 14 px.
+ *
+ * MIKSI RASTI OIKEASSA REUNASSA: pelkkä värinvaihto ei riitä kertomaan
+ * valintaa. Osa käyttäjistä ei erota persikkaa hiekasta, ja moni epäilee
+ * ylipäätään menikö klikki perille. Erillinen rastiympyrä sanoo saman
+ * asian muodolla eikä värillä — se on sekä esteettömyyssääntö että syy
+ * sille, ettei käyttäjä klikkaa samaa nappia kolmesti.
+ *
+ * MIKSI EI AUTOMAATTISTA SIIRTYMÄÄ: valinta EI vie seuraavaan
+ * kysymykseen itsestään. Automaattinen siirtymä on nopea tottuneelle
+ * käyttäjälle, mutta iäkkäälle se on ruutu, joka vaihtui ilman että hän
+ * teki mitään — ja silloin hän ei enää tiedä mitä äsken tapahtui.
+ * Käyttäjä valitsee, näkee rastin, ja painaa itse "Jatka".
+ */
+function BigOption({
+  icon: Icon, title, hint, selected, onClick,
 }: {
-  label: string;
-  value: boolean | null;
-  onChange: (v: boolean) => void;
-  yes: string;
-  no: string;
+  icon?: React.ComponentType<{ size?: number | string; className?: string }>;
+  title: string;
+  hint?: string;
+  selected: boolean;
+  onClick: () => void;
 }) {
   return (
-    <div>
-      <p className="text-[13px] leading-snug text-ink/80">{label}</p>
-      <div className="mt-2 flex gap-2">
-        {[[true, yes], [false, no]].map(([v, text]) => {
-          const on = value === v;
-          return (
-            <button
-              key={String(v)}
-              onClick={() => onChange(v as boolean)}
-              aria-pressed={on}
-              className={`flex-1 rounded-xl border px-3 py-2.5 font-display text-[13px] font-semibold transition-all active:scale-[0.98] ${
-                on ? "border-accent bg-accentSoft text-accentDark" : "border-line bg-mist text-ink/70 hover:border-lineDark hover:text-ink"
-              }`}
-            >
-              {text as string}
-            </button>
-          );
-        })}
-      </div>
-    </div>
+    <button
+      onClick={onClick}
+      aria-pressed={selected}
+      className={`flex w-full items-center gap-4 rounded-2xl border-2 px-4 py-4 text-left transition-all active:scale-[0.99] sm:px-5 ${
+        selected
+          ? "border-accent bg-accentSoft shadow-card"
+          : "border-line bg-mist hover:border-lineDark hover:bg-night"
+      }`}
+    >
+      {Icon && (
+        <span
+          className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl transition-colors ${
+            selected ? "bg-accent text-onEmber shadow-ember" : "border border-line bg-white text-ink/45"
+          }`}
+        >
+          <Icon size={22} />
+        </span>
+      )}
+      <span className="min-w-0 flex-1">
+        <span
+          className={`block font-display text-[17px] font-bold leading-tight ${
+            selected ? "text-accentDark" : "text-ink"
+          }`}
+        >
+          {title}
+        </span>
+        {hint && (
+          <span className="mt-1 block text-[14px] leading-snug text-ink/60">{hint}</span>
+        )}
+      </span>
+      <span
+        className={`grid h-7 w-7 shrink-0 place-items-center rounded-full border-2 transition-colors ${
+          selected ? "border-accent bg-accent text-onEmber" : "border-lineDark bg-white"
+        }`}
+        aria-hidden
+      >
+        {selected && <Check size={15} strokeWidth={3} />}
+      </span>
+    </button>
   );
 }
