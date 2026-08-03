@@ -72,11 +72,21 @@ export default function FoxRosette({
       style={{ width: size, height: size, transform: `rotate(${tilt}deg)` }}
     >
       <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full" aria-hidden>
-        {/* Sakarareuna. Täyttö on hyvin haalea, jotta leima toimii sekä
-            tummalla että vaalealla pinnalla ilman erillistä varianttia. */}
-        <path d={outer} fill="rgb(217 162 79 / 0.10)" stroke="rgb(217 162 79 / 0.55)" strokeWidth="1.1" />
+        {/*
+          Sakarareuna. Täyttö oli 10 % ja kehä 55 % kullasta — se hävisi
+          persikkapinnalle niin, että leimat lukivat vesileimoiksi. Leiman
+          koko tehtävä on olla se elementti, johon katse pysähtyy ja jonka
+          takia palvelu näyttää tarkistetulta; haalea leima ei tee sitä
+          työtä, vaan vie tilaa tekemättä mitään.
+
+          Sävy on edelleen VAIN kultaa — kylläisempi, ei uusi väri. Jos
+          leimasta tehtäisiin oranssi, se kilpailisi "Tee sopimus"
+          -napin kanssa siitä, mikä on ruudun kuumin piste, ja se
+          vaihtokauppa on aina napin voitto.
+        */}
+        <path d={outer} fill="rgb(217 162 79 / 0.20)" stroke="rgb(217 162 79 / 0.80)" strokeWidth="1.3" />
         {/* Sisäkehä — arvomerkin tunnusomainen kaksoisviiva. */}
-        <circle cx="50" cy="50" r="35.5" fill="none" stroke="rgb(217 162 79 / 0.40)" strokeWidth="0.8" />
+        <circle cx="50" cy="50" r="35.5" fill="none" stroke="rgb(217 162 79 / 0.62)" strokeWidth="1" />
       </svg>
 
       {/* Sisältö HTML:nä eikä SVG-tekstinä, jotta se käyttää samoja
@@ -94,7 +104,7 @@ export default function FoxRosette({
         </p>
         {sub && (
           <p
-            className="mt-[4%] font-data font-semibold leading-tight opacity-75"
+            className="mt-[4%] font-data font-semibold leading-tight opacity-90"
             style={{ fontSize: size * 0.082 }}
           >
             {sub}

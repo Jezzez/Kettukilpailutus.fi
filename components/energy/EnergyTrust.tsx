@@ -74,20 +74,16 @@ export default function EnergyTrust() {
       erottumisen ja vahvistaa oranssia sen sijaan että kilpailisi sen
       kanssa.
 
-      Reunat hoidetaan hännänvedolla molemmissa päissä — ylempi on
-      180 asteen käännös samasta kaaresta, jolloin sivu näyttää siltä kuin
-      sama häntä olisi vetänyt molemmat rajat.
+      YLÄREUNASSA EI OLE HÄNNÄNVETOA. Sitä kokeiltiin, ja se toimi niin
+      kauan kuin yläpuolella oli tasainen paperipinta. Nyt yläpuolella on
+      oranssi "Kolme askelta" -vyö, jonka pohjassa on liukuväri: yksivärinen
+      kaari ei osu siihen millään sävyllä, vaan jättää sauman juuri siihen
+      kohtaan, jonka pitäisi näyttää viimeistellyimmältä. Suora raja
+      oranssista persikkaan on siistimpi kuin melkein osuva kaari.
+
+      Alareunassa hännänveto on, koska sen alla on tasainen paperi.
     */
     <section className="pelt-surface relative overflow-hidden py-24 md:py-28">
-      {/*
-        Hännänvetojen `fill` on NAAPURIVYÖHYKKEEN pohjaväri, ei tämän.
-        Muuttujaviittaus pitää arvon yhdessä paikassa, joten vaalean
-        pohjasävyn säätö ei jätä rajoihin vanhaa väriä.
-      */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-16 rotate-180">
-        <TailSweep fill="rgb(var(--c-paper))" height={64} />
-      </div>
-
       <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
         <div className="rounded-[2rem] border-2 border-gold/35 bg-white/70 px-6 py-14 shadow-card backdrop-blur-sm sm:px-12 md:py-16">
           <Reveal>

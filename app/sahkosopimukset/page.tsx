@@ -7,6 +7,8 @@ import Reveal from "@/components/Reveal";
 import FoxSays from "@/components/FoxSays";
 import SectionHead from "@/components/SectionHead";
 import CtaSection from "@/components/CtaSection";
+import BrushRule from "@/components/BrushRule";
+import TailSweep from "@/components/fox/TailSweep";
 import EnergyTrust from "@/components/energy/EnergyTrust";
 import { getPlans, getEnergyTopics } from "@/lib/energy";
 import { SITE } from "@/lib/data";
@@ -34,7 +36,7 @@ const ENERGY_FAQ: { q: string; a: string }[] = [
 ];
 
 const STEPS = [
-  ["Kerro kulutuksesi", "Valitse asumismuoto tai syötä kWh-lukema laskusta. Kettu laskee todelliset vuosihinnat."],
+  ["Vastaa kolmeen kysymykseen", "Asumismuoto, vuosikulutus ja se, kumpi on tärkeämpää: halpa vai ennustettava. Ei yhteystietoja."],
   ["Valitse sopimus", "Vertaa euroja, älä senttejä. Halvin on merkitty ja hintapalkit näyttävät erot heti."],
   ["Tee sopimus verkossa", "Täytä uuden yhtiön lomake parissa minuutissa. Yhtiö hoitaa loput."],
 ];
@@ -85,7 +87,11 @@ export default function ElectricityPage() {
       <FoxSays
         className="pt-14 md:pt-16"
         quote="Halvin sopimus ei ole se, jonka mainos on kovaäänisin. Se on se, jonka kokonaishinta on pienin — ja sen näkee vain laskemalla."
-        note="Yllä näkyvä euromäärä sisältää energian hinnan, kuukausimaksun ja arvonlisäveron. Siirtomaksu tulee verkkoyhtiöltäsi eikä muutu sopimusta vaihtamalla, joten se ei kuulu vertailuun."
+        /* Ei "yllä näkyvä euromäärä": kysely on nyt tulosten edessä, joten
+           osa lukijoista näkee tämän ennen kuin yhtään lukua on ruudulla.
+           Viittaus johonkin, mitä ei ole, saa palvelun näyttämään
+           rikkinäiseltä juuri luottamusrepliikin kohdalla. */
+        note="Vertailun euromäärä sisältää energian hinnan, kuukausimaksun ja arvonlisäveron. Siirtomaksu tulee verkkoyhtiöltäsi eikä muutu sopimusta vaihtamalla, joten se ei kuulu vertailuun."
       />
 
       {/*
@@ -94,26 +100,86 @@ export default function ElectricityPage() {
         joten ne on yhdistetty yhdeksi. Kaksi laatikkoa samasta asiasta saa
         vaihdon näyttämään työläämmältä kuin se on.
       */}
-      <section id="nain-toimii" className="scroll-mt-24 border-t border-line py-16 md:py-20">
-        <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
+      {/*
+        TÄMÄ OSIO ON ORANSSI VYÖ, EI VAALEA PALSTA.
+
+        MIKSI JUURI TÄSSÄ: sivun pisin vaalea jakso oli tuloslistan ja
+        luottamusvyön välissä. Kävijä on juuri nähnyt hintansa ja
+        epäröi yhtä asiaa — "onko vaihtaminen työlästä". Tämän osion
+        koko tehtävä on kumota se pelko, ja se onnistuu vain jos osio
+        nähdään. Kun koko kaista vaihtaa värin, selaus pysähtyy ennen
+        kuin riviäkään on luettu.
+
+        MIKSI TÄNNE SAA LAITTAA ORANSSIA: vyössä ei ole yhtään
+        ostonappia. Oranssit vyöt, joissa nappi on (hero ja
+        loppukehotus), säilyttävät siis edelleen ainoina ruudun
+        kuumimman pisteen — tämä vyö vie katseen, ei klikkiä.
+
+        Valkoinen kortti kääritään `theme-light`-luokkaan: ilman sitä
+        `bg-white` on ember-teemassa ORANSSI, ja kortti katoaisi
+        pohjaansa. Sama ansa koskee `text-accentDark`-luokkaa, joten
+        yläotsikko käyttää `text-goldInk`-sävyä kuten muutkin vyöt.
+
+        Alareunaan ei tule hännänvetoa: seuraava osio on persikkavyö,
+        jonka pohjassa on liukuväri, eikä yksivärinen kaari osu siihen
+        ilman saumaa. Suora raja oranssista persikkaan on tarkoituksella
+        terävä.
+      */}
+      <section
+        id="nain-toimii"
+        className="theme-ember ember-surface relative scroll-mt-24 overflow-hidden py-20 md:py-24"
+      >
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-16 rotate-180">
+          <div className="theme-light">
+            <TailSweep fill="rgb(var(--c-paper))" height={64} />
+          </div>
+        </div>
+
+        <div className="relative z-[1] mx-auto max-w-[1180px] px-4 sm:px-6">
           <Reveal>
-            <SectionHead
-              eyebrow="Näin vaihto etenee"
-              title="Kolme askelta, viisi minuuttia."
-              lead="Vaihto tapahtuu taustalla. Sinun osuutesi on lyhyempi kuin useimmat luulevat."
-            />
+            <div className="flex items-center gap-3">
+              <span className="font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-goldInk">
+                Näin vaihto etenee
+              </span>
+              <BrushRule className="text-goldInk/70" width={64} />
+            </div>
+            <h2 className="mt-4 max-w-[20ch] font-hero text-[2rem] leading-[1.08] text-cream sm:text-[2.5rem]">
+              Kolme askelta, viisi minuuttia.
+            </h2>
+            <p className="mt-3.5 max-w-[52ch] text-[15.5px] leading-relaxed text-ink/85 sm:text-[16.5px]">
+              Vaihto tapahtuu taustalla. Sinun osuutesi on lyhyempi kuin useimmat luulevat.
+            </p>
           </Reveal>
 
           <Reveal delay={0.08}>
-            <div className="mt-8 overflow-hidden rounded-3xl border border-line bg-white shadow-card">
+            <div className="theme-light mt-9 overflow-hidden rounded-3xl border border-line bg-white shadow-lift">
+              {/*
+                JÄTTINUMEROT. Askelnumero oli 13 px oranssia versaalia —
+                käytännössä koriste, joka luettiin osaksi otsikkoa. Kolmen
+                askeleen osion koko tehtävä on kumota pelko siitä, että
+                vaihtaminen on työlästä, ja se tehtävä hoituu vain jos
+                numerot nähdään ennen kuin tekstiä luetaan. Iso haalea
+                numero on suurin muoto solussa, joten silmä laskee
+                kolmeen ennen kuin ehtii epäröidä.
+
+                Sama toteutus kuin `components/Steps.tsx`:ssä (haalea
+                `text-accent`, `aria-hidden`, `overflow-hidden` solussa).
+                Älä keksi tähän omaa varianttia.
+              */}
               <div className="grid gap-px bg-line md:grid-cols-3">
                 {STEPS.map(([title, text], i) => (
-                  <div key={title} className="h-full bg-white p-6 sm:p-7">
-                    <span className="font-data text-[13px] font-bold tracking-[0.1em] text-accentDark">
-                      0{i + 1}
+                  <div key={title} className="lift relative h-full overflow-hidden bg-white p-6 sm:p-7">
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute -top-4 right-2 select-none font-hero text-[86px] leading-none text-accent/[0.13]"
+                    >
+                      {i + 1}
                     </span>
-                    <h3 className="mt-2.5 font-display text-[18px] font-bold text-ink">{title}</h3>
-                    <p className="mt-2 text-[14px] leading-relaxed text-ink/70">{text}</p>
+                    <span className="relative font-data text-[12px] font-bold uppercase tracking-[0.16em] text-accentDark">
+                      Askel 0{i + 1}
+                    </span>
+                    <h3 className="relative mt-2.5 font-display text-[18px] font-bold text-ink">{title}</h3>
+                    <p className="relative mt-2 text-[14px] leading-relaxed text-ink/70">{text}</p>
                   </div>
                 ))}
               </div>
