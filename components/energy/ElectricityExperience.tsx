@@ -641,9 +641,12 @@ export default function ElectricityExperience({
     REHELLISYYS ENSIN: sähkön MYYNTIhinta on Suomessa sama riippumatta
     siitä, missä asut, joten postinumero ei muuta yhtäkään tämän sivun
     lukua. Vain siirtomaksu on alueellinen, eikä sitä voi kilpailuttaa.
-    Siksi tässä ei väitetä "räätälöimme tuloksesi asuinalueesi mukaan" —
-    se olisi keksitty väite, ja keksityt väitteet ovat tällä sivustolla
-    kiellettyjä myös silloin kun ne toimisivat.
+    Siksi tässä EI väitetä "Kettu ehdottaa alueellasi suosituimpia
+    sopimuksia" eikä "räätälöimme tuloksesi asuinalueesi mukaan". Data ei
+    tunne alueita eikä suosiota, joten väite olisi keksitty — ja keksityt
+    väitteet ovat tällä sivustolla kiellettyjä myös silloin, kun ne
+    toimisivat. Jos alueellinen suosiodata joskus saadaan kumppanilta,
+    väitteen saa kirjoittaa tähän ja suodatuksen rakentaa oikeasti.
 
     MIKSI SITÄ SILTI KYSYTÄÄN: postinumero on yksi niistä tiedoista,
     jotka sopimuksen tekeminen vaatii, ja kysely on juuri se hetki, jossa
@@ -677,10 +680,10 @@ export default function ElectricityExperience({
       <p className="mt-4 flex items-start gap-2 rounded-xl border border-line bg-mist px-3.5 py-3 text-[14px] leading-relaxed text-ink/75">
         <Info size={15} className="mt-0.5 shrink-0 text-ink/45" aria-hidden />
         <span>
-          Sanotaan suoraan: <strong className="font-semibold">postinumero ei muuta hintoja.</strong>{" "}
-          Sähkön myyntihinta on sama koko Suomessa. Kysymme sen siksi, että tarvitset sitä
-          sopimusta tehdessäsi — ja jotta se on jo valmiina, kun tulet siihen kohtaan.
-          Numero jää selaimeesi eikä sitä lähetetä minnekään.
+          <strong className="font-semibold">Kettu kysyy tämän sinua varten:</strong> tarvitset
+          postinumeron sopimusta tehdessäsi, joten se on nyt valmiina siinä kohtaa. Vertailun
+          hintoihin se ei vaikuta — sähkön myyntihinta on sama koko Suomessa. Numero jää
+          selaimeesi.
         </span>
       </p>
     </div>
@@ -976,28 +979,7 @@ export default function ElectricityExperience({
   /** Kysely: yksi vaihe kerrallaan, portin takana. */
   const wizard = (
     <>
-      {/*
-        JÄTTINUMERO ON VAIHEEN ANKKURI.
-
-        Vaihenumero oli aiemmin 11 px versaali harmaalla ("Askel 1 / 2"),
-        eli tismalleen se elementti, jonka silmä ohittaa. Portin takana
-        vaihe on kuitenkin tärkein yksittäinen tieto ruudulla: se kertoo
-        montako kysymystä on jäljellä. Se on suora syy siihen,
-        aloittaako käyttäjä täyttämisen vai vierittääkö ohi.
-
-        Numero on haalea (`text-accent/[0.14]`) ja `aria-hidden`:
-        ruudunlukija saa saman tiedon viereisestä tekstistä, ja silmälle
-        riittää iso muoto — täysvahva oranssi numero kilpailisi
-        "Näytä sopimukset" -napin kanssa, ja se on väärä voittaja.
-      */}
-      <div className="relative overflow-hidden">
-        <span
-          aria-hidden
-          className="pointer-events-none absolute -top-6 right-0 select-none font-hero text-[92px] leading-none text-accent/[0.14] sm:text-[112px]"
-        >
-          {step}
-        </span>
-
+      <div>
         <div className="relative">
           <p className="flex items-center gap-2.5 font-display text-[12px] font-bold uppercase tracking-[0.18em] text-accentDark">
             Kysymys {step} / {LAST_STEP}
@@ -1444,7 +1426,7 @@ export default function ElectricityExperience({
       <section ref={resultsTopRef} className={`theme-light scroll-mt-20 bg-paper ${withHero ? "pt-14" : "pt-10"}`}>
         <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
           {/* Tulos */}
-          <div className="flex flex-wrap items-end justify-between gap-6 rounded-2xl border border-line bg-white px-5 py-6 shadow-card sm:rounded-[20px] sm:px-8 sm:py-7">
+          <div className="flex flex-wrap items-center justify-between gap-6 rounded-2xl border border-line bg-white px-5 py-6 shadow-card sm:rounded-[20px] sm:px-8 sm:py-7">
             <div>
               {/*
                 OVELA TEKSTILINJA. Tässä luki aiemmin "Askel 2 / 2 · tuloksesi"
@@ -1516,20 +1498,19 @@ export default function ElectricityExperience({
               </div>
             ) : (
               /* Ei omaa hintaa vielä — kehotus, ei keksitty säästöluku. */
-              <div className="pelt-surface w-full max-w-sm rounded-2xl border border-gold/35 px-6 py-5 shadow-card sm:rounded-[20px]">
-                <p className="flex items-center gap-2 text-[11.5px] font-semibold uppercase tracking-[0.14em] text-goldInk">
-                  <Wallet size={14} aria-hidden /> Säästösi euroina
+              <div className="pelt-surface w-full max-w-[17.5rem] rounded-2xl border border-gold/35 px-4 py-3.5 shadow-card sm:rounded-[18px]">
+                <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.13em] text-goldInk">
+                  <Wallet size={13} aria-hidden /> Säästösi euroina
                 </p>
-                <p className="mt-2 text-[13.5px] leading-relaxed text-ink/80">
-                  Emme arvaa säästöäsi. Syötä nykyinen hintasi, niin näet todellisen
-                  eron omaan sopimukseesi — myös silloin, jos vaihtaminen ei kannata.
+                <p className="mt-1.5 text-[12.5px] leading-snug text-ink/80">
+                  Emme arvaa säästöäsi — myöskään silloin, jos vaihtaminen ei kannata.
                 </p>
                 <button
                   onClick={() => {
                     setShowCurrent(true);
                     document.getElementById("vertailu")?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
                   }}
-                  className="mt-3 inline-flex items-center gap-2 rounded-full border border-gold/50 px-4 py-2 font-display text-[13px] font-bold text-goldInk transition-colors hover:bg-gold/15"
+                  className="mt-2.5 inline-flex items-center gap-2 rounded-full border border-gold/50 px-3.5 py-1.5 font-display text-[12.5px] font-bold text-goldInk transition-colors hover:bg-gold/15"
                 >
                   Syötä nykyinen hintani
                 </button>

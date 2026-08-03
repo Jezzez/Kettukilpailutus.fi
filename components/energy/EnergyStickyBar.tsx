@@ -72,18 +72,6 @@ export default function EnergyStickyBar({
     };
   }, [anchor]);
 
-  /*
-    Alanavigaation piilotus tehdään dokumentin data-attribuutilla, koska
-    MobileNav on eri puussa (layout) eikä jaettua tilaa ole. Sääntö on
-    yhdessä paikassa globals.css:ssä, jotta tämä ei jää arvoitukseksi.
-  */
-  useEffect(() => {
-    const root = document.documentElement;
-    if (show) root.setAttribute("data-cta-bar", "on");
-    else root.removeAttribute("data-cta-bar");
-    return () => root.removeAttribute("data-cta-bar");
-  }, [show]);
-
   if (!plan) return null;
 
   const monthly = annualCost(plan, kwh) / 12;

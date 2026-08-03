@@ -421,16 +421,4 @@ input[type="number"], input[type="text"], input[type="email"] {
   color-scheme: light;
 }
 
-/*
-  Mobiilin tulospalkki syrjäyttää alanavigaation.
 
-  Kun EnergyStickyBar on näkyvissä, se asettaa <html>-elementille
-  data-cta-bar="on". Alanavigaatio piilotetaan siksi ajaksi: kaksi kiinteää
-  palkkia söisi puhelimessa noin viidenneksen ruudusta, ja alanavigaatio
-  tarjoaisi kolme poistumistietä juuri sillä hetkellä, kun kävijän pitäisi
-  verrata sopimuksia. Attribuutti on ainoa side näiden kahden komponentin
-  välillä — ne ovat eri puissa (layout vs. sivun sisältö).
-*/
-[data-cta-bar="on"] nav[aria-label="Alanavigaatio"] {
-  display: none;
-}

@@ -3,7 +3,6 @@ import { Inter, Schibsted_Grotesk } from "next/font/google";
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import MobileNav from "@/components/MobileNav";
 import { SITE } from "@/lib/data";
 import "./globals.css";
 
@@ -88,9 +87,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Siirry sisältöön
         </a>
         <Header />
-        <main id="sisalto" className="pb-16 md:pb-0">{children}</main>
+        <main id="sisalto">{children}</main>
         <Footer />
-        <MobileNav />
       </body>
     </html>
   );

@@ -153,28 +153,9 @@ export default function ElectricityPage() {
 
           <Reveal delay={0.08}>
             <div className="theme-light mt-9 overflow-hidden rounded-3xl border border-line bg-white shadow-lift">
-              {/*
-                JÄTTINUMEROT. Askelnumero oli 13 px oranssia versaalia —
-                käytännössä koriste, joka luettiin osaksi otsikkoa. Kolmen
-                askeleen osion koko tehtävä on kumota pelko siitä, että
-                vaihtaminen on työlästä, ja se tehtävä hoituu vain jos
-                numerot nähdään ennen kuin tekstiä luetaan. Iso haalea
-                numero on suurin muoto solussa, joten silmä laskee
-                kolmeen ennen kuin ehtii epäröidä.
-
-                Sama toteutus kuin `components/Steps.tsx`:ssä (haalea
-                `text-accent`, `aria-hidden`, `overflow-hidden` solussa).
-                Älä keksi tähän omaa varianttia.
-              */}
               <div className="grid gap-px bg-line md:grid-cols-3">
                 {STEPS.map(([title, text], i) => (
                   <div key={title} className="lift relative h-full overflow-hidden bg-white p-6 sm:p-7">
-                    <span
-                      aria-hidden
-                      className="pointer-events-none absolute -top-4 right-2 select-none font-hero text-[86px] leading-none text-accent/[0.13]"
-                    >
-                      {i + 1}
-                    </span>
                     <span className="relative font-data text-[12px] font-bold uppercase tracking-[0.16em] text-accentDark">
                       Askel 0{i + 1}
                     </span>
