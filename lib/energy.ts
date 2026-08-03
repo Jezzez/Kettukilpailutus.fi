@@ -16,6 +16,16 @@ export interface ElectricityPlan {
   rating: number;
   reviews: number;
   affiliateUrl: string;
+  /**
+   * Yhtiön logo, polku `public/`-kansiosta (esim. "/logot/lumo.svg").
+   *
+   * Vapaaehtoinen tarkoituksella: nykyiset yhtiöt ovat esimerkkidataa, joten
+   * oikeita logoja ei ole eikä keksittyä logoa saa piirtää. Kun Adtractionin
+   * mediapankista tulee kumppanin logo, tiedosto viedään `public/logot/` ja
+   * polku tähän kenttään — kortti alkaa näyttää sen ilman koodimuutoksia.
+   * Ilman kenttää kortti näyttää yhtiön nimikirjaimet.
+   */
+  logo?: string;
   gradient: [string, string];
   features: string[];
   summary: string;

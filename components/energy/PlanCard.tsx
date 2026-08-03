@@ -1,10 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { Check, Leaf, Star, Zap } from "lucide-react";
+import { Leaf, Star, Zap } from "lucide-react";
 import type { ElectricityPlan } from "@/lib/energy";
 import { annualCost, TYPE_LABEL } from "@/lib/energy";
 import AffiliateButton from "../AffiliateButton";
+import FoxPaw from "../FoxPaw";
 
 export type PlanBadge = { kind: "cheapest" | "fox"; note?: string } | null;
 
@@ -23,6 +25,7 @@ export default function PlanCard({
   savings = 0,
   savingsLabel = "",
   maxCost,
+  rank,
 }: {
   plan: ElectricityPlan;
   kwh: number;
@@ -30,6 +33,8 @@ export default function PlanCard({
   savings?: number;
   savingsLabel?: string;
   maxCost: number;
+  /** Sijaluku valitussa järjestyksessä. Ks. perustelu logopalkin kommentissa. */
+  rank?: number;
 }) {
   const yearly = annualCost(plan, kwh);
   const monthly = yearly / 12;
@@ -52,57 +57,134 @@ export default function PlanCard({
           </p>
         </div>
       )}
+      {/*
+        "KETUN VALINTA" -SINETTI.
+
+        MIKSI SINETIN MUOTOINEN: kilpailijoilla (Verivox, sahkon-kilpailutus.fi)
+        luottamus rakennetaan kolmannen osapuolen sertifikaateilla — TÜV, eKomi,
+        tähtiarviot. Kettu ei voi näyttää niitä, koska niitä ei ole, eikä niitä
+        keksitä. Ainoa rehellinen tapa saada sama visuaalinen paino on antaa
+        Ketulle OMA sinetti ja painaa sen kriteeri näkyviin viereen.
+
+        MIKSI KRITEERI ON SINETISSÄ ITSESSÄÄN: sertifikaatti, jonka mittari
+        lukee merkin vieressä, on vahvempi kuin sertifikaatti, jonka mittarin
+        joutuu etsimään. Se vastaa vertailusivujen yleisimpään epäilyyn —
+        "onko tämä nosto ostettu?" — siinä sekunnissa kun epäily syntyy, eikä
+        vasta sivun alalaidan läpinäkyvyysosiossa. Mobiilissa kaava jää pois,
+        koska siellä tila menisi yhtiön nimeltä; sama kaava on auki
+        läpinäkyvyysosiossa.
+
+        Kultareunus erottaa merkin oranssista "Edullisin" -merkistä. Ne
+        tarkoittavat eri asiaa, joten ne eivät saa näyttää samalta: oranssi on
+        laskennan tulos, kulta on Ketun oma kannanotto.
+      */}
       {badge?.kind === "fox" && (
-        <div className="border-b border-line bg-mist px-5 py-2.5">
-          <p className="flex items-center gap-1.5 font-display text-[11.5px] font-bold uppercase tracking-[0.14em] text-goldInk">
-            <FoxPaw /> Ketun valinta
+        <div className="flex items-center gap-2.5 border-b border-gold/30 bg-gold/[0.09] px-4 py-2.5 sm:px-5">
+          <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-gold/55 bg-white text-goldInk">
+            <FoxPaw size={12} />
+          </span>
+          <p className="font-display text-[11.5px] font-bold uppercase tracking-[0.14em] text-goldInk">
+            Ketun valinta
           </p>
+          <span className="ml-auto hidden whitespace-nowrap font-data text-[10.5px] font-semibold text-ink/50 sm:block">
+            hinta 72 % · arvio 28 %
+          </span>
         </div>
       )}
+
+      {/*
+        LOGOPALKKI — kortin ylin rivi.
+
+        MIKSI OMANA PALKKINAAN: sähkövertailussa yhtiö tunnistetaan logosta
+        nopeammin kuin nimestä, ja tunnistettu yhtiö madaltaa kynnystä painaa
+        "Tee sopimus" -nappia. Tuntematon nimi taas saa kävijän poistumaan
+        googlaamaan yhtiötä muualle — ja se kävijä ei useimmiten palaa.
+        Omalla pinnalla ja alarajalla palkki toimii samalla ankkurina: kun
+        kuusi korttia alkaa samalla vaakaraidalla, silmä löytää rivin alun
+        ilman että sen tarvitsee lukea mitään.
+
+        Logo on valkoisella laatalla ja `object-contain`: yhtiöiden logot on
+        tehty valkoiselle pohjalle ja ne on säilytettävä sellaisina.
+        Rajaaminen tai värjääminen olisi tavaramerkin vääristämistä.
+
+        SIJALUKU logon edessä: ilman numeroa kuusi samannäköistä korttia
+        näyttää sekalaiselta listalta, ja kävijä alkaa epäillä, onko järjestys
+        maksettu. Numero tekee järjestyksen näkyväksi — ykkönen on ykkönen
+        valitulla mittarilla, ja kutonen kertoo, ettei alaspäin selaamalla
+        löydy halvempaa. Se lyhentää harkintaa ja vie klikin ylös listalle.
+      */}
+      <div className="flex items-center gap-3 border-b border-line bg-mist/70 px-4 py-3 sm:px-5">
+        {rank !== undefined && (
+          <span
+            className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg font-data text-[13px] font-extrabold tabular-nums ${
+              rank === 1
+                ? "bg-accent text-onEmber"
+                : "border border-line bg-white text-ink/45"
+            }`}
+            aria-hidden
+          >
+            {rank}
+          </span>
+        )}
+        <ProviderLogo provider={plan.provider} logo={plan.logo} />
+        <div className="min-w-0 flex-1">
+          <h3 className="truncate font-display text-[16px] font-bold leading-tight text-ink">
+            <Link href={`/sahkosopimukset/sopimus/${plan.slug}`} className="underline-offset-4 hover:underline">
+              {plan.provider}
+            </Link>
+          </h3>
+          <p className="mt-0.5 truncate text-[12.5px] text-ink/60">{plan.name}</p>
+        </div>
+      </div>
+
+      {/*
+        MERKKIRIVI omalla rivillään logopalkin alla.
+
+        Tyyppimerkki oli aiemmin logopalkin oikeassa reunassa, ja se söi
+        nimeltä niin paljon tilaa, että kolmen kortin rivillä luki
+        "LämpöVoi…" ja "Vihreä Sä…". Katkaistu yhtiön nimi on pahempi kuin
+        merkin siirtäminen: tunnistamaton yhtiö on juuri se, jonka kohdalla
+        kävijä lähtee googlaamaan eikä palaa. Omalla rivillään merkit myös
+        asettuvat samaan vaakalinjaan joka kortissa, jolloin sopimustyypin
+        vertailu onnistuu silmäilemällä yhtä riviä.
+      */}
+      <div className="flex flex-wrap items-center gap-2 border-b border-line px-4 py-2.5 sm:px-5">
+        <span className="whitespace-nowrap rounded-md border border-line bg-mist px-2 py-0.5 text-[11px] font-semibold text-ink/70">
+          {TYPE_LABEL[plan.type]}
+          {plan.fixedTermMonths ? ` · ${plan.fixedTermMonths} kk` : ""}
+        </span>
+        {plan.green && (
+          <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-md border border-accent/25 bg-accentSoft px-2 py-0.5 text-[11px] font-semibold text-accentDark">
+            <Leaf size={11} aria-hidden /> Uusiutuva
+          </span>
+        )}
+      </div>
 
       <div className="flex flex-1 flex-col p-5">
         {badge?.note && (
           <p className="mb-3 text-[12px] leading-snug text-ink/70">{badge.note}</p>
         )}
 
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <h3 className="font-display text-[17.5px] font-bold leading-tight text-ink">
-              <Link href={`/sahkosopimukset/sopimus/${plan.slug}`} className="underline-offset-4 hover:underline">
-                {plan.provider}
-              </Link>
-            </h3>
-            <p className="mt-0.5 text-[13px] text-ink/60">{plan.name}</p>
-          </div>
+        <div>
           {/*
-            Laatta on tarkoituksella neutraali. Palveluntarjoajan omat
-            brändivärit toisivat sivulle 4–5 uutta väriä, ja paletissa on
-            vain oranssi ja kulta. Erottelu tehdään valoarvolla ja tekstillä.
+            YKSI DESIMAALI, EI PYÖRISTYSTÄ KOKONAISIIN EUROIHIN.
+
+            Kokonaisina euroina 367 €/v ja 376 €/v näyttivät molemmat
+            "31 €/kk". Silloin "Ketun valinta" -kortissa luki "ei halvin",
+            vaikka sen hinta näytti täsmälleen samalta kuin halvimman —
+            ja mobiilin tulospalkki väitti samaa lukua edullisimmaksi.
+            Lukija, joka huomaa tuollaisen ristiriidan, ei enää usko
+            muitakaan lukuja, ja juuri lukujen uskominen on tämän sivun
+            koko ansaintalogiikka. Desimaali maksaa vähän silmää ja
+            poistaa ristiriidan kokonaan.
+
+            Sama tarkkuus on heron kärkiluvussa ja tulospalkissa —
+            kolmen eri pyöristyksen näyttäminen olisi sama ongelma
+            uudessa muodossa.
           */}
-          <span
-            className="grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-line bg-mist"
-            aria-hidden
-          >
-            <Zap size={17} className="text-ink/35" />
-          </span>
-        </div>
-
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          <span className="rounded-md bg-mist px-2.5 py-1 text-[11px] font-semibold text-ink/65">
-            {TYPE_LABEL[plan.type]}
-            {plan.fixedTermMonths ? ` · ${plan.fixedTermMonths} kk` : ""}
-          </span>
-          {plan.green && (
-            <span className="inline-flex items-center gap-1 rounded-md bg-mist px-2.5 py-1 text-[11px] font-semibold text-ink/65">
-              <Leaf size={11} aria-hidden /> Uusiutuva
-            </span>
-          )}
-        </div>
-
-        <div className="mt-5">
           <div className="flex items-baseline gap-1.5">
-            <span className="font-display font-data text-[38px] font-extrabold leading-none tracking-[-0.03em] text-ink">
-              {monthly.toLocaleString("fi-FI", { maximumFractionDigits: 0 })} €
+            <span className="font-display font-data font-price text-[38px] font-extrabold leading-none tracking-[-0.03em] text-ink">
+              {monthly.toLocaleString("fi-FI", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} €
             </span>
             <span className="font-display text-[14px] font-semibold text-ink/60">/ kk</span>
           </div>
@@ -139,10 +221,20 @@ export default function PlanCard({
           </div>
         </dl>
 
+        {/*
+          Luettelomerkkinä ketun tassu, ei harmaa väkänen. Väkänen on sama
+          merkki kuin jokaisella verkkokaupalla, joten silmä ohittaa sen.
+          Tassu on brändin oma ele ja toistuu joka kortissa — se saa listan
+          näyttämään Ketun suositukselta eikä tuotekuvauksen kopiolta.
+          Sama tassu on "Ketun valinta" -merkissä, joten kahden välille
+          syntyy yhteys ilman että sitä tarvitsee selittää.
+        */}
         <ul className="mt-4 flex-1 space-y-1.5">
           {plan.features.slice(0, 3).map((f) => (
             <li key={f} className="flex items-start gap-2 text-[13px] leading-snug text-ink/80">
-              <Check size={14} strokeWidth={3} className="mt-0.5 shrink-0 text-ink/35" aria-hidden />
+              <span className="mt-[3px] shrink-0 text-accent/70" aria-hidden>
+                <FoxPaw />
+              </span>
               {f}
             </li>
           ))}
@@ -171,15 +263,49 @@ export default function PlanCard({
   );
 }
 
-/** Pieni tassunjälki — ketun oma merkki suositukselle. */
-function FoxPaw() {
+/**
+ * Yhtiön logo — tai sen paikka, kunnes oikea logo on olemassa.
+ *
+ * Nykyiset yhtiöt ovat esimerkkidataa, joten logotiedostoja ei ole. Keksityn
+ * logon piirtäminen olisi juuri sitä, mitä tämä sivusto ei tee: se antaisi
+ * olemattomalle yhtiölle uskottavan ilmeen. Siksi ilman logoa näytetään
+ * yhtiön nimikirjaimet neutraalilla laatalla — se on rehellinen paikanpitäjä
+ * ja näyttää silti viimeistellyltä.
+ *
+ * Kun `logo`-kenttä täytetään `data/electricity.json`-tiedostoon, oikea kuva
+ * ilmestyy tähän ilman muita muutoksia.
+ */
+function ProviderLogo({ provider, logo }: { provider: string; logo?: string }) {
+  if (logo) {
+    return (
+      <span className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-xl border border-line bg-white p-1.5">
+        <Image
+          src={logo}
+          alt={`${provider} logo`}
+          width={96}
+          height={96}
+          className="h-full w-full object-contain"
+        />
+      </span>
+    );
+  }
+
+  const initials = provider
+    .replace(/\b(Oy|Ab|Oyj)\b/gi, "")
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase();
+
   return (
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-      <ellipse cx="12" cy="16" rx="5.2" ry="4.4" />
-      <ellipse cx="5.6" cy="10.4" rx="2.2" ry="2.9" />
-      <ellipse cx="18.4" cy="10.4" rx="2.2" ry="2.9" />
-      <ellipse cx="9" cy="5.6" rx="2" ry="2.7" />
-      <ellipse cx="15" cy="5.6" rx="2" ry="2.7" />
-    </svg>
+    <span
+      className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-line bg-mist font-display text-[15px] font-bold tracking-tight text-ink/45"
+      title={provider}
+      aria-hidden
+    >
+      {initials}
+    </span>
   );
 }

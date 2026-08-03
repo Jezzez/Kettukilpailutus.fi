@@ -11,7 +11,39 @@ import { annualCost, ASSUMED_SPOT_AVG, DWELLINGS, PRICE_DATE } from "@/lib/energ
 import PlanCard, { type PlanBadge } from "./PlanCard";
 import SpotCurve from "./SpotCurve";
 import SpotPriceLive from "./SpotPriceLive";
+import EnergyStickyBar from "./EnergyStickyBar";
 import BrushRule from "../BrushRule";
+import FoxPaw from "../FoxPaw";
+
+/**
+ * Heron kolme lupausta ja niiden perustelut.
+ *
+ * Jokainen `why` on tarkistettavissa oleva tosiasia, ei markkinointilause.
+ * Toinen kohta kertoo tarkoituksella myös poikkeuksen: määräaikaisen
+ * sopimuksen purkaminen voi maksaa. Jos lukija törmää siihen vasta
+ * sähköyhtiön sivulla, hän palaa takaisin tuntien tulleensa vedätetyksi —
+ * ja se on menetetty palkkio sekä menetetty paluukävijä. Sanottuna se on
+ * sivun uskottavin lause.
+ *
+ * ÄLÄ lisää tähän lupausta, jota et voi perustella yhdellä lauseella.
+ */
+const HERO_CLAIMS = [
+  {
+    icon: Plug,
+    text: "Sähkö ei katkea",
+    why: "Sähkö tulee kotiisi täsmälleen samaa verkkoa pitkin kuin ennenkin — vaihtuu vain yhtiö, joka laskuttaa sinua myydystä sähköstä. Siirtoyhtiösi pysyy samana eikä vaihdosta synny katkoa.",
+  },
+  {
+    icon: RefreshCw,
+    text: "Vanha sopimus irtisanotaan puolestasi",
+    why: "Uusi sähköyhtiö hoitaa irtisanomisen, eli sinun ei tarvitse soittaa vanhalle yhtiölle. Yksi poikkeus: jos sinulla on kesken määräaikainen sopimus, sen purkamisesta voi tulla kuluja — tarkista päättymispäivä laskustasi ennen vaihtoa.",
+  },
+  {
+    icon: Timer,
+    text: "Vie noin 5 minuuttia",
+    why: "Tarvitset sähkölaskustasi 17-numeroisen käyttöpaikkatunnuksen sekä pankkitunnukset tunnistautumiseen. Sopimus syntyy sähköisesti, ja etämyynnissä sillä on aina 14 vuorokauden peruutusoikeus.",
+  },
+] as const;
 
 /**
  * Sähkön koko kokemus.
@@ -91,6 +123,8 @@ export default function ElectricityExperience({
    * päätöksen, mutta suljettuna se ei ole enää kolmas päätös hintojen ja
    * käyttäjän välissä. Auki yhdellä klikillä sille, joka epäröi.
    */
+  /** Mikä heron lupauksista on auki. Ks. perustelu HERO_CLAIMS-listan yllä. */
+  const [openClaim, setOpenClaim] = useState<number | null>(null);
   const [showAdvisor, setShowAdvisor] = useState(false);
   const [canShift, setCanShift] = useState<boolean | null>(null);
   const [wantsSteady, setWantsSteady] = useState<boolean | null>(null);
@@ -120,9 +154,15 @@ export default function ElectricityExperience({
   const cheapestCost = useMemo(() => Math.min(...plans.map((p) => annualCost(p, kwh))), [plans, kwh]);
   const maxShown = Math.max(...filtered.map((p) => annualCost(p, kwh)), 1);
 
-  const cheapestId = filtered.length > 1
-    ? [...filtered].sort((a, b) => annualCost(a, kwh) - annualCost(b, kwh))[0].id
+  /** Halvin näkyvissä oleva sopimus. Sama olio kelpaa sekä merkin
+   *  tunnistukseen että mobiilin tulospalkin kohteeksi. */
+  const cheapestPlan = filtered.length > 0
+    ? [...filtered].sort((a, b) => annualCost(a, kwh) - annualCost(b, kwh))[0]
     : null;
+  const cheapestId = filtered.length > 1 ? cheapestPlan!.id : null;
+
+  /** Ankkuri, jonka ohittaminen näyttää mobiilin tulospalkin. */
+  const resultsRef = useRef<HTMLDivElement>(null);
 
   /** Ketun valinta: hinta 72 %, käyttäjäarvio 28 %. Kaava kerrotaan avoimesti. */
   const foxId = useMemo(() => {
@@ -199,6 +239,14 @@ export default function ElectricityExperience({
         })}
       </div>
 
+      {/*
+        HUOM. syöttökenttien 16 px: iOS Safari zoomaa sivun automaattisesti
+        sisään, jos kosketettu kenttä on alle 16 px. Käyttäjä ei tiedä
+        aiheuttaneensa sitä, joten hän nipistää ulospäin — ja päätyy pois
+        sivun kohdalta. Juuri nämä kentät ovat sivun tärkein toiminto
+        (niistä syntyy euromäärä), joten virhe osui pahimpaan mahdolliseen
+        paikkaan. 15 → 16 px poistaa ilmiön kokonaan eikä näy silmällä.
+      */}
       <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-line pt-4">
         <label htmlFor="kwh" className="font-display text-[13px] font-bold text-ink/80">
           Tarkka vuosikulutus
@@ -213,7 +261,7 @@ export default function ElectricityExperience({
             step={100}
             value={kwh}
             onChange={(e) => { setKwh(Math.max(0, Number(e.target.value))); setDwelling(null); }}
-            className="w-28 rounded-xl border border-lineDark bg-mist px-3 py-2 text-right font-data text-[15px] font-bold text-ink transition-colors focus:border-accent focus:outline-none"
+            className="w-28 rounded-xl border border-lineDark bg-mist px-3 py-2.5 text-right font-data text-[16px] font-bold text-ink transition-colors focus:border-accent focus:outline-none"
           />
           <span className="text-[13px] font-medium text-ink/60">kWh / v</span>
         </div>
@@ -250,7 +298,7 @@ export default function ElectricityExperience({
                   value={curPrice}
                   onChange={(e) => setCurPrice(e.target.value)}
                   aria-label="Nykyinen energian hinta senttiä kilowattitunnilta"
-                  className="w-24 rounded-xl border border-lineDark bg-mist px-3 py-2 text-right font-data text-[15px] font-bold text-ink placeholder:font-normal placeholder:text-ink/35 focus:border-accent focus:outline-none"
+                  className="w-24 rounded-xl border border-lineDark bg-mist px-3 py-2.5 text-right font-data text-[16px] font-bold text-ink placeholder:font-normal placeholder:text-ink/35 focus:border-accent focus:outline-none"
                 />
                 <span className="text-[13px] text-ink/60">c/kWh</span>
               </div>
@@ -262,7 +310,7 @@ export default function ElectricityExperience({
                   value={curBasic}
                   onChange={(e) => setCurBasic(e.target.value)}
                   aria-label="Nykyinen perusmaksu euroa kuukaudessa"
-                  className="w-24 rounded-xl border border-lineDark bg-mist px-3 py-2 text-right font-data text-[15px] font-bold text-ink placeholder:font-normal placeholder:text-ink/35 focus:border-accent focus:outline-none"
+                  className="w-24 rounded-xl border border-lineDark bg-mist px-3 py-2.5 text-right font-data text-[16px] font-bold text-ink placeholder:font-normal placeholder:text-ink/35 focus:border-accent focus:outline-none"
                 />
                 <span className="text-[13px] text-ink/60">€/kk perusmaksu</span>
               </div>
@@ -272,6 +320,42 @@ export default function ElectricityExperience({
             </p>
           </div>
         )}
+      </div>
+
+      {/*
+        LUOTTAMUSSINETTI — laskurin sisällä, ei sivun lopussa.
+
+        MIKSI TÄSSÄ: epäröinti syntyy juuri siinä hetkessä, kun käyttäjä on
+        naputtelemassa kulutustaan kenttään ja miettii "mitä tästä seuraa,
+        kuka tähän tietoon pääsee käsiksi". Sivun alalaidan luottamusosio
+        vastaa siihen kymmenen ruudullista myöhemmin, eli liian myöhään.
+        Kilpailijoilla (esim. Verivox) sertifikaattisinetti on samasta
+        syystä nimenomaan laskuripaneelin sisällä.
+
+        MIKSI NÄMÄ KOLME VÄITETTÄ: jokainen on tarkistettavissa tältä
+        sivulta käsin, eikä yksikään vaadi kolmannen osapuolen sertifikaattia,
+        asiakasmääriä tai tähtiarvioita — niitä ei ole, eikä niitä keksitä.
+        Keskimmäinen on samalla suurin ero lomakepohjaisiin
+        kilpailutuspalveluihin: täällä ei jätetä yhteystietoja, joten
+        vertailusta ei seuraa myyntipuheluita. Se on kohderyhmän (40–60 v.)
+        yleisin syy jättää kilpailuttamatta.
+      */}
+      <div className="-mx-5 -mb-5 mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-line bg-mist px-5 py-3 sm:-mx-7 sm:-mb-7 sm:px-7">
+        <span className="flex items-center gap-1.5 font-display text-[11px] font-bold uppercase tracking-[0.14em] text-goldInk">
+          <FoxPaw /> Ketun lupaus
+        </span>
+        <ul className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
+          {[
+            "Ilmainen sinulle",
+            "Ei tunnuksia, ei yhteystietoja",
+            "Laskukaava julkinen",
+          ].map((t) => (
+            <li key={t} className="flex items-center gap-1.5 text-[12px] font-medium text-ink/70">
+              <ShieldCheck size={13} className="shrink-0 text-accentDark" aria-hidden />
+              {t}
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
@@ -323,17 +407,44 @@ export default function ElectricityExperience({
                   suuntaan, ettei kuva kasvata osiota turhaan.
                 */}
                 <div className="mt-6 flex items-start gap-3">
-                  <ul className="flex flex-1 flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:gap-x-5">
-                    {[
-                      { icon: Plug, text: "Sähkö ei katkea" },
-                      { icon: RefreshCw, text: "Vanha sopimus irtisanotaan puolestasi" },
-                      { icon: Timer, text: "Vie noin 5 minuuttia" },
-                    ].map((t) => (
-                      <li key={t.text} className="flex items-center gap-2 text-[13.5px] font-medium text-ink/70">
-                        <t.icon size={15} className="shrink-0 text-ink/40" aria-hidden />
-                        {t.text}
-                      </li>
-                    ))}
+                  {/*
+                    LUPAUKSET, JOTKA VOI AVATA.
+
+                    Aiemmin nämä kolme olivat pelkkää tekstiä. Kolme perustelematonta
+                    lupausta näyttää samalta kuin minkä tahansa myyntisivun luvut,
+                    ja epäluuloinen lukija ohittaa ne — pahimmillaan ne heikentävät
+                    luottamusta sen sijaan että kasvattaisivat sitä.
+
+                    Kun jokaisen perässä on ⓘ, joka avaa perustelun, väitteestä
+                    tulee tarkistettava. Se on koko sivun idea pienoiskoossa: kettu
+                    näyttää laskutoimituksensa. Erityisen tärkeä on keskimmäisen
+                    perustelu, joka kertoo poikkeuksen (määräaikaisen purku voi
+                    maksaa) — myönnetty poikkeus ostaa uskottavuutta kaikelle
+                    muulle sivulla sanotulle. Kohderyhmä on 40–60-vuotiaat, jotka
+                    ovat nähneet tarpeeksi liian hyviä lupauksia.
+
+                    Toteutus on painallus eikä hover, koska puolet kävijöistä on
+                    mobiilissa eikä hoveria ole olemassa.
+                  */}
+                  <ul className="flex flex-1 flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:gap-x-5 sm:gap-y-2">
+                    {HERO_CLAIMS.map((t, i) => {
+                      const open = openClaim === i;
+                      return (
+                        <li key={t.text}>
+                          <button
+                            onClick={() => setOpenClaim(open ? null : i)}
+                            aria-expanded={open}
+                            className={`flex items-center gap-2 rounded-lg text-left text-[13.5px] font-medium transition-colors ${
+                              open ? "text-ink" : "text-ink/70 hover:text-ink"
+                            }`}
+                          >
+                            <t.icon size={15} className={`shrink-0 ${open ? "text-accentDark" : "text-ink/40"}`} aria-hidden />
+                            {t.text}
+                            <Info size={12} className={`shrink-0 ${open ? "text-accentDark" : "text-ink/35"}`} aria-hidden />
+                          </button>
+                        </li>
+                      );
+                    })}
                   </ul>
                   <div className="dawn-glow relative -mb-10 -mt-3 shrink-0 md:hidden">
                     <Image
@@ -346,6 +457,23 @@ export default function ElectricityExperience({
                     />
                   </div>
                 </div>
+
+                <AnimatePresence initial={false}>
+                  {openClaim !== null && (
+                    <motion.div
+                      key={openClaim}
+                      initial={reduce ? false : { height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={reduce ? undefined : { height: 0, opacity: 0 }}
+                      transition={{ duration: 0.22, ease: "easeOut" }}
+                      className="overflow-hidden"
+                    >
+                      <p className="mt-3 max-w-[52ch] border-l-[3px] border-accent bg-white/60 py-2 pl-3.5 text-[13px] leading-relaxed text-ink/75">
+                        {HERO_CLAIMS[openClaim].why}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 {/*
                   Mobiilissa herossa ei ollut lainkaan näkyvää toimintakehotusta.
@@ -439,8 +567,9 @@ export default function ElectricityExperience({
               </p>
               <p className="mt-3 font-hero text-[2rem] leading-[1.1] text-ink sm:text-[2.5rem]">
                 Edullisin sopimus{" "}
-                <span className="font-display font-data font-extrabold tracking-tight text-accent">
-                  {cheapestMonthly.toLocaleString("fi-FI", { maximumFractionDigits: 0 })} €
+                <span className="font-display font-data font-price font-extrabold tracking-tight text-accent">
+                  {/* Sama tarkkuus kuin korteissa — ks. perustelu PlanCard.tsx */}
+                  {cheapestMonthly.toLocaleString("fi-FI", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} €
                 </span>
                 /kk
               </p>
@@ -612,16 +741,36 @@ export default function ElectricityExperience({
             </button>
           </div>
 
-          <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-            <p className="text-[13.5px] text-ink/70" aria-live="polite">
-              {filtered.length} sopimusta
-            </p>
+          {/*
+            Tuloslistan ankkuri. Aiemmin tässä luki vain "6 sopimusta"
+            harmaalla — lista alkoi ilman mitään, mihin silmä olisi
+            tarttunut, ja suodattimien jälkeen oli epäselvää, mistä tulokset
+            alkavat. Sama kolmiosainen ele kuin muissa osioissa (oranssi
+            yläotsikko + ketunhäntä) merkitsee rajan, ja lukumäärä nousee
+            omaksi väitteekseen: se kertoo, että vertailu oikeasti laskettiin
+            juuri annetuilla luvuilla.
+          */}
+          <div
+            ref={resultsRef}
+            className="mt-6 flex flex-wrap items-end justify-between gap-3 border-t border-line pt-5"
+          >
+            <div>
+              <p className="flex items-center gap-2.5 font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-accentDark">
+                Tulokset kulutuksellasi
+                <BrushRule className="text-accent/70" width={44} />
+              </p>
+              <p className="mt-1.5 font-display text-[17px] font-bold text-ink" aria-live="polite">
+                {filtered.length} sopimusta järjestyksessä
+              </p>
+            </div>
             <label className="flex items-center gap-2 text-[13px] text-ink/70">
               Järjestä
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value as typeof sort)}
-                className="rounded-xl border border-line bg-white px-3 py-2 font-display text-[13px] font-semibold text-ink transition-colors hover:border-lineDark focus:border-accent focus:outline-none"
+                /* 16 px: alle sen iOS zoomaa sivun sisään heti kun valikkoa
+                   kosketetaan, ja käyttäjä jää zoomatulle sivulle. */
+                className="rounded-xl border border-line bg-white px-3 py-2 font-display text-[16px] font-semibold text-ink transition-colors hover:border-lineDark focus:border-accent focus:outline-none"
               >
                 <option value="cost">Edullisin vuosihinta</option>
                 <option value="basic">Pienin perusmaksu</option>
@@ -633,7 +782,7 @@ export default function ElectricityExperience({
           <LayoutGroup>
             <motion.div layout={!reduce} className="mt-4 grid gap-4 pt-2 sm:grid-cols-2 lg:grid-cols-3">
               <AnimatePresence mode="popLayout">
-                {filtered.map((plan) => {
+                {filtered.map((plan, i) => {
                   const cost = annualCost(plan, kwh);
                   const isCheapest = plan.id === cheapestId;
                   const isFox = plan.id === foxId;
@@ -658,6 +807,7 @@ export default function ElectricityExperience({
                         savings={savingsBase === null ? 0 : Math.max(0, savingsBase - cost)}
                         savingsLabel={savingsLabel}
                         maxCost={maxShown}
+                        rank={i + 1}
                       />
                     </motion.div>
                   );
@@ -694,6 +844,8 @@ export default function ElectricityExperience({
           </p>
         </div>
       </section>
+
+      <EnergyStickyBar plan={cheapestPlan} kwh={kwh} anchor={resultsRef} />
     </>
   );
 }

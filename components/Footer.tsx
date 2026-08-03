@@ -69,6 +69,8 @@ export default function Footer() {
             sisältöön eikä järjestykseen. Hinnat ovat esimerkinomaisia — tarkista ajantasaiset
             ehdot palveluntarjoajan sivuilta.
           </p>
+
+          <OperatorDetails />
         </div>
 
         <nav aria-label={contextNav.title}>
@@ -107,5 +109,53 @@ export default function Footer() {
         © {new Date().getFullYear()} {SITE.name}. Vertailu on tiedoksi, ei henkilökohtaista neuvontaa.
       </div>
     </footer>
+  );
+}
+
+/**
+ * Sivuston ylläpitäjä — footerin luottamuslohko.
+ *
+ * MIKSI TÄMÄ ON TÄRKEÄ TUOTOLLE: kilpailutussivun epäilyttävin piirre on
+ * anonymiteetti. Kun kävijä ei löydä mistään, kuka sivua pyörittää, hän
+ * olettaa pahinta — että kyseessä on yhteystietoja keräävä liidifarmi —
+ * eikä paina "Tee sopimus" -nappia. Y-tunnus ja oikea sähköpostiosoite
+ * ovat halvin mahdollinen tapa kumota se epäilys, ja ne ovat samalla
+ * asioita, jotka affiliate-verkosto (Adtraction) tarkistaa hakemuksesta.
+ *
+ * MIKSI OMANA KOMPONENTTINA: lohko piilottaa itsensä kokonaan, jos
+ * `SITE.operator` on vielä täyttämättä. Puolityhjä yhteystietolaatikko
+ * olisi pahempi kuin ei lohkoa lainkaan — se näyttäisi keskeneräiseltä
+ * juuri siinä kohdassa, jonka tehtävä on vakuuttaa.
+ *
+ * SÄHKÖPOSTI EI OLE mailto-linkki vaan pelkkää tekstiä: mailto avaa
+ * mobiilissa sähköpostisovelluksen ja vie kävijän pois sivulta kesken
+ * vertailun. Osoitteen tehtävä tässä on todistaa tavoitettavuus, ei
+ * kerätä viestejä.
+ */
+function OperatorDetails() {
+  const { legalName, businessId, domicile, email } = SITE.operator;
+  const rows = [
+    legalName,
+    businessId ? `Y-tunnus ${businessId}` : "",
+    domicile,
+    email,
+  ].filter(Boolean);
+
+  if (rows.length === 0) return null;
+
+  return (
+    <div className="mt-5 max-w-sm">
+      <p className="font-display text-[11px] font-bold uppercase tracking-[0.16em] text-goldInk">
+        Sivuston ylläpitäjä
+      </p>
+      <p className="mt-2 text-[13px] leading-relaxed text-ink/70">
+        {rows.map((r, i) => (
+          <span key={r}>
+            {i > 0 && <span className="text-ink/30"> · </span>}
+            {r}
+          </span>
+        ))}
+      </p>
+    </div>
   );
 }

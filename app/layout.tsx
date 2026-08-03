@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Schibsted_Grotesk } from "next/font/google";
 
 import Header from "@/components/Header";
@@ -37,6 +37,32 @@ export const metadata: Metadata = {
     description: SITE.description,
   },
   robots: { index: true, follow: true },
+};
+
+/**
+ * VIEWPORT — mobiilin tärkein yksittäinen asetus.
+ *
+ * ONGELMA: ilman omaa määrittelyä Next.js antaa vain
+ * `width=device-width, initial-scale=1`. Silloin selain sallii nipistyksen
+ * ulospäin aina 25 %:iin asti, jolloin sivu kutistuu ruudun keskelle ja
+ * ympärille jää tyhjää — käyttäjästä näyttää siltä, että hän "zoomasi pois
+ * sivustolta". Se on hämmentävä hetki, ja hämmentynyt kävijä ei paina
+ * "Tee sopimus" -nappia.
+ *
+ * minimumScale: 1 lukitsee alarajan ruudun leveyteen: sivu ei voi enää
+ * kutistua taustaa vasten.
+ *
+ * maximumScale: 5 jätetään TARKOITUKSELLA. Zoomausta ei saa estää: kohde-
+ * yleisö on 40–60-vuotiaita, joista moni suurentaa tekstiä lukeakseen
+ * korkoprosentin. `user-scalable: no` olisi sekä saavutettavuusvirhe että
+ * suora tapa menettää juuri se lukija, joka on lähimpänä päätöstä.
+ */
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  minimumScale: 1,
+  maximumScale: 5,
+  themeColor: "#F0EEE9",
 };
 
 const orgJsonLd = {

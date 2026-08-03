@@ -23,20 +23,32 @@ export default function Faq({ items }: { items: FaqItem[] }) {
   return (
     <div className="mx-auto max-w-3xl">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <div className="divide-y divide-line rounded-2xl border border-line bg-white ">
+      {/*
+        Avoin rivi merkitään omalla pinnalla ja oranssilla reunalla.
+        Aiemmin avattu ja suljettu kysymys näyttivät samalta, joten pitkässä
+        listassa katosi tieto siitä, mihin kysymykseen luettu vastaus kuuluu.
+        UKK on viimeinen paikka, jossa epäröivä lukija etsii syytä olla
+        tekemättä sopimusta — jos vastaus löytyy vaivatta, hän palaa nappiin
+        eikä poistu hakukoneeseen.
+      */}
+      <div className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-white shadow-card">
         {items.map((item, i) => {
           const isOpen = open === i;
           return (
-            <div key={item.q}>
+            <div key={item.q} className={isOpen ? "bg-mist" : "transition-colors hover:bg-mist/60"}>
               <button
                 onClick={() => setOpen(isOpen ? null : i)}
                 aria-expanded={isOpen}
-                className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
+                className={`flex w-full items-center justify-between gap-4 border-l-[3px] px-6 py-5 text-left transition-colors ${
+                  isOpen ? "border-accent" : "border-transparent"
+                }`}
               >
-                <span className="text-[15px] font-bold text-ink">{item.q}</span>
+                <span className={`font-display text-[15px] font-bold ${isOpen ? "text-accentDark" : "text-ink"}`}>
+                  {item.q}
+                </span>
                 <ChevronDown
                   size={18} aria-hidden
-                  className={`shrink-0 text-ink/55 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                  className={`shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180 text-accentDark" : "text-ink/55"}`}
                 />
               </button>
               <AnimatePresence initial={false}>
@@ -48,7 +60,9 @@ export default function Faq({ items }: { items: FaqItem[] }) {
                     transition={{ duration: 0.25, ease: "easeOut" }}
                     className="overflow-hidden"
                   >
-                    <p className="px-6 pb-6 text-[15px] leading-relaxed text-ink/75">{item.a}</p>
+                    <p className="border-l-[3px] border-accent px-6 pb-6 text-[15px] leading-relaxed text-ink/75">
+                      {item.a}
+                    </p>
                   </motion.div>
                 )}
               </AnimatePresence>

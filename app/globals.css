@@ -2,7 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-html { scroll-behavior: smooth; color-scheme: light; }
+/* `overflow-x: clip` estää vaakasuuntaisen ylivuodon ilman, että se tekee
+   selaimelle vierityskehystä — toisin kuin `overflow: hidden`, joka rikkoisi
+   tarttuvan (`sticky`) headerin. Yksikin muutaman pikselin yli valuva
+   elementti tekee mobiilissa koko sivusta sivusuunnassa raahattavan, ja
+   silloin lukija luulee rikkoneensa sivun.
+
+   `-webkit-text-size-adjust: 100%` estää iOS:ää suurentamasta tekstiä omin
+   päin vaakanäkymässä: ilman sitä sama sivu näyttää eri kokoiselta pysty-
+   ja vaakasuunnassa. */
+html {
+  scroll-behavior: smooth;
+  color-scheme: light;
+  overflow-x: clip;
+  -webkit-text-size-adjust: 100%;
+}
 
 /* --- PINTAKERROS ---
    Pinnat ja tekstit ovat CSS-muuttujia, eivät kiinteitä heksoja. Näin sama
@@ -104,6 +118,21 @@ body {
 h1, h2, h3 { letter-spacing: -0.02em; }
 
 .font-data { font-variant-numeric: tabular-nums; }
+
+/*
+  Suuret hintaluvut: tasalevyiset numerot pois.
+
+  `.font-data` käyttää tabular-nums-numeroita, mikä on oikein pienissä
+  sarakkeissa (perusmaksu, arvio) — luvut asettuvat allekkain. Isossa
+  hintaluvussa se on väärin: tasalevyisessä leikkauksessa myös pilkku saa
+  numeron levyisen tilan, jolloin "30,6 €" latoutuu muotoon "30 , 6 €".
+  Sivun tärkein luku näytti rikkinäiseltä, ja rikkinäisen näköinen
+  hintaluku on juuri se, mitä epäilevä kävijä ei usko.
+
+  Määritelty `.font-data`:n JÄLKEEN, jotta se voittaa saman painoarvon
+  kilpailun ja luokat voi kirjoittaa samaan className-jonoon.
+*/
+.font-price { font-variant-numeric: proportional-nums; }
 
 /* Otsikkotyyli. Sama pohjoismainen mediagroteski kuin käyttöliittymässä,
    mutta tiiviimmällä kirjainvälillä ja lihavana.
@@ -273,4 +302,18 @@ button, a { touch-action: manipulation; -webkit-tap-highlight-color: transparent
 /* Lomake-elementit seuraavat pintaa (ks. .theme-dark / .theme-light yllä) */
 input[type="number"], input[type="text"], input[type="email"] {
   color-scheme: light;
+}
+
+/*
+  Mobiilin tulospalkki syrjäyttää alanavigaation.
+
+  Kun EnergyStickyBar on näkyvissä, se asettaa <html>-elementille
+  data-cta-bar="on". Alanavigaatio piilotetaan siksi ajaksi: kaksi kiinteää
+  palkkia söisi puhelimessa noin viidenneksen ruudusta, ja alanavigaatio
+  tarjoaisi kolme poistumistietä juuri sillä hetkellä, kun kävijän pitäisi
+  verrata sopimuksia. Attribuutti on ainoa side näiden kahden komponentin
+  välillä — ne ovat eri puissa (layout vs. sivun sisältö).
+*/
+[data-cta-bar="on"] nav[aria-label="Alanavigaatio"] {
+  display: none;
 }
