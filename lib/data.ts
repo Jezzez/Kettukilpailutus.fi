@@ -61,12 +61,12 @@ export const SITE = {
    */
   operator: {
     /** esim. "Kettukilpailutus Oy" */
-    legalName: "",
+    legalName: "Kettukilpailutus Oy",
     /** esim. "1234567-8" */
-    businessId: "",
+    businessId: "3326500-5",
     /** kotipaikka tai postiosoite, esim. "Helsinki" */
-    domicile: "",
+    domicile: "Järvenpää",
     /** osoite johon kävijä voi kirjoittaa, esim. "info@kettukilpailutus.fi" */
-    email: "",
+    email: "kettu@kettukilpailutus.fi",
   },
 };
