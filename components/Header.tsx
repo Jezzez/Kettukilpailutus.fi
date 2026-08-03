@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { ArrowRight, Menu, X } from "lucide-react";
 import FoxMark from "./FoxMark";
 
 const NAV = [
@@ -47,6 +47,23 @@ export default function Header() {
         scrolled ? "border-b border-line shadow-[0_8px_24px_-20px_rgba(20,18,15,0.6)]" : "border-b border-transparent"
       }`}
     >
+      {/*
+        ORANSSI VIIVA AIVAN YLÄREUNASSA.
+
+        MIKSI: header on sivuston ainoa osa, joka on näkyvissä joka
+        sivulla ja koko vierityksen ajan. Se oli kuitenkin täysin
+        väritön — beige palkki beigen päällä. Kävijä, joka on
+        vierittänyt puolivälin artikkeliin, ei enää näe ruudullaan
+        yhtään brändiväriä, ja palvelu alkaa tuntua yleiseltä
+        blogilta. Kolmen pikselin viiva pitää oranssin läsnä koko
+        istunnon ajan ilman että se kilpailee heron vyön kanssa.
+
+        MIKSI NIIN OHUT: paksumpi vyö tekisi headerista toisen
+        oranssin kaistan heti oikean vyön päälle, jolloin kumpikaan
+        ei enää erotu. Viivan tehtävä on merkitä omistajuus, ei
+        kerätä katsetta.
+      */}
+      <div aria-hidden className="h-[3px] w-full bg-accent" />
       <div
         className={`mx-auto flex max-w-[1180px] items-center justify-between px-4 transition-[height] duration-300 sm:px-6 ${
           scrolled ? "h-[62px]" : "h-[74px]"
@@ -91,8 +108,16 @@ export default function Header() {
           >
             Aloita vertailu
           </Link>
+          {/*
+            Valikkonappi on oranssisävyinen, ei beige. Alle 640 pikselin
+            leveydellä headerin "Aloita vertailu" on piilotettu tilan
+            vuoksi, joten tämä nappi on puhelimessa headerin ainoa
+            painettava kohde. Beige laatikko beigellä palkilla ei näytä
+            painikkeelta lainkaan — sävytetty tausta ja oranssi ikoni
+            kertovat sekunnissa, että tästä aukeaa jotain.
+          */}
           <button
-            className="grid h-10 w-10 place-items-center rounded-xl border border-line bg-white text-ink lg:hidden"
+            className="grid h-10 w-10 place-items-center rounded-xl border border-accent/25 bg-accentSoft text-accentDark transition-colors hover:border-accent/45 lg:hidden"
             onClick={() => setOpen(!open)}
             aria-expanded={open}
             aria-label={open ? "Sulje valikko" : "Avaa valikko"}
@@ -119,6 +144,24 @@ export default function Header() {
               </li>
             ))}
           </ul>
+
+          {/*
+            KEHOTE KUULUU MYÖS AUKI VEDETTYYN VALIKKOON.
+
+            Valikko oli pelkkä neljän linkin lista. Käyttäjä, joka
+            avaa sen, on juuri ilmaissut haluavansa jonnekin — ja
+            listasta puuttui juuri se paikka, josta palvelu ansaitsee.
+            Nyt vertailuun pääsee samalla eleellä kuin työpöydällä,
+            eikä valikon avaaja joudu arvaamaan, kätkeytyykö
+            kilpailutus "Sähkön" vai "Luottokorttien" taakse.
+          */}
+          <Link
+            href={ctaHref(pathname)}
+            onClick={() => setOpen(false)}
+            className="btn-ember mt-3 flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 font-display text-[15px] font-bold text-onEmber"
+          >
+            Aloita vertailu <ArrowRight size={17} aria-hidden />
+          </Link>
         </nav>
       )}
     </header>

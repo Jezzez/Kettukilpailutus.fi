@@ -52,7 +52,7 @@ export default function AboutPage() {
 
       <div className="mx-auto max-w-[1180px] px-4 pb-16 sm:px-6">
         <Reveal>
-          <div className="rounded-2xl bg-peach p-7">
+          <div className="rounded-2xl border border-line bg-peach p-7 shadow-card">
             <h2 className="font-display text-xl font-semibold text-ink">Yhteystiedot</h2>
             <p className="mt-2 max-w-prose text-[15px] leading-relaxed text-ink/80">
               Palaute, korjausehdotukset ja yhteistyötiedustelut:{" "}

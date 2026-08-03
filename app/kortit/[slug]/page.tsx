@@ -9,6 +9,7 @@ import Faq from "@/components/Faq";
 import CardPageTabs from "@/components/CardPageTabs";
 import StickyApply from "@/components/StickyApply";
 import Reveal from "@/components/Reveal";
+import TailSweep from "@/components/fox/TailSweep";
 
 /** Staattinen generointi kaikille korteille — nopein mahdollinen sivu. */
 export function generateStaticParams() {
@@ -57,13 +58,33 @@ export default function CardPage({ params }: { params: { slug: string } }) {
   };
 
   return (
-    <article className="pb-32 md:pb-20">
+    <article>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
 
-      {/* Otsikkoalue */}
-      <header className="border-b border-line bg-mist/60">
-        <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 md:py-16">
+      {/*
+        KORTTISIVUN OTSIKKOALUE ON LÄMMIN VYÖ, EI ORANSSI.
+
+        Muualla sivustolla sisääntulo merkitään täysleveällä oranssilla
+        vyöllä. Tässä sitä ei tehdä, ja syy on tuotossa: tämän sivun
+        tärkein elementti on oranssi "Hae kortti" -nappi. Oranssi nappi
+        oranssilla vyöllä katoaa, ja jouduttaisiin vaihtamaan
+        kermanvalkoiseen — eli sivun ainoa ostonappi vaihdettaisiin
+        heikommaksi vain, jotta tausta olisi näyttävämpi. Väärä
+        vaihtokauppa.
+
+        `bg-mist/60` oli kuitenkin liian huomaamaton: se on neljä
+        sävyaskelta paperista, eli käytännössä sama väri. Otsikkoalue
+        luki samana pintana kuin muu sivu. `pelt-surface` on lämmin
+        persikansävy kulta- ja oranssihehkuineen — se erottaa
+        "kuka tämä kortti on" -osan lukudatasta, ja oranssi nappi jää
+        edelleen ruudun kirkkaimmaksi pisteeksi.
+
+        `relative z-[1]`: pinnan kohinapinta on `::after`, joka piirtyy
+        asemoimattomien lapsien päälle.
+      */}
+      <header className="pelt-surface border-b border-line">
+        <div className="relative z-[1] mx-auto max-w-4xl px-4 py-12 sm:px-6 md:py-16">
           <nav aria-label="Murupolku" className="flex items-center gap-1 text-[13px] text-ink/60">
             <Link href="/" className="hover:text-ink">Etusivu</Link>
             <ChevronRight size={13} aria-hidden />
@@ -88,7 +109,23 @@ export default function CardPage({ params }: { params: { slug: string } }) {
 
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-ink/80">{card.summary}</p>
           <div className="mt-7">
-            <AffiliateButton href={card.affiliateUrl} cardId={card.id} placement="card-page-hero" />
+            {/*
+              Napin teksti oli oletusarvo "Katso kortti". Se on väärä
+              kehote juuri tässä: lukija ON korttisivulla ja katsoo
+              korttia. Nappi vie pankin omalle hakusivulle, ja sen
+              pitää sanoa se — sekä mitä tapahtuu että se, että siirrytään
+              pois sivustolta. Epäselvä kehote tulkitaan mainokseksi ja
+              jätetään painamatta.
+
+              Pankin nimeä ei kirjoiteta tähän: suomen genetiivi ei
+              synny lisäämällä "n" perään ("S-Pankki" → "S-Pankin",
+              ei "S-Pankkin", ja "OP" → "OP:n"). Ohjelmallinen
+              taivutus tuottaisi kielivirheen kortista riippuen, ja
+              kielivirhe napissa maksaa enemmän kuin nimen puuttuminen.
+            */}
+            <AffiliateButton href={card.affiliateUrl} cardId={card.id} placement="card-page-hero">
+              Hae kortti pankin sivuilla
+            </AffiliateButton>
           </div>
         </div>
       </header>
@@ -149,21 +186,57 @@ export default function CardPage({ params }: { params: { slug: string } }) {
           </Reveal>
         )}
 
-        {/* Loppu-CTA */}
-        <Reveal className="mt-14">
-          <div className="rounded-3xl bg-accent p-8 text-center sm:p-10">
-            <h2 className="text-2xl font-semibold text-onEmber">Kuulostaako sopivalta?</h2>
-            <p className="mx-auto mt-2 max-w-sm text-sm text-onEmber/85">
+      </div>
+
+      {/*
+        LOPPUKEHOTE ON TÄYSLEVEÄ VYÖ, EI PYÖREÄ LAATIKKO.
+
+        Tässä oli oranssi laatikko vaalean palstan sisällä. Laatikko
+        päättyy ennen ruudun reunoja, joten silmä lukee sen yhdeksi
+        osioksi lisää — samaksi tyypiksi kuin ylempänä olevat
+        kulutaulukko ja UKK. Kun koko kaista vaihtaa värin, muutos
+        näkyy jo selatessa ja pysäyttää liikkeen. Sama ele kuin
+        etusivun, sähkösivun ja oppaiden loppukehotteessa: kun kehote
+        näyttää joka sivulla samalta, sitä ei tarvitse lukea
+        tunnistaakseen sen.
+
+        Vyö menee kiinni alatunnisteeseen. Oranssi vyö ja heti sen
+        alla tumma alatunniste antavat sivulle lopun — juuri siinä
+        kohdassa, jossa vaihtoehdot ovat "paina" tai "poistu".
+      */}
+      <section className="theme-ember ember-surface relative mt-16 overflow-hidden">
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-16 rotate-180">
+          <div className="theme-light">
+            <TailSweep fill="rgb(var(--c-paper))" height={64} />
+          </div>
+        </div>
+
+        <Reveal>
+          <div className="relative z-[1] mx-auto max-w-4xl px-4 pb-28 pt-24 text-center sm:px-6 md:pb-24">
+            <h2 className="font-hero text-[2rem] leading-[1.08] text-cream sm:text-[2.4rem]">
+              Kuulostaako sopivalta?
+            </h2>
+            <p className="mx-auto mt-4 max-w-md text-[16px] leading-relaxed text-ink/85">
               Hakemus täytetään pankin sivuilla ja vie tyypillisesti alle 10 minuuttia.
             </p>
-            <div className="mt-6">
+            {/*
+              EMBER-ANSA: `inverse`-nappi käyttää `bg-white`- ja
+              `text-accentDark`-luokkia. Ember-vyöllä edellinen on
+              ORANSSI ja jälkimmäinen vaalea kerma, eli nappi olisi
+              oranssi laatikko oranssilla pohjalla ja teksti katoaisi
+              kokonaan. `theme-light`-kääre pakottaa muuttujat takaisin
+              vaaleiksi, jolloin nappi on kermanvalkoinen ja teksti
+              tummanoranssi — vyön ainoa vaalea piste.
+            */}
+            <div className="theme-light mt-8">
               <AffiliateButton href={card.affiliateUrl} cardId={card.id} placement="card-page-footer" variant="inverse">
                 Siirry hakemaan – {card.name}
               </AffiliateButton>
             </div>
           </div>
         </Reveal>
-      </div>
+      </section>
+
       <StickyApply card={card} />
     </article>
   );
