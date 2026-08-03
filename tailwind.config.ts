@@ -17,29 +17,51 @@ const config: Config = {
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
   theme: {
     extend: {
+      /**
+       * Läpinäkyvyysasteikko 0–100 yhden yksikön välein.
+       *
+       * MIKSI: Tailwindin oletusasteikko sisältää vain viiden monikerrat.
+       * Koodissa oli 133 luokkaa muotoa `text-ink/72`, `text-cream/68`,
+       * `text-ink/62` — eli arvoja, joita asteikolla ei ole. Tailwind ei
+       * generoinut niille sääntöä lainkaan, joten teksti peri hiljaisesti
+       * vanhempansa värin. Vaalealla pohjalla virhe ei näkynyt (peritty
+       * väri sattui olemaan tumma), mutta tummissa paneeleissa leipäteksti
+       * muuttui lähes lukukelvottomaksi — juuri läpinäkyvyysosiossa, jonka
+       * koko tehtävä on rakentaa luottamus ennen "Tee sopimus" -klikkiä.
+       */
+      opacity: Object.fromEntries(
+        Array.from({ length: 101 }, (_, i) => [String(i), String(i / 100)])
+      ),
       colors: {
-        // Pinnat, tummimmasta vaaleimpaan
-        den: "#0A0807",
-        paper: "#0D0A08",
-        white: "#1A1512",     // ylikirjoitettu: kortin pinta
-        mist: "#241C16",
-        peach: "#2A1D13",     // lämmin sävytetty paneeli
-        night: "#312619",     // ikonilaatat, chipit
-        navy: "#342820",      // hover kohotetulla
-        line: "#332A21",
-        lineDark: "#43372B",
+        // Pinnat ja tekstit tulevat CSS-muuttujista (ks. globals.css).
+        // Tumma on oletus; `.theme-light` kääntää saman koodin vaaleaksi.
+        den: "#0A0807",       // syvin — pysyy AINA tummana (hero, footer)
+        paper: "rgb(var(--c-paper) / <alpha-value>)",
+        white: "rgb(var(--c-card) / <alpha-value>)",  // ylikirjoitettu: kortin pinta
+        mist: "rgb(var(--c-mist) / <alpha-value>)",
+        peach: "rgb(var(--c-peach) / <alpha-value>)",
+        night: "rgb(var(--c-night) / <alpha-value>)",
+        navy: "rgb(var(--c-navy) / <alpha-value>)",
+        line: "rgb(var(--c-line) / <alpha-value>)",
+        lineDark: "rgb(var(--c-line-dark) / <alpha-value>)",
 
         // Tekstit
-        ink: "#F2EADF",       // ensisijainen teksti (lämmin kerma)
-        cream: "#F7F1E8",     // kirkkain teksti tummalla
+        ink: "rgb(var(--c-ink) / <alpha-value>)",     // ensisijainen teksti
+        cream: "rgb(var(--c-cream) / <alpha-value>)", // vahvin kontrasti
 
-        // Kettuoranssi — ainoa varsinainen väri
+        // Kettuoranssi — ainoa varsinainen väri, sama molemmilla pinnoilla
         accent: "#E8691B",
-        accentDark: "#FF8C3C", // sekä tekstioranssi tummalla että napin hover
-        accentSoft: "#2E1C0E", // oranssin sävytetty pohja chipeille
+        accentDark: "rgb(var(--c-accent-dark) / <alpha-value>)", // tekstioranssi, tummenee vaalealla
+        accentSoft: "rgb(var(--c-accent-soft) / <alpha-value>)",
+        // Teksti oranssin napin PÄÄLLÄ. Kiinteä arvo, ei muuttuja: nappi on
+        // oranssi molemmilla pinnoilla, joten teksti ei saa kääntyä tummaksi
+        // vaalean osion sisällä (text-cream kääntyisi).
+        onEmber: "#FFF3E9",
 
         // Kulta vain hiusviivoihin ja pieniin merkkeihin
         gold: "#D9A24F",
+        // Kulta tekstinä — tummenee vaalealla pinnalla, ks. globals.css
+        goldInk: "rgb(var(--c-gold-ink) / <alpha-value>)",
         star: "#E8B04A",
         ok: "#E8691B",
         mint: "#E8691B",
@@ -48,13 +70,14 @@ const config: Config = {
         display: ["var(--font-display)", "system-ui", "sans-serif"],
         body: ["var(--font-inter)", "system-ui", "sans-serif"],
         data: ["var(--font-inter)", "system-ui", "sans-serif"],
+        // Vain isot otsikot. Ei koskaan nappeihin tai chippeihin.
       },
       boxShadow: {
-        // Tummalla varjo ei riitä syvyyteen — mukana yläreunan valojuova,
-        // joka saa pinnat näyttämään veistetyiltä eikä litteiltä laatikoilta.
-        card: "inset 0 1px 0 rgba(255,244,235,0.04), 0 1px 2px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.3)",
-        cardHover: "inset 0 1px 0 rgba(255,244,235,0.07), 0 2px 6px rgba(0,0,0,0.45), 0 22px 48px rgba(0,0,0,0.45)",
-        lift: "inset 0 1px 0 rgba(255,244,235,0.06), 0 28px 70px -14px rgba(0,0,0,0.75)",
+        // Varjot vaihtuvat pinnan mukana: tummalla mukana yläreunan valojuova,
+        // vaalealla pelkkä pehmeä varjo (ks. globals.css).
+        card: "var(--sh-card)",
+        cardHover: "var(--sh-card-hover)",
+        lift: "var(--sh-lift)",
         ember: "0 10px 32px -8px rgba(232,105,27,0.5)",
       },
     },

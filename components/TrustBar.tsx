@@ -10,20 +10,31 @@ const ITEMS = [
 
 export default function TrustBar() {
   return (
-    <section aria-label="Miksi Kettu" className="pb-16 pt-4 md:pb-20">
+    <section aria-label="Miksi Kettu" className="pb-16 pt-6 md:pb-20">
       <Reveal>
-        <div className="mx-auto grid max-w-[1180px] gap-7 px-4 sm:px-6 md:grid-cols-4">
-          {ITEMS.map((i) => (
-            <div key={i.title} className="flex gap-3">
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-accentSoft">
-                <i.icon size={18} className="text-accent" strokeWidth={1.9} aria-hidden />
-              </span>
-              <div>
-                <p className="font-display text-[15px] font-semibold text-ink">{i.title}</p>
-                <p className="mt-0.5 text-[13px] leading-snug text-ink/72">{i.text}</p>
-              </div>
+        {/*
+          Neljä lupausta oli aiemmin irrallaan taustan päällä ilman kehystä.
+          Ne ovat sivun ensimmäinen luottamussignaali heti vertailun jälkeen,
+          joten niiden pitää lukea yhtenä nauhana — ei neljänä sattumalta
+          vierekkäin joutuneena rivinä. Kehys ja pystyviivat antavat silmälle
+          selvän pysähdyspaikan ja erottavat lupaukset toisistaan.
+        */}
+        <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
+          <div className="overflow-hidden rounded-2xl border border-line bg-white shadow-card">
+            <div className="grid gap-px bg-line sm:grid-cols-2 md:grid-cols-4">
+              {ITEMS.map((i) => (
+                <div key={i.title} className="flex h-full gap-3 bg-white p-5">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-accent/15 bg-accentSoft">
+                    <i.icon size={18} className="text-accentDark" strokeWidth={1.9} aria-hidden />
+                  </span>
+                  <div>
+                    <p className="font-display text-[15px] font-semibold text-ink">{i.title}</p>
+                    <p className="mt-0.5 text-[13px] leading-snug text-ink/70">{i.text}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       </Reveal>
     </section>

@@ -43,8 +43,8 @@ export default function Header() {
 
   return (
     <header
-      className={`glass-dark sticky top-0 z-50 transition-[border-color,box-shadow] duration-300 ${
-        scrolled ? "border-b border-line shadow-[0_10px_30px_-18px_rgba(0,0,0,0.9)]" : "border-b border-transparent"
+      className={`glass-light sticky top-0 z-50 transition-[border-color,box-shadow] duration-300 ${
+        scrolled ? "border-b border-line shadow-[0_8px_24px_-20px_rgba(20,18,15,0.6)]" : "border-b border-transparent"
       }`}
     >
       <div
@@ -58,7 +58,7 @@ export default function Header() {
             <span className="block font-display text-[15px] font-bold uppercase tracking-[0.02em] text-ink">
               Kettukilpailutus
             </span>
-            <span className="mt-0.5 block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink/58">
+            <span className="mt-0.5 block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink/60">
               {contextLabel(pathname)}
             </span>
           </span>
@@ -72,7 +72,7 @@ export default function Header() {
                 key={item.label}
                 href={item.href}
                 className={`relative py-1 font-display text-[15px] font-medium transition-colors ${
-                  active ? "text-ink" : "text-ink/72 hover:text-ink"
+                  active ? "text-ink" : "text-ink/70 hover:text-ink"
                 }`}
               >
                 {item.label}
@@ -87,7 +87,7 @@ export default function Header() {
         <div className="flex items-center gap-3">
           <Link
             href={ctaHref(pathname)}
-            className="hidden btn-ember rounded-xl px-6 py-2.5 font-display text-sm font-bold text-cream transition-all sm:inline-flex"
+            className="hidden btn-ember rounded-xl px-6 py-2.5 font-display text-sm font-bold text-onEmber transition-all sm:inline-flex"
           >
             Aloita vertailu
           </Link>
@@ -111,7 +111,7 @@ export default function Header() {
                   href={item.href}
                   onClick={() => setOpen(false)}
                   className={`block rounded-xl px-4 py-3 font-display text-[15px] font-medium ${
-                    pathname.startsWith(item.match) ? "bg-accentSoft text-accentDark" : "text-ink/82 hover:bg-mist"
+                    pathname.startsWith(item.match) ? "bg-accentSoft text-accentDark" : "text-ink/80 hover:bg-mist"
                   }`}
                 >
                   {item.label}

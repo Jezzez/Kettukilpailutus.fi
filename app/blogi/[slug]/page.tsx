@@ -45,7 +45,7 @@ export default function PostPage({ params }: { params: { slug: string } }) {
     <article className="mx-auto max-w-3xl px-4 py-16 sm:px-6 md:py-20">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <nav aria-label="Murupolku" className="flex items-center gap-1 text-[13px] text-ink/62">
+      <nav aria-label="Murupolku" className="flex items-center gap-1 text-[13px] text-ink/60">
         <Link href="/" className="hover:text-ink">Etusivu</Link>
         <ChevronRight size={13} aria-hidden />
         <Link href="/blogi" className="hover:text-ink">Blogi</Link>
@@ -53,10 +53,10 @@ export default function PostPage({ params }: { params: { slug: string } }) {
         <span className="text-ink/85">{post.category}</span>
       </nav>
 
-      <h1 className="mt-6 text-3xl font-semibold leading-tight tracking-tight text-ink sm:text-4xl">
+      <h1 className="mt-6 font-hero text-[2.1rem] leading-[1.08] text-ink sm:text-[2.6rem]">
         {post.title}
       </h1>
-      <p className="mt-4 flex items-center gap-3 text-sm text-ink/62">
+      <p className="mt-4 flex items-center gap-3 text-sm text-ink/60">
         <time dateTime={post.date}>{new Date(post.date).toLocaleDateString("fi-FI")}</time>
         <span className="inline-flex items-center gap-1"><Clock size={13} aria-hidden /> {post.readMinutes} min lukuaika</span>
         <span className="rounded-full bg-mist px-2.5 py-0.5 text-xs font-semibold">{post.category}</span>
@@ -73,7 +73,7 @@ export default function PostPage({ params }: { params: { slug: string } }) {
           <strong className="text-ink">Seuraava askel:</strong> vertaa Suomen suosituimmat
           luottokortit ja katso, mikä sopisi juuri sinun kulutukseesi.
         </p>
-        <Link href="/sahkosopimukset#vertailu" className="mt-3 inline-block text-sm font-semibold text-accent underline-offset-4 hover:underline">
+        <Link href="/sahkosopimukset#vertailu" className="mt-3 inline-block text-sm font-semibold text-accentDark underline-offset-4 hover:underline">
           Siirry vertailuun →
         </Link>
       </div>

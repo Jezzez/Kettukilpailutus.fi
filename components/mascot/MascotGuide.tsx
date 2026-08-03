@@ -107,7 +107,7 @@ export default function MascotGuide() {
               <button
                 onClick={() => setDismissed(true)}
                 aria-label="Piilota Kettu"
-                className="absolute -right-2.5 -top-2.5 grid h-7 w-7 place-items-center rounded-full border border-line bg-white text-ink/58 shadow-sm hover:text-ink"
+                className="absolute -right-2.5 -top-2.5 grid h-7 w-7 place-items-center rounded-full border border-line bg-white text-ink/60 shadow-sm hover:text-ink"
               >
                 <X size={13} />
               </button>

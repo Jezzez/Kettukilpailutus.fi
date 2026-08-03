@@ -42,18 +42,29 @@ export default function Footer() {
         };
 
   return (
-    <footer className="border-t border-line bg-den">
+    /*
+      Footer on tarkoituksella VIILEIN ja vaalein pinta koko sivulla.
+
+      MIKSI: aiemmin läpinäkyvyysosio, loppu-CTA ja footer olivat kaikki
+      samaa lämmintä persikkaa peräkkäin. Kolme samanlaista pintaa sulautuu
+      yhdeksi puuroksi, jolloin viimeinen "Kilpailuta sähkösopimus" -nappi
+      hukkuu — ja juuri se nappi on sivun viimeinen tilaisuus ansaita.
+      Nyt lämmin pinta on varattu CTA:lle ja footer sammuttaa sivun
+      rauhallisesti. Ylhäällä kultaviiva erottaa footerin selvästi omaksi
+      tasokseen, jotta lukija tietää saapuneensa loppuun.
+    */
+    <footer className="border-t-2 border-gold/35 bg-mist">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-4">
         <div className="md:col-span-2">
-          <p className="flex items-center gap-2.5 font-display text-lg font-bold uppercase tracking-wide text-cream">
+          <p className="flex items-center gap-2.5 font-display text-lg font-bold uppercase tracking-wide text-ink">
             <FoxMark size={30} /> Kettukilpailutus
           </p>
           <p className="mt-3 font-display text-[15px] font-bold text-accentDark">
             Ketuttaako maksaa liikaa? Anna Ketun kilpailuttaa puolestasi.
           </p>
-          <p className="mt-2 max-w-sm text-sm leading-relaxed text-cream/72">{SITE.description}</p>
-          <p className="mt-5 max-w-sm rounded-xl border border-cream/[0.07] bg-cream/[0.04] p-4 text-xs leading-relaxed text-cream/72">
-            <strong className="text-cream/85">Mainostajan ilmoitus:</strong> Saamme korvauksen, kun
+          <p className="mt-2 max-w-sm text-sm leading-relaxed text-ink/70">{SITE.description}</p>
+          <p className="mt-5 max-w-sm rounded-xl border border-line bg-white/60 p-4 text-xs leading-relaxed text-ink/70">
+            <strong className="text-ink/85">Mainostajan ilmoitus:</strong> Saamme korvauksen, kun
             teet sopimuksen kumppanin palvelussa linkkiemme kautta. Korvaus ei vaikuta vertailun
             sisältöön eikä järjestykseen. Hinnat ovat esimerkinomaisia — tarkista ajantasaiset
             ehdot palveluntarjoajan sivuilta.
@@ -61,11 +72,11 @@ export default function Footer() {
         </div>
 
         <nav aria-label={contextNav.title}>
-          <p className="font-display text-sm font-bold text-cream">{contextNav.title}</p>
+          <p className="font-display text-sm font-bold text-ink">{contextNav.title}</p>
           <ul className="mt-3 space-y-2">
             {contextNav.links.map((l) => (
               <li key={l.href}>
-                <Link href={l.href} className="text-sm text-cream/72 transition-colors hover:text-accentDark">
+                <Link href={l.href} className="text-sm text-ink/70 transition-colors hover:text-accentDark">
                   {l.label}
                 </Link>
               </li>
@@ -74,7 +85,7 @@ export default function Footer() {
         </nav>
 
         <nav aria-label="Sivusto">
-          <p className="font-display text-sm font-bold text-cream">Sivusto</p>
+          <p className="font-display text-sm font-bold text-ink">Sivusto</p>
           <ul className="mt-3 space-y-2">
             {[
               ["/", "Etusivu"],
@@ -84,7 +95,7 @@ export default function Footer() {
               ["/kayttoehdot", "Käyttöehdot"],
             ].map(([href, label]) => (
               <li key={href}>
-                <Link href={href} className="text-sm text-cream/72 transition-colors hover:text-accentDark">
+                <Link href={href} className="text-sm text-ink/70 transition-colors hover:text-accentDark">
                   {label}
                 </Link>
               </li>
@@ -92,7 +103,7 @@ export default function Footer() {
           </ul>
         </nav>
       </div>
-      <div className="border-t border-cream/10 py-5 text-center text-xs text-cream/62">
+      <div className="border-t border-ink/12 py-5 text-center text-xs text-ink/65">
         © {new Date().getFullYear()} {SITE.name}. Vertailu on tiedoksi, ei henkilökohtaista neuvontaa.
       </div>
     </footer>

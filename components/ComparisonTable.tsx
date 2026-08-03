@@ -44,7 +44,7 @@ export default function ComparisonTable({ cards }: { cards: Card[] }) {
       <table className="w-full min-w-[900px] border-collapse text-left text-sm">
         <caption className="sr-only">Luottokorttien vertailutaulukko</caption>
         <thead>
-          <tr className="border-b border-line bg-mist/70 text-[13px] text-ink/72">
+          <tr className="border-b border-line bg-mist/70 text-[13px] text-ink/70">
             <th scope="col" className="sticky left-0 z-10 bg-mist px-5 py-3.5 font-semibold">Kortti</th>
             {COLUMNS.map((c) => (
               <th key={c.key} scope="col" className="px-4 py-3.5 font-semibold">
@@ -53,7 +53,7 @@ export default function ComparisonTable({ cards }: { cards: Card[] }) {
                   className="inline-flex items-center gap-1 hover:text-ink"
                   aria-label={`Järjestä sarakkeen ${c.label} mukaan`}
                 >
-                  {c.label} <ArrowUpDown size={13} aria-hidden className={sort.key === c.key ? "text-accent" : ""} />
+                  {c.label} <ArrowUpDown size={13} aria-hidden className={sort.key === c.key ? "text-accentDark" : ""} />
                 </button>
               </th>
             ))}

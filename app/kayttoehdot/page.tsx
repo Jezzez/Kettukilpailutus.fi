@@ -17,8 +17,8 @@ const SECTIONS: [string, string][] = [
 export default function TermsPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6">
-      <h1 className="font-display text-3xl font-bold tracking-tight text-ink">Käyttöehdot</h1>
-      <p className="mt-2 text-sm text-ink/62">Päivitetty viimeksi: heinäkuu 2026</p>
+      <h1 className="font-hero text-[2rem] leading-[1.1] text-ink sm:text-[2.4rem]">Käyttöehdot</h1>
+      <p className="mt-2 text-sm text-ink/60">Päivitetty viimeksi: heinäkuu 2026</p>
       <div className="mt-8 space-y-7">
         {SECTIONS.map(([h, t]) => (
           <section key={h}>
@@ -27,7 +27,7 @@ export default function TermsPage() {
           </section>
         ))}
       </div>
-      <p className="mt-10 rounded-xl bg-mist p-4 text-xs leading-relaxed text-ink/68">
+      <p className="mt-10 rounded-xl bg-mist p-4 text-xs leading-relaxed text-ink/70">
         Huomio julkaisijalle: tämä on ehtojen pohja — tarkistuta juristilla ennen julkaisua.
       </p>
     </div>

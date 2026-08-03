@@ -48,7 +48,7 @@ export default function Faq({ items }: { items: FaqItem[] }) {
                     transition={{ duration: 0.25, ease: "easeOut" }}
                     className="overflow-hidden"
                   >
-                    <p className="px-6 pb-6 text-[15px] leading-relaxed text-ink/76">{item.a}</p>
+                    <p className="px-6 pb-6 text-[15px] leading-relaxed text-ink/75">{item.a}</p>
                   </motion.div>
                 )}
               </AnimatePresence>

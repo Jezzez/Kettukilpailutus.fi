@@ -2,7 +2,92 @@
 @tailwind components;
 @tailwind utilities;
 
-html { scroll-behavior: smooth; color-scheme: dark; }
+html { scroll-behavior: smooth; color-scheme: light; }
+
+/* --- PINTAKERROS ---
+   Pinnat ja tekstit ovat CSS-muuttujia, eivät kiinteitä heksoja. Näin sama
+   komponenttikoodi (bg-white, text-ink, border-line …) toimii sekä tummalla
+   että vaalealla pohjalla, eikä yhtään luokkaa tarvitse kirjoittaa kahdesti.
+
+   OLETUS ON VAALEA. `.theme-dark` kääntää pinnat tummiksi.
+
+   MIKSI: palkkio syntyy vasta "Tee sopimus" -klikistä. Vertailu on tiheää
+   numeroiden silmäilyä, joka on nopeampaa tummalla tekstillä vaalealla
+   pohjalla — ja vaalealla ympäristöllä oranssi nappi on ruudun ainoa kuuma
+   piste. Tumma jää brändin ankkureiksi: footer ja yksittäiset paneelit.
+
+   Arvot ovat RGB-kolmikkoja ilman rgb()-kääreitä, jotta Tailwindin
+   läpinäkyvyysmerkinnät (text-ink/70) toimivat edelleen.
+
+   `.theme-dark` on pakollinen jokaisessa kovakoodatusti tummassa
+   laatikossa (`bg-den`, `.den-surface`) — muuten sen `text-cream`
+   kääntyisi tummaksi ja teksti katoaisi pohjaan. */
+.theme-dark {
+  --c-paper: 13 10 8;
+  --c-card: 26 21 18;
+  --c-mist: 36 28 22;
+  --c-peach: 42 29 19;
+  --c-night: 49 38 25;
+  --c-navy: 52 40 32;
+  --c-line: 51 42 33;
+  --c-line-dark: 67 55 43;
+  --c-ink: 242 234 223;
+  --c-cream: 247 241 232;
+  --c-accent-soft: 46 28 14;
+  /* Oranssi TEKSTINÄ. Tummalla vaalea #FF8C3C erottuu, mutta valkoisella se
+     jää n. 2,3:1 kontrastiin. Vaalealla käytetään tummempaa oranssia. */
+  --c-accent-dark: 255 140 60;
+  /* Kulta TEKSTINÄ. Tummalla brändikulta toimii, mutta valkoisella #D9A24F
+     jää n. 2:1 kontrastiin eli lukukelvottomaksi. Vaalealla käytetään saman
+     kullan tummempaa sävyä — ei uutta väriä, vain tummempi valoarvo. */
+  --c-gold-ink: 217 162 79;
+
+  --sh-card: inset 0 1px 0 rgba(255,244,235,0.04), 0 1px 2px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.3);
+  --sh-card-hover: inset 0 1px 0 rgba(255,244,235,0.07), 0 2px 6px rgba(0,0,0,0.45), 0 22px 48px rgba(0,0,0,0.45);
+  --sh-lift: inset 0 1px 0 rgba(255,244,235,0.06), 0 28px 70px -14px rgba(0,0,0,0.75);
+}
+
+/* VAALEA PINTA.
+   Ensimmäinen versio oli kauttaaltaan beige: pohja #FAF6F0 ja kortti #FFFFFF
+   erosivat toisistaan vain parin prosentin verran, joten mikään ei näyttänyt
+   kortilta — koko ruutu oli yhtä lämmintä puuroa. Nyt pohja on selvästi
+   tummempi ja LÄHES NEUTRAALI kivensävy, kortit puhtaan valkoisia. Lämpö
+   tulee vain oranssista. Kun ympäristö on viileä, oranssi nappi on ruudun
+   ainoa kuuma piste — ja juuri siitä napista tulee palkkio. */
+:root,
+.theme-light {
+  --c-paper: 240 238 233;
+  --c-card: 255 255 255;
+  --c-mist: 248 247 244;
+  --c-peach: 253 241 232;
+  --c-night: 235 232 226;
+  --c-navy: 231 228 221;
+  --c-line: 224 220 212;
+  --c-line-dark: 196 190 180;
+  --c-ink: 26 24 21;
+  --c-cream: 12 11 9;
+  --c-accent-soft: 253 238 226;
+  --c-accent-dark: 178 72 6;
+  --c-gold-ink: 116 78 18;
+
+  /* Vaalealla syvyys tehdään TERÄVÄLLÄ lähivarjolla, ei laajalla usvalla.
+     Ruskeaan taittava leveä varjo näytti likaiselta; neutraali ja tiukka
+     varjo saa kortin näyttämään veistetyltä eikä leijuvalta. */
+  --sh-card: 0 1px 1px rgba(20,18,15,0.04), 0 2px 6px -1px rgba(20,18,15,0.06);
+  --sh-card-hover: 0 1px 2px rgba(20,18,15,0.06), 0 14px 32px -10px rgba(20,18,15,0.16);
+  --sh-lift: 0 2px 4px rgba(20,18,15,0.05), 0 20px 50px -18px rgba(20,18,15,0.22);
+
+  color-scheme: light;
+}
+
+.theme-light input[type="number"],
+.theme-light input[type="text"],
+.theme-light input[type="email"] { color-scheme: light; }
+
+.theme-dark { color-scheme: dark; }
+.theme-dark input[type="number"],
+.theme-dark input[type="text"],
+.theme-dark input[type="email"] { color-scheme: dark; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -20,13 +105,38 @@ h1, h2, h3 { letter-spacing: -0.02em; }
 
 .font-data { font-variant-numeric: tabular-nums; }
 
+/* Otsikkotyyli. Sama pohjoismainen mediagroteski kuin käyttöliittymässä,
+   mutta tiiviimmällä kirjainvälillä ja lihavana.
+
+   MIKSI ANTIIKVA POISTETTIIN: se luki kirjakustantamolta, ei
+   kilpailutuspalvelulta. Kohdeyleisölle ammattimaisuus syntyy selkeydestä,
+   ei koristeesta — ja iso groteski on myös luettavampi, mikä on tällä
+   sivustolla suoraan myyntiargumentti.
+
+   Korostuksen kantaa väri, ei kursiivi: kursivoitu groteski näyttää
+   vinoutetulta virheeltä, joten <em> pysyy pystyssä. */
+.font-hero {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+}
+.font-hero em { font-style: normal; font-weight: 700; }
+
 :focus-visible {
   outline: 2px solid #E8691B;
   outline-offset: 2px;
   border-radius: 6px;
 }
 
-/* Headerin tumma lasi */
+/* Headerin lasi. Vaalea, koska sivu on vaalea — musta palkki kermanvärisen
+   heron päällä leikkaisi ruudun kahtia heti ensisilmäyksellä. */
+.glass-light {
+  background: rgba(251, 248, 243, 0.82);
+  backdrop-filter: saturate(1.15) blur(16px);
+  -webkit-backdrop-filter: saturate(1.15) blur(16px);
+}
+
+/* Headerin tumma lasi (jäljellä tummia osioita varten) */
 .glass-dark {
   background: rgba(10, 8, 7, 0.78);
   backdrop-filter: saturate(1.3) blur(16px);
@@ -50,6 +160,75 @@ h1, h2, h3 { letter-spacing: -0.02em; }
   pointer-events: none;
   opacity: 0.04;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* --- AAMUNKOITTO: vaalea hero ---
+   Sama idea kuin `.den-surface`, käännettynä. Pohja on lämmin kerma, ja
+   kaksi hyvin haaleaa hehkua antavat valolle suunnan. Kohina estää
+   gradienttiraidat isolla pinnalla.
+
+   MIKSI vaalea hero: aiemmin sivu vaihtoi mustasta beigeen heti heron
+   alla. Se sai sivun näyttämään kahdelta eri sivustolta liimattuna yhteen.
+   Yhtenäinen vaalea maailma + tumma footer ankkurina on rauhallisempi ja
+   antaa oranssin napin hallita ruutua. */
+.dawn-surface {
+  background-color: #FBF8F3;
+  background-image:
+    radial-gradient(58% 75% at 88% 4%, rgba(232, 105, 27, 0.16) 0%, rgba(232, 105, 27, 0) 62%),
+    radial-gradient(70% 60% at 4% 96%, rgba(217, 162, 79, 0.15) 0%, rgba(217, 162, 79, 0) 64%);
+  position: relative;
+}
+.dawn-surface::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* --- KETUN TURKKI: vaalea korostuspinta ---
+   Korvaa entiset tummat paneelit (tilastopalkki, läpinäkyvyysosio,
+   loppu-CTA, vastauskortit).
+
+   MIKSI: tumma paneeli vaalean sivun keskellä leikkaa sivun kahtia ja saa
+   sen näyttämään kahdelta eri sivustolta. Mutta pelkkä valkoinen kaikkialla
+   latistaa rytmin, jolloin silmä ei löydä osioiden rajoja. Tämä on
+   välimuoto: lämmin, hieman syvempi kermanoranssi, jossa on sama kohina ja
+   sama valon suunta kuin herossa. Osio erottuu, mutta pysyy samassa
+   maailmassa — ja teksti pysyy tummana, eli luettavana ilman
+   teemanvaihtoa. */
+.pelt-surface {
+  background-color: #F6EDE1;
+  background-image:
+    radial-gradient(62% 86% at 92% -6%, rgba(232, 105, 27, 0.20) 0%, rgba(232, 105, 27, 0) 60%),
+    radial-gradient(72% 70% at 2% 104%, rgba(217, 162, 79, 0.22) 0%, rgba(217, 162, 79, 0) 62%);
+  position: relative;
+  overflow: hidden;
+}
+.pelt-surface::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Kettuhehku maskotin taakse, vaalea versio. Sama muoto kuin
+   `.ember-glow`, mutta paljon haaleampi: kerman päällä voimakas oranssi
+   hehku näyttäisi Photoshop-filtteriltä. */
+.dawn-glow::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 54%;
+  width: 86%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(232, 105, 27, 0.14) 0%, rgba(217, 162, 79, 0.10) 44%, rgba(232, 105, 27, 0) 70%);
+  pointer-events: none;
 }
 
 /* Kettuhehku maskotin taakse */
@@ -91,7 +270,7 @@ button, a { touch-action: manipulation; -webkit-tap-highlight-color: transparent
 .scrollbar-none { scrollbar-width: none; -ms-overflow-style: none; }
 .scrollbar-none::-webkit-scrollbar { display: none; }
 
-/* Lomake-elementit tummalle */
+/* Lomake-elementit seuraavat pintaa (ks. .theme-dark / .theme-light yllä) */
 input[type="number"], input[type="text"], input[type="email"] {
-  color-scheme: dark;
+  color-scheme: light;
 }

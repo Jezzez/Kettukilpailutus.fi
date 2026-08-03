@@ -16,7 +16,8 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   const plan = getPlan(params.slug);
   if (!plan) return {};
   return {
-    title: `${plan.provider} ${plan.name} – hinta, kokemuksia ja arvio | Kettukilpailutus`,
+    // Brändi tulee layoutin title-templatesta, ei tähän toiseen kertaan.
+    title: `${plan.provider} ${plan.name} – hinta, kokemuksia ja arvio`,
     description: `${plan.provider} ${plan.name}: ${plan.summary} Katso hinta omalla kulutuksellasi ja vertaa muihin sopimuksiin.`,
     alternates: { canonical: `/sahkosopimukset/sopimus/${plan.slug}` },
   };
@@ -57,7 +58,7 @@ export default function PlanPage({ params }: { params: { slug: string } }) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
 
       <div className="mx-auto max-w-4xl px-4 pt-8 sm:px-6">
-        <nav aria-label="Murupolku" className="flex items-center gap-1.5 text-[13px] text-ink/62">
+        <nav aria-label="Murupolku" className="flex items-center gap-1.5 text-[13px] text-ink/60">
           <Link href="/" className="hover:text-ink">Etusivu</Link>
           <ChevronRight size={13} aria-hidden />
           <Link href="/sahkosopimukset" className="hover:text-ink">Sähkösopimukset</Link>
@@ -70,16 +71,16 @@ export default function PlanPage({ params }: { params: { slug: string } }) {
             <div>
               <div className="flex items-center gap-3">
                 <span
-                  className="grid h-12 w-12 place-items-center rounded-xl border border-line bg-den"
+                  className="grid h-12 w-12 place-items-center rounded-xl border border-line bg-mist"
                   aria-hidden
                 >
-                  <Zap size={20} className="text-accent" />
+                  <Zap size={20} className="text-ink/35" />
                 </span>
                 <div>
-                  <h1 className="font-display text-3xl font-bold tracking-tight text-ink">
+                  <h1 className="font-hero text-[2rem] leading-[1.08] text-ink sm:text-[2.5rem]">
                     {plan.provider} {plan.name}
                   </h1>
-                  <div className="mt-1 flex flex-wrap items-center gap-2 text-[13px] text-ink/72">
+                  <div className="mt-1 flex flex-wrap items-center gap-2 text-[13px] text-ink/70">
                     <span className="rounded-full bg-mist px-2.5 py-0.5 font-semibold">
                       {TYPE_LABEL[plan.type]}{plan.fixedTermMonths ? ` · ${plan.fixedTermMonths} kk` : ""}
                     </span>
@@ -110,7 +111,7 @@ export default function PlanPage({ params }: { params: { slug: string } }) {
           <h2 className="font-display text-xl font-semibold text-ink">Hinnat</h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <div className="rounded-2xl border border-line bg-white p-5">
-              <p className="text-[12px] uppercase tracking-wide text-ink/58">
+              <p className="text-[12px] uppercase tracking-wide text-ink/60">
                 {plan.type === "spot" ? "Marginaali" : "Energian hinta"}
               </p>
               <p className="mt-1 font-display text-2xl font-bold text-ink">
@@ -119,11 +120,11 @@ export default function PlanPage({ params }: { params: { slug: string } }) {
                   : `${plan.energyPrice?.toLocaleString("fi-FI")} c/kWh`}
               </p>
               {plan.type === "spot" && (
-                <p className="mt-1 text-[12px] text-ink/62">+ pörssin tuntihinta</p>
+                <p className="mt-1 text-[12px] text-ink/60">+ pörssin tuntihinta</p>
               )}
             </div>
             <div className="rounded-2xl border border-line bg-white p-5">
-              <p className="text-[12px] uppercase tracking-wide text-ink/58">Perusmaksu</p>
+              <p className="text-[12px] uppercase tracking-wide text-ink/60">Perusmaksu</p>
               <p className="mt-1 font-display text-2xl font-bold text-ink">
                 {plan.basicFee.toLocaleString("fi-FI")} €/kk
               </p>
@@ -134,7 +135,7 @@ export default function PlanPage({ params }: { params: { slug: string } }) {
             <table className="w-full text-left">
               <caption className="sr-only">Arvioitu vuosikustannus eri kulutuksilla</caption>
               <thead>
-                <tr className="border-b border-line bg-mist/60 text-[12px] uppercase tracking-wide text-ink/62">
+                <tr className="border-b border-line bg-mist/60 text-[12px] uppercase tracking-wide text-ink/60">
                   <th className="px-5 py-3 font-semibold">Vuosikulutus</th>
                   <th className="px-5 py-3 text-right font-semibold">Arvio / vuosi</th>
                   <th className="px-5 py-3 text-right font-semibold">Arvio / kk</th>
@@ -143,7 +144,7 @@ export default function PlanPage({ params }: { params: { slug: string } }) {
               <tbody>
                 {EXAMPLE_KWH.map((k) => (
                   <tr key={k} className="border-b border-line last:border-0">
-                    <td className="px-5 py-3 text-[14px] text-ink/82">{k.toLocaleString("fi-FI")} kWh</td>
+                    <td className="px-5 py-3 text-[14px] text-ink/80">{k.toLocaleString("fi-FI")} kWh</td>
                     <td className="px-5 py-3 text-right font-data text-[14px] font-semibold text-ink">
                       {annualCost(plan, k).toLocaleString("fi-FI", { maximumFractionDigits: 0 })} €
                     </td>
@@ -156,7 +157,7 @@ export default function PlanPage({ params }: { params: { slug: string } }) {
             </table>
           </div>
           {plan.type === "spot" && (
-            <p className="mt-2 text-[12px] text-ink/62">
+            <p className="mt-2 text-[12px] text-ink/60">
               Arviot laskettu {ASSUMED_SPOT_AVG.toLocaleString("fi-FI")} c/kWh pörssikeskihinnalla. Toteutunut hinta vaihtelee.
             </p>
           )}
@@ -170,7 +171,7 @@ export default function PlanPage({ params }: { params: { slug: string } }) {
               <ul className="mt-3 space-y-2.5">
                 {plan.pros.map((p) => (
                   <li key={p} className="flex items-start gap-2.5 text-[14px] text-ink/85">
-                    <Check size={15} strokeWidth={3} className="mt-0.5 shrink-0 text-accent" aria-hidden />
+                    <Check size={15} strokeWidth={3} className="mt-0.5 shrink-0 text-ink/35" aria-hidden />
                     {p}
                   </li>
                 ))}
@@ -193,7 +194,7 @@ export default function PlanPage({ params }: { params: { slug: string } }) {
         <Reveal className="mt-8">
           <div className="rounded-2xl bg-peach p-6">
             <h2 className="font-display text-lg font-semibold text-ink">Kenelle sopimus sopii?</h2>
-            <p className="mt-2 text-[15px] leading-relaxed text-ink/82">{plan.bestFor}</p>
+            <p className="mt-2 text-[15px] leading-relaxed text-ink/80">{plan.bestFor}</p>
           </div>
         </Reveal>
 
@@ -210,7 +211,7 @@ export default function PlanPage({ params }: { params: { slug: string } }) {
           <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-line bg-white p-6">
             <div>
               <p className="font-display text-lg font-semibold text-ink">Valmis vaihtamaan?</p>
-              <p className="mt-1 text-[14px] text-ink/72">
+              <p className="mt-1 text-[14px] text-ink/70">
                 Tilaus vie noin 5 minuuttia — uusi yhtiö hoitaa loput, eikä sähkö katkea.
               </p>
             </div>
@@ -218,7 +219,7 @@ export default function PlanPage({ params }: { params: { slug: string } }) {
               Tee sopimus
             </AffiliateButton>
           </div>
-          <p className="mt-3 text-center text-[12px] text-ink/58">
+          <p className="mt-3 text-center text-[12px] text-ink/60">
             <Link href="/sahkosopimukset#vertailu" className="underline underline-offset-4 hover:text-ink">
               ← Takaisin vertailuun
             </Link>
@@ -232,7 +233,7 @@ export default function PlanPage({ params }: { params: { slug: string } }) {
         style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
       >
         <div>
-          <p className="text-[11px] uppercase tracking-wide text-ink/58">Perusmaksu</p>
+          <p className="text-[11px] uppercase tracking-wide text-ink/60">Perusmaksu</p>
           <p className="font-display text-lg font-bold text-ink">{plan.basicFee.toLocaleString("fi-FI")} €/kk</p>
         </div>
         <AffiliateButton href={plan.affiliateUrl} cardId={plan.id} placement="plan-sticky">

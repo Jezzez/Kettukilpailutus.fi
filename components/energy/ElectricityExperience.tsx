@@ -10,6 +10,8 @@ import type { ElectricityPlan } from "@/lib/energy";
 import { annualCost, ASSUMED_SPOT_AVG, DWELLINGS, PRICE_DATE } from "@/lib/energy";
 import PlanCard, { type PlanBadge } from "./PlanCard";
 import SpotCurve from "./SpotCurve";
+import SpotPriceLive from "./SpotPriceLive";
+import BrushRule from "../BrushRule";
 
 /**
  * Sähkön koko kokemus.
@@ -84,7 +86,12 @@ export default function ElectricityExperience({
   const [curPrice, setCurPrice] = useState<string>("");
   const [curBasic, setCurBasic] = useState<string>("");
 
-  // Suosittelija
+  /**
+   * Suosittelija on oletuksena kiinni. Se ratkaisee asiakkaan vaikeimman
+   * päätöksen, mutta suljettuna se ei ole enää kolmas päätös hintojen ja
+   * käyttäjän välissä. Auki yhdellä klikillä sille, joka epäröi.
+   */
+  const [showAdvisor, setShowAdvisor] = useState(false);
   const [canShift, setCanShift] = useState<boolean | null>(null);
   const [wantsSteady, setWantsSteady] = useState<boolean | null>(null);
 
@@ -156,16 +163,18 @@ export default function ElectricityExperience({
     <div
       className={
         dark
-          ? "rounded-3xl border border-cream/[0.10] bg-mist p-5 shadow-lift sm:p-6"
-          : "rounded-3xl border border-line bg-mist p-5 shadow-card sm:p-6"
+          ? "rounded-2xl border border-line bg-white p-5 shadow-lift sm:rounded-[20px] sm:p-7"
+          : "rounded-2xl border border-line bg-white p-5 shadow-card sm:rounded-[20px] sm:p-7"
       }
     >
       <div className="flex items-baseline justify-between gap-3">
-        <p className="font-display text-[15px] font-bold text-ink">Millaisessa asunnossa asut?</p>
-        <span className="hidden text-[12px] text-ink/55 sm:block">Askel 1 / 2</span>
+        <p className="font-display text-[15.5px] font-bold text-ink">Millaisessa asunnossa asut?</p>
+        <span className="hidden font-display text-[11px] font-bold uppercase tracking-[0.14em] text-ink/45 sm:block">
+          Askel 1 / 2
+        </span>
       </div>
 
-      <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+      <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-2.5">
         {DWELLINGS.map((d) => {
           const Icon = DWELLING_ICONS[d.key as keyof typeof DWELLING_ICONS];
           const on = dwelling === d.key;
@@ -174,17 +183,17 @@ export default function ElectricityExperience({
               key={d.key}
               onClick={() => { setDwelling(d.key); setKwh(d.kwh); }}
               aria-pressed={on}
-              className={`group rounded-2xl border px-3 py-3 text-left transition-all active:scale-[0.98] ${
+              className={`group rounded-xl border px-3.5 py-3.5 text-left transition-all active:scale-[0.98] ${
                 on
-                  ? "border-accent bg-accentSoft shadow-[inset_0_0_0_1px_rgba(232,105,27,0.3)]"
-                  : "border-line bg-white hover:border-lineDark hover:bg-night"
+                  ? "border-accent bg-accentSoft"
+                  : "border-line bg-mist hover:border-lineDark hover:bg-night"
               }`}
             >
-              <Icon size={18} className={on ? "text-accentDark" : "text-ink/50"} aria-hidden />
-              <p className={`mt-1.5 font-display text-[13px] font-semibold leading-tight ${on ? "text-accentDark" : "text-ink/85"}`}>
+              <Icon size={18} className={on ? "text-accentDark" : "text-ink/40"} aria-hidden />
+              <p className={`mt-2 font-display text-[13.5px] font-bold leading-tight ${on ? "text-accentDark" : "text-ink"}`}>
                 {d.label}
               </p>
-              <p className="mt-0.5 text-[11px] leading-tight text-ink/58">{d.hint}</p>
+              <p className="mt-0.5 text-[11px] leading-tight text-ink/55">{d.hint}</p>
             </button>
           );
         })}
@@ -204,9 +213,9 @@ export default function ElectricityExperience({
             step={100}
             value={kwh}
             onChange={(e) => { setKwh(Math.max(0, Number(e.target.value))); setDwelling(null); }}
-            className="w-28 rounded-xl border border-lineDark bg-den px-3 py-2 text-right font-data text-[15px] font-bold text-ink transition-colors focus:border-accent focus:outline-none"
+            className="w-28 rounded-xl border border-lineDark bg-mist px-3 py-2 text-right font-data text-[15px] font-bold text-ink transition-colors focus:border-accent focus:outline-none"
           />
-          <span className="text-[13px] font-medium text-ink/62">kWh / v</span>
+          <span className="text-[13px] font-medium text-ink/60">kWh / v</span>
         </div>
         <span className="text-[12px] text-ink/55">Luku löytyy sähkölaskustasi.</span>
       </div>
@@ -218,7 +227,7 @@ export default function ElectricityExperience({
             onClick={() => setShowCurrent(true)}
             className="inline-flex items-center gap-2 rounded-xl border border-line bg-white px-4 py-2.5 font-display text-[13px] font-semibold text-ink/85 transition-all hover:border-accent/50 hover:text-ink active:scale-[0.98]"
           >
-            <Wallet size={15} className="text-accent" aria-hidden />
+            <Wallet size={15} className="text-ink/40" aria-hidden />
             Tiedän nykyisen hintani — laske todellinen säästö
           </button>
         ) : (
@@ -227,7 +236,7 @@ export default function ElectricityExperience({
               <p className="font-display text-[13px] font-bold text-ink/85">Nykyinen sopimuksesi</p>
               <button
                 onClick={() => { setShowCurrent(false); setCurPrice(""); setCurBasic(""); }}
-                className="inline-flex items-center gap-1 text-[12px] text-ink/62 hover:text-ink"
+                className="inline-flex items-center gap-1 text-[12px] text-ink/60 hover:text-ink"
               >
                 <X size={13} aria-hidden /> Piilota
               </button>
@@ -241,9 +250,9 @@ export default function ElectricityExperience({
                   value={curPrice}
                   onChange={(e) => setCurPrice(e.target.value)}
                   aria-label="Nykyinen energian hinta senttiä kilowattitunnilta"
-                  className="w-24 rounded-xl border border-lineDark bg-den px-3 py-2 text-right font-data text-[15px] font-bold text-ink placeholder:font-normal placeholder:text-ink/35 focus:border-accent focus:outline-none"
+                  className="w-24 rounded-xl border border-lineDark bg-mist px-3 py-2 text-right font-data text-[15px] font-bold text-ink placeholder:font-normal placeholder:text-ink/35 focus:border-accent focus:outline-none"
                 />
-                <span className="text-[13px] text-ink/62">c/kWh</span>
+                <span className="text-[13px] text-ink/60">c/kWh</span>
               </div>
               <div className="flex items-center gap-2">
                 <input
@@ -253,9 +262,9 @@ export default function ElectricityExperience({
                   value={curBasic}
                   onChange={(e) => setCurBasic(e.target.value)}
                   aria-label="Nykyinen perusmaksu euroa kuukaudessa"
-                  className="w-24 rounded-xl border border-lineDark bg-den px-3 py-2 text-right font-data text-[15px] font-bold text-ink placeholder:font-normal placeholder:text-ink/35 focus:border-accent focus:outline-none"
+                  className="w-24 rounded-xl border border-lineDark bg-mist px-3 py-2 text-right font-data text-[15px] font-bold text-ink placeholder:font-normal placeholder:text-ink/35 focus:border-accent focus:outline-none"
                 />
-                <span className="text-[13px] text-ink/62">€/kk perusmaksu</span>
+                <span className="text-[13px] text-ink/60">€/kk perusmaksu</span>
               </div>
             </div>
             <p className="mt-2 text-[12px] text-ink/55">
@@ -277,77 +286,106 @@ export default function ElectricityExperience({
           työkalu ennen myyntipuhetta). Älä kasvata pystypaddingeja
           tai otsikon kokoa tarkistamatta taitetta uudelleen.
         */}
-        <section className="den-surface relative overflow-hidden pb-24 pt-8 md:pb-24 md:pt-9">
-          <div className="relative mx-auto max-w-[1180px] px-4 sm:px-6">
-            <div className="grid items-center gap-8 md:grid-cols-[1.06fr_0.94fr]">
+        <section className="theme-light dawn-surface relative overflow-hidden pb-28 pt-9 md:pb-28 md:pt-12">
+          <div className="relative z-[1] mx-auto max-w-[1180px] px-5 sm:px-6">
+            <div className="grid items-center gap-6 md:grid-cols-[1.08fr_0.92fr] md:gap-8">
               <div>
                 <div className="flex items-center gap-3">
-                  <span className="font-display text-[12px] font-bold uppercase tracking-[0.2em] text-gold">
+                  <span className="font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-accentDark">
                     Ketuttaako maksaa liikaa?
                   </span>
-                  <span className="gold-rule w-16" aria-hidden />
+                  <BrushRule className="text-accent/70" width={64} />
                 </div>
 
-                <h1 className="mt-3 font-display text-[2.3rem] font-extrabold leading-[1.04] tracking-tight text-cream sm:text-[2.9rem]">
-                  Halvin sähkö löytyy<br />
-                  <span className="text-accent">laskemalla</span>, ei arvaamalla.
+                {/*
+                  Otsikko on antiikvaa ja normaalipainoista tarkoituksella.
+                  Kun otsikko ei ole lihava, sivun painavin elementti on
+                  oranssi nappi — ja katse menee sinne, mistä palkkio tulee.
+                  Kursivoitu "laskemalla" on sivun ainoa koristeellinen ele.
+                */}
+                <h1 className="mt-4 max-w-[13ch] font-hero text-[2.5rem] leading-[1.03] text-ink sm:max-w-[14ch] sm:text-[3.3rem] md:text-[3.75rem]">
+                  Halvin sähkö löytyy{" "}
+                  <em className="text-accentDark">laskemalla</em>, ei
+                  arvaamalla.
                 </h1>
 
-                <p className="mt-4 max-w-md text-[16px] leading-relaxed text-cream/72">
+                <p className="mt-5 max-w-[46ch] text-[15.5px] leading-relaxed text-ink/70 sm:text-[16.5px]">
                   Kerro kulutuksesi, niin laskemme jokaisen sopimuksen todellisen
                   vuosihinnan — ja kerromme euroina, paljonko vaihtaminen tuo takaisin.
                 </p>
 
-                {/* Mobiilissa Kettu ja luottamusrivi vierekkäin, jotta CTA mahtuu alle. */}
-                <div className="mt-5 flex items-end gap-4">
+                {/*
+                  Mobiilissa Kettu ja luottamusrivi vierekkäin, jotta CTA mahtuu
+                  alle. `items-start`, koska Kettu on lähes kaksi kertaa listan
+                  korkuinen: `items-end` pudotti listan alas ja jätti ingressin
+                  alle ison tyhjän aukon, jolloin teksti näytti katkeavan.
+                  Negatiivinen alamarginaali antaa Ketun roikkua CTA-rivin
+                  suuntaan, ettei kuva kasvata osiota turhaan.
+                */}
+                <div className="mt-6 flex items-start gap-3">
                   <ul className="flex flex-1 flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:gap-x-5">
                     {[
                       { icon: Plug, text: "Sähkö ei katkea" },
                       { icon: RefreshCw, text: "Vanha sopimus irtisanotaan puolestasi" },
                       { icon: Timer, text: "Vie noin 5 minuuttia" },
                     ].map((t) => (
-                      <li key={t.text} className="flex items-center gap-2 text-[13.5px] font-medium text-cream/78">
-                        <t.icon size={15} className="shrink-0 text-gold" aria-hidden />
+                      <li key={t.text} className="flex items-center gap-2 text-[13.5px] font-medium text-ink/70">
+                        <t.icon size={15} className="shrink-0 text-ink/40" aria-hidden />
                         {t.text}
                       </li>
                     ))}
                   </ul>
-                  <div className="ember-glow relative shrink-0 md:hidden">
+                  <div className="dawn-glow relative -mb-10 -mt-3 shrink-0 md:hidden">
                     <Image
                       src="/kettu-osoittaa.webp"
                       alt="Kettu, Kettukilpailutuksen maskotti"
                       width={416}
                       height={1000}
                       priority
-                      className="relative h-[150px] w-auto drop-shadow-[0_16px_28px_rgba(0,0,0,0.5)]"
+                      className="relative h-[152px] w-auto drop-shadow-[0_14px_24px_rgba(60,45,30,0.22)]"
                     />
                   </div>
                 </div>
 
                 {/*
                   Mobiilissa herossa ei ollut lainkaan näkyvää toimintakehotusta.
-                  Tämä nappi vie suoraan laskuriin, joka on heti heron alla.
+                  Nappi on koko leveydeltä, koska peukalo osuu siihen varmasti.
                 */}
-                <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2">
+                <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
                   <a
                     href="#vertailu"
-                    className="btn-ember inline-flex items-center gap-2 rounded-full px-6 py-3 font-display text-[15px] font-bold text-cream md:hidden"
+                    className="btn-ember inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 font-display text-[15.5px] font-bold text-onEmber md:hidden"
                   >
                     Laske oma hintani
                     <TrendingDown size={16} aria-hidden />
                   </a>
-                  <p className="text-[12.5px] text-cream/58">
+                  <p className="text-[12.5px] text-ink/55">
                     Ilmainen ja puolueeton · ei vaadi tunnuksia
                   </p>
                 </div>
               </div>
 
-              <div className="ember-glow relative mx-auto hidden md:block">
+              {/*
+                Oikea palsta: Kettu ja reaaliaikainen pörssihinta vierekkäin.
+                Elävä luku maskotin vieressä sitoo brändin ja tosiasian yhteen
+                — hupaisa kettu, ammattimainen data. Mobiilissa Kettu on jo
+                ingressin vieressä, joten tässä on vain hintalaatikko.
+
+                MIKSI EI ABSOLUUTTISTA ASETTELUA: hintalaatikko oli aiemmin
+                `absolute` Ketun päällä ja leikkasi maskotin rinnasta poikki.
+                Puoliksi laatikon taakse jäävä maskotti näyttää rikkinäiseltä,
+                ei kerrokselliselta — ja rikkinäinen hero on suoraan pois
+                klikeistä. Nyt palsta on tavallinen flex-rivi: elementit eivät
+                voi mennä päällekkäin millään näytön leveydellä.
+              */}
+              <div className="mx-auto flex w-full max-w-[420px] flex-col md:max-w-none md:flex-row md:items-end md:justify-end md:gap-4">
+                <SpotPriceLive className="order-2 mt-6 md:order-1 md:mb-1 md:mt-0 md:w-[19rem] md:shrink-0" />
+
                 <motion.div
                   initial={reduce ? false : { opacity: 0, y: 24, scale: 0.97 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ type: "spring", stiffness: 120, damping: 18 }}
-                  className="relative"
+                  className="dawn-glow order-1 hidden shrink-0 md:order-2 md:flex"
                 >
                   {/*
                     Poosi "osoittaa", ei "kortti": sähkösivulla maskotti ei voi
@@ -359,27 +397,24 @@ export default function ElectricityExperience({
                     width={416}
                     height={1000}
                     priority
-                    className="relative h-[360px] w-auto drop-shadow-[0_28px_48px_rgba(0,0,0,0.55)]"
+                    className="relative h-[400px] w-auto drop-shadow-[0_26px_40px_rgba(60,45,30,0.20)] lg:h-[430px]"
                   />
-                  <span
-                    className="absolute right-2 top-10 grid h-16 w-16 rotate-[8deg] place-items-center rounded-2xl border border-gold/30 bg-den/90 shadow-ember backdrop-blur"
-                    aria-hidden
-                  >
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                      <path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12L13 2Z" fill="#D9A24F" stroke="#D9A24F" strokeWidth="1" strokeLinejoin="round" />
-                    </svg>
-                  </span>
                 </motion.div>
               </div>
             </div>
           </div>
 
-          <SpotCurve className="pointer-events-none absolute inset-x-0 bottom-0 opacity-70" />
+          <SpotCurve className="pointer-events-none absolute inset-x-0 bottom-0 opacity-40" />
         </section>
 
+        {/*
+          Laskuri on puhtaan valkoinen kortti kermanvärisen heron päällä.
+          Se on ruudun kirkkain pinta, joten katse osuu työkaluun eikä
+          otsikkoon — ja työkalun käyttö on ainoa polku palkkioklikkiin.
+        */}
         <div
           id="vertailu"
-          className="relative z-10 mx-auto -mt-20 max-w-[1180px] scroll-mt-24 px-4 sm:px-6 md:-mt-24"
+          className="theme-light relative z-10 mx-auto -mt-20 max-w-[1180px] scroll-mt-24 px-4 sm:px-6 md:-mt-24"
         >
           {estimator(true)}
         </div>
@@ -389,61 +424,61 @@ export default function ElectricityExperience({
       {!withHero && (
         <div id="vertailu" className="mx-auto max-w-[1180px] scroll-mt-24 px-4 sm:px-6">
           {heading && <h2 className="font-display text-2xl font-bold text-ink sm:text-3xl">{heading}</h2>}
-          {intro && <p className="mt-2 max-w-2xl text-ink/72">{intro}</p>}
+          {intro && <p className="mt-2 max-w-2xl text-ink/70">{intro}</p>}
           <div className={heading ? "mt-5" : ""}>{estimator(false)}</div>
         </div>
       )}
 
-      <section className={withHero ? "pt-14" : "pt-10"}>
+      <section className={`theme-light bg-paper ${withHero ? "pt-14" : "pt-10"}`}>
         <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
           {/* Tulos */}
-          <div className="flex flex-wrap items-end justify-between gap-6 rounded-3xl border border-line bg-mist px-6 py-6 sm:px-8">
+          <div className="flex flex-wrap items-end justify-between gap-6 rounded-2xl border border-line bg-white px-5 py-6 shadow-card sm:rounded-[20px] sm:px-8 sm:py-7">
             <div>
-              <p className="flex items-center gap-2 font-display text-[12px] font-bold uppercase tracking-[0.16em] text-accentDark">
+              <p className="flex items-center gap-2 font-display text-[11.5px] font-bold uppercase tracking-[0.16em] text-accentDark">
                 <TrendingDown size={14} aria-hidden /> Askel 2 / 2 · tuloksesi
               </p>
-              <p className="mt-2 font-display text-[1.75rem] font-extrabold leading-tight text-ink sm:text-[2.1rem]">
+              <p className="mt-3 font-hero text-[2rem] leading-[1.1] text-ink sm:text-[2.5rem]">
                 Edullisin sopimus{" "}
-                <span className="font-data text-accent">
+                <span className="font-display font-data font-extrabold tracking-tight text-accent">
                   {cheapestMonthly.toLocaleString("fi-FI", { maximumFractionDigits: 0 })} €
                 </span>
                 /kk
               </p>
-              <p className="mt-1 text-[14.5px] text-ink/68">
+              <p className="mt-2 text-[14px] text-ink/60">
                 {kwh.toLocaleString("fi-FI")} kWh vuosikulutuksella · {plans.length} sopimusta laskettu
               </p>
             </div>
             {alreadyGood ? (
-              <div className="max-w-sm rounded-2xl border border-gold/30 bg-den px-6 py-5 shadow-lift">
-                <p className="flex items-center gap-2 text-[11.5px] font-semibold uppercase tracking-[0.14em] text-gold">
+              <div className="pelt-surface w-full max-w-sm rounded-2xl border border-gold/35 px-6 py-5 shadow-card sm:rounded-[20px]">
+                <p className="flex items-center gap-2 text-[11.5px] font-semibold uppercase tracking-[0.14em] text-goldInk">
                   <ShieldCheck size={14} aria-hidden /> Ketun rehellinen vastaus
                 </p>
-                <p className="mt-2 font-display text-[16px] font-bold leading-snug text-cream">
+                <p className="mt-2 font-display text-[16px] font-bold leading-snug text-ink">
                   Nykyinen sopimuksesi on jo edullisempi kuin yksikään vertailun sopimus.
                 </p>
-                <p className="mt-1.5 text-[13px] leading-relaxed text-cream/68">
+                <p className="mt-1.5 text-[13px] leading-relaxed text-ink/70">
                   Älä vaihda nyt. Tarkista tilanne uudelleen, kun sopimuksesi lähestyy loppuaan.
                 </p>
               </div>
             ) : currentAnnual ? (
-              <div className="rounded-2xl border border-gold/25 bg-den px-6 py-5 text-right shadow-lift">
-                <p className="text-[11.5px] font-semibold uppercase tracking-[0.14em] text-gold">
+              <div className="pelt-surface w-full rounded-2xl border border-gold/35 px-6 py-5 shadow-card sm:w-auto sm:rounded-[20px] sm:text-right">
+                <p className="text-[11.5px] font-semibold uppercase tracking-[0.14em] text-goldInk">
                   Säästö nykyiseen sopimukseesi
                 </p>
-                <p className="mt-1 font-display text-[2.1rem] font-extrabold leading-none text-cream">
+                <p className="mt-1.5 font-display text-[2.4rem] font-extrabold leading-none tracking-tight text-ink">
                   <span className="font-data">
                     {headlineSaving.toLocaleString("fi-FI", { maximumFractionDigits: 0 })} €
                   </span>
-                  <span className="ml-1 text-[15px] font-semibold text-cream/58">/ vuosi</span>
+                  <span className="ml-1 text-[15px] font-semibold text-ink/65">/ vuosi</span>
                 </p>
               </div>
             ) : (
               /* Ei omaa hintaa vielä — kehotus, ei keksitty säästöluku. */
-              <div className="max-w-sm rounded-2xl border border-gold/25 bg-den px-6 py-5 shadow-lift">
-                <p className="flex items-center gap-2 text-[11.5px] font-semibold uppercase tracking-[0.14em] text-gold">
+              <div className="pelt-surface w-full max-w-sm rounded-2xl border border-gold/35 px-6 py-5 shadow-card sm:rounded-[20px]">
+                <p className="flex items-center gap-2 text-[11.5px] font-semibold uppercase tracking-[0.14em] text-goldInk">
                   <Wallet size={14} aria-hidden /> Säästösi euroina
                 </p>
-                <p className="mt-2 text-[13.5px] leading-relaxed text-cream/78">
+                <p className="mt-2 text-[13.5px] leading-relaxed text-ink/80">
                   Emme arvaa säästöäsi. Syötä nykyinen hintasi, niin näet todellisen
                   eron omaan sopimukseesi — myös silloin, jos vaihtaminen ei kannata.
                 </p>
@@ -452,7 +487,7 @@ export default function ElectricityExperience({
                     setShowCurrent(true);
                     document.getElementById("vertailu")?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
                   }}
-                  className="mt-3 inline-flex items-center gap-2 rounded-full border border-gold/40 px-4 py-2 font-display text-[13px] font-bold text-gold transition-colors hover:bg-gold/10"
+                  className="mt-3 inline-flex items-center gap-2 rounded-full border border-gold/50 px-4 py-2 font-display text-[13px] font-bold text-goldInk transition-colors hover:bg-gold/15"
                 >
                   Syötä nykyinen hintani
                 </button>
@@ -460,11 +495,42 @@ export default function ElectricityExperience({
             )}
           </div>
 
-          {/* Suosittelija: asiakkaan vaikein päätös ratkaistaan tässä */}
+          {/* Suosittelija: kiinni oletuksena, auki yhdellä klikillä */}
+          {!showAdvisor ? (
+            <button
+              onClick={() => setShowAdvisor(true)}
+              className="mt-4 flex w-full items-center gap-4 rounded-3xl border border-line bg-white p-4 text-left transition-all hover:border-accent/40 hover:shadow-cardHover active:scale-[0.995] sm:p-5"
+            >
+              <Image
+                src="/kettu-naama.webp"
+                alt=""
+                width={852}
+                height={935}
+                className="h-12 w-12 shrink-0 object-contain"
+              />
+              <span className="flex-1">
+                <span className="block font-display text-[15px] font-bold text-ink">
+                  Epäröitkö, kumpi sopii: pörssisähkö vai kiinteä?
+                </span>
+                <span className="mt-0.5 block text-[13px] text-ink/70">
+                  Vastaa kahteen kysymykseen, niin Kettu suosittelee ja rajaa listan.
+                </span>
+              </span>
+              <span className="shrink-0 font-display text-[13.5px] font-bold text-accentDark">Avaa</span>
+            </button>
+          ) : (
           <div className="mt-4 rounded-3xl border border-line bg-white p-5 sm:p-6">
-            <p className="font-display text-[15px] font-bold text-ink">
-              Epäröitkö, kumpi sopii: pörssisähkö vai kiinteä hinta?
-            </p>
+            <div className="flex items-start justify-between gap-3">
+              <p className="font-display text-[15px] font-bold text-ink">
+                Epäröitkö, kumpi sopii: pörssisähkö vai kiinteä hinta?
+              </p>
+              <button
+                onClick={() => setShowAdvisor(false)}
+                className="inline-flex shrink-0 items-center gap-1 text-[12px] text-ink/60 hover:text-ink"
+              >
+                <X size={13} aria-hidden /> Sulje
+              </button>
+            </div>
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               <Question
                 label="Voitko ajoittaa kulutusta yölle tai halvoille tunneille?"
@@ -492,12 +558,12 @@ export default function ElectricityExperience({
                 >
                   <div className="mt-4 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-gold/25 bg-gold/[0.08] p-4">
                     <div>
-                      <p className="font-display text-[14.5px] font-bold text-gold">{advice.title}</p>
+                      <p className="font-display text-[14.5px] font-bold text-goldInk">{advice.title}</p>
                       <p className="mt-1 max-w-lg text-[13px] leading-relaxed text-ink/80">{advice.why}</p>
                     </div>
                     <button
                       onClick={() => setType(advice.type)}
-                      className="btn-ember shrink-0 rounded-xl px-5 py-2.5 font-display text-[13.5px] font-bold text-cream transition-all active:scale-[0.98]"
+                      className="btn-ember shrink-0 rounded-xl px-5 py-2.5 font-display text-[13.5px] font-bold text-onEmber transition-all active:scale-[0.98]"
                     >
                       Näytä nämä sopimukset
                     </button>
@@ -506,6 +572,7 @@ export default function ElectricityExperience({
               )}
             </AnimatePresence>
           </div>
+          )}
 
           {/* Suodattimet */}
           <div className="mt-6 flex flex-wrap items-center gap-2">
@@ -518,7 +585,15 @@ export default function ElectricityExperience({
                     onClick={() => setType(t.key as typeof type)}
                     aria-pressed={on}
                     className={`shrink-0 rounded-xl px-4 py-2.5 font-display text-[13.5px] font-semibold transition-all active:scale-[0.97] ${
-                      on ? "bg-accent text-den shadow-ember" : "border border-line bg-white text-ink/68 hover:border-lineDark hover:text-ink"
+                      /*
+                        Aktiivinen suodatin on TUMMA, ei oranssi. Oranssi
+                        laatta suodatinrivissä kilpaili "Tee sopimus"
+                        -napin kanssa samasta katseesta aivan sen
+                        yläpuolella, vaikka suodatin ei tuota palkkiota.
+                        Tumma erottuu yhtä selvästi ja jättää oranssin
+                        yksin sinne, mistä raha tulee.
+                      */
+                      on ? "bg-ink text-paper shadow-card" : "border border-line bg-white text-ink/70 hover:border-lineDark hover:text-ink"
                     }`}
                   >
                     {t.label}
@@ -530,7 +605,7 @@ export default function ElectricityExperience({
               onClick={() => setGreenOnly(!greenOnly)}
               aria-pressed={greenOnly}
               className={`inline-flex shrink-0 items-center gap-1.5 rounded-xl border px-4 py-2.5 font-display text-[13.5px] font-semibold transition-all active:scale-[0.97] ${
-                greenOnly ? "border-accent bg-accentSoft text-accentDark" : "border-line bg-white text-ink/68 hover:border-lineDark"
+                greenOnly ? "border-accent bg-accentSoft text-accentDark" : "border-line bg-white text-ink/70 hover:border-lineDark"
               }`}
             >
               <Leaf size={14} aria-hidden /> Vain uusiutuva
@@ -538,10 +613,10 @@ export default function ElectricityExperience({
           </div>
 
           <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-            <p className="text-[13.5px] text-ink/72" aria-live="polite">
+            <p className="text-[13.5px] text-ink/70" aria-live="polite">
               {filtered.length} sopimusta
             </p>
-            <label className="flex items-center gap-2 text-[13px] text-ink/72">
+            <label className="flex items-center gap-2 text-[13px] text-ink/70">
               Järjestä
               <select
                 value={sort}
@@ -596,19 +671,19 @@ export default function ElectricityExperience({
               <p className="font-display text-lg font-bold text-ink">
                 Näillä rajauksilla ei löydy sopimuksia
               </p>
-              <p className="mx-auto mt-1.5 max-w-sm text-[14.5px] text-ink/68">
+              <p className="mx-auto mt-1.5 max-w-sm text-[14.5px] text-ink/70">
                 Poista uusiutuva-rajaus tai valitse toinen sopimustyyppi.
               </p>
               <button
                 onClick={() => { setType(null); setGreenOnly(false); }}
-                className="btn-ember mt-5 rounded-xl px-6 py-3 font-display text-[14px] font-bold text-cream transition-all active:scale-[0.98]"
+                className="btn-ember mt-5 rounded-xl px-6 py-3 font-display text-[14px] font-bold text-onEmber transition-all active:scale-[0.98]"
               >
                 Näytä kaikki sopimukset
               </button>
             </div>
           )}
 
-          <p className="mt-6 flex items-start gap-2 text-[12px] leading-relaxed text-ink/58">
+          <p className="mt-6 flex items-start gap-2 text-[12px] leading-relaxed text-ink/60">
             <Info size={13} className="mt-0.5 shrink-0" aria-hidden />
             <span>
               Pörssisopimusten arviot laskettu {ASSUMED_SPOT_AVG.toLocaleString("fi-FI")} c/kWh
@@ -645,7 +720,7 @@ function Question({
               onClick={() => onChange(v as boolean)}
               aria-pressed={on}
               className={`flex-1 rounded-xl border px-3 py-2.5 font-display text-[13px] font-semibold transition-all active:scale-[0.98] ${
-                on ? "border-accent bg-accentSoft text-accentDark" : "border-line bg-den/50 text-ink/72 hover:border-lineDark hover:text-ink"
+                on ? "border-accent bg-accentSoft text-accentDark" : "border-line bg-mist text-ink/70 hover:border-lineDark hover:text-ink"
               }`}
             >
               {text as string}

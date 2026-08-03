@@ -75,7 +75,7 @@ export default function MatchWizard({
   return (
     <div className="overflow-hidden rounded-2xl border border-line bg-white p-6 shadow-card sm:p-8">
       <div className="flex items-center justify-between">
-        <p className="text-xs font-semibold uppercase tracking-wide text-ink/58">
+        <p className="text-xs font-semibold uppercase tracking-wide text-ink/60">
           Löydä korttisi
         </p>
         <div className="flex gap-1.5" aria-hidden>
@@ -100,7 +100,7 @@ export default function MatchWizard({
               exit={reduce ? undefined : { opacity: 0, x: -20 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
             >
-              <p className="text-sm text-ink/58" aria-live="polite">
+              <p className="text-sm text-ink/60" aria-live="polite">
                 Kysymys {step + 1}/{QUESTIONS.length}
               </p>
               <h3 className="mt-1 font-display text-xl font-semibold text-ink">
@@ -111,7 +111,7 @@ export default function MatchWizard({
                   <button
                     key={opt.label}
                     onClick={() => choose(opt.filters)}
-                    className="rounded-full border border-line bg-white px-5 py-2.5 text-sm font-medium text-ink/82 transition-all duration-150 hover:border-accent hover:bg-accentSoft hover:text-accentDark active:scale-[0.97]"
+                    className="rounded-full border border-line bg-white px-5 py-2.5 text-sm font-medium text-ink/80 transition-all duration-150 hover:border-accent hover:bg-accentSoft hover:text-accentDark active:scale-[0.97]"
                   >
                     {opt.label}
                   </button>
@@ -131,14 +131,14 @@ export default function MatchWizard({
                   <h3 className="font-display text-xl font-semibold text-ink">
                     Valmista — järjestin kortit sinulle!
                   </h3>
-                  <p className="mt-1.5 max-w-md text-sm leading-relaxed text-ink/68">
+                  <p className="mt-1.5 max-w-md text-sm leading-relaxed text-ink/70">
                     Paras osumasi on ensimmäisenä. Voit hienosäätää valintoja suodattimilla.
                   </p>
                 </div>
               </div>
               <button
                 onClick={restart}
-                className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-ink/58 transition-colors hover:text-ink"
+                className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-ink/60 transition-colors hover:text-ink"
               >
                 <RotateCcw size={14} aria-hidden /> Aloita alusta
               </button>

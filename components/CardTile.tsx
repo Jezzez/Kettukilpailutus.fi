@@ -55,7 +55,7 @@ export default function CardTile({
   const badge = topMatch ? "Sinun valintasi" : card.featured ? "Suosituin" : null;
 
   return (
-    <article className="group flex h-full flex-col rounded-2xl border border-line bg-white p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-cardHover">
+    <article className="group flex h-full flex-col rounded-2xl border border-line bg-white p-5 shadow-card transition-all duration-200 hover:-translate-y-1 hover:border-accent/35 hover:shadow-cardHover">
       {/* Nimi + merkintä */}
       <div className="flex items-start justify-between gap-2">
         <h3 className="font-display text-[17px] font-semibold leading-tight text-ink">
@@ -79,11 +79,17 @@ export default function CardTile({
         <CardMark card={card} size={148} />
       </div>
 
-      {/* Edut */}
-      <ul className="mt-4 space-y-1.5">
+      {/*
+        Edut. `flex-1` on tarkoituksellinen: se työntää vuosimaksun ja
+        CTA:n kortin pohjaan, jolloin kaikkien korttien oranssit napit ovat
+        samalla vaakalinjalla. Porrastetut napit näyttivät ruudukossa
+        keskeneräiseltä ja hajottivat katseen — nyt silmä löytää napit yhtenä
+        rivinä.
+      */}
+      <ul className="mt-4 flex-1 space-y-1.5">
         {perks.map((p) => (
           <li key={p} className="flex items-start gap-2 text-[13px] leading-snug text-ink/85">
-            <Check size={14} strokeWidth={3} className="mt-0.5 shrink-0 text-accent" aria-hidden />
+            <Check size={14} strokeWidth={3} className="mt-0.5 shrink-0 text-ink/35" aria-hidden />
             <span className="line-clamp-2">{p}</span>
           </li>
         ))}
@@ -92,10 +98,10 @@ export default function CardTile({
       {/* Vuosimaksu + arvosana */}
       <div className="mt-4 flex items-end justify-between border-t border-line pt-4">
         <div>
-          <p className="text-[11px] uppercase tracking-wide text-ink/58">Vuosimaksu</p>
+          <p className="text-[11px] uppercase tracking-wide text-ink/60">Vuosimaksu</p>
           <p className="font-display text-xl font-bold text-ink">{card.annualFee}</p>
         </div>
-        <p className="flex items-center gap-1 text-[12px] text-ink/68">
+        <p className="flex items-center gap-1 text-[12px] text-ink/70">
           <Star size={13} className="fill-star text-star" aria-hidden />
           <span className="font-data font-semibold text-ink">{card.rating.toFixed(1)}</span> / 5 (
           {card.reviews})
@@ -117,7 +123,7 @@ export default function CardTile({
 
       {score !== undefined && (
         <p className="mt-3 text-center text-[11px] text-ink/55">
-          Sopivuus <span className="font-data font-semibold text-accent">{score}</span>/100
+          Sopivuus <span className="font-data font-semibold text-accentDark">{score}</span>/100
         </p>
       )}
     </article>

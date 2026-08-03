@@ -36,7 +36,7 @@ function CountUp({ value, suffix }: { value: number; suffix: string }) {
   }, [inView, value, reduce]);
 
   return (
-    <span ref={ref} className="font-display text-4xl font-bold text-cream sm:text-5xl">
+    <span ref={ref} className="font-display text-4xl font-bold text-ink sm:text-5xl">
       {n.toLocaleString("fi-FI")}{suffix}
     </span>
   );
@@ -45,7 +45,15 @@ function CountUp({ value, suffix }: { value: number; suffix: string }) {
 export default function Stats({ cardCount }: { cardCount: number }) {
   return (
     <section aria-label="Tilastot" className="px-4 py-4 sm:px-6">
-      <div className="mx-auto grid max-w-[1180px] gap-10 rounded-3xl border border-line bg-den px-8 py-14 md:grid-cols-3 md:py-16">
+      {/*
+        Kolme lukua ilman erottimia ja liian väljällä pystypaddingilla luki
+        yhtenä leveänä beessinä laatikkona — luvut hukkuivat tyhjään.
+        Pystyviivat tekevät niistä kolme erillistä väitettä, jolloin silmä
+        pysähtyy jokaiseen. Nämä ovat sivun tarkistettavissa olevia lupauksia
+        (ilmainen, 14 vrk peruutusoikeus), joten niiden pitää myös näyttää
+        väitteiltä eikä koristeelta.
+      */}
+      <div className="pelt-surface mx-auto grid max-w-[1180px] gap-10 rounded-3xl border border-gold/30 px-8 py-11 md:grid-cols-3 md:gap-0 md:divide-x md:divide-gold/25 md:py-12">
         {buildStats(cardCount).map((s, i) => (
           <motion.div
             key={s.label}
@@ -56,7 +64,7 @@ export default function Stats({ cardCount }: { cardCount: number }) {
             className="text-center"
           >
             <CountUp value={s.value} suffix={s.suffix} />
-            <p className="mt-2 text-sm text-cream/72">{s.label}</p>
+            <p className="mt-2 text-sm text-ink/70">{s.label}</p>
           </motion.div>
         ))}
       </div>

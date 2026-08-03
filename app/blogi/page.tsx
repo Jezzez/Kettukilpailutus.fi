@@ -19,10 +19,10 @@ export default function BlogPage() {
       <Reveal>
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
-            <h1 className="font-display text-4xl font-bold tracking-tight text-ink">
+            <h1 className="font-hero text-[2.25rem] leading-[1.08] text-ink sm:text-[2.75rem]">
               Ketun oppaat
             </h1>
-            <p className="mt-3 max-w-xl text-ink/72">
+            <p className="mt-3 max-w-xl text-ink/70">
               Selkeitä, myyntipuheettomia oppaita rahasta ja maksamisesta. Kettu lukee pienellä
               präntätyt puolestasi.
             </p>

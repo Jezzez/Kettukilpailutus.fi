@@ -11,7 +11,7 @@ export default function StickyApply({ card }: { card: Card }) {
       style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
     >
       <div>
-        <p className="text-[11px] uppercase tracking-wide text-ink/58">Vuosimaksu</p>
+        <p className="text-[11px] uppercase tracking-wide text-ink/60">Vuosimaksu</p>
         <p className="font-display text-lg font-bold text-ink">{card.annualFee}</p>
       </div>
       <AffiliateButton href={card.affiliateUrl} cardId={card.id} placement="sticky-mobile">

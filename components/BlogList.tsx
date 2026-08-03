@@ -31,10 +31,10 @@ export default function BlogList({ posts }: { posts: Post[] }) {
               onClick={() => setCat(c)}
               aria-pressed={on}
               className={`rounded-xl px-4 py-2.5 font-display text-[13px] font-semibold transition-all active:scale-[0.97] ${
-                on ? "bg-accent text-den" : "border border-line bg-white text-ink/72 hover:border-lineDark hover:text-ink"
+                on ? "bg-ink text-paper" : "border border-line bg-white text-ink/70 hover:border-lineDark hover:text-ink"
               }`}
             >
-              {c} <span className={on ? "text-cream/72" : "text-ink/50"}>({count})</span>
+              {c} <span className={on ? "text-paper/60" : "text-ink/50"}>({count})</span>
             </button>
           );
         })}
@@ -62,8 +62,8 @@ export default function BlogList({ posts }: { posts: Post[] }) {
                   <h2 className="mt-4 font-display text-lg font-semibold leading-snug text-ink group-hover:underline underline-offset-4">
                     {post.title}
                   </h2>
-                  <p className="mt-3 flex-1 text-[14px] leading-relaxed text-ink/72">{post.excerpt}</p>
-                  <p className="mt-5 flex items-center gap-3 text-xs text-ink/58">
+                  <p className="mt-3 flex-1 text-[14px] leading-relaxed text-ink/70">{post.excerpt}</p>
+                  <p className="mt-5 flex items-center gap-3 text-xs text-ink/60">
                     <time dateTime={post.date}>{new Date(post.date).toLocaleDateString("fi-FI")}</time>
                     <span className="inline-flex items-center gap-1">
                       <Clock size={12} aria-hidden /> {post.readMinutes} min

@@ -28,7 +28,7 @@ export default function MobileNav() {
             <Link
               href={item.href}
               className={`flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium transition-colors ${
-                pathname?.startsWith(item.href) ? "text-accent" : "text-ink/58 hover:text-ink"
+                pathname?.startsWith(item.href) ? "text-accentDark" : "text-ink/60 hover:text-ink"
               }`}
             >
               <item.icon size={20} strokeWidth={1.9} aria-hidden />

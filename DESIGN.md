@@ -48,13 +48,39 @@ Toissijainen teksti tehdään opasiteetilla: `text-ink/72` leipätekstille,
 | Token | Hex | Käyttö |
 |---|---|---|
 | `accent` | `#E8691B` | Kettuoranssi — ainoa varsinainen väri. CTA:t, valitut tilat, fokusrengas |
-| `accentDark` | `#FF8C3C` | Tekstioranssi tummalla + napin hover |
-| `accentSoft` | `#2E1C0E` | Oranssin sävytetty pohja chipeille |
-| `gold` | `#D9A24F` | Vain hiusviivat ja pienet merkit |
+| `accentDark` | `#FF8C3C` / `#B84D08` | Tekstioranssi. Tummenee vaalealla pinnalla |
+| `accentSoft` | `#2E1C0E` / `#FDEEE2` | Oranssin sävytetty pohja chipeille |
+| `gold` | `#D9A24F` | Vain hiusviivat, reunat ja taustasävytykset |
+| `goldInk` | `#D9A24F` / `#7A5214` | Kulta **tekstinä**. Tummenee vaalealla |
+| `onEmber` | `#FFF3E9` | Teksti oranssin napin päällä. Kiinteä, ei käänny |
 | `star` | `#E8B04A` | Arviotähdet |
 
 `ok` ja `mint` osoittavat molemmat oranssiin — vihreää ei ole paletissa,
 joten myös "hyvä"-tilat käyttävät kettuoranssia.
+
+### Miksi kolme "kaksoistokenia"
+
+Brändikulta `#D9A24F` ja vaalea oranssi `#FF8C3C` on suunniteltu tummalle
+pinnalle. Valkoisella ne jäävät noin 2:1 kontrastiin eli lukukelvottomiksi.
+Siksi `goldInk` ja `accentDark` ovat CSS-muuttujia, jotka tummenevat
+`.theme-light`-osion sisällä — kyse on saman värin tummemmasta valoarvosta,
+ei uudesta väristä. `onEmber` taas on kiinteä, koska nappi on oranssi
+molemmilla pinnoilla eikä sen teksti saa koskaan kääntyä tummaksi.
+
+## Kaksi pintaa: `.theme-light` ja `.theme-dark`
+
+Sivusto on oletuksena tumma. `app/globals.css` määrittelee pinnat ja tekstit
+CSS-muuttujina, joten sama luokka (`bg-white`, `text-ink`, `border-line`)
+piirtyy tummana tai vaaleana sen mukaan, onko esivanhemmassa `.theme-light`.
+
+**Sähkösivun tuloslista on vaalea.** Perustelu on tuotto: palkkio syntyy
+"Tee sopimus" -klikistä, ja se nappi on tuloslistassa. Lista on tiheää
+numeroiden silmäilyä, joka on nopeampaa tummalla tekstillä vaalealla
+pohjalla. Hero ja footer pysyvät tummina, koska ne kantavat brändin.
+
+**`.theme-dark` on pakollinen jokaisessa pysyvästi tummassa laatikossa, joka
+on vaalean osion sisällä** (`.den-surface`-paneelit, `bg-den`-tuloslaatikot).
+Ilman sitä `text-cream` kääntyy tummaksi ja teksti katoaa pohjaan.
 
 ## Typografia
 

@@ -17,7 +17,9 @@ export function generateMetadata({ params }: { params: { topic: string } }): Met
   const topic = getEnergyTopic(params.topic);
   if (!topic) return {};
   return {
-    title: `${topic.title} | Kettukilpailutus`,
+    // Brändi tulee layoutin title-templatesta. Kun se oli myös tässä, otsikko
+    // päättyi "| Kettukilpailutus | Kettukilpailutus".
+    title: topic.title,
     description: topic.intro,
     alternates: { canonical: `/sahkosopimukset/${topic.slug}` },
   };
@@ -58,7 +60,7 @@ export default function TopicPage({ params }: { params: { topic: string } }) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
 
       <div className="mx-auto max-w-[1180px] px-4 pt-8 sm:px-6">
-        <nav aria-label="Murupolku" className="flex items-center gap-1.5 text-[13px] text-ink/62">
+        <nav aria-label="Murupolku" className="flex items-center gap-1.5 text-[13px] text-ink/60">
           <Link href="/" className="hover:text-ink">Etusivu</Link>
           <ChevronRight size={13} aria-hidden />
           <Link href="/sahkosopimukset" className="hover:text-ink">Sähkösopimukset</Link>
@@ -67,7 +69,7 @@ export default function TopicPage({ params }: { params: { topic: string } }) {
         </nav>
 
         <Reveal>
-          <h1 className="mt-6 max-w-2xl font-display text-4xl font-bold leading-[1.1] tracking-tight text-ink">
+          <h1 className="mt-6 max-w-2xl font-hero text-[2.4rem] leading-[1.06] text-ink sm:text-[3rem]">
             {topic.h1}
           </h1>
           <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-ink/80">{topic.intro}</p>
@@ -90,7 +92,7 @@ export default function TopicPage({ params }: { params: { topic: string } }) {
           <Reveal>
             <div className="space-y-5">
               {topic.content.map((p, i) => (
-                <p key={i} className="text-[16px] leading-relaxed text-ink/82">{p}</p>
+                <p key={i} className="text-[16px] leading-relaxed text-ink/80">{p}</p>
               ))}
             </div>
           </Reveal>

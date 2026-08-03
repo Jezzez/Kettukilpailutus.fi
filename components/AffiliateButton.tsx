@@ -24,10 +24,10 @@ export default function AffiliateButton({
 }) {
   const base =
     variant === "inverse"
-      ? "inline-flex items-center justify-center gap-1.5 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-accent shadow-sm transition-all hover:bg-mist active:scale-[0.98]"
+      ? "inline-flex items-center justify-center gap-1.5 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-accentDark shadow-sm transition-all hover:bg-mist active:scale-[0.98]"
       : variant === "primary"
-      ? "btn-ember inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 font-display text-[15px] font-bold text-cream transition-all active:scale-[0.98]"
-      : "btn-ember inline-flex items-center gap-1 rounded-lg px-3.5 py-2 text-xs font-bold text-cream transition-colors";
+      ? "btn-ember inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 font-display text-[15px] font-bold text-onEmber transition-all active:scale-[0.98]"
+      : "btn-ember inline-flex items-center gap-1 rounded-lg px-3.5 py-2 text-xs font-bold text-onEmber transition-colors";
 
   return (
     <a

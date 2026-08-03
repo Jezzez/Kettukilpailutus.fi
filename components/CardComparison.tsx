@@ -90,7 +90,7 @@ export default function CardComparison({ cards }: { cards: Card[] }) {
                   className={`inline-flex shrink-0 items-center gap-2 rounded-xl px-4 py-2.5 font-display text-[13px] font-semibold transition-all active:scale-[0.97] ${
                     on
                       ? "bg-accentSoft text-accentDark"
-                      : "text-ink/68 hover:bg-mist hover:text-ink"
+                      : "text-ink/70 hover:bg-mist hover:text-ink"
                   }`}
                 >
                   <t.icon size={16} strokeWidth={1.9} aria-hidden />
@@ -107,7 +107,7 @@ export default function CardComparison({ cards }: { cards: Card[] }) {
             <SlidersHorizontal size={15} aria-hidden />
             Suodattimet
             {active.length > 0 && (
-              <span className="grid h-5 min-w-5 place-items-center rounded-full bg-accent px-1 text-[11px] text-cream">
+              <span className="grid h-5 min-w-5 place-items-center rounded-full bg-accent px-1 text-[11px] text-onEmber">
                 {active.length}
               </span>
             )}
@@ -117,7 +117,7 @@ export default function CardComparison({ cards }: { cards: Card[] }) {
         <h3 className="mt-6 font-display text-xl font-semibold text-ink sm:text-2xl">
           {wizardDone ? "Sinulle sopivimmat kortit" : "Suosituimmat kortit juuri nyt"}
         </h3>
-        <p className="mt-1 text-sm text-ink/68" aria-live="polite">
+        <p className="mt-1 text-sm text-ink/70" aria-live="polite">
           {scored.length} korttia vastaa valintojasi.
         </p>
 
@@ -155,7 +155,7 @@ export default function CardComparison({ cards }: { cards: Card[] }) {
                 setActive([]);
                 setTab(null);
               }}
-              className="btn-ember mt-4 rounded-xl px-5 py-2.5 font-display text-sm font-semibold text-cream transition-all active:scale-[0.98]"
+              className="btn-ember mt-4 rounded-xl px-5 py-2.5 font-display text-sm font-semibold text-onEmber transition-all active:scale-[0.98]"
             >
               Tyhjennä suodattimet
             </button>
@@ -166,7 +166,7 @@ export default function CardComparison({ cards }: { cards: Card[] }) {
           <div className="mt-6 flex justify-center">
             <button
               onClick={() => setShowAll(!showAll)}
-              className="inline-flex items-center gap-2 rounded-xl border border-line px-6 py-3 font-display text-sm font-semibold text-ink/82 transition-colors hover:border-ink/25 hover:text-ink"
+              className="inline-flex items-center gap-2 rounded-xl border border-line px-6 py-3 font-display text-sm font-semibold text-ink/80 transition-colors hover:border-ink/25 hover:text-ink"
             >
               {showAll ? "Näytä vähemmän" : `Näytä kaikki kortit (${scored.length})`}
               <ChevronDown
@@ -204,14 +204,14 @@ export default function CardComparison({ cards }: { cards: Card[] }) {
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => setActive([])}
-                    className="text-sm font-medium text-ink/62 hover:text-ink"
+                    className="text-sm font-medium text-ink/60 hover:text-ink"
                   >
                     Tyhjennä
                   </button>
                   <button
                     onClick={() => setSheet(false)}
                     aria-label="Sulje suodattimet"
-                    className="grid h-9 w-9 place-items-center rounded-full border border-line text-ink/72"
+                    className="grid h-9 w-9 place-items-center rounded-full border border-line text-ink/70"
                   >
                     <X size={16} />
                   </button>
@@ -232,7 +232,7 @@ export default function CardComparison({ cards }: { cards: Card[] }) {
                       }`}
                     >
                       <span
-                        className={`text-[15px] font-medium ${on ? "text-accentDark" : "text-ink/82"}`}
+                        className={`text-[15px] font-medium ${on ? "text-accentDark" : "text-ink/80"}`}
                       >
                         {f.label}
                       </span>
@@ -250,7 +250,7 @@ export default function CardComparison({ cards }: { cards: Card[] }) {
 
               <button
                 onClick={() => setSheet(false)}
-                className="btn-ember sticky bottom-0 mt-6 w-full rounded-xl py-4 font-display text-[15px] font-bold text-cream transition-all active:scale-[0.98]"
+                className="btn-ember sticky bottom-0 mt-6 w-full rounded-xl py-4 font-display text-[15px] font-bold text-onEmber transition-all active:scale-[0.98]"
               >
                 Näytä tulokset ({scored.length})
               </button>

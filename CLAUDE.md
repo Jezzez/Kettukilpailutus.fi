@@ -10,6 +10,18 @@ jotain, älä vain mitä. Sano suoraan jos idea on huono. Yksi asia kerrallaan �
 Jesse ideoi mielellään moneen suuntaan yhtä aikaa, joten ohjaa takaisin
 fokukseen.
 
+## Ratkaisujen mittari: tuotto
+
+**Perustele jokainen muutos sillä, miten se vaikuttaa tuottoon.** Sivusto
+ansaitsee affiliate-palkkiona vasta kun käyttäjä painaa "Tee sopimus" ja tekee
+sopimuksen. Kaikki ilme- ja UX-valinnat arvioidaan siltä kannalta: vieko tämä
+useamman kävijän tuohon nappiin asti.
+
+Se ei tarkoita painostavaa myyntiä. Kilpailutuspalvelun tuotto syntyy siitä,
+että käyttäjä *luottaa* lukuihin — epäluotettava sivu menettää klikin kokonaan
+ja lisäksi paluukäynnit. Rehellisyys on tässä bisnesmalli, ei vain periaate.
+Siksi keksittyjä lukuja tai väitteitä ei palauteta sivustolle koskaan.
+
 ## Mikä tämä on
 
 Kettukilpailutus on suomalainen kilpailutusalusta, jonka tavoite on kasvaa

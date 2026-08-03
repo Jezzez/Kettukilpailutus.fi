@@ -21,7 +21,7 @@ export default function CardPageTabs({ card }: { card: Card }) {
             aria-selected={tab === t}
             onClick={() => setTab(t)}
             className={`relative px-4 py-3 font-display text-[14px] font-semibold transition-colors ${
-              tab === t ? "text-ink" : "text-ink/58 hover:text-ink/80"
+              tab === t ? "text-ink" : "text-ink/60 hover:text-ink/80"
             }`}
           >
             {t}
@@ -41,7 +41,7 @@ export default function CardPageTabs({ card }: { card: Card }) {
             <ul className="space-y-2.5">
               {card.pros.map((p) => (
                 <li key={p} className="flex items-start gap-2.5 text-[15px] text-ink/85">
-                  <Check size={16} strokeWidth={3} className="mt-1 shrink-0 text-accent" aria-hidden />
+                  <Check size={16} strokeWidth={3} className="mt-1 shrink-0 text-ink/35" aria-hidden />
                   {p}
                 </li>
               ))}
@@ -59,7 +59,7 @@ export default function CardPageTabs({ card }: { card: Card }) {
               <p className="font-display text-sm font-semibold text-ink">Hyödyt</p>
               {card.pros.map((p) => (
                 <li key={p} className="flex items-start gap-2.5 text-[14px] text-ink/85">
-                  <Check size={15} strokeWidth={3} className="mt-0.5 shrink-0 text-accent" aria-hidden />
+                  <Check size={15} strokeWidth={3} className="mt-0.5 shrink-0 text-ink/35" aria-hidden />
                   {p}
                 </li>
               ))}

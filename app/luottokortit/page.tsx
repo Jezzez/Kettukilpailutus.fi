@@ -10,10 +10,16 @@ import TrustSection from "@/components/TrustSection";
 import Faq from "@/components/Faq";
 import CtaSection from "@/components/CtaSection";
 import Reveal from "@/components/Reveal";
+import FoxSays from "@/components/FoxSays";
+import SectionHead from "@/components/SectionHead";
 import { getCards, getFaq, SITE } from "@/lib/data";
 
 export const metadata: Metadata = {
-  title: "Vertaa luottokortit – löydä paras kortti | Kettukilpailutus",
+  // Layoutin title-template lisää jo "| Kettukilpailutus". Kun se oli myös
+  // tässä, selaimen välilehdellä ja Googlen hakutuloksessa luki brändi kahdesti
+  // — se lyhentää näkyvää otsikkoa ja näyttää huolimattomalta juuri siinä
+  // kohdassa, jossa klikkaus hakutuloksesta ratkaistaan.
+  title: "Vertaa luottokortit – löydä paras kortti",
   description:
     "Vertaa Suomen suosituimmat luottokortit: edut, kulut ja korot puolueettomasti. Kolme kysymystä ja Kettu järjestää kortit sinulle sopivuuden mukaan.",
   alternates: { canonical: "/luottokortit" },
@@ -59,21 +65,33 @@ export default function CreditCardsPage() {
       <Steps />
 
       {/* Vertailutaulukko */}
-      <section id="taulukko" className="scroll-mt-24 bg-white py-20 md:py-24">
+      <section id="taulukko" className="scroll-mt-24 border-y border-line bg-white py-20 md:py-24">
         <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
           <Reveal>
-            <h2 className="font-display text-3xl font-semibold text-ink sm:text-4xl">
-              Kaikki tiedot yhdessä taulukossa
-            </h2>
-            <p className="mt-3 max-w-xl text-ink/72">
-              Järjestä taulukko vuosimaksun, koron tai luottorajan mukaan klikkaamalla saraketta.
-            </p>
+            <SectionHead
+              eyebrow="Koko vertailu"
+              title="Kaikki tiedot yhdessä taulukossa"
+              lead="Järjestä taulukko vuosimaksun, koron tai luottorajan mukaan klikkaamalla saraketta."
+            />
           </Reveal>
           <Reveal delay={0.1} className="mt-8">
             <ComparisonTable cards={cards} />
           </Reveal>
         </div>
       </section>
+
+      {/*
+        Kettu puhuu taulukon jälkeen: lukija on juuri katsonut kymmentä
+        saraketta ja miettii, mikä niistä ratkaisee. Repliikki nimeää sen.
+        Todellinen vuosikorko on ainoa luku, jolla kaksi korttia voi
+        rehellisesti rinnastaa — ja kun lukija ymmärtää sen, hän valitsee
+        kortin luottavaisemmin eikä palaa googlaamaan muualle.
+      */}
+      <FoxSays
+        className="pb-4 pt-14 md:pt-16"
+        quote="Korotonta maksuaikaa mainostetaan isolla. Korkoa, joka alkaa juosta sen jälkeen, ei."
+        note="Siksi taulukossa näkyy todellinen vuosikorko: se sisältää myös kulut, joten se on ainoa luku, jolla kaksi korttia voi asettaa rinnakkain."
+      />
 
       <Stats cardCount={cards.length} />
 
@@ -82,12 +100,14 @@ export default function CreditCardsPage() {
       <TrustSection />
 
       {/* UKK */}
-      <section id="ukk" className="scroll-mt-24 py-20 md:py-24">
+      <section id="ukk" className="scroll-mt-24 border-t border-line py-20 md:py-24">
         <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
           <Reveal>
-            <h2 className="text-center font-display text-3xl font-semibold text-ink sm:text-4xl">
-              Usein kysytyt kysymykset
-            </h2>
+            <SectionHead
+              align="center"
+              eyebrow="Usein kysyttyä"
+              title="Kysymykset, jotka kannattaa selvittää ennen hakemista"
+            />
           </Reveal>
           <Reveal delay={0.1} className="mt-10">
             <Faq items={faq} />

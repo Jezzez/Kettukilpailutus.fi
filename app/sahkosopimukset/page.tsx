@@ -4,6 +4,8 @@ import { ArrowRight, FileText, MapPin, ShieldCheck, UserCheck } from "lucide-rea
 import ElectricityExperience from "@/components/energy/ElectricityExperience";
 import Faq from "@/components/Faq";
 import Reveal from "@/components/Reveal";
+import FoxSays from "@/components/FoxSays";
+import SectionHead from "@/components/SectionHead";
 import CtaSection from "@/components/CtaSection";
 import EnergyTrust from "@/components/energy/EnergyTrust";
 import { getPlans, getEnergyTopics } from "@/lib/energy";
@@ -30,16 +32,6 @@ const ENERGY_FAQ: { q: string; a: string }[] = [
   { q: "Kuinka usein sähkösopimus kannattaa kilpailuttaa?", a: "Vähintään kerran vuodessa ja aina määräaikaisen sopimuksen päättyessä. Päättynyt sopimus jatkuu usein listahintaisena, joka on lähes aina kilpailutettua kalliimpi." },
   { q: "Voinko vaihtaa, vaikka minulla on maksuhäiriömerkintä?", a: "Useimmat yhtiöt tekevät luottotietotarkistuksen. Merkintä voi johtaa vakuusmaksun vaatimiseen tai hylkäykseen, mutta käytännöt vaihtelevat yhtiöittäin." },
 ];
-
-/**
- * Korttitekstin katkaisu lauseen rajalta. line-clamp katkaisi keskeltä
- * lausetta ja jätti irrallisen "…", joka näytti keskeneräiseltä.
- * Ensimmäinen lause riittää korttiin — loput luetaan oppaasta.
- */
-function firstSentence(text: string): string {
-  const m = text.match(/^[^.!?]+[.!?]/);
-  return (m ? m[0] : text).trim();
-}
 
 const STEPS = [
   ["Kerro kulutuksesi", "Valitse asumismuoto tai syötä kWh-lukema laskusta. Kettu laskee todelliset vuosihinnat."],
@@ -76,59 +68,82 @@ export default function ElectricityPage() {
 
       <ElectricityExperience plans={plans} />
 
-      {/* NÄIN VAIHTO TOIMII */}
-      <section id="nain-toimii" className="scroll-mt-24 py-20">
+      {/*
+        Kaikki heron alapuolinen sisältö on vaalealla pinnalla. Tuloslista ja
+        sitä seuraavat epäröintiä poistavat osiot ovat lukemista, ei brändiä.
+      */}
+      <div className="theme-light bg-paper">
+
+      {/*
+        Kettu puhuu heti tuloslistan jälkeen. Juuri siinä kohdassa lukija on
+        nähnyt hinnat ja epäröi: "onko halvin oikeasti halvin?" Repliikki
+        vastaa siihen ja korjaa samalla sähkövertailun yleisimmän
+        väärinkäsityksen (siirtomaksu ei muutu sopimusta vaihtamalla).
+        Ilman tätä osa kävijöistä jättää klikkaamatta, koska luulee luvun
+        olevan puolikas totuus.
+      */}
+      <FoxSays
+        className="pt-14 md:pt-16"
+        quote="Halvin sopimus ei ole se, jonka mainos on kovaäänisin. Se on se, jonka kokonaishinta on pienin — ja sen näkee vain laskemalla."
+        note="Yllä näkyvä euromäärä sisältää energian hinnan, kuukausimaksun ja arvonlisäveron. Siirtomaksu tulee verkkoyhtiöltäsi eikä muutu sopimusta vaihtamalla, joten se ei kuulu vertailuun."
+      />
+
+      {/*
+        Aiemmin tässä oli KAKSI laatikkoa peräkkäin: "kolme askelta" ja
+        "ota nämä esiin". Ne vastaavat samaan pelkoon — "onko tämä hankalaa" —
+        joten ne on yhdistetty yhdeksi. Kaksi laatikkoa samasta asiasta saa
+        vaihdon näyttämään työläämmältä kuin se on.
+      */}
+      <section id="nain-toimii" className="scroll-mt-24 border-t border-line py-16 md:py-20">
         <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
           <Reveal>
-            <div className="flex items-center gap-3">
-              <span className="font-display text-[12px] font-bold uppercase tracking-[0.2em] text-accentDark">
-                Vaihto käytännössä
-              </span>
-              <span className="h-px flex-1 bg-line" aria-hidden />
-            </div>
-            <h2 className="mt-4 max-w-lg font-display text-[2rem] font-extrabold leading-tight text-ink sm:text-[2.5rem]">
-              Kolme askelta, viisi minuuttia.
-            </h2>
+            <SectionHead
+              eyebrow="Näin vaihto etenee"
+              title="Kolme askelta, viisi minuuttia."
+              lead="Vaihto tapahtuu taustalla. Sinun osuutesi on lyhyempi kuin useimmat luulevat."
+            />
           </Reveal>
 
-          <div className="mt-10 grid gap-px overflow-hidden rounded-3xl border border-line bg-line md:grid-cols-3">
-            {STEPS.map(([title, text], i) => (
-              <Reveal key={title} delay={i * 0.08}>
-                <div className="h-full bg-white p-7">
-                  <span className="font-display font-data text-[13px] font-bold tracking-[0.1em] text-accent">
-                    0{i + 1}
-                  </span>
-                  <h3 className="mt-3 font-display text-[19px] font-bold text-ink">{title}</h3>
-                  <p className="mt-2 text-[14.5px] leading-relaxed text-ink/72">{text}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-
-          <Reveal delay={0.2}>
-            <div className="mt-6 rounded-3xl border border-line bg-white p-6 sm:p-7">
-              <p className="font-display text-[15px] font-bold text-ink">Ota nämä esiin ennen kuin aloitat</p>
-              <div className="mt-4 grid gap-4 sm:grid-cols-3">
-                {[
-                  { icon: FileText, title: "Käyttöpaikkatunnus", text: "17-numeroinen GSRN-tunnus. Löytyy sähkölaskustasi tai verkkoyhtiön palvelusta." },
-                  { icon: MapPin, title: "Osoite ja alkupäivä", text: "Käyttöpaikan osoite ja päivä, jolloin haluat uuden sopimuksen alkavan." },
-                  { icon: UserCheck, title: "Pankkitunnukset", text: "Tunnistautumiseen. Sopimus syntyy sähköisesti muutamassa minuutissa." },
-                ].map((r) => (
-                  <div key={r.title} className="flex gap-3">
-                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-accent/20 bg-accentSoft text-accentDark">
-                      <r.icon size={16} aria-hidden />
+          <Reveal delay={0.08}>
+            <div className="mt-8 overflow-hidden rounded-3xl border border-line bg-white shadow-card">
+              <div className="grid gap-px bg-line md:grid-cols-3">
+                {STEPS.map(([title, text], i) => (
+                  <div key={title} className="h-full bg-white p-6 sm:p-7">
+                    <span className="font-data text-[13px] font-bold tracking-[0.1em] text-accentDark">
+                      0{i + 1}
                     </span>
-                    <div>
-                      <p className="font-display text-[13.5px] font-bold text-ink">{r.title}</p>
-                      <p className="mt-1 text-[12.5px] leading-relaxed text-ink/68">{r.text}</p>
-                    </div>
+                    <h3 className="mt-2.5 font-display text-[18px] font-bold text-ink">{title}</h3>
+                    <p className="mt-2 text-[14px] leading-relaxed text-ink/70">{text}</p>
                   </div>
                 ))}
               </div>
-              <p className="mt-5 flex items-center gap-2 border-t border-line pt-4 text-[13.5px] font-medium text-ink/72">
-                <ShieldCheck size={16} className="shrink-0 text-accent" aria-hidden />
-                Etämyynnissä sopimuksella on aina 14 vuorokauden peruutusoikeus.
-              </p>
+
+              <div className="border-t border-line p-6 sm:p-7">
+                <p className="font-display text-[14px] font-bold text-ink">
+                  Ota nämä esiin ennen kuin aloitat
+                </p>
+                <div className="mt-3.5 grid gap-3.5 sm:grid-cols-3">
+                  {[
+                    { icon: FileText, title: "Käyttöpaikkatunnus", text: "17-numeroinen GSRN-tunnus sähkölaskustasi." },
+                    { icon: MapPin, title: "Osoite ja alkupäivä", text: "Käyttöpaikan osoite ja sopimuksen alkupäivä." },
+                    { icon: UserCheck, title: "Pankkitunnukset", text: "Tunnistautumiseen. Sopimus syntyy sähköisesti." },
+                  ].map((r) => (
+                    <div key={r.title} className="flex gap-2.5">
+                      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-accent/20 bg-accentSoft text-accentDark">
+                        <r.icon size={15} aria-hidden />
+                      </span>
+                      <div>
+                        <p className="font-display text-[13px] font-bold text-ink">{r.title}</p>
+                        <p className="mt-0.5 text-[12.5px] leading-snug text-ink/70">{r.text}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <p className="mt-5 flex items-center gap-2 border-t border-line pt-4 text-[13px] font-medium text-ink/70">
+                  <ShieldCheck size={15} className="shrink-0 text-ink/40" aria-hidden />
+                  Etämyynnissä sopimuksella on aina 14 vuorokauden peruutusoikeus.
+                </p>
+              </div>
             </div>
           </Reveal>
         </div>
@@ -136,57 +151,51 @@ export default function ElectricityPage() {
 
       <EnergyTrust />
 
-      {/* TILANNEKOHTAISET OPPAAT */}
-      <section className="bg-mist py-20">
-        <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
-          <Reveal>
-            <div className="flex items-center gap-3">
-              <span className="font-display text-[12px] font-bold uppercase tracking-[0.2em] text-accentDark">
-                Valitse tilanteesi
-              </span>
-              <span className="h-px flex-1 bg-line" aria-hidden />
-            </div>
-            <h2 className="mt-4 max-w-xl font-display text-[2rem] font-extrabold leading-tight text-ink sm:text-[2.5rem]">
-              Oikea sopimus riippuu siitä, missä asut.
-            </h2>
-          </Reveal>
-
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {topics.map((t, i) => (
-              <Reveal key={t.slug} delay={i * 0.06} className="h-full">
-                <Link
-                  href={`/sahkosopimukset/${t.slug}`}
-                  className="group flex h-full flex-col rounded-3xl border border-line bg-white p-6 transition-all hover:-translate-y-1.5 hover:border-den/15 hover:shadow-cardHover"
-                >
-                  <h3 className="min-h-[2.6em] font-display text-[16px] font-bold leading-snug text-ink">{t.h1}</h3>
-                  <p className="mt-2.5 flex-1 text-[13.5px] leading-relaxed text-ink/68">{firstSentence(t.intro)}</p>
-                  <span className="mt-4 inline-flex items-center gap-1.5 font-display text-[13.5px] font-bold text-accentDark">
-                    Lue opas
-                    <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" aria-hidden />
-                  </span>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* UKK */}
-      <section id="ukk" className="scroll-mt-24 py-20">
+      {/* UKK — vastaa epäröintiin ennen kuin oppaat vievät pois sivulta */}
+      <section id="ukk" className="scroll-mt-24 border-t border-line py-16 md:py-20">
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
           <Reveal>
-            <h2 className="font-display text-[2rem] font-extrabold leading-tight text-ink sm:text-[2.5rem]">
-              Kysymykset, jotka pysäyttävät vaihdon.
-            </h2>
-            <p className="mt-3 text-[16px] text-ink/72">
-              Vastaukset ovat lyhyet, koska asia on yksinkertaisempi kuin miltä se näyttää.
-            </p>
+            <SectionHead
+              eyebrow="Usein kysyttyä"
+              title="Kysymykset, jotka pysäyttävät vaihdon."
+              lead="Vastaukset ovat lyhyet, koska asia on yksinkertaisempi kuin miltä se näyttää."
+            />
           </Reveal>
           <Reveal delay={0.1} className="mt-8">
             <Faq items={ENERGY_FAQ} />
           </Reveal>
         </div>
       </section>
+
+      {/*
+        Oppaat olivat neljä isoa korttia, jotka veivät kokonaisen ruudullisen
+        tilaa ja houkuttelivat pois vertailusta juuri ennen loppukehotusta.
+        Sisäiset linkit ovat tärkeitä hakukoneille, joten ne säilyvät —
+        mutta kevyenä rivinä, ei kilpailevana osiona.
+      */}
+      <section className="border-t border-line pb-16 pt-14">
+        <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
+          <Reveal>
+            <h2 className="font-display text-[15px] font-bold text-ink">
+              Lue lisää omasta tilanteestasi
+            </h2>
+            <div className="mt-4 flex flex-wrap gap-2.5">
+              {topics.map((t) => (
+                <Link
+                  key={t.slug}
+                  href={`/sahkosopimukset/${t.slug}`}
+                  className="group inline-flex items-center gap-2 rounded-full border border-line bg-white px-4 py-2.5 font-display text-[13.5px] font-semibold text-ink/80 transition-all hover:border-accent/45 hover:text-ink"
+                >
+                  {t.h1}
+                  <ArrowRight size={14} className="text-ink/35 transition-transform group-hover:translate-x-0.5 group-hover:text-accentDark" aria-hidden />
+                </Link>
+              ))}
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      </div>
 
       <CtaSection
         href="/sahkosopimukset#vertailu"

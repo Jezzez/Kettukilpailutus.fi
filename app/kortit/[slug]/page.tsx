@@ -64,7 +64,7 @@ export default function CardPage({ params }: { params: { slug: string } }) {
       {/* Otsikkoalue */}
       <header className="border-b border-line bg-mist/60">
         <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 md:py-16">
-          <nav aria-label="Murupolku" className="flex items-center gap-1 text-[13px] text-ink/62">
+          <nav aria-label="Murupolku" className="flex items-center gap-1 text-[13px] text-ink/60">
             <Link href="/" className="hover:text-ink">Etusivu</Link>
             <ChevronRight size={13} aria-hidden />
             <Link href="/luottokortit#vertailu" className="hover:text-ink">Luottokortit</Link>
@@ -75,10 +75,10 @@ export default function CardPage({ params }: { params: { slug: string } }) {
           <div className="mt-6 flex flex-wrap items-center gap-5">
             <CardMark card={card} size={72} />
             <div>
-              <h1 className="font-display text-3xl font-semibold text-ink sm:text-4xl">
+              <h1 className="font-hero text-[2rem] leading-[1.08] text-ink sm:text-[2.5rem]">
                 {card.name}
               </h1>
-              <p className="mt-1.5 flex items-center gap-1.5 text-sm text-ink/72">
+              <p className="mt-1.5 flex items-center gap-1.5 text-sm text-ink/70">
                 <Star size={14} className="fill-star text-star" aria-hidden />
                 <span className="font-data">{card.rating.toFixed(1)}</span> · {card.reviews} arviota ·{" "}
                 {card.issuer} · {card.network}
@@ -104,7 +104,7 @@ export default function CardPage({ params }: { params: { slug: string } }) {
               ["Koroton aika", card.interestFreeDays],
             ].map(([k, v]) => (
               <div key={k} className="rounded-xl border border-line bg-white p-4 shadow-card">
-                <dt className="text-xs font-medium uppercase tracking-wide text-ink/62">{k}</dt>
+                <dt className="text-xs font-medium uppercase tracking-wide text-ink/60">{k}</dt>
                 <dd className="mt-1.5 font-data text-[15px] leading-snug text-ink">{v}</dd>
               </div>
             ))}
@@ -132,7 +132,7 @@ export default function CardPage({ params }: { params: { slug: string } }) {
               </tbody>
             </table>
           </div>
-          <p className="mt-3 text-xs text-ink/62">
+          <p className="mt-3 text-xs text-ink/60">
             Tiedot ovat esimerkinomaisia. Tarkista ajantasaiset ehdot aina pankin sivuilta ennen hakemista.
           </p>
         </Reveal>
@@ -152,8 +152,8 @@ export default function CardPage({ params }: { params: { slug: string } }) {
         {/* Loppu-CTA */}
         <Reveal className="mt-14">
           <div className="rounded-3xl bg-accent p-8 text-center sm:p-10">
-            <h2 className="text-2xl font-semibold text-cream">Kuulostaako sopivalta?</h2>
-            <p className="mx-auto mt-2 max-w-sm text-sm text-cream/85">
+            <h2 className="text-2xl font-semibold text-onEmber">Kuulostaako sopivalta?</h2>
+            <p className="mx-auto mt-2 max-w-sm text-sm text-onEmber/85">
               Hakemus täytetään pankin sivuilla ja vie tyypillisesti alle 10 minuuttia.
             </p>
             <div className="mt-6">

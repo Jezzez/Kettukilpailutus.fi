@@ -18,7 +18,7 @@ export default function AboutPage() {
         <Reveal>
           <div className="grid items-center gap-10 md:grid-cols-[1.2fr_0.8fr]">
             <div>
-              <h1 className="font-display text-4xl font-bold tracking-tight text-ink">
+              <h1 className="font-hero text-[2.25rem] leading-[1.08] text-ink sm:text-[2.75rem]">
                 Kettu on sinun puolellasi.
               </h1>
               <p className="mt-5 max-w-prose text-[17px] leading-relaxed text-ink/80">
@@ -34,7 +34,7 @@ export default function AboutPage() {
               </p>
               <Link
                 href="/sahkosopimukset#vertailu"
-                className="btn-ember mt-7 inline-flex rounded-xl px-7 py-3.5 font-display text-[15px] font-bold text-cream transition-all active:scale-[0.98]"
+                className="btn-ember mt-7 inline-flex rounded-xl px-7 py-3.5 font-display text-[15px] font-bold text-onEmber transition-all active:scale-[0.98]"
               >
                 Kilpailuta sähkösopimus
               </Link>
