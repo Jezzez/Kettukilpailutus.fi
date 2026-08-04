@@ -136,15 +136,15 @@ export default function ElectricityPage() {
 
         <div className="relative z-[1] mx-auto max-w-[1180px] px-4 sm:px-6">
           <Reveal>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center gap-3">
               <span className="font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-goldInk">
                 Näin vaihto etenee
               </span>
             </div>
-            <h2 className="mt-4 max-w-[20ch] font-hero text-[2rem] leading-[1.08] text-cream sm:text-[2.5rem]">
+            <h2 className="mx-auto mt-4 max-w-[20ch] text-center font-hero text-[2rem] leading-[1.08] text-cream sm:text-[2.5rem]">
               Kolme askelta, viisi minuuttia.
             </h2>
-            <p className="mt-3.5 max-w-[52ch] text-[15.5px] leading-relaxed text-ink/85 sm:text-[16.5px]">
+            <p className="mx-auto mt-3.5 max-w-[52ch] text-center text-[15.5px] leading-relaxed text-ink/85 sm:text-[16.5px]">
               Uusi yhtiö irtisanoo vanhan sopimuksen, siirtoyhtiö pysyy samana ja sähkö kulkee koko ajan. Sinulle jää lomakkeen täyttö.
             </p>
           </Reveal>
@@ -153,7 +153,7 @@ export default function ElectricityPage() {
             <div className="theme-light mt-9 overflow-hidden rounded-3xl border border-line bg-white shadow-lift">
               <div className="grid gap-px bg-line md:grid-cols-3">
                 {STEPS.map(([title, text], i) => (
-                  <div key={title} className="lift relative h-full overflow-hidden bg-white p-6 sm:p-7">
+                  <div key={title} className="lift relative h-full overflow-hidden bg-white p-6 text-center sm:p-7">
                     <span className="relative font-data text-[12px] font-bold uppercase tracking-[0.16em] text-accentDark">
                       Askel 0{i + 1}
                     </span>
@@ -181,7 +181,7 @@ export default function ElectricityPage() {
                 Peruutusoikeus jää näkyviin, koska se POISTAA riskiä sen
                 sijaan että lisäisi työtä.
               */}
-              <p className="flex items-center gap-2 border-t border-line px-6 py-4 text-[13px] font-medium text-ink/70 sm:px-7">
+              <p className="flex items-center justify-center gap-2 border-t border-line px-6 py-4 text-center text-[13px] font-medium text-ink/70 sm:px-7">
                 <ShieldCheck size={15} className="shrink-0 text-ink/40" aria-hidden />
                 Etämyynnissä sopimuksella on aina 14 vuorokauden peruutusoikeus.
               </p>
