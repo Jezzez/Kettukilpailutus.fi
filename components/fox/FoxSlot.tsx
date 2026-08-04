@@ -57,8 +57,8 @@ export const FOX_SLOTS: Record<FoxSlotId, SlotSpec> = {
     brief: "Koko vartalo, kolmineljäsosaprofiili, itsevarma. Valo sivusta.",
   },
   laskuri: {
-    src: null,
-    w: 520,
+    src: "/kettu-kurkistaa.webp",
+    w: 760,
     h: 620,
     alt: "",
     brief:

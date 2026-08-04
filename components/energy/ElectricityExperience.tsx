@@ -1344,7 +1344,7 @@ export default function ElectricityExperience({
                   </p>
                 </div>
 
-                <FoxSlot id="laskuri" height={210} className="shrink-0" />
+                <FoxSlot id="laskuri" height={240} className="shrink-0" />
               </div>
             </div>
           </div>
