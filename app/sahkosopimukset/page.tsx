@@ -224,8 +224,15 @@ export default function ElectricityPage() {
           Aiemmin alareuna oli tarkoituksella terävä, koska alapuolella
           oli persikkavyö; nyt alla on tasainen paperi, ja suora raja
           oranssista paperiin katkaisisi sivun kahtia juuri napin alta.
+
+          `theme-light`-kääre on PAKOLLINEN. Ilman sitä `--c-paper`
+          luetaan ember-teemasta, jossa se on oranssi — kaari piirtyi
+          vaaleanoranssina eikä osunut alla olevaan paperiin lainkaan.
+          Sama ansa kuin vyön yläreunan hännänvedossa.
         */}
-        <TailSweep fill="rgb(var(--c-paper))" height={64} />
+        <div className="theme-light">
+          <TailSweep fill="rgb(var(--c-paper))" height={64} />
+        </div>
       </section>
 
       {/*
