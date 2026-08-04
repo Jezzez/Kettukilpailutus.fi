@@ -1169,10 +1169,10 @@ export default function ElectricityExperience({
                   </ul>
                   <div className="halo-glow relative -mb-10 -mt-3 shrink-0 md:hidden">
                     <Image
-                      src="/kettu-osoittaa.webp"
+                      src="/kettu-seisoo.webp"
                       alt="Kettu, Kettukilpailutuksen maskotti"
-                      width={416}
-                      height={1000}
+                      width={432}
+                      height={1325}
                       priority
                       className="relative h-[152px] w-auto drop-shadow-[0_14px_24px_rgba(80,28,2,0.38)]"
                     />
@@ -1237,8 +1237,9 @@ export default function ElectricityExperience({
                   className="halo-glow order-1 hidden shrink-0 md:order-2 md:flex"
                 >
                   {/*
-                    Poosi "osoittaa", ei "kortti": sähkösivulla maskotti ei voi
-                    pidellä luottokorttia — se kertoo väärästä vertikaalista.
+                    Poosi on seisova kettu, ei luottokorttia pitelevä: tällä
+                    sivulla maskotti ei voi pidellä korttia, se kertoisi
+                    väärästä vertikaalista.
 
                     HEHKU ON KERMAA, EI ORANSSIA. Aiemmin maskotin takana
                     oli oranssi `ember-glow`. Oranssilla vyöllä se ei tee
@@ -1248,12 +1249,12 @@ export default function ElectricityExperience({
                     oranssilla lukisi likana.
                   */}
                   <Image
-                    src="/kettu-osoittaa.webp"
+                    src="/kettu-seisoo.webp"
                     alt="Kettu, Kettukilpailutuksen maskotti"
-                    width={416}
-                    height={1000}
+                    width={432}
+                    height={1325}
                     priority
-                    className="relative h-[400px] w-auto drop-shadow-[0_26px_44px_rgba(80,28,2,0.5)] lg:h-[430px]"
+                    className="relative h-[430px] w-auto drop-shadow-[0_26px_44px_rgba(80,28,2,0.5)] lg:h-[470px]"
                   />
                 </motion.div>
               </div>
