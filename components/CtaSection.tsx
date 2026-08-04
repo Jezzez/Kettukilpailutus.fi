@@ -69,10 +69,19 @@ export default function CtaSection({
             </Link>
           </div>
 
-          {/* Ketun loppuallekirjoitus. `halo-glow` erottaa hahmon
-              oranssista pohjasta ilman uutta väriä. */}
-          <div className="halo-glow relative shrink-0">
-            <FoxSlot id="footer" height={190} />
+          {/*
+            Ketun loppuallekirjoitus. `halo-glow` erottaa hahmon oranssista
+            pohjasta ilman uutta väriä.
+
+            NEGATIIVINEN ALAMARGINAALI ON TARKOITUKSELLINEN. Kuva on
+            rintakuva, joka päättyy rintaan — vapaasti leijuessaan se
+            näyttäisi poikki leikatulta. Kun se vedetään vyön oman
+            alapehmusteen verran alas (`py-24` = `-mb-24`, `md:py-28` =
+            `md:-mb-28`), leikkauskohta osuu tasan vyön alareunaan ja
+            hahmo lukee siltä, että se nousee vyön takaa esiin.
+          */}
+          <div className="halo-glow relative -mb-24 shrink-0 self-end md:-mb-28">
+            <FoxSlot id="footer" height={280} />
           </div>
         </div>
       </Reveal>

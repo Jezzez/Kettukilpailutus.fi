@@ -119,12 +119,12 @@ export const FOX_SLOTS: Record<FoxSlotId, SlotSpec> = {
       "404-sivulle. Huvittunut, ei pahoillaan — kettu joka on itsekin eksynyt mutta tietää tien takaisin.",
   },
   footer: {
-    src: null,
-    w: 360,
-    h: 360,
+    src: "/kettu-muotokuva.webp",
+    w: 569,
+    h: 900,
     alt: "",
     brief:
-      "Pieni, istuva, häntä kiertyneenä eteen. Rauhallinen. Sivun loppuallekirjoitus.",
+      "Rintakuva, joka nousee loppukehotusvyön alareunasta. Sivun loppuallekirjoitus.",
   },
 };
 
