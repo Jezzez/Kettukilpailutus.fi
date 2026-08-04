@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, CreditCard, Globe, Landmark, ShieldCheck, Zap, BadgeCheck, Scale, Lock } from "lucide-react";
 import Reveal from "@/components/Reveal";
-import BrushRule from "@/components/BrushRule";
 import SectionHead from "@/components/SectionHead";
 import HeroKettu from "@/components/mascot/HeroKettu";
 import Kettu from "@/components/mascot/Kettu";
@@ -80,7 +79,6 @@ export default function HubPage() {
               <span className="font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-goldInk">
                 Ketuttaako maksaa liikaa?
               </span>
-              <BrushRule className="text-goldInk/70" width={64} />
             </div>
             {/* Antiikva ja normaalipaino: kun otsikko ei ole lihava, sivun
                 painavin elementti on kermanvalkoinen nappi. */}

@@ -28,6 +28,7 @@ const SHOW_PLACEHOLDERS = true;
 export type FoxSlotId =
   | "hero"
   | "laskuri"
+  | "luottamus"
   | "laskee"
   | "alaVaihda"
   | "tyhja"
@@ -62,6 +63,14 @@ export const FOX_SLOTS: Record<FoxSlotId, SlotSpec> = {
     alt: "",
     brief:
       "Puolivartalo, kurkistaa laskurin reunan yli käyttäjän lukuja. Keskittynyt, hieman huvittunut. Kyynärpäät voivat nojata reunaan.",
+  },
+  luottamus: {
+    src: null,
+    w: 460,
+    h: 560,
+    alt: "",
+    brief:
+      "Läpinäkyvyysosioon. Kettu esittelee kämmenellä laskukaavaa, katse lukijaan, mitään salaamaton avoin asento. Tämä korvaa entiset sinettimerkit.",
   },
   laskee: {
     src: null,

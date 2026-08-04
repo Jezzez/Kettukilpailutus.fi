@@ -9,9 +9,9 @@
  * MIKSI EI VINOLEIKKAUSTA: vinoleikkaus on vertailusivujen vakiokalustoa
  * (mm. sahkon-kilpailutus.fi). Se toimii, mutta se on täsmälleen se ele,
  * josta kävijä ei muista sivua jälkeenpäin. Hännänveto tekee saman työn
- * ja on samalla brändin ele — sama muoto kuin `BrushRule`, mutta
- * arkkitehtuurin kokoisena. Kun sama kaari toistuu otsikoiden alla ja
- * osioiden rajoilla, sivusto alkaa näyttää yhden käden piirtämältä.
+ * ja on samalla brändin ele: ketun hännän kaari arkkitehtuurin kokoisena.
+ * Kun sama kaari toistuu osioiden rajoilla, sivusto alkaa näyttää yhden
+ * käden piirtämältä.
  *
  * KÄYTTÖ: laita tämä vyöhykkeen VIIMEISEKSI lapseksi ja anna `fill`-arvoksi
  * SEURAAVAN vyöhykkeen taustaväri. Komponentti asettuu itse alareunaan.
@@ -26,7 +26,7 @@ export default function TailSweep({
   fill,
   /** Korkeus pikseleinä. Matalampi = hillitympi. */
   height = 64,
-  /** Kaaren suunta. Oletuksena nousee oikealle, kuten BrushRule. */
+  /** Kaaren suunta. Oletuksena nousee oikealle. */
   flip = false,
   className = "",
 }: {

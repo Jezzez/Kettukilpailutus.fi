@@ -7,7 +7,6 @@ import Reveal from "@/components/Reveal";
 import FoxSays from "@/components/FoxSays";
 import SectionHead from "@/components/SectionHead";
 import CtaSection from "@/components/CtaSection";
-import BrushRule from "@/components/BrushRule";
 import TailSweep from "@/components/fox/TailSweep";
 import EnergyTrust from "@/components/energy/EnergyTrust";
 import { getPlans, getEnergyTopics } from "@/lib/energy";
@@ -141,7 +140,6 @@ export default function ElectricityPage() {
               <span className="font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-goldInk">
                 Näin vaihto etenee
               </span>
-              <BrushRule className="text-goldInk/70" width={64} />
             </div>
             <h2 className="mt-4 max-w-[20ch] font-hero text-[2rem] leading-[1.08] text-cream sm:text-[2.5rem]">
               Kolme askelta, viisi minuuttia.
@@ -191,6 +189,33 @@ export default function ElectricityPage() {
                   Etämyynnissä sopimuksella on aina 14 vuorokauden peruutusoikeus.
                 </p>
               </div>
+            </div>
+          </Reveal>
+
+          {/*
+            PALUUNAPPI KYSELYYN.
+
+            Tämä osio selittää vaihdon kulun, eli se on juuri se kohta,
+            jossa epäröivä lukija vakuuttuu. Ilman nappia hänen pitäisi
+            vierittää takaisin ylös löytääkseen laskurin — ja osa ei
+            vieritä vaan poistuu. Nappi vie suoraan sinne, missä
+            affiliate-klikki syntyy.
+
+            Kerma oranssilla, kiinteä `#A83E0A` tekstille: `accentDark`
+            kääntyisi ember-teemassa kermaksi eli näkymättömäksi.
+          */}
+          <Reveal delay={0.16}>
+            <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-3">
+              <Link
+                href="#vertailu"
+                className="group inline-flex items-center gap-2.5 rounded-xl bg-cream px-8 py-4 font-display text-[15.5px] font-bold text-[#A83E0A] shadow-lift transition-all hover:bg-white active:scale-[0.98]"
+              >
+                Kilpailuta sopimuksesi
+                <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" aria-hidden />
+              </Link>
+              <span className="text-[13.5px] text-ink/85">
+                Neljä kysymystä. Ei maksua, ei yhteystietoja.
+              </span>
             </div>
           </Reveal>
         </div>

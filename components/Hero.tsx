@@ -5,7 +5,6 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Check, Play, Scale } from "lucide-react";
 import HeroKettu from "./mascot/HeroKettu";
 import Kettu from "./mascot/Kettu";
-import BrushRule from "./BrushRule";
 import TailSweep from "./fox/TailSweep";
 
 const CHECKS = ["Puolueetonta vertailua", "Avoin laskenta", "Ilmainen palvelu"];
@@ -52,7 +51,6 @@ export default function Hero({ cardCount }: { cardCount: number }) {
             <span className="font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-goldInk">
               Luottokortit
             </span>
-            <BrushRule className="text-goldInk/70" width={64} />
           </motion.div>
 
           <motion.h1

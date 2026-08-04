@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import Reveal from "./Reveal";
-import BrushRule from "./BrushRule";
 import TailSweep from "./fox/TailSweep";
 import FoxSlot from "./fox/FoxSlot";
 
@@ -47,7 +46,6 @@ export default function CtaSection({
       <Reveal>
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-10 px-4 py-24 text-center sm:px-6 md:flex-row md:py-28 md:text-left">
           <div className="flex-1">
-            <BrushRule className="mx-auto mb-8 block text-goldInk md:mx-0" width={96} />
             <h2 className="mx-auto max-w-xl font-hero text-[2rem] leading-[1.08] text-cream sm:text-[2.6rem] md:mx-0">
               {title}
             </h2>

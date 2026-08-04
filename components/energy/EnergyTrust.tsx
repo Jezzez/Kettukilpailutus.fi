@@ -1,8 +1,7 @@
 import { BadgeCheck, Calculator, Coins, PawPrint, Scale } from "lucide-react";
 import Reveal from "../Reveal";
-import BrushRule from "../BrushRule";
 import TailSweep from "../fox/TailSweep";
-import FoxRosette from "../fox/FoxRosette";
+import FoxSlot from "../fox/FoxSlot";
 import { ASSUMED_SPOT_AVG, IS_EXAMPLE_DATA, PRICE_DATE, getPlans } from "@/lib/energy";
 
 /**
@@ -38,18 +37,6 @@ const POINTS = [
     title: "Mitä hinta ei sisällä",
     text: "Arviot kattavat sähkön myynnin. Siirtomaksu tulee paikalliselta verkkoyhtiöltä, sitä ei voi kilpailuttaa, ja se on sama sopimuksesta riippumatta.",
   },
-];
-
-/**
- * LEIMAT. Jokainen väite on joko avattu kriteeri tai tarkistettavissa
- * oleva tosiasia — sama sääntö kuin `FoxRosette`-komponentin ohjeessa.
- * "Emme myy tietojasi" vastaa sanatarkasti tietosuojaselostetta, eli
- * käyttäjä voi tarkistaa sen sivustolta itse.
- */
-const SEALS = [
-  { label: "Ketun valinta", sub: "hinta 72 % · arvio 28 %" },
-  { label: "Järjestys", sub: "ei ostettavissa" },
-  { label: "Tietosi", sub: "emme myy niitä" },
 ];
 
 export default function EnergyTrust() {
@@ -93,25 +80,21 @@ export default function EnergyTrust() {
                   <span className="font-display text-[12px] font-bold uppercase tracking-[0.2em] text-goldInk">
                     Avoin laskenta
                   </span>
-                  <BrushRule className="text-gold" width={64} />
                 </div>
                 <h2 className="mt-4 max-w-xl font-hero text-[2.2rem] leading-[1.08] text-ink sm:text-[2.7rem]">
                   Kettu näyttää laskukaavan, ei vain lopputulosta.
                 </h2>
               </div>
 
-              {/* Leimat. Vinot kulmat vuorottelevat, jotta rivi ei lue napeiksi. */}
-              <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-                {SEALS.map((s, i) => (
-                  <FoxRosette
-                    key={s.label}
-                    label={s.label}
-                    sub={s.sub}
-                    size={104}
-                    tilt={i % 2 === 0 ? -7 : 6}
-                  />
-                ))}
-              </div>
+              {/*
+                Tässä oli kolme sinettimerkkiä. Ne poistettiin: merkin muoto
+                lainaa sertifikaatin auktoriteettia, vaikka myöntäjää ei ole,
+                ja jokainen kolmesta väitteestä lukee jo sanoina joko alla
+                olevissa viidessä kohdassa tai laskurin lupausrivillä. Sama
+                asia kahdesti ruudulla ei vahvista väitettä vaan laimentaa sen.
+                Tilalla on Kettu, joka on brändin oma ja aito.
+              */}
+              <FoxSlot id="luottamus" height={200} className="shrink-0" />
             </div>
           </Reveal>
 

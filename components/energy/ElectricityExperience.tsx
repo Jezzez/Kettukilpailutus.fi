@@ -14,12 +14,10 @@ import AffiliateButton from "../AffiliateButton";
 import SpotCurve from "./SpotCurve";
 import SpotPriceLive from "./SpotPriceLive";
 import EnergyStickyBar from "./EnergyStickyBar";
-import BrushRule from "../BrushRule";
 import FoxPaw from "../FoxPaw";
 import TailSweep from "../fox/TailSweep";
 import PawTrail from "../fox/PawTrail";
 import FoxSlot from "../fox/FoxSlot";
-import FoxRosette from "../fox/FoxRosette";
 import FoxComputing, { useFoxComputing } from "../fox/FoxComputing";
 
 /**
@@ -848,13 +846,16 @@ export default function ElectricityExperience({
        tuloksissa. Muuten säästöluku näkyisi ruudulla ilman että sen
        lähtöarvo olisi missään näkyvissä — eli tarkistamattomana. */
     if (curPrice.trim() !== "") setShowCurrent(true);
-    /* Jos hintatoiveeseen vastattiin, suositus avataan valmiiksi
-       tuloksissa — muuten vastaus katoaisi eikä käyttäjä näkisi mitä
-       siitä seurasi. "En osaa sanoa" ei rajaa listaa. */
-    if (advice) {
-      setShowAdvisor(true);
-      setType(advice.type);
-    }
+    /*
+      Suositus VAIKUTTAA heti (lista rajautuu vastauksen mukaan), mutta
+      paneeli pysyy kiinni. Auki avautuva paneeli työnsi sopimuskortit
+      ruudun alareunan taakse juuri sillä sekunnilla, kun kysely vihdoin
+      lupasi näyttää ne — ja odotettu palkinto jäi vierityksen päähän.
+      Suositus on silti näkyvissä omassa oranssissa laatikossaan tulosten
+      yläpuolella, joten vastaus ei katoa mihinkään.
+      "En osaa sanoa" ei rajaa listaa.
+    */
+    if (advice) setType(advice.type);
   };
 
   /** Yhteenvetorivi vaiheessa 6. */
@@ -919,7 +920,6 @@ export default function ElectricityExperience({
         <div className="relative">
           <p className="flex items-center gap-2.5 font-display text-[12px] font-bold uppercase tracking-[0.18em] text-accentDark">
             Kysymys {step} / {LAST_STEP}
-            <BrushRule className="text-accent/70" width={40} />
           </p>
 
           {/*
@@ -1087,7 +1087,6 @@ export default function ElectricityExperience({
                   <span className="font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-accentDark">
                     Ketuttaako maksaa liikaa?
                   </span>
-                  <BrushRule className="text-accent/70" width={64} />
                 </div>
 
                 {/*
@@ -1314,14 +1313,14 @@ export default function ElectricityExperience({
         Tyhjä väli kyselyn alla olisi pahin mahdollinen ratkaisu: käyttäjä
         näkisi lomakkeen ja sen alla ei-mitään, eikä hänellä olisi yhtään
         syytä täyttää sitä. Tähän tulee siis vastaus kysymykseen "miksi
-        vastaan näihin" — leimoina, koska leiman muoto luetaan takuuksi
-        ennen kuin tekstiä ehditään lukea (ks. FoxRosette.tsx).
+        vastaan näihin".
 
-        Jokainen leima on oma tarkistettava väitteemme, ei kenenkään
-        myöntämä sertifikaatti. Keskimmäinen on tässä kohtaa tärkein: se
-        on ainoa asia, joka erottaa tämän lomakkeen niistä
-        kilpailutuslomakkeista, joihin kohderyhmä on oppinut olemaan
-        koskematta.
+        Tässä oli aiemmin kolme sinettimerkkiä. Ne poistettiin, koska
+        niiden kolme väitettä lukevat jo sanoina samassa ruudussa: kaksi
+        vieressä olevassa kappaleessa ja kaikki kolme laskurin
+        lupausrivillä. Sama lupaus kolmesti yhdellä ruudulla ei vahvista
+        sitä vaan alkaa kuulostaa vakuuttelulta. Tilalla on Kettu, joka
+        on ainoa merkki, jonka takana tällä sivustolla oikeasti ollaan.
       */}
       {!showResults && (
         <section className="theme-light bg-paper pt-14">
@@ -1345,12 +1344,7 @@ export default function ElectricityExperience({
                   </p>
                 </div>
 
-                <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-5 sm:gap-x-7">
-                  <FoxRosette label="Ilmainen" sub="aina · ei tilejä" tilt={-7} />
-                  <FoxRosette label="Ei yhteystietoja" sub="ei myyntipuheluita" size={122} tilt={4} />
-                  <FoxRosette label="Kaava auki" sub="hinta 72 % · arvio 28 %" tilt={-4} />
-                  <FoxSlot id="laskuri" height={170} className="hidden shrink-0 xl:block" />
-                </div>
+                <FoxSlot id="laskuri" height={210} className="shrink-0" />
               </div>
             </div>
           </div>
@@ -1508,7 +1502,6 @@ export default function ElectricityExperience({
                 <div className="min-w-0 flex-1">
                   <p className="flex items-center gap-2.5 font-display text-[12px] font-bold uppercase tracking-[0.18em] text-goldInk">
                     <FoxPaw /> Ketun suositus sinulle
-                    <BrushRule className="text-goldInk/70" width={40} />
                   </p>
 
                   <h3 className="mt-3 font-hero text-[1.7rem] leading-[1.12] text-cream sm:text-[2.1rem]">
@@ -1609,10 +1602,15 @@ export default function ElectricityExperience({
               />
               <span className="flex-1">
                 <span className="block font-display text-[15px] font-bold text-ink">
-                  Epäröitkö, kumpi sopii: pörssisähkö vai kiinteä?
+                  {advice ? "Vaihda hintatoivettasi" : "Epäröitkö, kumpi sopii: pörssisähkö vai kiinteä?"}
                 </span>
+                {/* Kyselyyn vastannut on jo kertonut toiveensa. Jos tässä
+                    lukisi silti "vastaa yhteen kysymykseen", palvelu
+                    näyttäisi unohtaneen juuri annetun vastauksen. */}
                 <span className="mt-0.5 block text-[13px] text-ink/70">
-                  Vastaa yhteen kysymykseen, niin Kettu suosittelee ja rajaa listan.
+                  {advice
+                    ? "Lista on rajattu vastauksesi mukaan. Avaa, jos haluat muuttaa sitä."
+                    : "Vastaa yhteen kysymykseen, niin Kettu suosittelee ja rajaa listan."}
                 </span>
               </span>
               <span className="shrink-0 font-display text-[13.5px] font-bold text-accentDark">Avaa</span>
@@ -1725,7 +1723,6 @@ export default function ElectricityExperience({
             <div>
               <p className="flex items-center gap-2.5 font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-accentDark">
                 Tulokset kulutuksellasi
-                <BrushRule className="text-accent/70" width={44} />
               </p>
               <p className="mt-1.5 font-display text-[17px] font-bold text-ink" aria-live="polite">
                 {filtered.length} sopimusta järjestyksessä

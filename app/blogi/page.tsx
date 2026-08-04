@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import BlogList from "@/components/BlogList";
 import Reveal from "@/components/Reveal";
 import Kettu from "@/components/mascot/Kettu";
-import BrushRule from "@/components/BrushRule";
 import TailSweep from "@/components/fox/TailSweep";
 import { getPosts } from "@/lib/data";
 
@@ -39,7 +38,6 @@ export default function BlogPage() {
               <span className="font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-goldInk">
                 Ketun oppaat
               </span>
-              <BrushRule className="text-goldInk/70" width={64} />
             </div>
             <h1 className="mt-4 font-hero text-[2.25rem] leading-[1.08] text-cream sm:text-[2.75rem]">
               Selvällä suomella, ilman myyntipuhetta

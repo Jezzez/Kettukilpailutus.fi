@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, Zap } from "lucide-react";
 import Kettu from "@/components/mascot/Kettu";
-import BrushRule from "@/components/BrushRule";
 import TailSweep from "@/components/fox/TailSweep";
 
 /**
@@ -28,7 +27,6 @@ export default function NotFound() {
             <span className="font-display text-[12px] font-bold uppercase tracking-[0.2em] text-goldInk">
               Virhe 404
             </span>
-            <BrushRule className="text-goldInk/70" width={64} />
           </div>
           <h1 className="mt-4 font-hero text-[2.4rem] leading-[1.06] text-cream sm:text-[3rem]">
             Tätä sivua Kettu ei löydä.

@@ -1,4 +1,3 @@
-import BrushRule from "./BrushRule";
 
 /**
  * Osion ankkuri: yläotsikko, ketunhäntäviiva, otsikko ja valinnainen ingressi.
@@ -42,7 +41,6 @@ export default function SectionHead({
         }`}
       >
         {eyebrow}
-        <BrushRule className="text-accent/70" width={48} />
       </p>
 
       <h2

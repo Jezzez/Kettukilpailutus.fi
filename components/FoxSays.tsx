@@ -1,5 +1,4 @@
 import Image from "next/image";
-import BrushRule from "./BrushRule";
 
 /**
  * "Kettu sanoo" — maskotin väliintulo osioiden välissä.
@@ -56,7 +55,6 @@ export default function FoxSays({
         <div className="min-w-0 max-w-[68ch]">
           <p className="flex items-center gap-2 font-display text-[11px] font-bold uppercase tracking-[0.16em] text-accentDark">
             Kettu sanoo
-            <BrushRule width={38} className="text-accent/60" />
           </p>
           <p className="mt-1.5 font-display text-[15.5px] font-semibold leading-snug text-ink sm:text-[16.5px]">
             {quote}
