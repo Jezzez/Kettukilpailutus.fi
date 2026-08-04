@@ -36,7 +36,7 @@ const ENERGY_FAQ: { q: string; a: string }[] = [
 ];
 
 const STEPS = [
-  ["Vastaa kolmeen kysymykseen", "Asumismuoto, vuosikulutus ja se, kumpi on tärkeämpää: halpa vai ennustettava. Ei yhteystietoja."],
+  ["Vastaa neljään kysymykseen", "Asumismuoto, vuosikulutus, se mikä on sinulle tärkeintä, ja nykyinen hintasi. Ei yhteystietoja."],
   ["Valitse sopimus", "Vertaa euroja, älä senttejä. Halvin on merkitty ja hintapalkit näyttävät erot heti."],
   ["Tee sopimus verkossa", "Täytä uuden yhtiön lomake parissa minuutissa. Yhtiö hoitaa loput."],
 ];

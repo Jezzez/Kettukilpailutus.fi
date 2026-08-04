@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from "framer-motion";
 import {
-  ArrowLeft, ArrowRight, Building2, Check, Flame, Home, House, Info, Leaf, Lock, MapPin,
+  ArrowLeft, ArrowRight, Building2, Check, Flame, Home, House, Info, Leaf, Lock,
   Pencil, Plug, RefreshCw, ShieldCheck, Timer, TrendingDown, Wallet, X,
 } from "lucide-react";
 import type { ElectricityPlan } from "@/lib/energy";
@@ -186,8 +186,6 @@ export default function ElectricityExperience({
     arvattu vastaus rajaisi listan väärin.
   */
   const [pricePref, setPricePref] = useState<"steady" | "cheapest" | "unsure" | null>(null);
-  /** Postinumero. Ks. `postcodeBlock` — mihin sitä käytetään ja mihin ei. */
-  const [postcode, setPostcode] = useState("");
   /** Tietääkö käyttäjä nykyisen hintansa. `null` = ei vastattu vielä. */
   const [knowsCurrent, setKnowsCurrent] = useState<boolean | null>(null);
 
@@ -636,60 +634,6 @@ export default function ElectricityExperience({
   );
 
   /*
-    POSTINUMERO — MITÄ SILLÄ TEHDÄÄN JA MITÄ EI.
-
-    REHELLISYYS ENSIN: sähkön MYYNTIhinta on Suomessa sama riippumatta
-    siitä, missä asut, joten postinumero ei muuta yhtäkään tämän sivun
-    lukua. Vain siirtomaksu on alueellinen, eikä sitä voi kilpailuttaa.
-    Siksi tässä EI väitetä "Kettu ehdottaa alueellasi suosituimpia
-    sopimuksia" eikä "räätälöimme tuloksesi asuinalueesi mukaan". Data ei
-    tunne alueita eikä suosiota, joten väite olisi keksitty — ja keksityt
-    väitteet ovat tällä sivustolla kiellettyjä myös silloin, kun ne
-    toimisivat. Jos alueellinen suosiodata joskus saadaan kumppanilta,
-    väitteen saa kirjoittaa tähän ja suodatuksen rakentaa oikeasti.
-
-    MIKSI SITÄ SILTI KYSYTÄÄN: postinumero on yksi niistä tiedoista,
-    jotka sopimuksen tekeminen vaatii, ja kysely on juuri se hetki, jossa
-    käyttäjä kokoaa tietonsa. Kysymys palvelee samaa tarkoitusta kuin
-    sivun "Ota nämä esiin" -lista: kun tiedot ovat valmiina, sopimuksen
-    teko ei katkea siihen, että joutuu etsimään laskun kaapista.
-
-    KENTTÄ ON VAPAAEHTOINEN, eikä sitä lähetetä mihinkään. Se on osa
-    "Ei tunnuksia, ei yhteystietoja" -lupausta: postinumero ei yksin
-    yksilöi ketään, ja se jää selaimeen.
-  */
-  const postcodeBlock = (
-    <div>
-      <div className="flex flex-wrap items-center gap-3">
-        <input
-          type="text"
-          inputMode="numeric"
-          autoComplete="postal-code"
-          maxLength={5}
-          value={postcode}
-          onChange={(e) => setPostcode(e.target.value.replace(/\D/g, "").slice(0, 5))}
-          placeholder="00100"
-          aria-label="Postinumero"
-          className="w-44 rounded-2xl border-2 border-lineDark bg-mist px-4 py-3.5 text-center font-data text-[26px] font-bold tracking-[0.18em] text-ink placeholder:font-normal placeholder:tracking-[0.18em] placeholder:text-ink/30 focus:border-accent focus:outline-none"
-        />
-        <span className="rounded-full border border-line bg-mist px-3 py-1 font-display text-[12.5px] font-semibold text-ink/60">
-          vapaaehtoinen
-        </span>
-      </div>
-
-      <p className="mt-4 flex items-start gap-2 rounded-xl border border-line bg-mist px-3.5 py-3 text-[14px] leading-relaxed text-ink/75">
-        <Info size={15} className="mt-0.5 shrink-0 text-ink/45" aria-hidden />
-        <span>
-          <strong className="font-semibold">Kettu kysyy tämän sinua varten:</strong> tarvitset
-          postinumeron sopimusta tehdessäsi, joten se on nyt valmiina siinä kohtaa. Vertailun
-          hintoihin se ei vaikuta — sähkön myyntihinta on sama koko Suomessa. Numero jää
-          selaimeesi.
-        </span>
-      </p>
-    </div>
-  );
-
-  /*
     NYKYINEN HINTA KYSYTÄÄN KAHDESSA OSASSA.
 
     Aiemmin vaiheessa 2 oli suoraan kaksi numerokenttää otsikolla
@@ -829,7 +773,7 @@ export default function ElectricityExperience({
 
   /* ── Kyselyn ohjaus ───────────────────────────────────────────────────
 
-     KUUSI VAIHETTA, YKSI KYSYMYS RUUDULLA.
+     VIISI VAIHETTA, YKSI KYSYMYS RUUDULLA.
 
      Kysely oli kolmivaiheinen, mutta vaiheet 2 ja 3 sisälsivät kaksi
      kysymystä kumpikin — eli ruudulla oli kaksi päätöstä yhtä aikaa,
@@ -839,13 +783,13 @@ export default function ElectricityExperience({
 
      Pidempi kysely EI ole tässä huonompi. Poistumista ei aiheuta
      vaiheiden määrä vaan epätietoisuus siitä, mitä pitäisi tehdä:
-     kuusi ruutua, joilla kullakin on yksi selvä kysymys ja yksi iso
+     viisi ruutua, joilla kullakin on yksi selvä kysymys ja yksi iso
      oranssi nappi, täytetään loppuun useammin kuin kolme ruutua, joilla
      on kaksi kysymystä ja epäselvä eteneminen. Jokainen vaihe kertoo
      lisäksi lyhyesti MIKSI kysytään — perusteltu kysymys ei tunnu
      tietojen keräämiseltä.
 
-     Vaihe 6 on yhteenveto. Se ei kysy mitään, vaan näyttää vastaukset
+     Vaihe 5 on yhteenveto. Se ei kysy mitään, vaan näyttää vastaukset
      ja antaa muuttaa niitä. Se on tämän kyselyn tärkein yksittäinen
      ruutu iäkkäälle käyttäjälle: se poistaa pelon siitä, että jotain
      tuli vastattua väärin eikä sitä enää saa korjattua. */
@@ -863,21 +807,16 @@ export default function ElectricityExperience({
     },
     {
       n: 3,
-      title: "Mikä on kotisi postinumero?",
-      hint: "Ei pakollinen. Kerromme alla, mihin sitä käytetään.",
-    },
-    {
-      n: 4,
       title: "Mikä näistä on sinulle tärkeintä?",
       hint: "Tämä ratkaisee, millaisia sopimuksia Kettu ehdottaa.",
     },
     {
-      n: 5,
+      n: 4,
       title: "Tiedätkö, paljonko maksat sähköstä nyt?",
       hint: "Vain tällä Kettu voi laskea säästösi euroina — emme arvaa sitä.",
     },
     {
-      n: 6,
+      n: 5,
       title: "Tarkista vastauksesi",
       hint: "Voit muuttaa mitä tahansa kohtaa. Sen jälkeen Kettu näyttää sopimukset.",
     },
@@ -888,9 +827,8 @@ export default function ElectricityExperience({
   const stepValid =
     step === 1 ? dwelling !== null || kwhTouched
     : step === 2 ? kwh >= 500
-    : step === 3 ? postcode.length === 0 || postcode.length === 5
-    : step === 4 ? pricePref !== null
-    : step === 5 ? knowsCurrent !== null
+    : step === 3 ? pricePref !== null
+    : step === 4 ? knowsCurrent !== null
     : true;
 
   /** Miksi "Jatka" ei vielä toimi. Sanotaan ääneen — harmaa nappi ilman
@@ -899,8 +837,7 @@ export default function ElectricityExperience({
     stepValid ? null
     : step === 1 ? "Valitse yksi vaihtoehto yltä, niin pääset eteenpäin."
     : step === 2 ? "Kirjoita kulutus (vähintään 500 kWh) tai palaa taaksepäin valitsemaan koti."
-    : step === 3 ? "Postinumerossa on viisi numeroa. Voit myös tyhjentää kentän ja jatkaa."
-    : step === 4 ? "Valitse yksi kolmesta vaihtoehdosta."
+    : step === 3 ? "Valitse yksi kolmesta vaihtoehdosta."
     : "Valitse kyllä tai en — molemmat käyvät.";
 
   const activeStep = STEPS_Q[step - 1];
@@ -944,16 +881,15 @@ export default function ElectricityExperience({
       <div className="rounded-2xl border border-line bg-mist px-4 py-1 sm:px-5">
         {summaryRow(1, "Kotisi", dwellingGuess ? dwellingGuess.label : "Kerroit kulutuksen suoraan")}
         {summaryRow(2, "Sähkön kulutus", `${kwh.toLocaleString("fi-FI")} kWh vuodessa`)}
-        {summaryRow(3, "Postinumero", postcode.length === 5 ? postcode : "Ei annettu")}
         {summaryRow(
-          4,
+          3,
           "Tärkeintä sinulle",
           pricePref === "steady" ? "Ennustettava lasku"
             : pricePref === "cheapest" ? "Halvin mahdollinen"
             : "Et osannut sanoa — näytämme kaikki"
         )}
         {summaryRow(
-          5,
+          4,
           "Nykyinen hintasi",
           currentAnnual !== null
             ? `${currentAnnual.toLocaleString("fi-FI", { maximumFractionDigits: 0 })} € vuodessa`
@@ -1021,10 +957,9 @@ export default function ElectricityExperience({
       <div className="mt-6">
         {step === 1 && dwellingBig}
         {step === 2 && kwhBig}
-        {step === 3 && postcodeBlock}
-        {step === 4 && prefBlock}
-        {step === 5 && currentChoiceBlock}
-        {step === 6 && summaryBlock}
+        {step === 3 && prefBlock}
+        {step === 4 && currentChoiceBlock}
+        {step === 5 && summaryBlock}
       </div>
 
       {/*
@@ -1271,7 +1206,7 @@ export default function ElectricityExperience({
                     href="#vertailu"
                     className="btn-ember inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 font-display text-[15.5px] font-bold text-onEmber md:hidden"
                   >
-                    Aloita kysely – kolme kysymystä
+                    Aloita kysely – neljä kysymystä
                     <TrendingDown size={16} aria-hidden />
                   </a>
                   <p className="text-[12.5px] text-ink/75">
@@ -1401,7 +1336,7 @@ export default function ElectricityExperience({
                     Kettu ei näytä hintataulukkoa. Se näyttää sinun hintasi.
                   </p>
                   <p className="mt-3 text-[14.5px] leading-relaxed text-ink/75">
-                    Kolme kysymystä, noin puoli minuuttia. Sen jälkeen jokainen
+                    Neljä kysymystä, noin minuutti. Sen jälkeen jokainen
                     ruudulla näkyvä euromäärä on laskettu sinun kulutuksellasi —
                     eikä yhtään yhteystietoa ole kysytty.
                   </p>
@@ -1521,11 +1456,11 @@ export default function ElectricityExperience({
           {/*
             KETUN SUOSITUS — kyselyn palkinto.
 
-            MIKSI TÄMÄ ON OLEMASSA: kysely kysyy nyt kuusi kertaa jotain.
+            MIKSI TÄMÄ ON OLEMASSA: kysely kysyy nyt neljä kertaa jotain.
             Jos vastauksena on pelkkä lajiteltu lista, käyttäjä on tehnyt
             työtä eikä saanut mitään takaisin — ja seuraavalla käynnillä
             hän ohittaa kyselyn. Yksi nimetty sopimus perusteluineen on se
-            vastaus, jota kuusi kysymystä lupasi.
+            vastaus, jota neljä kysymystä lupasi.
 
             MIKSI SE ON TUOTON KANNALTA SIVUN TÄRKEIN LAATIKKO: kuusi
             korttia on juuri se määrä vaihtoehtoja, jossa päätös
