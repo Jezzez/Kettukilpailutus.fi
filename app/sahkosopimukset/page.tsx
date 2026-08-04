@@ -288,8 +288,8 @@ export default function ElectricityPage() {
 
       <CtaSection
         href="/sahkosopimukset#vertailu"
-        title="Ketuttaako maksaa liikaa?"
-        text="Anna Ketun kilpailuttaa puolestasi. Minuutti aikaa, ei maksua, ei tunnuksia."
+        title="Kettu kilpailuttaa. Sinä säästät."
+        text="Vastaa muutamaan kysymykseen ja Kettu laskee todellisen hinnan puolestasi. Näet selkeästi, mikä sähkösopimus säästää eniten rahaa juuri sinun kodissasi."
         button="Kilpailuta sähkösopimus"
       />
     </>
