@@ -36,7 +36,13 @@ export default function CtaSection({
       ja `theme-light`-kääre pakottaa muuttujan ratkeamaan vaaleaksi
       vaikka itse osio on `theme-ember`.
     */
-    <section className="theme-ember ember-surface relative overflow-hidden">
+    /*
+      EI `overflow-hidden`. Se rajasi aiemmin kaiken vyön sisään, mutta
+      nyt Ketun korvat nousevat vyön yläreunan yli hännänvedon päälle.
+      Vyön oma taustakuvio on `inset-0`-kerroksessa, joten se ei vuoda
+      minnekään ilman rajausta.
+    */
+    <section className="theme-ember ember-surface relative">
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-16 rotate-180">
         <div className="theme-light">
           <TailSweep fill="rgb(var(--c-paper))" height={64} />
@@ -78,15 +84,27 @@ export default function CtaSection({
             vyön vaaleimmat pinnat muutenkin, ja niiden takana hehku näkyi
             vain sumeana laikkuna hahmon ympärillä.
 
-            NEGATIIVINEN ALAMARGINAALI ON TARKOITUKSELLINEN. Kuva on
+            KAKSI NEGATIIVISTA MARGINAALIA, ERI SYISTÄ. Alamarginaali
+            asettaa leikkauskohdan vyön alareunaan (alla). Ylämarginaali
+            taas pienentää sitä tilaa, jonka kuva varaa taitossa: ilman
+            sitä iso hahmo vain kasvattaisi vyön korkeutta eikä ylittäisi
+            sen yläreunaa koskaan. Nyt korvat nousevat hännänvedon yli.
+
+            ALAMARGINAALI ON TARKOITUKSELLINEN. Kuva on
             rintakuva, joka päättyy rintaan — vapaasti leijuessaan se
             näyttäisi poikki leikatulta. Kun se vedetään vyön oman
             alapehmusteen verran alas (`py-24` = `-mb-24`, `md:py-28` =
             `md:-mb-28`), leikkauskohta osuu tasan vyön alareunaan ja
             hahmo lukee siltä, että se nousee vyön takaa esiin.
           */}
-          <div className="relative -mb-24 shrink-0 self-end md:-mb-28">
-            <FoxSlot id="footer" height={280} />
+          <div className="relative z-20 -mb-24 shrink-0 self-end md:-mb-28 md:-mt-40">
+            {/*
+              `!h-` on tarkoituksellinen: FoxSlot asettaa korkeuden
+              tyylimääreenä, ja vain !important-luokka voi kääntää sen
+              näyttökoon mukaan. Mobiilissa hahmo pysyy maltillisena,
+              leveällä ruudulla se nousee vyön yli.
+            */}
+            <FoxSlot id="footer" height={500} className="!h-[300px] md:!h-[500px]" />
           </div>
         </div>
       </Reveal>
