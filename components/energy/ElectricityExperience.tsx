@@ -1372,7 +1372,7 @@ export default function ElectricityExperience({
             <FoxSlot
               id="laskuri"
               height={240}
-              className="pointer-events-none absolute bottom-0 left-1/2 z-[2] -translate-x-1/2 translate-y-[9%] drop-shadow-[0_10px_24px_rgba(90,45,10,0.18)] lg:left-auto lg:right-12 lg:translate-x-0"
+              className="pointer-events-none absolute bottom-0 left-1/2 z-[2] -translate-x-1/2 translate-y-[15%] drop-shadow-[0_10px_24px_rgba(90,45,10,0.18)] lg:left-auto lg:right-12 lg:translate-x-0"
             />
           </div>
         </section>
