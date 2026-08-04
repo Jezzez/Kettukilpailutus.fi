@@ -203,12 +203,22 @@ export default function ElectricityPage() {
 
             Kerma oranssilla, kiinteä `#A83E0A` tekstille: `accentDark`
             kääntyisi ember-teemassa kermaksi eli näkymättömäksi.
+
+            HOVER ON KIINTEÄ VALKOINEN, EI `hover:bg-white`. Ember-vyöllä
+            `bg-white` osoittaa oranssiin, joten kermanappi olisi
+            välähtänyt oranssiksi juuri painalluksen hetkellä — nappi
+            olisi kadonnut taustaansa sillä sekunnilla, kun sitä
+            painetaan. Sama virhe on muissakin kermanapeissa.
+
+            Nappi on keskitetty: askelkortti yläpuolella on täysleveä,
+            joten vasempaan reunaan jäävä nappi näyttää unohtuneelta.
+            Keskellä se on osion päätepiste.
           */}
           <Reveal delay={0.16}>
-            <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-3">
+            <div className="mt-9 flex flex-col items-center gap-3 text-center">
               <Link
                 href="#vertailu"
-                className="group inline-flex items-center gap-2.5 rounded-xl bg-cream px-8 py-4 font-display text-[15.5px] font-bold text-[#A83E0A] shadow-lift transition-all hover:bg-white active:scale-[0.98]"
+                className="group inline-flex items-center gap-2.5 rounded-xl bg-cream px-8 py-4 font-display text-[15.5px] font-bold text-[#A83E0A] shadow-lift transition-all hover:bg-[#FFFFFF] active:scale-[0.98]"
               >
                 Kilpailuta sopimuksesi
                 <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" aria-hidden />

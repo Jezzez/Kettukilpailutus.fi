@@ -106,7 +106,7 @@ export default function Hero({ cardCount }: { cardCount: number }) {
             */}
             <Link
               href="#vertailu"
-              className="group inline-flex items-center gap-2.5 rounded-xl bg-cream px-8 py-4 font-display text-[15.5px] font-bold text-[#A83E0A] shadow-lift transition-all hover:bg-white active:scale-[0.98]"
+              className="group inline-flex items-center gap-2.5 rounded-xl bg-cream px-8 py-4 font-display text-[15.5px] font-bold text-[#A83E0A] shadow-lift transition-all hover:bg-[#FFFFFF] active:scale-[0.98]"
             >
               Aloita vertailu
               <ArrowRight size={19} className="transition-transform group-hover:translate-x-0.5" aria-hidden />

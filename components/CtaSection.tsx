@@ -62,7 +62,7 @@ export default function CtaSection({
                 napin sisään kokonaan. Sama sävy kuin `.ember-surface`-
                 pohjassa, eli ei uutta väriä palettiin.
               */
-              className="group mt-8 inline-flex items-center gap-2.5 rounded-xl bg-cream px-8 py-4 font-display text-[15.5px] font-bold text-[#A83E0A] shadow-lift transition-all hover:bg-white active:scale-[0.98]"
+              className="group mt-8 inline-flex items-center gap-2.5 rounded-xl bg-cream px-8 py-4 font-display text-[15.5px] font-bold text-[#A83E0A] shadow-lift transition-all hover:bg-[#FFFFFF] active:scale-[0.98]"
             >
               {button}
               <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" aria-hidden />
