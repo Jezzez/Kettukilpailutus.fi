@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, FileText, MapPin, ShieldCheck, UserCheck } from "lucide-react";
+import { ArrowRight, ShieldCheck } from "lucide-react";
 import ElectricityExperience from "@/components/energy/ElectricityExperience";
 import Faq from "@/components/Faq";
 import Reveal from "@/components/Reveal";
@@ -163,32 +163,28 @@ export default function ElectricityPage() {
                 ))}
               </div>
 
-              <div className="border-t border-line p-6 sm:p-7">
-                <p className="font-display text-[14px] font-bold text-ink">
-                  Ota nämä esiin ennen kuin aloitat
-                </p>
-                <div className="mt-3.5 grid gap-3.5 sm:grid-cols-3">
-                  {[
-                    { icon: FileText, title: "Käyttöpaikkatunnus", text: "17-numeroinen GSRN-tunnus sähkölaskustasi." },
-                    { icon: MapPin, title: "Osoite ja alkupäivä", text: "Käyttöpaikan osoite ja sopimuksen alkupäivä." },
-                    { icon: UserCheck, title: "Pankkitunnukset", text: "Tunnistautumiseen. Sopimus syntyy sähköisesti." },
-                  ].map((r) => (
-                    <div key={r.title} className="flex gap-2.5">
-                      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-accent/20 bg-accentSoft text-accentDark">
-                        <r.icon size={15} aria-hidden />
-                      </span>
-                      <div>
-                        <p className="font-display text-[13px] font-bold text-ink">{r.title}</p>
-                        <p className="mt-0.5 text-[12.5px] leading-snug text-ink/70">{r.text}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <p className="mt-5 flex items-center gap-2 border-t border-line pt-4 text-[13px] font-medium text-ink/70">
-                  <ShieldCheck size={15} className="shrink-0 text-ink/40" aria-hidden />
-                  Etämyynnissä sopimuksella on aina 14 vuorokauden peruutusoikeus.
-                </p>
-              </div>
+              {/*
+                TÄSSÄ OLI "Ota nämä esiin ennen kuin aloitat" -tarkistuslista
+                (käyttöpaikkatunnus, osoite, pankkitunnukset). Se poistettiin.
+
+                Lista oli hyödyllinen mutta väärässä paikassa: se seisoi
+                napin päällä ja teki viisi minuuttia kestävästä asiasta
+                kotitehtävän. Juuri siinä kohdassa, jossa lukija on vasta
+                vakuuttunut helppoudesta, "hae ensin laskusi ja etsi
+                17-numeroinen tunnus" antaa täydellisen syyn palata asiaan
+                myöhemmin — eikä myöhempää käyntiä tule.
+
+                Tieto ei kadonnut: sama luettelo on heron "Vie noin 5
+                minuuttia" -kohdan takana, jonka lukija avaa itse silloin
+                kun haluaa tietää mitä vaihto vaatii.
+
+                Peruutusoikeus jää näkyviin, koska se POISTAA riskiä sen
+                sijaan että lisäisi työtä.
+              */}
+              <p className="flex items-center gap-2 border-t border-line px-6 py-4 text-[13px] font-medium text-ink/70 sm:px-7">
+                <ShieldCheck size={15} className="shrink-0 text-ink/40" aria-hidden />
+                Etämyynnissä sopimuksella on aina 14 vuorokauden peruutusoikeus.
+              </p>
             </div>
           </Reveal>
 

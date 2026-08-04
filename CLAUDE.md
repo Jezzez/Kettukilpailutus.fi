@@ -120,7 +120,10 @@ Täydet tokenit, apuluokat ja perustelut: `DESIGN.md`.
 6. **"Ketun valinta" -merkki** — hinta 72 % + käyttäjäarvio 28 %, kaava avoin
 7. **Hintapalkit korteissa** — silmä vertaa palkkeja nopeammin kuin lukuja
 8. **Läpinäkyvyysosio** — laskukaava ja ansaintamalli auki
-9. **"Ota nämä esiin" -tarkistuslista** — käyttöpaikkatunnus, osoite, pankkitunnukset
+9. **Ei tarvikelistaa ennen nappia** — "ota nämä esiin" -tarkistuslista
+   poistettiin askelosiosta: se muutti viiden minuutin asian kotitehtäväksi
+   juuri ennen kilpailutusnappia. Sama tieto on heron "Vie noin 5 minuuttia"
+   -kohdan takana, jonka lukija avaa halutessaan.
 
 ## Keskeneräiset asiat
 
