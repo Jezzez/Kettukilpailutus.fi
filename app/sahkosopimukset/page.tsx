@@ -8,7 +8,6 @@ import FoxSays from "@/components/FoxSays";
 import SectionHead from "@/components/SectionHead";
 import CtaSection from "@/components/CtaSection";
 import TailSweep from "@/components/fox/TailSweep";
-import EnergyTrust from "@/components/energy/EnergyTrust";
 import { getPlans, getEnergyTopics } from "@/lib/energy";
 import { SITE } from "@/lib/data";
 
@@ -109,20 +108,14 @@ export default function ElectricityPage() {
         nähdään. Kun koko kaista vaihtaa värin, selaus pysähtyy ennen
         kuin riviäkään on luettu.
 
-        MIKSI TÄNNE SAA LAITTAA ORANSSIA: vyössä ei ole yhtään
-        ostonappia. Oranssit vyöt, joissa nappi on (hero ja
-        loppukehotus), säilyttävät siis edelleen ainoina ruudun
-        kuumimman pisteen — tämä vyö vie katseen, ei klikkiä.
+        Vyön oma kermanappi on osion päätepiste. Se on tarkoituksella
+        ainoa nappi tässä vyössä: koko osio kumoaa yhden pelon, ja
+        vastaus siihen on paluu laskuriin.
 
         Valkoinen kortti kääritään `theme-light`-luokkaan: ilman sitä
         `bg-white` on ember-teemassa ORANSSI, ja kortti katoaisi
         pohjaansa. Sama ansa koskee `text-accentDark`-luokkaa, joten
         yläotsikko käyttää `text-goldInk`-sävyä kuten muutkin vyöt.
-
-        Alareunaan ei tule hännänvetoa: seuraava osio on persikkavyö,
-        jonka pohjassa on liukuväri, eikä yksivärinen kaari osu siihen
-        ilman saumaa. Suora raja oranssista persikkaan on tarkoituksella
-        terävä.
       */}
       <section
         id="nain-toimii"
@@ -225,15 +218,21 @@ export default function ElectricityPage() {
             </div>
           </Reveal>
         </div>
-      </section>
 
-      <EnergyTrust />
+        {/*
+          Hännänveto palasi tähän, kun läpinäkyvyysosio poistettiin.
+          Aiemmin alareuna oli tarkoituksella terävä, koska alapuolella
+          oli persikkavyö; nyt alla on tasainen paperi, ja suora raja
+          oranssista paperiin katkaisisi sivun kahtia juuri napin alta.
+        */}
+        <TailSweep fill="rgb(var(--c-paper))" height={64} />
+      </section>
 
       {/*
         UKK — vastaa epäröintiin ennen kuin oppaat vievät pois sivulta.
-        Ei `border-t`: tämän osion yläpuolella on nyt tumman
-        luottamusvyöhykkeen hännänveto, ja suora hiusviiva heti kaaren alla
-        pyyhkisi kaaren pois — silmä lukisi vain sen viivan.
+        Ei `border-t`: tämän osion yläpuolella on hännänveto, ja suora
+        hiusviiva heti kaaren alla pyyhkisi kaaren pois — silmä lukisi
+        vain sen viivan.
       */}
       <section id="ukk" className="scroll-mt-24 py-16 md:py-20">
         <div className="mx-auto max-w-3xl px-4 sm:px-6">

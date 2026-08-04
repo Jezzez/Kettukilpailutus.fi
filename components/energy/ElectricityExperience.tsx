@@ -8,7 +8,7 @@ import {
   Pencil, Plug, RefreshCw, ShieldCheck, Timer, TrendingDown, Wallet, X,
 } from "lucide-react";
 import type { ElectricityPlan } from "@/lib/energy";
-import { annualCost, ASSUMED_SPOT_AVG, DWELLINGS, PRICE_DATE } from "@/lib/energy";
+import { annualCost, ASSUMED_SPOT_AVG, DWELLINGS, IS_EXAMPLE_DATA, PRICE_DATE } from "@/lib/energy";
 import PlanCard, { type PlanBadge } from "./PlanCard";
 import AffiliateButton from "../AffiliateButton";
 import SpotCurve from "./SpotCurve";
@@ -1817,6 +1817,23 @@ export default function ElectricityExperience({
               keskihinnalla; toteutunut hinta vaihtelee tunneittain. Hinnat tarkistettu{" "}
               {new Date(PRICE_DATE).toLocaleDateString("fi-FI")}. Arviot eivät sisällä
               siirtomaksua, joka on sama sopimuksesta riippumatta.
+              {/*
+                Tämä varoitus siirtyi tähän, kun läpinäkyvyysosio poistettiin.
+                Se on pakko olla siinä ruudussa, jossa euromäärät näkyvät:
+                luvut ovat toistaiseksi keksittyjä, ja keksityllä luvulla
+                markkinointi on kuluttajansuoja-asia, ei tyylikysymys.
+                Rivi katoaa itsestään, kun `isExampleData` käännetään
+                epätodeksi oikean datan myötä.
+              */}
+              {IS_EXAMPLE_DATA && (
+                <>
+                  {" "}
+                  <strong className="font-bold text-ink/75">
+                    Hinnat ovat toistaiseksi esimerkkilukuja; tarkista lopullinen hinta
+                    sähköyhtiön omilta sivuilta.
+                  </strong>
+                </>
+              )}
             </span>
           </p>
         </div>
