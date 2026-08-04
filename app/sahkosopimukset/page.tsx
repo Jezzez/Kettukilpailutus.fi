@@ -27,18 +27,18 @@ export const metadata: Metadata = {
 };
 
 const ENERGY_FAQ: { q: string; a: string }[] = [
-  { q: "Katkeaako sähkö, kun vaihdan sopimusta?", a: "Ei katkea. Sähkö tulee kotiisi samaa verkkoa pitkin kuin ennenkin — vain laskuttava myyjä vaihtuu. Vaihto tapahtuu taustalla ilman minkäänlaista katkoa." },
-  { q: "Mitä sopimuksen vaihtaminen maksaa?", a: "Ei mitään. Vaihto on aina maksutonta, ja uusi sähköyhtiö hoitaa vanhan sopimuksen irtisanomisen puolestasi. Ainoa poikkeus: kesken olevan määräaikaisen sopimuksen purkamisesta voi tulla kuluja, joten tarkista oman sopimuksesi päättymispäivä." },
-  { q: "Mitä eroa on pörssisähköllä ja kiinteällä hinnalla?", a: "Pörssisähkössä hinta seuraa sähköpörssin tuntihintaa — maksat sähköstä sen todellisen markkinahinnan plus yhtiön marginaalin. Kiinteässä sopimuksessa maksat saman c/kWh-hinnan joka tunti koko sopimuskauden. Pörssi on historiallisesti ollut keskimäärin edullisempi, kiinteä taas ennustettava." },
-  { q: "Miksi laskussa on kaksi osaa: myynti ja siirto?", a: "Sähkön myyjän voit kilpailuttaa — sen vertailet täällä. Siirron hoitaa aina paikallinen verkkoyhtiö, jota ei voi vaihtaa, ja sen hinta on sama myyjästä riippumatta. Kilpailuttamalla vaikutat siis laskun myyntiosuuteen." },
-  { q: "Kuinka usein sähkösopimus kannattaa kilpailuttaa?", a: "Vähintään kerran vuodessa ja aina määräaikaisen sopimuksen päättyessä. Päättynyt sopimus jatkuu usein listahintaisena, joka on lähes aina kilpailutettua kalliimpi." },
-  { q: "Voinko vaihtaa, vaikka minulla on maksuhäiriömerkintä?", a: "Useimmat yhtiöt tekevät luottotietotarkistuksen. Merkintä voi johtaa vakuusmaksun vaatimiseen tai hylkäykseen, mutta käytännöt vaihtelevat yhtiöittäin." },
+  { q: "Katkeaako sähkö, kun vaihdan sopimusta?", a: "Ei katkea. Sähkö tulee kotiisi samaa verkkoa pitkin kuin ennenkin, ja vaihtuu vain se yhtiö, joka laskuttaa sinua. Vaihto tapahtuu taustalla, etkä huomaa siitä kotona mitään." },
+  { q: "Mitä sopimuksen vaihtaminen maksaa?", a: "Ei mitään. Vaihto on maksuton, ja uusi yhtiö hoitaa vanhan sopimuksen irtisanomisen puolestasi. Yksi poikkeus: jos sinulla on kesken määräaikainen sopimus, sen purkamisesta voi tulla kuluja. Tarkista päättymispäivä laskustasi ennen kuin vaihdat." },
+  { q: "Mitä eroa on pörssisähköllä ja kiinteällä hinnalla?", a: "Pörssisähkössä hinta seuraa sähköpörssiä tunneittain: maksat markkinahinnan ja sen päälle yhtiön marginaalin. Kiinteässä sopimuksessa maksat saman sentin joka tunti koko sopimuskauden. Pörssi on pitkällä aikavälillä ollut keskimäärin halvempi, kiinteä taas ennustettava. Kumpikaan ei ole automaattisesti oikea valinta." },
+  { q: "Miksi laskussa on kaksi osaa: myynti ja siirto?", a: "Myyjän voit kilpailuttaa, ja sitä osaa vertaillaan täällä. Siirron hoitaa aina paikallinen verkkoyhtiö, jota ei voi vaihtaa, ja sen hinta on sama riippumatta siitä, keneltä ostat sähkön. Kilpailuttamalla vaikutat siis laskun toiseen puoliskoon." },
+  { q: "Kuinka usein sähkösopimus kannattaa kilpailuttaa?", a: "Kerran vuodessa ja aina, kun määräaikainen sopimus päättyy. Päättynyt sopimus jatkuu usein listahinnalla, ja listahinta on lähes aina kilpailutettua kalliimpi. Juuri siihen unohtamiseen yhtiöiden hinnoittelu nojaa." },
+  { q: "Voinko vaihtaa, vaikka minulla on maksuhäiriömerkintä?", a: "Useimmat yhtiöt tarkistavat luottotiedot. Merkintä voi johtaa vakuusmaksuun tai hakemuksen hylkäämiseen, mutta käytännöt vaihtelevat yhtiöittäin, joten yhden kieltävä vastaus ei tarkoita kaikkien vastausta." },
 ];
 
 const STEPS = [
-  ["Vastaa neljään kysymykseen", "Asumismuoto, vuosikulutus, se mikä on sinulle tärkeintä, ja nykyinen hintasi. Ei yhteystietoja."],
-  ["Valitse sopimus", "Vertaa euroja, älä senttejä. Halvin on merkitty ja hintapalkit näyttävät erot heti."],
-  ["Tee sopimus verkossa", "Täytä uuden yhtiön lomake parissa minuutissa. Yhtiö hoitaa loput."],
+  ["Vastaa neljään kysymykseen", "Asumismuoto, vuosikulutus, se mikä on sinulle tärkeintä ja nykyinen hintasi. Yhteystietoja ei kysytä."],
+  ["Valitse sopimus", "Vertaa euroja, älä senttejä. Halvin on merkitty, ja hintapalkeista näet erot ilman laskemista."],
+  ["Tee sopimus verkossa", "Täytä uuden yhtiön lomake parissa minuutissa. Loput hoituu ilman sinua."],
 ];
 
 export default function ElectricityPage() {
@@ -86,7 +86,7 @@ export default function ElectricityPage() {
       */}
       <FoxSays
         className="pt-14 md:pt-16"
-        quote="Halvin sopimus ei ole se, jonka mainos on kovaäänisin. Se on se, jonka kokonaishinta on pienin — ja sen näkee vain laskemalla."
+        quote="Sähköyhtiö ei kerro sinulle, mitä sen sopimus maksaa. Se kertoo sentin. Euromäärä syntyy vasta, kun sentti kerrotaan sinun kulutuksellasi."
         /* Ei "yllä näkyvä euromäärä": kysely on nyt tulosten edessä, joten
            osa lukijoista näkee tämän ennen kuin yhtään lukua on ruudulla.
            Viittaus johonkin, mitä ei ole, saa palvelun näyttämään
@@ -147,7 +147,7 @@ export default function ElectricityPage() {
               Kolme askelta, viisi minuuttia.
             </h2>
             <p className="mt-3.5 max-w-[52ch] text-[15.5px] leading-relaxed text-ink/85 sm:text-[16.5px]">
-              Vaihto tapahtuu taustalla. Sinun osuutesi on lyhyempi kuin useimmat luulevat.
+              Uusi yhtiö irtisanoo vanhan sopimuksen, siirtoyhtiö pysyy samana ja sähkö kulkee koko ajan. Sinulle jää lomakkeen täyttö.
             </p>
           </Reveal>
 
@@ -210,7 +210,7 @@ export default function ElectricityPage() {
             <SectionHead
               eyebrow="Usein kysyttyä"
               title="Kysymykset, jotka pysäyttävät vaihdon."
-              lead="Vastaukset ovat lyhyet, koska asia on yksinkertaisempi kuin miltä se näyttää."
+              lead="Nämä kuusi ovat ne, joiden takia sopimus jää useimmin vaihtamatta. Vastaukset ovat lyhyet."
             />
           </Reveal>
           <Reveal delay={0.1} className="mt-8">
@@ -252,7 +252,7 @@ export default function ElectricityPage() {
       <CtaSection
         href="/sahkosopimukset#vertailu"
         title="Ketuttaako maksaa liikaa?"
-        text="Anna Ketun kilpailuttaa puolestasi — minuutissa, ilmaiseksi ja ilman tunnuksia."
+        text="Anna Ketun kilpailuttaa puolestasi. Minuutti aikaa, ei maksua, ei tunnuksia."
         button="Kilpailuta sähkösopimus"
       />
     </>

@@ -21,7 +21,7 @@ const POINTS = [
   {
     icon: Scale,
     title: "Järjestys ei ole myynnissä",
-    text: "Sopimukset järjestyvät laskennan mukaan. Kumppanuus ei nosta ketään ylöspäin, eikä kumppanuuden puute pudota alaspäin.",
+    text: "Sopimukset järjestyvät laskennan mukaan. Kumppanuus ei nosta ketään ylöspäin eikä sen puute pudota alaspäin.",
   },
   {
     icon: PawPrint,
@@ -31,7 +31,7 @@ const POINTS = [
   {
     icon: Coins,
     title: "Näin ansaitsemme",
-    text: "Saamme palkkion palveluntarjoajalta, jos teet sopimuksen linkkimme kautta. Sinulle vertailu on ilmainen eikä hinta muutu.",
+    text: "Saamme palkkion sähköyhtiöltä, jos teet sopimuksen linkkimme kautta. Sinä maksat sähköstä saman hinnan kuin ilman meitä, ja vertailu on sinulle ilmainen.",
   },
   {
     icon: BadgeCheck,

@@ -27,18 +27,18 @@
         "Ei määräaikaa",
         "Kotimainen tuuli ja vesi"
       ],
-      "summary": "Vertailun pienin marginaali pörssisähköön ja täysin uusiutuva tuotanto – valinta, jos haluat hyötyä halvoista tunneista.",
+      "summary": "Vertailun pienin marginaali: 0,38 senttiä pörssihinnan päälle. Sähkö on kotimaista tuulta ja vettä.",
       "pros": [
-        "Vertailun pienin spot-marginaali",
-        "100 % uusiutuva energia",
-        "Irtisanottavissa milloin vain",
-        "Selkeä sovellus tuntihintojen seurantaan"
+        "Pienin spot-marginaali vertailussa",
+        "Sähkö on kokonaan uusiutuvaa",
+        "Voit irtisanoa milloin tahansa",
+        "Tuntihinnat näkyvät sovelluksessa"
       ],
       "cons": [
-        "Hinta vaihtelee tunneittain",
-        "Talven hintapiikit näkyvät laskussa"
+        "Hinta muuttuu joka tunti",
+        "Pakkasviikko näkyy laskussa heti"
       ],
-      "bestFor": "Sopii sinulle, jos pystyt ajoittamaan kulutusta (pyykit, lataus, lämmitys) halvoille tunneille etkä säikähdä vaihtelua.",
+      "bestFor": "Valitse tämä, jos pyykit ja auton lataus voivat odottaa yön halpoja tunteja. Silloin pieni marginaali näkyy laskussa asti.",
       "faq": [
         [
           "Mitä marginaali tarkoittaa?",
@@ -73,21 +73,21 @@
         "Hinta ei muutu talvella",
         "Sähkön alkuperätakuu saatavilla"
       ],
-      "summary": "Sama hinta joka tunti koko vuoden – budjetoinnin helppous ilman pörssin heiluntaa.",
+      "summary": "Hinta lukitaan 7,49 senttiin vuodeksi. Tiedät jo nyt, mitä ensi tammikuu maksaa.",
       "pros": [
-        "Ennustettava sähkölasku",
-        "Suoja talven hintapiikeiltä",
-        "Nopea sähköinen tilaus"
+        "Sama hinta joka kuukausi",
+        "Talven hintapiikit eivät koske sinuun",
+        "Tilaus hoituu verkossa"
       ],
       "cons": [
-        "Et hyödy halvoista tunneista",
-        "Määräaikainen sitoumus 12 kk"
+        "Halvat pörssitunnit menevät ohi",
+        "Sitoudut 12 kuukaudeksi"
       ],
-      "bestFor": "Sopii sinulle, jos haluat tietää sähkön hinnan etukäteen etkä halua seurata pörssiä.",
+      "bestFor": "Sinulle, joka haluat tietää tammikuun laskun jo elokuussa. Varmuudesta maksetaan vähän, mutta yllätyksiä ei tule.",
       "faq": [
         [
           "Mitä tapahtuu määräajan jälkeen?",
-          "Sopimus jatkuu tyypillisesti toistaiseksi voimassa olevana. Kilpailuta uudelleen ennen määräajan päättymistä – me muistutamme siitä."
+          "Sopimus jatkuu tyypillisesti toistaiseksi voimassa olevana, ja hinta voi silloin muuttua. Merkitse päättymispäivä kalenteriin ja kilpailuta uudelleen kuukautta ennen sitä."
         ]
       ]
     },
@@ -114,17 +114,17 @@
         "Kiinteä hinta 2 vuotta",
         "Alkuperätakuu sisältyy"
       ],
-      "summary": "Pitkä hintasuoja ja puhtaasti tuulella tuotettu sähkö – mielenrauhaa kahdeksi vuodeksi.",
+      "summary": "Kaksi vuotta samaa hintaa ja suomalaista tuulivoimaa. Ensi vuoden kilpailutus jää väliin.",
       "pros": [
-        "Pisin hintasuoja vertailussa",
-        "Aidosti uusiutuva, alkuperätakuulla",
-        "Kilpailukykyinen perusmaksu"
+        "Hinta on lukossa kaksi vuotta",
+        "Aidosti tuulella tuotettua, alkuperätakuulla",
+        "Perusmaksu 4,50 € kuussa"
       ],
       "cons": [
-        "24 kk sitoumus",
-        "Hieman korkeampi energiahinta kuin 12 kk sopimuksissa"
+        "Kaksi vuotta on pitkä sitoumus",
+        "Kilowattitunti maksaa enemmän kuin vuoden sopimuksissa"
       ],
-      "bestFor": "Sopii sinulle, jos arvostat vakautta ja vihreitä arvoja etkä halua kilpailuttaa joka vuosi.",
+      "bestFor": "Jos et halua kilpailuttaa joka vuosi ja haluat sähkösi tuulesta, tämä hoitaa molemmat kerralla.",
       "faq": []
     },
     {
@@ -150,17 +150,17 @@
         "Ei sitoutumista",
         "Vakaa listahinta"
       ],
-      "summary": "Yksinkertainen toistaiseksi voimassa oleva sopimus ilman määräaikaa – helppo perusratkaisu.",
+      "summary": "Ei määräaikaa, ei sitoutumista. Yksinkertaisin sopimus vertailussa, mutta myös kallein kilowattitunniltaan.",
       "pros": [
         "Ei määräaikaa",
-        "Edullinen perusmaksu",
-        "Selkeä hinnoittelu"
+        "Perusmaksu 3,50 € kuussa",
+        "Yksi hinta, ei laskukaavaa"
       ],
       "cons": [
-        "Listahinta korkeampi kuin kiinteissä tarjouksissa",
-        "Hinta voi muuttua ilmoituksella"
+        "Kilowattitunti maksaa enemmän kuin kiinteissä tarjouksissa",
+        "Yhtiö voi muuttaa hintaa ilmoitusajalla"
       ],
-      "bestFor": "Sopii sinulle, jos haluat joustavan sopimuksen etkä halua sitoutua – esimerkiksi muuttotilanteessa.",
+      "bestFor": "Muuttamassa tai elämäntilanne auki? Tästä ei tarvitse maksaa itseään irti, kun tilanne muuttuu.",
       "faq": []
     },
     {
@@ -186,17 +186,17 @@
         "Aurinko- ja vesivoimaa",
         "Tuntihinnat sovelluksessa"
       ],
-      "summary": "Pienin perusmaksu ja kilpailukykyinen marginaali – edullinen pörssivaihtoehto pieneen kulutukseen.",
+      "summary": "Perusmaksu 2,90 euroa kuussa, vertailun pienin. Marginaali on hitusen Pohjolan Energiaa suurempi.",
       "pros": [
-        "Perusmaksu vain 2,90 €/kk",
-        "Uusiutuva tuotanto",
-        "Ei sitoutumista"
+        "Pienin perusmaksu vertailussa",
+        "Aurinko- ja vesivoimaa",
+        "Ei määräaikaa"
       ],
       "cons": [
-        "Marginaali hieman Pohjolan Energiaa suurempi",
-        "Tuntivaihtelu näkyy laskussa"
+        "Marginaali 0,45 c/kWh eli hieman Pohjolaa suurempi",
+        "Hinta muuttuu joka tunti"
       ],
-      "bestFor": "Sopii sinulle kerrostaloasujana tai pienkuluttajana, jolle perusmaksun osuus laskusta on suuri.",
+      "bestFor": "Kerrostaloasujalle. Kun kulutus on pieni, perusmaksu on iso siivu laskusta — ja tämä on vertailun pienin.",
       "faq": []
     },
     {
@@ -222,17 +222,17 @@
         "Suunniteltu sähkölämmittäjille",
         "Etäluettava kulutusseuranta"
       ],
-      "summary": "Edullisin kiinteä energiahinta – suurkuluttajan ja sähkölämmittäjän valinta, jossa perusmaksu painaa vähemmän.",
+      "summary": "Vertailun halvin kiinteä kilowattituntihinta. Korkea perusmaksu kuittautuu, kun kulutus on iso.",
       "pros": [
-        "Halvin kiinteä c/kWh vertailussa",
+        "Halvin kiinteä kilowattituntihinta vertailussa",
         "Suurella kulutuksella selvästi edullisin kiinteä",
-        "Hintavakaus lämmityskaudelle"
+        "Hinta pysyy koko lämmityskauden"
       ],
       "cons": [
-        "Korkein perusmaksu",
-        "Ei uusiutuvuustakuuta perushintaan"
+        "Korkein perusmaksu, 5,90 € kuussa",
+        "Perushintaan ei sisälly alkuperätakuuta"
       ],
-      "bestFor": "Sopii sinulle, jos asut sähkölämmitteisessä omakotitalossa ja kulutat yli 10 000 kWh vuodessa.",
+      "bestFor": "Sähkölämmitteiseen omakotitaloon. Yli 10 000 kilowattitunnin kulutuksella senttien ero syö korkeamman perusmaksun moninkertaisesti.",
       "faq": []
     }
   ]

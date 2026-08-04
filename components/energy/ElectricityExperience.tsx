@@ -38,17 +38,17 @@ const HERO_CLAIMS = [
   {
     icon: Plug,
     text: "Sähkö ei katkea",
-    why: "Sähkö tulee kotiisi täsmälleen samaa verkkoa pitkin kuin ennenkin — vaihtuu vain yhtiö, joka laskuttaa sinua myydystä sähköstä. Siirtoyhtiösi pysyy samana eikä vaihdosta synny katkoa.",
+    why: "Sähkö tulee kotiisi samaa verkkoa pitkin kuin ennenkin. Siirtoyhtiösi pysyy samana, ja vaihtuu vain se yhtiö, joka laskuttaa sinua myydystä sähköstä. Katkoa ei synny missään vaiheessa.",
   },
   {
     icon: RefreshCw,
     text: "Vanha sopimus irtisanotaan puolestasi",
-    why: "Uusi sähköyhtiö hoitaa irtisanomisen, eli sinun ei tarvitse soittaa vanhalle yhtiölle. Yksi poikkeus: jos sinulla on kesken määräaikainen sopimus, sen purkamisesta voi tulla kuluja — tarkista päättymispäivä laskustasi ennen vaihtoa.",
+    why: "Uusi yhtiö hoitaa irtisanomisen, joten vanhalle ei tarvitse soittaa. Yksi poikkeus: jos sinulla on kesken määräaikainen sopimus, sen purkamisesta voi tulla kuluja. Tarkista päättymispäivä laskustasi ennen kuin vaihdat.",
   },
   {
     icon: Timer,
     text: "Vie noin 5 minuuttia",
-    why: "Tarvitset sähkölaskustasi 17-numeroisen käyttöpaikkatunnuksen sekä pankkitunnukset tunnistautumiseen. Sopimus syntyy sähköisesti, ja etämyynnissä sillä on aina 14 vuorokauden peruutusoikeus.",
+    why: "Tarvitset sähkölaskusi 17-numeroisen käyttöpaikkatunnuksen ja pankkitunnukset tunnistautumiseen. Sopimus syntyy sähköisesti, ja etämyynnissä sinulla on aina 14 vuorokauden peruutusoikeus.",
   },
 ] as const;
 
@@ -335,12 +335,12 @@ export default function ElectricityExperience({
         ? {
             type: "fixed" as const,
             title: "Kettu suosittelee kiinteää hintaa",
-            why: "Halusit tietää laskun etukäteen. Kiinteässä sopimuksessa hinta lukitaan koko sopimuskaudeksi, joten lasku ei yllätä talvellakaan. Ennustettavuudesta maksetaan yleensä pieni lisä.",
+            why: "Halusit tietää laskun etukäteen. Kiinteässä sopimuksessa hinta lukitaan koko kaudeksi, joten tammikuu ei yllätä. Varmuudesta maksetaan yleensä pieni lisä, ja se on rehellistä sanoa ääneen.",
           }
         : {
             type: "spot" as const,
             title: "Kettu suosittelee pörssisähköä",
-            why: "Halusit halvimman etkä pelkää vaihtelua. Pörssisähkön hinta seuraa sähköpörssiä tunneittain ja on pitkällä aikavälillä ollut keskimäärin edullisempi, koska et maksa hintasuojasta. Talvella yksittäinen kuukausi voi silti olla kallis.",
+            why: "Halusit halvimman etkä säikähdä vaihtelua. Pörssisähkön hinta seuraa pörssiä tunneittain ja on pitkällä aikavälillä ollut keskimäärin halvempi, koska et maksa hintasuojasta. Yksittäinen pakkaskuukausi voi silti olla kallis.",
           };
 
   /* ── Kyselyn palaset ────────────────────────────────────────────────
@@ -453,7 +453,7 @@ export default function ElectricityExperience({
             className="inline-flex items-center gap-2 rounded-xl border border-line bg-white px-4 py-2.5 font-display text-[13px] font-semibold text-ink/85 transition-all hover:border-accent/50 hover:text-ink active:scale-[0.98]"
           >
             <Wallet size={15} className="text-ink/40" aria-hidden />
-            Tiedän nykyisen hintani — laske todellinen säästö
+            Tiedän nykyisen hintani, laske todellinen säästö
           </button>
         ) : (
           <div>
@@ -504,7 +504,7 @@ export default function ElectricityExperience({
             </div>
             <p className="mt-2 text-[12px] text-ink/55">
               Molemmat luvut näkyvät sähkölaskusi erittelyssä kohdassa &quot;sähköenergia&quot;.
-              {alwaysOpen && " Voit myös jättää tyhjäksi — silloin emme näytä säästölukua lainkaan."}
+              {alwaysOpen && " Voit myös jättää kentät tyhjiksi. Silloin säästölukua ei näytetä lainkaan."}
             </p>
           </div>
         )}
@@ -530,19 +530,19 @@ export default function ElectricityExperience({
       key: "steady" as const,
       icon: Lock,
       title: "Haluan tietää etukäteen, paljonko lasku on",
-      hint: "Sama hinta koko sopimuskauden. Ei yllätyksiä talvella.",
+      hint: "Sama hinta joka tunti koko kauden. Tammikuu ei yllätä.",
     },
     {
       key: "cheapest" as const,
       icon: TrendingDown,
       title: "Haluan mahdollisimman halvan",
-      hint: "Hinta elää sähköpörssin mukaan. Keskimäärin halvempi, mutta yksittäinen kuukausi voi olla kallis.",
+      hint: "Hinta elää pörssin mukaan. Keskimäärin halvempi, mutta yksittäinen kuukausi voi olla kallis.",
     },
     {
       key: "unsure" as const,
       icon: Info,
       title: "En osaa sanoa",
-      hint: "Ei haittaa. Kettu näyttää silloin kaikki sopimukset.",
+      hint: "Ei haittaa. Silloin Kettu näyttää kaikki sopimukset.",
     },
   ];
 
@@ -619,15 +619,15 @@ export default function ElectricityExperience({
         <p className="mt-3 flex items-start gap-2 rounded-xl border border-gold/30 bg-gold/[0.07] px-3.5 py-2.5 text-[14px] leading-relaxed text-ink/80">
           <Check size={15} className="mt-0.5 shrink-0 text-goldInk" aria-hidden />
           <span>
-            Laitoimme tähän valmiiksi arvion ({dwellingGuess.label.toLowerCase()}).
-            <strong className="font-semibold"> Voit jatkaa suoraan</strong> — tai kirjoittaa
-            tarkan luvun, jos se on käsillä.
+            Tähän on laitettu valmiiksi arvio ({dwellingGuess.label.toLowerCase()}).
+            <strong className="font-semibold"> Voit jatkaa suoraan.</strong> Jos lasku on
+            käsillä, tarkka luku tarkentaa tuloksen.
           </span>
         </p>
       )}
 
       <p className="mt-3 text-[14px] leading-relaxed text-ink/65">
-        Tarkka luku lukee sähkölaskusi erittelyssä kohdassa &quot;kulutus&quot; tai
+        Tarkka luku on sähkölaskusi erittelyssä kohdassa &quot;kulutus&quot; tai
         &quot;sähköenergia&quot;, muodossa esimerkiksi 5 200 kWh.
       </p>
     </div>
@@ -654,14 +654,14 @@ export default function ElectricityExperience({
         <BigOption
           icon={Wallet}
           title="Kyllä, lasku on käsillä"
-          hint="Kirjoitat kaksi lukua laskustasi."
+          hint="Kaksi lukua laskusta riittää."
           selected={knowsCurrent === true}
           onClick={() => { setKnowsCurrent(true); setShowCurrent(true); }}
         />
         <BigOption
           icon={X}
           title="En tiedä juuri nyt"
-          hint="Ei haittaa — hinnat näkyvät silti."
+          hint="Ei haittaa. Hinnat näkyvät silti."
           selected={knowsCurrent === false}
           onClick={() => { setKnowsCurrent(false); setCurPrice(""); setCurBasic(""); }}
         />
@@ -758,9 +758,9 @@ export default function ElectricityExperience({
         </span>
         <ul className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
           {[
-            "Ilmainen sinulle",
+            "Sinulle ilmainen",
             "Ei tunnuksia, ei yhteystietoja",
-            "Laskukaava julkinen",
+            "Laskukaava on näkyvissä",
           ].map((t) => (
             <li key={t} className="flex items-center gap-1.5 text-[12px] font-medium text-ink/70">
               <ShieldCheck size={13} className="shrink-0 text-accentDark" aria-hidden />
@@ -798,12 +798,12 @@ export default function ElectricityExperience({
     {
       n: 1,
       title: "Millaisessa kodissa asut?",
-      hint: "Tästä Kettu päättelee, paljonko sähköä kuluu. Arvio riittää.",
+      hint: "Tästä Kettu päättelee kulutuksen. Arvio riittää, tarkennat sen seuraavaksi.",
     },
     {
       n: 2,
       title: "Paljonko käytät sähköä vuodessa?",
-      hint: "Laitoimme valmiiksi arvion. Voit jatkaa suoraan tai korjata luvun.",
+      hint: "Valmis arvio on jo kentässä. Jatka suoraan tai korjaa luku tarkaksi.",
     },
     {
       n: 3,
@@ -813,12 +813,12 @@ export default function ElectricityExperience({
     {
       n: 4,
       title: "Tiedätkö, paljonko maksat sähköstä nyt?",
-      hint: "Vain tällä Kettu voi laskea säästösi euroina — emme arvaa sitä.",
+      hint: "Ilman tätä lukua säästöä ei voi laskea. Kettu ei arvaa sitä puolestasi.",
     },
     {
       n: 5,
       title: "Tarkista vastauksesi",
-      hint: "Voit muuttaa mitä tahansa kohtaa. Sen jälkeen Kettu näyttää sopimukset.",
+      hint: "Korjaa mitä tahansa kohtaa. Sen jälkeen Kettu näyttää sopimukset.",
     },
   ] as const;
 
@@ -836,9 +836,9 @@ export default function ElectricityExperience({
   const stepBlocker =
     stepValid ? null
     : step === 1 ? "Valitse yksi vaihtoehto yltä, niin pääset eteenpäin."
-    : step === 2 ? "Kirjoita kulutus (vähintään 500 kWh) tai palaa taaksepäin valitsemaan koti."
+    : step === 2 ? "Kirjoita kulutus, vähintään 500 kWh. Tai palaa taaksepäin valitsemaan koti."
     : step === 3 ? "Valitse yksi kolmesta vaihtoehdosta."
-    : "Valitse kyllä tai en — molemmat käyvät.";
+    : "Valitse kyllä tai en. Kumpikin vie eteenpäin.";
 
   const activeStep = STEPS_Q[step - 1];
 
@@ -886,14 +886,14 @@ export default function ElectricityExperience({
           "Tärkeintä sinulle",
           pricePref === "steady" ? "Ennustettava lasku"
             : pricePref === "cheapest" ? "Halvin mahdollinen"
-            : "Et osannut sanoa — näytämme kaikki"
+            : "Et osannut sanoa, joten Kettu näyttää kaikki"
         )}
         {summaryRow(
           4,
           "Nykyinen hintasi",
           currentAnnual !== null
             ? `${currentAnnual.toLocaleString("fi-FI", { maximumFractionDigits: 0 })} € vuodessa`
-            : "Ei tiedossa — säästöä ei lasketa"
+            : "Et kertonut, joten säästöä ei lasketa"
         )}
       </div>
 
@@ -905,7 +905,7 @@ export default function ElectricityExperience({
             <strong className="font-semibold text-goldInk">
               {advice.type === "fixed" ? "kiinteähintaiset sopimukset" : "pörssisopimukset"}
             </strong>
-            . Pääset näkemään myös muut yhdellä napilla.
+            . Muut näet yhdellä napilla.
           </span>
         </p>
       )}
@@ -1033,7 +1033,7 @@ export default function ElectricityExperience({
       <div className="flex items-baseline justify-between gap-3">
         <p className="font-display text-[15.5px] font-bold text-ink">Millaisessa asunnossa asut?</p>
         <span className="hidden font-display text-[11px] font-bold uppercase tracking-[0.14em] text-ink/45 sm:block">
-          Säädä lukuja — tulokset päivittyvät
+          Säädä lukuja, tulokset päivittyvät
         </span>
       </div>
       <div className="mt-4">{dwellingBlock}</div>
@@ -1105,8 +1105,8 @@ export default function ElectricityExperience({
                 </h1>
 
                 <p className="mt-5 max-w-[46ch] text-[15.5px] leading-relaxed text-ink/85 sm:text-[16.5px]">
-                  Kerro kulutuksesi, niin laskemme jokaisen sopimuksen todellisen
-                  vuosihinnan — ja kerromme euroina, paljonko vaihtaminen tuo takaisin.
+                  Kerro kulutuksesi. Kettu laskee jokaisen sopimuksen vuosihinnan
+                  sinun luvuillasi ja sanoo euroina, paljonko vaihtaminen toisi takaisin.
                 </p>
 
                 {/*
@@ -1336,9 +1336,9 @@ export default function ElectricityExperience({
                     Kettu ei näytä hintataulukkoa. Se näyttää sinun hintasi.
                   </p>
                   <p className="mt-3 text-[14.5px] leading-relaxed text-ink/75">
-                    Neljä kysymystä, noin minuutti. Sen jälkeen jokainen
-                    ruudulla näkyvä euromäärä on laskettu sinun kulutuksellasi —
-                    eikä yhtään yhteystietoa ole kysytty.
+                    Neljä kysymystä, noin minuutti. Sen jälkeen jokainen ruudulla
+                    näkyvä euromäärä on laskettu sinun kulutuksellasi. Yhteystietoja
+                    ei kysytä missään vaiheessa.
                   </p>
                   <p className="mt-4 font-data text-[13px] font-semibold text-goldInk">
                     {plans.length} sopimusta odottaa vertailua
@@ -1438,7 +1438,7 @@ export default function ElectricityExperience({
                   <Wallet size={13} aria-hidden /> Säästösi euroina
                 </p>
                 <p className="mt-1.5 text-[12.5px] leading-snug text-ink/80">
-                  Emme arvaa säästöäsi — myöskään silloin, jos vaihtaminen ei kannata.
+                  Kettu ei arvaa säästöäsi. Kerro nykyinen hintasi, niin saat luvun.
                 </p>
                 <button
                   onClick={() => {
@@ -1797,9 +1797,10 @@ export default function ElectricityExperience({
               <FoxSlot id="tyhja" height={168} className="shrink-0" />
               <div>
                 <p className="font-display text-lg font-bold text-ink">
-                  Näillä rajauksilla ei löydy sopimuksia
+                  Näillä rajauksilla ei ole yhtään sopimusta
                 </p>
                 <p className="mt-1.5 max-w-sm text-[14.5px] text-ink/70">
+                  Kettu etsi, mutta valitsemasi rajaukset sulkevat kaikki kuusi pois.
                   Poista uusiutuva-rajaus tai valitse toinen sopimustyyppi.
                 </p>
                 <button
