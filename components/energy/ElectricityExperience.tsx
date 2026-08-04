@@ -1324,8 +1324,26 @@ export default function ElectricityExperience({
       */}
       {!showResults && (
         <section className="theme-light bg-paper pt-14">
-          <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
-            <div className="pelt-surface overflow-hidden rounded-3xl border border-gold/30 px-6 py-10 sm:px-10">
+          {/*
+            KETTU NOJAA PANEELIN ALAREUNAAN, TASSUT REUNAN YLI.
+
+            Miksi kuva on paneelin ULKOPUOLELLA: `.pelt-surface` asettaa
+            `overflow: hidden` itse CSS:ssä, joten paneelin sisältä mikään
+            ei voi ylittää reunaa. Kuva on siksi sisaruksena ja asemoitu
+            paneelin päälle — vain näin tassut voivat mennä reunaviivan yli.
+
+            Miksi näin ylipäätään: tämä paneeli on portti. Se kertoo, ettei
+            hintoja näytetä ennen vastauksia, ja se on hetki jolloin osa
+            kävijöistä poistuu. Reunan yli nojaava Kettu tekee lukosta
+            leikkisän eikä esteen — sama ele kuin joku kurkistaisi tiskin
+            yli katsomaan mitä olet kirjoittamassa.
+
+            Mobiilissa paneelille varataan alaosaan tilaa, jotta kuva ei
+            mene tekstin päälle; leveällä ruudulla se siirtyy oikeaan
+            reunaan tekstin viereen.
+          */}
+          <div className="relative mx-auto max-w-[1180px] px-4 sm:px-6">
+            <div className="pelt-surface overflow-hidden rounded-3xl border border-gold/30 px-6 pb-[216px] pt-10 sm:px-10 lg:pb-10">
               <div className="relative z-[1] flex flex-col items-center gap-9 lg:flex-row lg:items-center lg:justify-between">
                 <div className="max-w-md text-center lg:text-left">
                   <p className="flex items-center justify-center gap-2.5 font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-accentDark lg:justify-start">
@@ -1344,9 +1362,17 @@ export default function ElectricityExperience({
                   </p>
                 </div>
 
-                <FoxSlot id="laskuri" height={240} className="shrink-0" />
+                {/* Varjopaikka: pitää tekstisarakkeen leveyden samana kuin
+                    ennen, vaikka itse kuva on asemoitu paneelin ulkopuolelle. */}
+                <div className="hidden shrink-0 lg:block" style={{ width: 294, height: 240 }} aria-hidden />
               </div>
             </div>
+
+            <FoxSlot
+              id="laskuri"
+              height={240}
+              className="pointer-events-none absolute bottom-0 left-1/2 z-[2] -translate-x-1/2 translate-y-[9%] drop-shadow-[0_10px_24px_rgba(90,45,10,0.18)] lg:left-auto lg:right-12 lg:translate-x-0"
+            />
           </div>
         </section>
       )}
