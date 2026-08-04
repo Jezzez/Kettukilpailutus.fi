@@ -19,18 +19,22 @@ export default function Footer() {
   const contextNav = onEnergy
     ? {
         title: "Sähkösopimukset",
+        /* Enintään viisi linkkiä. Aiemmin tässä oli neljä opassivua ja
+           kolme sopimussivua, mikä venytti footerin korkeutta ilman että
+           yksikään linkki sai enempää klikkejä: pitkä lista luetaan
+           yhtenä harmaana massana. */
         links: [
           ...getEnergyTopics().map((t) => ({ href: `/sahkosopimukset/${t.slug}`, label: t.h1 })),
-          ...getPlans().slice(0, 3).map((p) => ({
+          ...getPlans().slice(0, 1).map((p) => ({
             href: `/sahkosopimukset/sopimus/${p.slug}`,
             label: `${p.provider} ${p.name}`,
           })),
-        ],
+        ].slice(0, 5),
       }
     : onCards
       ? {
           title: "Luottokortit",
-          links: getCards().slice(0, 6).map((c) => ({ href: `/kortit/${c.slug}`, label: c.name })),
+          links: getCards().slice(0, 5).map((c) => ({ href: `/kortit/${c.slug}`, label: c.name })),
         }
       : {
           title: "Kilpailuta",
@@ -62,20 +66,31 @@ export default function Footer() {
     */
     <footer className="theme-dark den-surface">
       {/* `relative` nostaa sisällön den-surfacen kohinakalvon yläpuolelle. */}
-      <div className="relative mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-4">
+      {/*
+        FOOTER PIDETÄÄN LYHYENÄ TARKOITUKSELLA.
+
+        Footerissa ei ansaita mitään. Jokainen rivi, joka ei ole linkki
+        eteenpäin tai lakisääteinen tieto, vain pidentää matkaa sivun
+        loppuun ja saa palvelun näyttämään raskaammalta kuin se on.
+        Tästä poistettiin sivuston yleiskuvaus (sama asia luki jo
+        iskulauseessa riviä ylempänä) ja kotipaikka (ei vaadittu tieto).
+        Mainostajan ilmoitus jäi, koska se on lakisääteinen — mutta
+        laatikon kehys ja täyte poistettiin, koska teksti erottuu
+        pienellä koolla ilmankin.
+      */}
+      <div className="relative mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-4">
         <div className="md:col-span-2">
-          <p className="flex items-center gap-2.5 font-display text-lg font-bold uppercase tracking-wide text-ink">
-            <FoxMark size={30} /> Kettukilpailutus
+          <p className="flex items-center gap-2.5 font-display text-[17px] font-bold uppercase tracking-wide text-ink">
+            <FoxMark size={26} /> Kettukilpailutus
           </p>
-          <p className="mt-3 font-display text-[15px] font-bold text-accentDark">
+          <p className="mt-2.5 max-w-sm font-display text-[14.5px] font-bold leading-snug text-accentDark">
             Ketuttaako maksaa liikaa? Anna Ketun kilpailuttaa puolestasi.
           </p>
-          <p className="mt-2 max-w-sm text-sm leading-relaxed text-ink/70">{SITE.description}</p>
-          <p className="mt-5 max-w-sm rounded-xl border border-line bg-white/60 p-4 text-xs leading-relaxed text-ink/70">
-            <strong className="text-ink/85">Mainostajan ilmoitus:</strong> Saamme korvauksen, kun
-            teet sopimuksen kumppanin palvelussa linkkiemme kautta. Korvaus ei vaikuta vertailun
-            sisältöön eikä järjestykseen. Hinnat ovat esimerkinomaisia — tarkista ajantasaiset
-            ehdot palveluntarjoajan sivuilta.
+          <p className="mt-3.5 max-w-md text-[12px] leading-relaxed text-ink/60">
+            <strong className="font-bold text-ink/80">Mainostajan ilmoitus:</strong> Saamme
+            korvauksen, kun teet sopimuksen kumppanin palvelussa linkkiemme kautta. Korvaus ei
+            vaikuta vertailun sisältöön eikä järjestykseen. Hinnat ovat esimerkinomaisia — tarkista
+            ajantasaiset ehdot palveluntarjoajan sivuilta.
           </p>
 
           <OperatorDetails />
@@ -83,7 +98,7 @@ export default function Footer() {
 
         <nav aria-label={contextNav.title}>
           <p className="font-display text-sm font-bold text-ink">{contextNav.title}</p>
-          <ul className="mt-3 space-y-2">
+          <ul className="mt-2.5 space-y-1.5">
             {contextNav.links.map((l) => (
               <li key={l.href}>
                 <Link href={l.href} className="text-sm text-ink/70 transition-colors hover:text-accentDark">
@@ -96,7 +111,7 @@ export default function Footer() {
 
         <nav aria-label="Sivusto">
           <p className="font-display text-sm font-bold text-ink">Sivusto</p>
-          <ul className="mt-3 space-y-2">
+          <ul className="mt-2.5 space-y-1.5">
             {[
               ["/", "Etusivu"],
               ["/blogi", "Ketun oppaat"],
@@ -113,7 +128,7 @@ export default function Footer() {
           </ul>
         </nav>
       </div>
-      <div className="relative border-t border-ink/15 py-5 text-center text-xs text-ink/65">
+      <div className="relative border-t border-ink/15 py-3.5 text-center text-[11.5px] text-ink/60">
         © {new Date().getFullYear()} {SITE.name}. Vertailu on tiedoksi, ei henkilökohtaista neuvontaa.
       </div>
     </footer>
@@ -141,22 +156,16 @@ export default function Footer() {
  * kerätä viestejä.
  */
 function OperatorDetails() {
-  const { legalName, businessId, domicile, email } = SITE.operator;
-  const rows = [
-    legalName,
-    businessId ? `Y-tunnus ${businessId}` : "",
-    domicile,
-    email,
-  ].filter(Boolean);
+  const { legalName, businessId, email } = SITE.operator;
+  const rows = [legalName, businessId ? `Y-tunnus ${businessId}` : "", email].filter(Boolean);
 
   if (rows.length === 0) return null;
 
   return (
-    <div className="mt-5 max-w-sm">
-      <p className="font-display text-[11px] font-bold uppercase tracking-[0.16em] text-goldInk">
-        Sivuston ylläpitäjä
-      </p>
-      <p className="mt-2 text-[13px] leading-relaxed text-ink/70">
+    <div className="mt-3.5 max-w-md">
+      {/* Otsikkorivi "Sivuston ylläpitäjä" poistettiin: Y-tunnus kertoo
+          itse mitä rivi on, eikä otsikko ansainnut omaa riviväliä. */}
+      <p className="text-[12.5px] leading-relaxed text-ink/70">
         {rows.map((r, i) => (
           <span key={r}>
             {i > 0 && <span className="text-ink/30"> · </span>}

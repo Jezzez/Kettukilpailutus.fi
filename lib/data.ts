@@ -64,8 +64,6 @@ export const SITE = {
     legalName: "Kettukilpailutus Oy",
     /** esim. "1234567-8" */
     businessId: "3326500-5",
-    /** kotipaikka tai postiosoite, esim. "Helsinki" */
-    domicile: "Järvenpää",
     /** osoite johon kävijä voi kirjoittaa, esim. "info@kettukilpailutus.fi" */
     email: "kettu@kettukilpailutus.fi",
   },
