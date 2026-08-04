@@ -70,8 +70,13 @@ export default function CtaSection({
           </div>
 
           {/*
-            Ketun loppuallekirjoitus. `halo-glow` erottaa hahmon oranssista
-            pohjasta ilman uutta väriä.
+            Ketun loppuallekirjoitus.
+
+            EI `halo-glow`-HEHKUA. Se oli tarpeen aiemmalle, kapealle
+            asennolle, joka olisi muuten sulanut oranssiin. Tämä rintakuva
+            erottuu jo itse: kermanvaalea takki ja valkoinen paita ovat
+            vyön vaaleimmat pinnat muutenkin, ja niiden takana hehku näkyi
+            vain sumeana laikkuna hahmon ympärillä.
 
             NEGATIIVINEN ALAMARGINAALI ON TARKOITUKSELLINEN. Kuva on
             rintakuva, joka päättyy rintaan — vapaasti leijuessaan se
@@ -80,7 +85,7 @@ export default function CtaSection({
             `md:-mb-28`), leikkauskohta osuu tasan vyön alareunaan ja
             hahmo lukee siltä, että se nousee vyön takaa esiin.
           */}
-          <div className="halo-glow relative -mb-24 shrink-0 self-end md:-mb-28">
+          <div className="relative -mb-24 shrink-0 self-end md:-mb-28">
             <FoxSlot id="footer" height={280} />
           </div>
         </div>
