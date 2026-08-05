@@ -15,7 +15,7 @@ const POINTS = [
   {
     icon: Calculator,
     title: "Näin laskemme",
-    text: "Vuosihinta = perusmaksu × 12 + energian hinta × kulutuksesi. Pörssisopimuksissa energian hintana on marginaali plus pörssin keskihinta.",
+    text: "Vuosihinta = perusmaksu × 12 + energian hinta × kulutuksesi. Pörssisopimuksissa energian hintana on marginaali plus pörssin keskihinta. Jos sopimuksessa on kampanja, laskemme ensimmäisen vuoden niin, että kampanjakuukaudet ovat kampanjahinnalla ja loput normaalihinnalla.",
   },
   {
     icon: Scale,
@@ -25,7 +25,15 @@ const POINTS = [
   {
     icon: PawPrint,
     title: "Mikä on Ketun valinta",
-    text: "Merkki nostaa esiin sopimuksen, jolla on paras hinnan ja käyttäjäarvion yhdistelmä: hinta painaa 72 % ja arvio 28 %. Halvin vaihtoehto on aina merkitty erikseen.",
+    /*
+      KAAVA VAIHTUI: ARVIO-OSUUS POIS, TILALLE KAMPANJAN JÄLKEINEN HINTA.
+
+      Vanha teksti lupasi käyttäjäarvion osaksi merkkiä. Arvioita ei ole,
+      koska kumppaniyhtiöille ei ole riippumatonta lähdettä — ja tämä on
+      juuri se osio, jossa lupaus tarkistetaan. Väärä kaava tässä
+      laatikossa kumoaisi koko osion tarkoituksen.
+    */
+    text: "Merkki nostaa esiin sopimuksen, joka on paras kokonaisuus kahdella mittarilla: ensimmäisen vuoden hinta kampanjoineen painaa 50 % ja kampanjan jälkeinen pysyvä hinta 50 %. Näin lyhyt tarjous ei yksin nosta sopimusta kärkeen. Halvin ensimmäinen vuosi on aina merkitty erikseen.",
   },
   {
     icon: Coins,
@@ -35,7 +43,7 @@ const POINTS = [
   {
     icon: BadgeCheck,
     title: "Mitä hinta ei sisällä",
-    text: "Arviot kattavat sähkön myynnin. Siirtomaksu tulee paikalliselta verkkoyhtiöltä, sitä ei voi kilpailuttaa, ja se on sama sopimuksesta riippumatta.",
+    text: "Arviot kattavat sähkön myynnin. Siirtomaksu tulee paikalliselta verkkoyhtiöltä, sitä ei voi kilpailuttaa, ja se on sama sopimuksesta riippumatta. Emme näytä tähtiarvioita, koska sähköyhtiöille ei ole riippumatonta arviolähdettä — keksittyä lukua ei laiteta sivulle.",
   },
 ];
 

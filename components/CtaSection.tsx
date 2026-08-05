@@ -5,7 +5,11 @@ import TailSweep from "./fox/TailSweep";
 import FoxSlot from "./fox/FoxSlot";
 
 export default function CtaSection({
-  href = "/luottokortit#vertailu",
+  /* Oletuskohde on sähkövertailu, koska se on ainoa auki oleva
+     vertikaali. Aiempi oletus vei korttivertailuun, joka palauttaa
+     nyt 404 — ja loppukehote on sivuston viimeinen mahdollisuus
+     ansaita, joten sen ei kuulu koskaan osoittaa umpikujaan. */
+  href = "/sahkosopimukset#vertailu",
   title = "Löydä sinulle paras luottokortti tänään",
   text = "Vastaa kolmeen kysymykseen – Kettu järjestää kortit puolestasi.",
   button = "Aloita ilmainen vertailu",

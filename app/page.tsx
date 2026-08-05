@@ -8,11 +8,12 @@ import Kettu from "@/components/mascot/Kettu";
 import TailSweep from "@/components/fox/TailSweep";
 import GuideBoxes from "@/components/GuideBoxes";
 import { SITE } from "@/lib/data";
+import { FEATURES } from "@/lib/features";
 
 export const metadata: Metadata = {
-  title: "Kettukilpailutus – kilpailuta sähkö, kortit ja sopimukset",
+  title: "Kettukilpailutus.fi – kilpailuta sähkösopimukset ilmaiseksi",
   description:
-    "Kettu kilpailuttaa puolestasi: sähkösopimukset, luottokortit ja pian myös lainat, vakuutukset ja nettiliittymät. Puolueeton vertailu suomalaisille — ilmaiseksi.",
+    "Kettu kilpailuttaa puolestasi: sähkösopimukset nyt, pian myös luottokortit, lainat, vakuutukset ja nettiliittymät. Puolueeton vertailu suomalaisille — ilmaiseksi.",
   alternates: { canonical: "/" },
 };
 
@@ -32,7 +33,11 @@ const CATEGORIES = [
     title: "Luottokortit",
     desc: "Löydä etuihisi ja arkeesi sopivin kortti kolmella kysymyksellä.",
     highlight: null,
-    live: true,
+    /* Korttiruutu ei katoa vaan siirtyy "Tulossa pian" -tilaan muiden
+       avaamattomien vertikaalien joukkoon. Tyhjä paikka ruudukossa
+       näyttäisi siltä, että jotain hajosi; tulossa-tila kertoo saman
+       asian tavalla joka rakentaa alustan mielikuvaa eikä pura sitä. */
+    live: FEATURES.cards,
   },
   { href: "#", icon: Landmark, title: "Lainat", desc: "Kilpailuta lainat ja säästä koroissa.", highlight: null, live: false },
   { href: "#", icon: ShieldCheck, title: "Vakuutukset", desc: "Koti, auto ja matka — vertaa hinnat.", highlight: null, live: false },
@@ -43,10 +48,10 @@ export default function HubPage() {
   const orgJsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Kettukilpailutus",
+    name: SITE.name,
     url: SITE.url,
     logo: `${SITE.url}/icon.svg`,
-    description: "Suomalainen kilpailutuspalvelu: sähkö, luottokortit ja muut sopimukset.",
+    description: "Suomalainen kilpailutuspalvelu: sähkösopimukset ja muut arjen sopimukset puolueettomasti vertailtuna.",
   };
 
   return (
@@ -99,7 +104,9 @@ export default function HubPage() {
               {/* Kermanvalkoinen hehku, ei aamunkajo: oranssilla pohjalla
                   vain vaaleampi hehku irrottaa hahmon taustasta. */}
               <div className="halo-glow relative -mb-6 -mt-4 shrink-0 md:hidden">
-                <Kettu pose="kortti" height={150} priority />
+                {/* Sama syy kuin HeroKetussa: ei korttia kädessä
+                    niin kauan kuin korttivertailu on piilossa. */}
+                <Kettu pose="osoittaa" height={150} priority />
               </div>
             </div>
             {/*
@@ -123,12 +130,14 @@ export default function HubPage() {
                 <Zap size={18} aria-hidden /> Kilpailuta sähkö
                 <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" aria-hidden />
               </Link>
-              <Link
-                href="/luottokortit"
-                className="inline-flex items-center gap-2.5 rounded-xl border border-cream/45 px-7 py-4 font-display text-[15.5px] font-bold text-cream transition-all hover:border-cream hover:bg-cream/10 active:scale-[0.98]"
-              >
-                <CreditCard size={18} className="text-cream/70" aria-hidden /> Vertaa kortit
-              </Link>
+              {FEATURES.cards && (
+                <Link
+                  href="/luottokortit"
+                  className="inline-flex items-center gap-2.5 rounded-xl border border-cream/45 px-7 py-4 font-display text-[15.5px] font-bold text-cream transition-all hover:border-cream hover:bg-cream/10 active:scale-[0.98]"
+                >
+                  <CreditCard size={18} className="text-cream/70" aria-hidden /> Vertaa kortit
+                </Link>
+              )}
             </div>
           </div>
           <div className="halo-glow relative mx-auto hidden md:block">

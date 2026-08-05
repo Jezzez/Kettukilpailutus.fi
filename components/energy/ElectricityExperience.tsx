@@ -8,7 +8,15 @@ import {
   Pencil, Plug, RefreshCw, ShieldCheck, Timer, TrendingDown, Wallet, X,
 } from "lucide-react";
 import type { ElectricityPlan } from "@/lib/energy";
-import { annualCost, ASSUMED_SPOT_AVG, DWELLINGS, IS_EXAMPLE_DATA, PRICE_DATE } from "@/lib/energy";
+import {
+  annualCost,
+  ASSUMED_SPOT_AVG,
+  campaignSaving,
+  DWELLINGS,
+  IS_EXAMPLE_DATA,
+  normalAnnualCost,
+  PRICE_DATE,
+} from "@/lib/energy";
 import PlanCard, { type PlanBadge } from "./PlanCard";
 import AffiliateButton from "../AffiliateButton";
 import SpotCurve from "./SpotCurve";
@@ -78,6 +86,26 @@ function useCountUp(target: number, duration = 700) {
 
   useEffect(() => {
     if (reduce) { setValue(target); return; }
+    /*
+      PIILOTETUSSA VÄLILEHDESSÄ EI ANIMOIDA VAAN ASETETAAN LUKU SUORAAN.
+
+      Selain pysäyttää `requestAnimationFrame`-silmukan kokonaan, kun
+      välilehti ei ole näkyvissä. Ilman tätä ehtoa laskuri jää siihen
+      lukuun, jossa se oli välilehden vaihtuessa: käyttäjä palaa
+      välilehteen ja näkee otsikossa hinnan, jota ei ole yhdessäkään
+      kortissa. Juuri se on sivun pahin virhe — koko lupaus on
+      "näytämme laskutoimituksen", ja otsikkoluku, joka ei täsmää
+      listaan, saa lukijan olettamaan loputkin luvut sepitetyiksi.
+
+      Animaatio on kuitenkin sitä varten, että luvun muuttuminen
+      huomataan. Piilotetussa välilehdessä sitä ei ole kukaan
+      katsomassa, joten animaatiosta ei menetetä mitään.
+    */
+    if (typeof document !== "undefined" && document.hidden) {
+      from.current = target;
+      setValue(target);
+      return;
+    }
     const start = performance.now();
     const origin = from.current;
     let raf = 0;
@@ -151,7 +179,21 @@ export default function ElectricityExperience({
   );
   const [type, setType] = useState<"spot" | "fixed" | "open" | null>(initialType);
   const [greenOnly, setGreenOnly] = useState(false);
-  const [sort, setSort] = useState<"cost" | "basic" | "rating">("cost");
+  /*
+    "PARAS ARVIO" POISTUI LAJITTELUSTA, TILALLE "PARAS KAMPANJA".
+
+    Tähtiarvioita ei ole enää olemassa: kumppaniyhtiöille ei löydy
+    riippumatonta arviolähdettä, joten arvio olisi keksitty luku.
+    Lajitteluvalinta, joka järjestää listan keksityn luvun mukaan, on
+    pahempi kuin puuttuva valinta — se antaa keksitylle luvulle
+    työkalun aseman.
+
+    Tilalla on lajittelu, jolle on oikea aineisto: kampanjaetu euroina
+    ensimmäiseltä vuodelta. Se on myös se lajittelu, jota kampanjoita
+    metsästävä kävijä oikeasti etsii, ja se nostaa esiin juuri ne
+    sopimukset, joissa klikki on kumppanille arvokkain.
+  */
+  const [sort, setSort] = useState<"cost" | "basic" | "campaign">("cost");
 
   // Nykyinen sopimus (vapaaehtoinen) — tekee säästöluvusta todellisen
   const [showCurrent, setShowCurrent] = useState(false);
@@ -203,7 +245,13 @@ export default function ElectricityExperience({
         .filter((p) => (greenOnly ? p.green : true))
         .sort((a, b) => {
           if (sort === "basic") return a.basicFee - b.basicFee;
-          if (sort === "rating") return b.rating - a.rating;
+          if (sort === "campaign") {
+            const d = campaignSaving(b, kwh) - campaignSaving(a, kwh);
+            /* Tasatilanteessa (esim. kaksi kampanjatonta) halvin ensin,
+               jotta lista ei näytä satunnaiselta. */
+            if (d !== 0) return d;
+            return annualCost(a, kwh) - annualCost(b, kwh);
+          }
           return annualCost(a, kwh) - annualCost(b, kwh);
         }),
     [plans, type, greenOnly, kwh, sort]
@@ -278,15 +326,44 @@ export default function ElectricityExperience({
   */
   const computing = useFoxComputing(`${kwh}|${type}|${greenOnly}|${sort}`);
 
-  /** Ketun valinta: hinta 72 %, käyttäjäarvio 28 %. Kaava kerrotaan avoimesti. */
+  /*
+    KETUN VALINTA LASKETAAN NYT KAHDESTA HINNASTA, EI HINNASTA JA TÄHDESTÄ.
+
+    Vanha kaava oli hinta 72 % + käyttäjäarvio 28 %. Arvio-osuus on
+    poissa, koska kumppaniyhtiöille ei ole riippumatonta arviolähdettä
+    eikä tähtiä keksitä. Pelkkä hinta ei kuitenkaan kelpaa merkin
+    perusteeksi: silloin "Ketun valinta" olisi sama kortti kuin
+    "Edullisin", eli merkki ei kertoisi mitään uutta.
+
+    Toinen akseli on nyt kampanjan JÄLKEINEN hinta. Se on oikea ja
+    tärkeä ero: yhdeksän neljästätoista kampanjasta on kolmen kuukauden
+    perusmaksuetu, ja kolmen kuukauden etu voi nostaa sopimuksen
+    ensimmäisen vuoden vertailun kärkeen, vaikka sen pysyvä hinta olisi
+    listan kalliimmasta päästä. Asiakas asuu sopimuksessa neljä vuotta,
+    ei kolme kuukautta.
+
+    Työnjako on siis selvä ja lukijalle kerrottavissa yhdellä lauseella:
+    "Edullisin" = halvin ensimmäinen vuosi kampanjoineen, "Ketun
+    valinta" = paras kokonaisuus, kun myös kampanjan jälkeinen hinta
+    lasketaan mukaan. Painotus on 50/50, koska mikään aineisto ei
+    perustele tarkempaa lukua — ja keksitty tarkkuus ("57 %") olisi taas
+    yksi luku, jota ei voi puolustaa.
+  */
+  const cheapestNormalCost = useMemo(
+    () => Math.min(...plans.map((p) => normalAnnualCost(p, kwh))),
+    [plans, kwh]
+  );
+
   const foxId = useMemo(() => {
     if (filtered.length < 3) return null;
     const scored = filtered.map((p) => ({
       id: p.id,
-      score: 0.72 * (cheapestCost / annualCost(p, kwh)) + 0.28 * (p.rating / 5),
+      score:
+        0.5 * (cheapestCost / annualCost(p, kwh)) +
+        0.5 * (cheapestNormalCost / normalAnnualCost(p, kwh)),
     }));
     return scored.sort((a, b) => b.score - a.score)[0].id;
-  }, [filtered, kwh, cheapestCost]);
+  }, [filtered, kwh, cheapestCost, cheapestNormalCost]);
 
   /*
     KETUN SUOSITUS = YKSI NIMETTY SOPIMUS.
@@ -296,16 +373,55 @@ export default function ElectricityExperience({
     vasta klikistä, joten listan yläpuolella pitää olla yksi vastaus
     kysymykseen "no mikä minun pitäisi ottaa".
 
-    Ensisijaisesti Ketun valinta (hinta 72 % · arvio 28 %), koska se on
-    sama kaava kuin korttien merkissä — kaksi eri suositusta samalla
-    sivulla lukisi sekaannukseksi. Jos aineisto on niin pieni, ettei
-    valintaa lasketa (alle 3 sopimusta), suositellaan halvinta.
+    Ensisijaisesti Ketun valinta (ensimmäinen vuosi 50 % · kampanjan
+    jälkeinen hinta 50 %), koska se on sama kaava kuin korttien
+    merkissä — kaksi eri suositusta samalla sivulla lukisi
+    sekaannukseksi. Jos aineisto on niin pieni, ettei valintaa lasketa
+    (alle 3 sopimusta), suositellaan halvinta.
   */
   const recommendedPlan = useMemo(
     () => (foxId ? filtered.find((p) => p.id === foxId) ?? cheapestPlan : cheapestPlan),
     [foxId, filtered, cheapestPlan]
   );
   const recommendedIsCheapest = recommendedPlan !== null && recommendedPlan.id === cheapestId;
+
+  /*
+    "MIKSI JUURI TÄMÄ?" — NELJÄ PERUSTELUA, KAIKKI LASKETTUJA.
+
+    Suositus vastasi tähän asti kysymykseen "mikä", muttei kysymykseen
+    "miksi". Juuri se kysymys on viimeinen este ennen "Tee sopimus"
+    -nappia: kävijä ei epäröi hintaa vaan sitä, onko valinta tehty
+    hänen puolestaan oikein perustein. Neljä rastia vastaa siihen
+    nopeammin kuin kappale tekstiä, koska luettelon voi silmäillä.
+
+    JOKAINEN RIVI LUETAAN DATASTA, EI KIRJOITETA KÄSIN. Kiinteä lista
+    ("halvin", "ei määräaikaisuutta", "hyvät arviot") olisi väärässä
+    joka kerta kun suositus on jokin muu kuin halvin tai kun sopimus
+    on määräaikainen — ja väärä perustelu maksaa enemmän kuin puuttuva.
+    Siksi määräaikainen sopimus kertoo määräajan pituuden eikä piilota
+    sitä, ja arvio näytetään lukuna eikä sanana "hyvät".
+  */
+  const recommendedReasons = recommendedPlan
+    ? [
+        recommendedIsCheapest
+          ? "Halvin arvioitu vuosihinta"
+          : "Paras hinta myös kampanjan jälkeen",
+        recommendedPlan.fixedTermMonths
+          ? `Hinta lukossa ${recommendedPlan.fixedTermMonths} kk`
+          : "Ei määräaikaisuutta",
+        /* Neljäs rivi oli asiakasarvio. Arvioita ei ole enää olemassa
+           (ks. foxId-kommentti), joten tilalla on tieto, joka on: joko
+           kampanjaetu euroina tai — jos kampanjaa ei ole — kampanjan
+           jälkeinen kuukausihinta, joka on juuri se luku, jolla tämä
+           sopimus voitti vertailun toisella akselilla. */
+        recommendedPlan.campaign
+          ? `Kampanjaetu ${Math.round(
+              campaignSaving(recommendedPlan, kwh)
+            ).toLocaleString("fi-FI")} € ensimmäisenä vuonna`
+          : `Sama hinta myös ensimmäisen vuoden jälkeen`,
+        `Laskettu kulutuksellasi ${kwh.toLocaleString("fi-FI")} kWh`,
+      ]
+    : [];
 
   /** Rehellisyys ennen konversiota: jos asiakkaan oma sopimus voittaa, se sanotaan. */
   const alreadyGood = currentAnnual !== null && currentAnnual <= cheapestCost;
@@ -317,7 +433,6 @@ export default function ElectricityExperience({
    * lainkaan — sen tilalla on kehotus syöttää oma hinta.
    */
   const savingsBase = currentAnnual;
-  const savingsLabel = "vuodessa nykyiseen sopimukseesi verrattuna";
   const headlineSaving = useCountUp(savingsBase === null ? 0 : Math.max(0, savingsBase - bestVisibleCost));
   const cheapestMonthly = useCountUp(bestVisibleCost / 12);
 
@@ -795,7 +910,7 @@ export default function ElectricityExperience({
   const STEPS_Q = [
     {
       n: 1,
-      title: "Millaisessa kodissa asut?",
+      title: "Valitse kotisi tyyppi",
       hint: "Tästä Kettu päättelee kulutuksen. Arvio riittää, tarkennat sen seuraavaksi.",
     },
     {
@@ -830,13 +945,20 @@ export default function ElectricityExperience({
     : true;
 
   /** Miksi "Jatka" ei vielä toimi. Sanotaan ääneen — harmaa nappi ilman
-   *  selitystä on iäkkäälle käyttäjälle rikkinäinen nappi. */
+   *  selitystä on iäkkäälle käyttäjälle rikkinäinen nappi.
+   *
+   *  Vaiheet 1 ja 3 saavat saman lauseen tarkoituksella: molemmissa
+   *  tehtävä on täsmälleen sama, ja sama tehtävä eri sanoilla luetaan
+   *  uudestaan. Vaiheet 2 ja 4 pysyvät omissaan, koska niissä tehtävä
+   *  on eri — kentässä kirjoitetaan luku, ja vaiheessa 4 on tärkeää
+   *  sanoa että myös "en" vie eteenpäin. Ilman sitä osa arvaa, että
+   *  vain "kyllä" kelpaa, ja keksii luvun. Keksitty lähtöhinta tuottaa
+   *  keksityn säästön, ja se on tämän sivun pahin virhe. */
   const stepBlocker =
     stepValid ? null
-    : step === 1 ? "Valitse yksi vaihtoehto yltä, niin pääset eteenpäin."
     : step === 2 ? "Kirjoita kulutus, vähintään 500 kWh. Tai palaa taaksepäin valitsemaan koti."
-    : step === 3 ? "Valitse yksi kolmesta vaihtoehdosta."
-    : "Valitse kyllä tai en. Kumpikin vie eteenpäin.";
+    : step === 4 ? "Valitse kyllä tai en. Kumpikin vie eteenpäin."
+    : "Valitse yksi vaihtoehto jatkaaksesi.";
 
   const activeStep = STEPS_Q[step - 1];
 
@@ -973,6 +1095,24 @@ export default function ElectricityExperience({
         Nyt se on ensimmäisellä ruudulla näkyvissä mutta pois käytöstä.
       */}
       <div className="mt-7 border-t border-line pt-5">
+        {/*
+          ESTOTEKSTI ON NAPIN YLÄPUOLELLA, EI ALLA.
+
+          Alla se luettiin vasta sen jälkeen, kun käyttäjä oli jo
+          ehtinyt painaa reagoimatonta nappia — eli vasta kun ruutu
+          oli jo tuntunut rikkinäiseltä. Yläpuolella lause osuu
+          silmään matkalla vaihtoehdoista nappiin, eli juuri siinä
+          järjestyksessä kuin ruutua luetaan.
+        */}
+        <div className="mb-3.5 flex min-h-[22px] items-center" role="status" aria-live="polite">
+          {stepBlocker && (
+            <p className="flex items-center gap-2 text-[14.5px] font-medium text-ink/70">
+              <Info size={15} className="shrink-0 text-accentDark" aria-hidden />
+              {stepBlocker}
+            </p>
+          )}
+        </div>
+
         <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={() => setStep(Math.max(1, step - 1))}
@@ -986,23 +1126,24 @@ export default function ElectricityExperience({
             <button
               onClick={() => setStep(step + 1)}
               disabled={!stepValid}
-              className="btn-ember inline-flex flex-1 items-center justify-center gap-2 rounded-xl px-7 py-4 font-display text-[16.5px] font-bold text-onEmber transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 sm:flex-none"
+              className={`btn-ember inline-flex flex-1 items-center justify-center gap-2 rounded-xl px-7 py-4 font-display text-[16.5px] font-bold text-onEmber transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 sm:flex-none ${
+                stepValid ? "btn-ready" : ""
+              }`}
             >
               Jatka <ArrowRight size={17} aria-hidden />
             </button>
           ) : (
             <button
               onClick={submitQuiz}
-              className="btn-ember inline-flex flex-1 items-center justify-center gap-2 rounded-xl px-7 py-4 font-display text-[16.5px] font-bold text-onEmber transition-all active:scale-[0.98] sm:flex-none"
+              /* Yhteenvedon nappi on aina käytettävissä, joten se on aina
+                 valmiissa tilassa. Ilman tätä kyselyn viimeinen ja tärkein
+                 nappi näyttäisi vaisummalta kuin sitä edeltäneet neljä. */
+              className="btn-ember btn-ready inline-flex flex-1 items-center justify-center gap-2 rounded-xl px-7 py-4 font-display text-[16.5px] font-bold text-onEmber transition-all active:scale-[0.98] sm:flex-none"
             >
               Näytä sopimukset <ArrowRight size={17} aria-hidden />
             </button>
           )}
         </div>
-
-        {stepBlocker && (
-          <p className="mt-3 text-[14px] text-ink/60">{stepBlocker}</p>
-        )}
 
         {/*
           OHITUS TULEE NÄKYVIIN VASTA VAIHEESTA 3.
@@ -1095,17 +1236,18 @@ export default function ElectricityExperience({
                   oranssi nappi — ja katse menee sinne, mistä palkkio tulee.
                   Kursivoitu "laskemalla" on sivun ainoa koristeellinen ele.
                 */}
-                <h1 className="mt-4 max-w-[13ch] font-hero text-[2.5rem] leading-[1.03] text-cream sm:max-w-[14ch] sm:text-[3.3rem] md:text-[3.75rem]">
-                  Halvin sähkö löytyy{" "}
+                <h1 className="mt-4 max-w-[19ch] font-hero text-[2.1rem] leading-[1.05] text-cream sm:text-[3.1rem] sm:leading-[1.03] md:text-[3.5rem]">
+                  Halvin sähkösopimus löytyy{" "}
                   {/* Korostus on lämmintä kultaa, ei toista oranssia:
                       oranssilla pohjalla oranssi korostus ei erotu. */}
                   <em className="text-goldInk">laskemalla</em>, ei
                   arvaamalla.
                 </h1>
 
-                <p className="mt-5 max-w-[46ch] text-[15.5px] leading-relaxed text-ink/85 sm:text-[16.5px]">
-                  Kerro kulutuksesi. Kettu laskee jokaisen sopimuksen vuosihinnan
-                  sinun luvuillasi ja sanoo euroina, paljonko vaihtaminen toisi takaisin.
+                <p className="mt-5 max-w-[48ch] text-[15.5px] leading-relaxed text-ink/85 sm:text-[16.5px]">
+                  Kettu kilpailuttaa jokaisen sähkösopimuksen todellisen vuosihinnan
+                  juuri sinun kulutuksellasi ja näyttää, kuinka paljon voit säästää
+                  vaihtamalla.
                 </p>
 
                 {/*
@@ -1208,8 +1350,26 @@ export default function ElectricityExperience({
                     Aloita kysely – neljä kysymystä
                     <TrendingDown size={16} aria-hidden />
                   </a>
-                  <p className="text-[12.5px] text-ink/75">
-                    Ilmainen ja puolueeton · ei vaadi tunnuksia
+                  {/*
+                    ALARIVI ON KOLME ESTETTÄ POIS ALTA, EI KOLME KEHUA.
+
+                    Rivi seisoo heti kilpailutusnapin vieressä, eli juuri
+                    siinä kohdassa jossa epäröinti syntyy. Jokainen kolmesta
+                    vastaa yhteen kysymykseen, joka pysäyttää suomalaisen
+                    kävijän vertailusivulla: maksaako tämä, joudunko
+                    luovuttamaan tietoni, ja onko järjestys ostettu.
+
+                    Erotin on kultaa, jotta kolme väitettä lukee kolmena
+                    eikä yhtenä harmaana rivinä. Teksti pysyy pienenä ja
+                    vaimeana tarkoituksella — sen tehtävä on poistaa este,
+                    ei kilpailla napin kanssa katseesta.
+                  */}
+                  <p className="text-[13px] font-medium text-ink/80">
+                    Ilmainen
+                    <span className="mx-2 text-goldInk/70" aria-hidden>·</span>
+                    Ei tunnistautumista
+                    <span className="mx-2 text-goldInk/70" aria-hidden>·</span>
+                    Puolueeton vertailu
                   </p>
                 </div>
               </div>
@@ -1489,7 +1649,8 @@ export default function ElectricityExperience({
             päätöksen valmiiksi ja tarjoaa napin samaan ruutuun.
 
             MIKSI SE ON REHELLINEN: valintaperuste luetellaan tässä auki
-            (hinta 72 % · arvio 28 %), se on sama kaava kuin korttien
+            (ensimmäinen vuosi 50 % · kampanjan jälkeinen hinta 50 %),
+            se on sama kaava kuin korttien
             merkissä, ja halvin vaihtoehto on aina merkitty erikseen. Jos
             asiakkaan oma sopimus on jo halvempi, tätä paneelia ei
             näytetä lainkaan — silloin ruudulla on "älä vaihda", eikä sen
@@ -1535,16 +1696,24 @@ export default function ElectricityExperience({
                     {recommendedPlan.provider} — {recommendedPlan.name}
                   </h3>
 
-                  <p className="mt-2.5 max-w-[54ch] text-[15px] leading-relaxed text-ink/85">
-                    {recommendedIsCheapest
-                      ? "Tämä on suoraan halvin sopimus sinun kulutuksellasi. Sitä ei tarvitse perustella sen kummemmin."
-                      : "Tämä ei ole listan halvin, mutta se on paras kokonaisuus: hinta painaa valinnassa 72 % ja muiden asiakkaiden arvio 28 %."}
-                    {recommendedPlan.type === "fixed"
-                      ? " Hinta on lukittu, joten lasku pysyy samana koko sopimuskauden."
-                      : recommendedPlan.type === "spot"
-                        ? " Hinta seuraa sähköpörssiä, joten se elää kuukausittain."
-                        : " Sopimus on voimassa toistaiseksi, ja yhtiö voi muuttaa hintaa ilmoitusajalla."}
+                  {/*
+                    Perustelut KORVAAVAT aiemman kappaleen, eivät tule
+                    sen lisäksi. Kappale sanoi saman asian proosana, ja
+                    kaksi versiota samasta perustelusta olisi kasvattanut
+                    paneelin korkeutta ilman että kävijä saa mitään uutta.
+                    Kaksi saraketta pitää neljä riviä kahden rivin tilassa.
+                  */}
+                  <p className="mt-3 font-display text-[12px] font-bold uppercase tracking-[0.18em] text-goldInk">
+                    Miksi Kettu suosittelee tätä?
                   </p>
+                  <ul className="mt-2.5 grid max-w-[54ch] gap-x-6 gap-y-1.5 sm:grid-cols-2">
+                    {recommendedReasons.map((r) => (
+                      <li key={r} className="flex items-start gap-2 text-[14.5px] leading-snug text-ink/85">
+                        <Check size={15} className="mt-[3px] shrink-0 text-goldInk" aria-hidden />
+                        {r}
+                      </li>
+                    ))}
+                  </ul>
 
                   {/* Luvut nostetaan omaksi rivikseen: suosituksen pitää
                       kestää tarkistus samassa ruudussa, jossa se annetaan. */}
@@ -1606,9 +1775,21 @@ export default function ElectricityExperience({
                       href={`/sahkosopimukset/sopimus/${recommendedPlan.slug}`}
                       className="inline-flex items-center gap-1.5 rounded-xl border border-cream/40 px-5 py-3.5 font-display text-[14.5px] font-bold text-cream transition-colors hover:bg-cream/10"
                     >
-                      Lue ehdot ensin <ArrowRight size={15} aria-hidden />
+                      Tutustu sopimukseen <ArrowRight size={15} aria-hidden />
                     </a>
                   </div>
+
+                  {/*
+                    Mihin nappi vie. Epäselvyys siitä, mitä klikin
+                    takana tapahtuu, on tässä kohdassa yleisin syy jättää
+                    painamatta: osa pelkää tekevänsä sitovan sopimuksen
+                    vertailusivulla. Yksi lause poistaa sen — ja se on
+                    myös totta, sopimus syntyy vasta yhtiön omilla
+                    sivuilla.
+                  */}
+                  <p className="mt-3 text-[13px] text-ink/70">
+                    Sopimus tehdään sähköyhtiön omilla sivuilla.
+                  </p>
                 </div>
               </div>
             </motion.div>
@@ -1766,7 +1947,7 @@ export default function ElectricityExperience({
               >
                 <option value="cost">Edullisin vuosihinta</option>
                 <option value="basic">Pienin perusmaksu</option>
-                <option value="rating">Paras arvio</option>
+                <option value="campaign">Suurin kampanjaetu</option>
               </select>
             </label>
           </div>
@@ -1779,9 +1960,17 @@ export default function ElectricityExperience({
                   const isCheapest = plan.id === cheapestId;
                   const isFox = plan.id === foxId;
                   const badge: PlanBadge = isCheapest
-                    ? { kind: "cheapest", note: isFox ? "Myös Ketun valinta: paras hinnan ja käyttäjäarvion yhdistelmä." : undefined }
+                    ? {
+                        kind: "cheapest",
+                        note: isFox
+                          ? "Myös Ketun valinta: halvin sekä ensimmäisenä vuonna että kampanjan jälkeen."
+                          : undefined,
+                      }
                     : isFox
-                      ? { kind: "fox", note: "Ei halvin, mutta paras kokonaisuus hinnan ja käyttäjäarvion perusteella." }
+                      ? {
+                          kind: "fox",
+                          note: "Ei halvin ensimmäisenä vuonna, mutta paras kokonaisuus kun kampanjan jälkeinen hinta lasketaan mukaan.",
+                        }
                       : null;
                   return (
                     <motion.div
@@ -1796,8 +1985,8 @@ export default function ElectricityExperience({
                         plan={plan}
                         kwh={kwh}
                         badge={sort === "cost" ? badge : null}
-                        savings={savingsBase === null ? 0 : Math.max(0, savingsBase - cost)}
-                        savingsLabel={savingsLabel}
+                        compareDiff={savingsBase === null ? null : savingsBase - cost}
+                        minCost={cheapestCost}
                         maxCost={maxShown}
                         rank={i + 1}
                       />

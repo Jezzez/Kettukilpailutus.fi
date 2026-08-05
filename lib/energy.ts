@@ -1,6 +1,30 @@
 import electricityJson from "@/data/electricity.json";
 import topicsJson from "@/data/energy-topics.json";
 
+/**
+ * Yhtion oma kampanja — se, mita kumppani mainostaa omalla sivullaan.
+ *
+ * Kampanja on aina MAARAAIKAINEN poikkeus normaalihinnasta. Siksi tassa
+ * kerrotaan vain ne kentat, jotka kampanjan ajaksi muuttuvat; loput
+ * luetaan sopimuksen normaaleista kentista. Nain sama kampanja voi olla
+ * pelkka perusmaksuetu ("0 €/kk kolme kuukautta") tai koko hinnan
+ * alennus, ilman kahta eri tietorakennetta.
+ */
+export interface PlanCampaign {
+  /** Lyhyt teksti kortin ylakulmaan, esim. "Perusmaksu 0 € 3 kk". */
+  label: string;
+  /** Kampanjan kesto kuukausina sopimuksen alusta. */
+  months: number;
+  /** Perusmaksu kampanjan aikana (€/kk). Puuttuva = normaali perusmaksu. */
+  basicFee?: number;
+  /** Marginaali kampanjan aikana (c/kWh). Vain porssisopimuksille. */
+  spotMargin?: number;
+  /** Energiahinta kampanjan aikana (c/kWh). Vain kiinteille. */
+  energyPrice?: number;
+  /** Rajoitus, esim. "vain uusille asiakkaille". Nakyy kortilla. */
+  limit?: string;
+}
+
 /** Sähkösopimuksen tietomalli. */
 export interface ElectricityPlan {
   id: string;
@@ -13,9 +37,38 @@ export interface ElectricityPlan {
   spotMargin: number | null;   // c/kWh (pörssi)
   green: boolean;
   fixedTermMonths: number | null;
-  rating: number;
-  reviews: number;
+  /**
+   * Asiakasarvio 0-5, tai `null` jos rehellista lahdetta ei ole.
+   *
+   * MIKSI NULL ON SALLITTU: kumppaniyhtioista ei ole yhtaan
+   * riippumatonta arviolahdetta, jonka luvun voisi julkaista. Keksitty
+   * tahtiluku olisi juuri se yksityiskohta, joka romuttaa koko sivun
+   * uskottavuuden, koska sen voi tarkistaa sekunnissa muualta. Kun
+   * kentta on `null`, kortti jattaa tahtirivin kokonaan pois eika
+   * "Ketun valintaa" lasketa lainkaan.
+   */
+  rating: number | null;
+  reviews: number | null;
   affiliateUrl: string;
+  /**
+   * Onko yhtio Kettukilpailutuksen kumppani, eli maksaako se palkkion.
+   *
+   * Tama ohjaa nappia: kumppanilla "Tee sopimus", muilla neutraali
+   * "Siirry palveluntarjoajalle". Ilman erottelua sivu joko valehtelisi
+   * napilla tai joutuisi piilottamaan puolet markkinasta.
+   */
+  partner?: boolean;
+  /**
+   * Kumppanin oma kampanja: mita se lupaa ja kuinka pitkaan.
+   *
+   * Naytetaan kortin ylakulmassa yhtion omana tarjouksena ja lasketaan
+   * mukaan ensimmaisen vuoden hintaan. Ks. `annualCost`.
+   */
+  campaign?: PlanCampaign;
+  /** Paiva, jolloin hinnat luettiin yhtion omalta sivulta (ISO). */
+  checkedAt?: string;
+  /** Sivu, jolta hinnat luettiin. Nakyy sopimussivulla lahdeviitteena. */
+  sourceUrl?: string;
   /**
    * Yhtiön logo, polku `public/`-kansiosta (esim. "/logot/lumo.svg").
    *
@@ -76,10 +129,27 @@ export const PRICE_DATE: string = electricityJson.priceDate;
  */
 export const IS_EXAMPLE_DATA: boolean =
   electricityJson.isExampleData === true ||
-  (electricityJson.plans as ElectricityPlan[]).some((p) => p.example === true);
+  getPlans().some((p) => p.example === true);
 
-export function getPlans(): ElectricityPlan[] {
+/** Kaikki rivit, myos julkaisemattomat. Vain talon sisaiseen kayttoon. */
+function allPlans(): ElectricityPlan[] {
   return electricityJson.plans as ElectricityPlan[];
+}
+
+/**
+ * Sopimukset, jotka sivusto nayttaa.
+ *
+ * MIKSI `example`-riveja EI NAYTETA: aineistossa on yha kaksikymmenta
+ * nelja sopimusta, joiden hinnat ovat keksittyja esimerkkilukuja.
+ * Niiden esittaminen tarkistettujen rinnalla olisi tallaisen sivuston
+ * pahin mahdollinen virhe: lukija ei nae eroa, joten yksi keksitty
+ * hinta tekee kaikista muistakin epailyttavia — ja vaara hinta on
+ * lisaksi kuluttajansuojaongelma. Rivit jaavat JSONiin, koska osa
+ * yhtioista on oikeita ja niiden luvut voi tarkistaa myohemmin yksi
+ * kerrallaan; naytolle ne paasevat vasta kun `example` poistuu.
+ */
+export function getPlans(): ElectricityPlan[] {
+  return allPlans().filter((p) => p.example !== true);
 }
 
 export function getPlan(slug: string): ElectricityPlan | undefined {
@@ -94,16 +164,80 @@ export function getEnergyTopic(slug: string): EnergyTopic | undefined {
   return getEnergyTopics().find((t) => t.slug === slug);
 }
 
-/** Sopimuksen efektiivinen energiahinta c/kWh laskuria varten. */
+/** Sopimuksen normaali energiahinta c/kWh — kampanjan jalkeinen taso. */
 export function effectivePrice(plan: ElectricityPlan): number {
   return plan.type === "spot"
     ? ASSUMED_SPOT_AVG + (plan.spotMargin ?? 0)
     : (plan.energyPrice ?? 0);
 }
 
-/** Arvioitu vuosikustannus (€) annetulla vuosikulutuksella. */
-export function annualCost(plan: ElectricityPlan, kwhPerYear: number): number {
+/** Energiahinta c/kWh kampanjan aikana. Ilman kampanjaa sama kuin normaali. */
+export function campaignPrice(plan: ElectricityPlan): number {
+  const c = plan.campaign;
+  if (!c) return effectivePrice(plan);
+  return plan.type === "spot"
+    ? ASSUMED_SPOT_AVG + (c.spotMargin ?? plan.spotMargin ?? 0)
+    : (c.energyPrice ?? plan.energyPrice ?? 0);
+}
+
+/** Vuosikustannus (€) pelkalla normaalihinnalla, ilman kampanjaa. */
+export function normalAnnualCost(plan: ElectricityPlan, kwhPerYear: number): number {
   return plan.basicFee * 12 + (effectivePrice(plan) * kwhPerYear) / 100;
+}
+
+/**
+ * ENSIMMAISEN VUODEN kustannus (€) annetulla vuosikulutuksella.
+ *
+ * MIKSI KAMPANJA LASKETAAN MUKAAN JA MIKSI JUURI VUODEKSI.
+ *
+ * Jokainen kumppani mainostaa kampanjahintaa, ja ne ovat eripituisia:
+ * Nordic Green antaa puolet pois kahdeltatoista kuukaudelta, Hehku
+ * kolmen kuukauden perusmaksun. Vaihtoehtoja oli kolme, ja kaksi
+ * niista on vaaria:
+ *
+ * 1. Jarjestys kampanjahinnan mukaan. Silloin yhden kuukauden
+ *    houkutuslintu voittaa vuoden kestavan alennuksen, ja lista
+ *    palkitsee lyhimman tarjouksen. Vertailu lakkaa mittaamasta rahaa.
+ * 2. Jarjestys normaalihinnan mukaan. Rehellinen mutta sokea: kampanja
+ *    on oikeaa rahaa, ja sivu neuvoisi ohi halvimman vaihtoehdon.
+ * 3. Ensimmaisen vuoden yhteissumma. Kampanja painaa tasmalleen sen
+ *    verran kuin se kestaa, ja vuosi on se aikajanne, jolla ostaja
+ *    paatoksen tekee — sahkosopimuksen voi kilpailuttaa uudestaan.
+ *
+ * Kolmas on ainoa, joka vastaa kysymykseen "paljonko tama maksaa
+ * minulle". Sita tama funktio laskee.
+ *
+ * TIEDOSSA OLEVA YKSINKERTAISTUS: kulutus jaetaan tasan kuukausille,
+ * vaikka sahkoa kuluu talvella moninkertaisesti kesaan verrattuna.
+ * Kesalla alkava kampanja tuottaa siis todellisuudessa hieman
+ * pienemman hyodyn kuin tama laskee. Virhe on samansuuntainen kaikilla
+ * sopimuksilla, joten jarjestys sailyy, ja tarkempi malli vaatisi
+ * kuukausiprofiilin, jota ei ole tarkistettuna olemassa.
+ */
+export function annualCost(plan: ElectricityPlan, kwhPerYear: number): number {
+  const c = plan.campaign;
+  if (!c) return normalAnnualCost(plan, kwhPerYear);
+
+  const months = Math.max(0, Math.min(c.months, 12));
+  const rest = 12 - months;
+  const kwhPerMonth = kwhPerYear / 12;
+
+  const campFee = c.basicFee ?? plan.basicFee;
+  const campEnergy = campaignPrice(plan);
+  const normEnergy = effectivePrice(plan);
+
+  return (
+    campFee * months +
+    plan.basicFee * rest +
+    (campEnergy * kwhPerMonth * months) / 100 +
+    (normEnergy * kwhPerMonth * rest) / 100
+  );
+}
+
+/** Paljonko kampanja saastaa ensimmaisena vuonna (€). 0 jos kampanjaa ei ole. */
+export function campaignSaving(plan: ElectricityPlan, kwhPerYear: number): number {
+  if (!plan.campaign) return 0;
+  return normalAnnualCost(plan, kwhPerYear) - annualCost(plan, kwhPerYear);
 }
 
 export const TYPE_LABEL: Record<ElectricityPlan["type"], string> = {

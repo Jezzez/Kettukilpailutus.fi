@@ -5,3 +5,7 @@ out
 tsconfig.tsbuildinfo
 .DS_Store
 .vercel
+
+# Affiliate-linkit ja tyolistat - eivat kuulu julkaistavaan sivustoon
+affiliate-linkit.md
+sahkoyhtiot-lisattavat.md

@@ -1,11 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Check, ChevronRight, Leaf, Star, X, Zap } from "lucide-react";
+import { Check, ChevronRight, Leaf, Star, Tag, X, Zap } from "lucide-react";
 import AffiliateButton from "@/components/AffiliateButton";
 import Faq from "@/components/Faq";
 import Reveal from "@/components/Reveal";
-import { getPlan, getPlans, annualCost, TYPE_LABEL, ASSUMED_SPOT_AVG } from "@/lib/energy";
+import {
+  getPlan,
+  getPlans,
+  annualCost,
+  normalAnnualCost,
+  TYPE_LABEL,
+  ASSUMED_SPOT_AVG,
+} from "@/lib/energy";
 import { SITE } from "@/lib/data";
 
 export function generateStaticParams() {
@@ -17,7 +24,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   if (!plan) return {};
   return {
     // Brändi tulee layoutin title-templatesta, ei tähän toiseen kertaan.
-    title: `${plan.provider} ${plan.name} – hinta, kokemuksia ja arvio`,
+    title: `${plan.provider} ${plan.name} – hinta, ehdot ja kustannusarvio`,
     description: `${plan.provider} ${plan.name}: ${plan.summary} Katso hinta omalla kulutuksellasi ja vertaa muihin sopimuksiin.`,
     alternates: { canonical: `/sahkosopimukset/sopimus/${plan.slug}` },
   };
@@ -29,18 +36,37 @@ export default function PlanPage({ params }: { params: { slug: string } }) {
   const plan = getPlan(params.slug);
   if (!plan) notFound();
 
+  /* Ks. PlanCard.tsx: "Tee sopimus" on kumppanilinkki. Yhtiölle, jonka
+     kanssa ei ole kumppanuutta, sama teksti lupaisi tilausputken, jota
+     linkin päässä ei ole. */
+  const cta = plan.partner ? "Tee sopimus" : "Siirry palveluntarjoajalle";
+
+  /*
+    AGGREGATERATING VAIN JOS ARVIO ON OIKEASTI OLEMASSA.
+
+    Rakennedatassa keksitty tähtiarvio ei ole vain epärehellinen vaan
+    myös Googlen rikkaiden tulosten sääntöjen vastainen: arvion on
+    perustuttava sivustolla oikeasti näkyviin arvosteluihin. Väärä
+    merkintä voi poistaa koko sivuston rikkaista tuloksista, eli se
+    maksaisi juuri sitä orgaanista liikennettä, jonka varaan tämä
+    sivusto on rakennettu. Kun arviota ei ole, kenttä jätetään pois.
+  */
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: `${plan.provider} ${plan.name}`,
     description: plan.summary,
     brand: { "@type": "Brand", name: plan.provider },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: plan.rating,
-      reviewCount: plan.reviews,
-      bestRating: 5,
-    },
+    ...(plan.rating !== null && plan.reviews !== null
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: plan.rating,
+            reviewCount: plan.reviews,
+            bestRating: 5,
+          },
+        }
+      : {}),
   };
   const breadcrumb = {
     "@context": "https://schema.org",
@@ -89,10 +115,21 @@ export default function PlanPage({ params }: { params: { slug: string } }) {
                         <Leaf size={11} aria-hidden /> Uusiutuva
                       </span>
                     )}
-                    <span className="inline-flex items-center gap-1">
-                      <Star size={13} className="fill-star text-star" aria-hidden />
-                      <span className="font-data font-semibold text-ink">{plan.rating.toFixed(1)}</span> ({plan.reviews} arviota)
-                    </span>
+                    {/* Arvio näkyy vain jos se on olemassa. Kumppaniyhtiöille
+                        ei ole riippumatonta arviolähdettä, eikä tähtiä keksitä
+                        — ks. PlanCard.tsx:n sama perustelu. */}
+                    {plan.rating !== null && (
+                      <span className="inline-flex items-center gap-1">
+                        <Star size={13} className="fill-star text-star" aria-hidden />
+                        <span className="font-data font-semibold text-ink">{plan.rating.toFixed(1)}</span>
+                        {plan.reviews !== null ? ` (${plan.reviews} arviota)` : ""}
+                      </span>
+                    )}
+                    {plan.campaign && (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-accentSoft px-2.5 py-0.5 font-semibold text-accentDark">
+                        <Tag size={11} aria-hidden /> {plan.campaign.label}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -100,7 +137,7 @@ export default function PlanPage({ params }: { params: { slug: string } }) {
             </div>
             <div className="hidden sm:block">
               <AffiliateButton href={plan.affiliateUrl} cardId={plan.id} placement="plan-hero">
-                Tee sopimus
+                {cta}
               </AffiliateButton>
             </div>
           </header>
@@ -161,6 +198,71 @@ export default function PlanPage({ params }: { params: { slug: string } }) {
               Arviot laskettu {ASSUMED_SPOT_AVG.toLocaleString("fi-FI")} c/kWh pörssikeskihinnalla. Toteutunut hinta vaihtelee.
             </p>
           )}
+
+          {/*
+            KAMPANJA AUKI OMANA LAATIKKONAAN — MYÖS SEN JÄLKEINEN HINTA.
+
+            Taulukon luvut ovat ENSIMMÄISEN vuoden kustannus kampanja
+            mukaan luettuna. Jos sivu näyttäisi vain sen, sopimus näyttäisi
+            pysyvästi halvemmalta kuin se on, ja ero paljastuisi vasta
+            laskusta. Sopimussivu on se paikka, jossa lukija tekee lopullisen
+            päätöksen — täällä ehdon lukeminen on halvempaa kuin peruutus
+            myöhemmin, ja peruutuksesta ei makseta palkkiota.
+          */}
+          {plan.campaign && (
+            <div className="mt-4 rounded-2xl border border-accent/25 bg-accentSoft p-5">
+              <p className="flex items-center gap-2 font-display text-sm font-semibold text-accentDark">
+                <Tag size={14} aria-hidden /> Kampanja: {plan.campaign.label}
+              </p>
+              <ul className="mt-3 space-y-1.5 text-[14px] text-ink/85">
+                <li>
+                  Kampanjahinta on voimassa {plan.campaign.months} kuukautta sopimuksen alusta.
+                </li>
+                <li>
+                  Kampanjan aikana perusmaksu{" "}
+                  {(plan.campaign.basicFee ?? plan.basicFee).toLocaleString("fi-FI")} €/kk
+                  {plan.type === "spot"
+                    ? ` ja marginaali ${(plan.campaign.spotMargin ?? plan.spotMargin ?? 0).toLocaleString("fi-FI")} c/kWh`
+                    : ` ja energia ${(plan.campaign.energyPrice ?? plan.energyPrice ?? 0).toLocaleString("fi-FI")} c/kWh`}
+                  .
+                </li>
+                <li>
+                  Kampanjan jälkeen perusmaksu {plan.basicFee.toLocaleString("fi-FI")} €/kk
+                  {plan.type === "spot"
+                    ? ` ja marginaali ${(plan.spotMargin ?? 0).toLocaleString("fi-FI")} c/kWh`
+                    : ` ja energia ${(plan.energyPrice ?? 0).toLocaleString("fi-FI")} c/kWh`}
+                  {" "}— eli 5 000 kWh kulutuksella noin{" "}
+                  {(normalAnnualCost(plan, 5000) / 12).toLocaleString("fi-FI", {
+                    maximumFractionDigits: 0,
+                  })}{" "}
+                  €/kk.
+                </li>
+                {plan.campaign.limit && <li>Rajoitus: {plan.campaign.limit}.</li>}
+              </ul>
+            </div>
+          )}
+
+          {/* Tarkistuspäivä ja lähde. Hinta on ainoa luku, jonka lukija voi
+              tarkistaa sekunnissa — kun kerromme itse, mistä ja milloin se on
+              haettu, tarkistus vahvistaa sivun sen sijaan että kumoaisi sen. */}
+          {plan.checkedAt && (
+            <p className="mt-3 text-[12px] text-ink/60">
+              Hinnat tarkistettu {new Date(plan.checkedAt).toLocaleDateString("fi-FI")}{" "}
+              {plan.sourceUrl ? (
+                <>
+                  ·{" "}
+                  <a
+                    href={plan.sourceUrl}
+                    rel="nofollow noopener"
+                    target="_blank"
+                    className="underline underline-offset-2 hover:text-ink"
+                  >
+                    {plan.provider}in hinnasto
+                  </a>
+                </>
+              ) : null}
+            </p>
+          )}
         </Reveal>
 
         {/* Hyödyt ja haitat */}
@@ -216,7 +318,7 @@ export default function PlanPage({ params }: { params: { slug: string } }) {
               </p>
             </div>
             <AffiliateButton href={plan.affiliateUrl} cardId={plan.id} placement="plan-footer">
-              Tee sopimus
+              {cta}
             </AffiliateButton>
           </div>
           <p className="mt-3 text-center text-[12px] text-ink/60">
@@ -237,7 +339,7 @@ export default function PlanPage({ params }: { params: { slug: string } }) {
           <p className="font-display text-lg font-bold text-ink">{plan.basicFee.toLocaleString("fi-FI")} €/kk</p>
         </div>
         <AffiliateButton href={plan.affiliateUrl} cardId={plan.id} placement="plan-sticky">
-          Tee sopimus
+          {cta}
         </AffiliateButton>
       </div>
     </article>

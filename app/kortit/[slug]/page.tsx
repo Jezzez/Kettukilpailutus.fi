@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Check, ChevronRight, X, Star } from "lucide-react";
 import { getCard, getCards, SITE } from "@/lib/data";
+import { FEATURES } from "@/lib/features";
 import AffiliateButton from "@/components/AffiliateButton";
 import { CardMark } from "@/components/CardTile";
 import Faq from "@/components/Faq";
@@ -11,12 +12,20 @@ import StickyApply from "@/components/StickyApply";
 import Reveal from "@/components/Reveal";
 import TailSweep from "@/components/fox/TailSweep";
 
-/** Staattinen generointi kaikille korteille — nopein mahdollinen sivu. */
+/**
+ * Staattinen generointi kaikille korteille — nopein mahdollinen sivu.
+ * Kun korttiosio on piilotettu, sivuja ei generoida lainkaan: muuten
+ * build kirjoittaisi kahdeksan valmista HTML-tiedostoa osiosta, jonka
+ * on tarkoitus olla poissa näkyvistä.
+ */
 export function generateStaticParams() {
+  if (!FEATURES.cards) return [];
   return getCards().map((c) => ({ slug: c.slug }));
 }
 
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
+  if (!FEATURES.cards) return {};
+
   const card = getCard(params.slug);
   if (!card) return {};
   const title = `${card.name} – kokemuksia, edut ja kulut 2026`;
@@ -31,6 +40,8 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
 }
 
 export default function CardPage({ params }: { params: { slug: string } }) {
+  if (!FEATURES.cards) notFound();
+
   const card = getCard(params.slug);
   if (!card) notFound();
 

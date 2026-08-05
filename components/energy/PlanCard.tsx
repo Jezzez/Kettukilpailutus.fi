@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Leaf, Star, Zap } from "lucide-react";
+import { Leaf, Star, Tag, TrendingDown, TrendingUp, Zap } from "lucide-react";
 import type { ElectricityPlan } from "@/lib/energy";
-import { annualCost, TYPE_LABEL } from "@/lib/energy";
+import { annualCost, normalAnnualCost, TYPE_LABEL } from "@/lib/energy";
 import AffiliateButton from "../AffiliateButton";
 import FoxPaw from "../FoxPaw";
 
@@ -37,23 +37,63 @@ export default function PlanCard({
   plan,
   kwh,
   badge = null,
-  savings = 0,
-  savingsLabel = "",
+  compareDiff = null,
+  minCost,
   maxCost,
   rank,
 }: {
   plan: ElectricityPlan;
   kwh: number;
   badge?: PlanBadge;
-  savings?: number;
-  savingsLabel?: string;
+  /**
+   * Ero käyttäjän nykyiseen sopimukseen euroina vuodessa.
+   * Positiivinen = tämä on halvempi. `null` = käyttäjä ei ole kertonut
+   * nykyistä hintaansa, jolloin vertailua ei ole olemassa eikä sitä
+   * keksitä listan kalleimmasta.
+   */
+  compareDiff?: number | null;
+  /** Listan halvin vuosihinta. Hintapalkin nollakohta. */
+  minCost: number;
   maxCost: number;
   /** Sijaluku valitussa järjestyksessä. Ks. perustelu logopalkin kommentissa. */
   rank?: number;
 }) {
   const yearly = annualCost(plan, kwh);
   const monthly = yearly / 12;
-  const barWidth = Math.max(8, Math.round((yearly / maxCost) * 100));
+
+  /*
+    HINTAPALKKI KÄÄNNETTIIN: PITKÄ PALKKI = HALPA.
+
+    Palkki näytti aiemmin hinnan osuutta kalleimmasta, eli KALLEIN kortti
+    sai pisimmän palkin. Jokaisessa muussa käyttöliittymässä maailmassa
+    täysi palkki tarkoittaa hyvää tulosta, joten palkki luki päinvastoin
+    kuin se oli tarkoitettu — ja väärinpäin luettu kaavio on huonompi
+    kuin ei kaaviota lainkaan, koska se johtaa harhaan sekunnin ajan.
+
+    Nyt palkki on halvimman hinnan suhde tämän kortin hintaan: halvin
+    saa täyden palkin, kaksi kertaa kalliimpi puolikkaan. Kun lista on
+    hintajärjestyksessä, palkit lyhenevät alaspäin mentäessä — silloin
+    palkkia ei tarvitse selittää, se opettaa itsensä kahdessa
+    sekunnissa. Sitä varten palkki on olemassa: silmä vertaa pituuksia
+    nopeammin kuin kuutta euromäärää.
+  */
+  const barWidth = Math.max(8, Math.round((minCost / yearly) * 100));
+
+  /*
+    ERO NYKYISEEN NÄKYY JOKAISESSA KORTISSA — MYÖS SILLOIN KUN SE ON HUONO.
+
+    Aiemmin luku näytettiin vain jos sopimus oli halvempi kuin asiakkaan
+    nykyinen. Se tarkoitti kahta ongelmaa. Ensinnäkin luku oli vain
+    osassa kortteja, jolloin korttien sisältö oli eri korkeudella eikä
+    hintoja voinut enää silmäillä vaakasuoraan. Toiseksi kalliimman
+    sopimuksen kortti oli hiljaa juuri siitä tiedosta, joka asiakasta
+    kiinnostaa — ja vaikeneminen huomataan.
+
+    Kun kaikki 24 korttia kertovat eron samassa kohdassa, listasta tulee
+    työkalu eikä myyntiesite. Se on tämän sivuston ainoa kilpailuetu:
+    kävijä uskoo luvut, koska ne eivät kaikki osoita samaan suuntaan.
+  */
+  const diffMonthly = compareDiff === null ? null : compareDiff / 12;
 
   /*
     KAIKKI KORTIT OVAT ORANSSEJA — JÄRJESTYS TEHDÄÄN NAUHALLA, EI POHJAVÄRILLÄ.
@@ -82,6 +122,29 @@ export default function PlanCard({
   const cheapest = badge?.kind === "cheapest";
   const foxPick = badge?.kind === "fox";
 
+  /*
+    KAMPANJA — KUMPPANIN OMA TARJOUS KORTIN YLÄKULMASSA.
+
+    Kampanja on ainoa tieto kortissa, jolla on takaraja. Hinta, marginaali
+    ja määräaika ovat voimassa ensi kuussakin, mutta "perusmaksu 0 € kolme
+    kuukautta" on syy tehdä sopimus tänään eikä joskus. Vertailusivun
+    tuotto syntyy vasta klikistä, ja klikin suurin este on lykkääminen —
+    siksi juuri tämä tieto ansaitsee kortin näkyvimmän kohdan.
+
+    Merkki on kumppanin oma tarjous, ei Ketun kannanotto. Siksi siinä ei
+    ole tassua: tassu on varattu Ketun omille väitteille, ja jos sama
+    merkki esiintyisi sähköyhtiön mainoksessa, koko tassun merkitys
+    laimenisi. Lipputikku (Tag) lukee tarjoukseksi ilman selitystä.
+  */
+  const campaign = plan.campaign ?? null;
+
+  /* Kampanjan jälkeinen kuukausihinta. Iso euroluku kortissa on
+     ENSIMMÄISEN VUODEN keskiarvo kampanja mukaan luettuna, eli se on
+     kampanjakorteissa pienempi kuin pysyvä hinta. Ilman tätä lukua
+     kortti lupaisi hinnan, joka nousee ilman varoitusta — ja juuri se
+     on se pettymys, joka menettää asiakkaan ja tuo valituksen. */
+  const normalMonthly = campaign ? normalAnnualCost(plan, kwh) / 12 : null;
+
   return (
     /*
       Nosto tulee yhteisestä `.lift`-säännöstä (globals.css), ei kortin
@@ -92,7 +155,22 @@ export default function PlanCard({
       `.lift` kunnioittaa myös `prefers-reduced-motion`-asetusta.
     */
     <article
+      /*
+        KÄRKIKORTIN KEHYS.
+
+        Kaikki kortit ovat oranssia, joten ykkösen piti erottua jollain
+        muulla kuin pohjavärillä. Kermanvalkoinen rengas kehyksen
+        ulkopuolella on kirkkain arvo koko ruudukossa heti ostonapin
+        jälkeen, eikä se muuta kortin kokoa — reunan paksuntaminen olisi
+        siirtänyt ykköskortin sisällön pikselin muita alemmas ja
+        rikkonut sen vaakalinjan, jolla hintoja verrataan.
+
+        Rengas seuraa SIJAA eikä merkkiä: se kertoo "tämä on ensimmäinen
+        valitsemassasi järjestyksessä". Uusia värejä ei tullut yhtään.
+      */
       className={`lift theme-ember ember-surface group relative flex h-full flex-col overflow-hidden rounded-2xl border shadow-cardHover ${
+        rank === 1 ? "ring-2 ring-cream/45" : ""
+      } ${
         cheapest
           ? "border-cream/70 hover:border-cream"
           : foxPick
@@ -110,64 +188,98 @@ export default function PlanCard({
         samalla linjalla, erot lukee pysähtymättä; kun eivät, jokainen
         kortti pitää lukea erikseen. Tyhjä palkki maksaa 44 pikseliä
         korkeutta ja ostaa sillä koko listan luettavuuden.
+
+        YKSI PALKKI, KAKSI TIETOA: MERKKI VASEMMALLA, KAMPANJA OIKEALLA.
+
+        Palkkeja oli aiemmin yksi kolmesta vaihtoehdosta (kerma, kulta,
+        tyhjä). Kampanjamerkki ei mahtunut niiden rinnalle omaksi
+        neljänneksi palkiksi rikkomatta 44 pikselin sääntöä, joten palkki
+        on nyt yksi rivi, jonka vasen puoli kertoo Ketun merkin ja oikea
+        kumppanin tarjouksen. Korkeus pysyy samana kaikissa neljässä
+        yhdistelmässä.
+
+        Kun kortissa on sekä merkki että kampanja, vasen teksti lyhenee
+        ("Edullisin"), koska katkaistu merkki lukee virheenä. Kampanja ei
+        lyhene: se on se lause, jonka takia kortti klikataan.
       */}
-      {cheapest ? (
-        /* Kermanauha, ei kirkkaanoranssi: oranssi nauha oranssilla
-           kortilla olisi kaksi lähes samaa sävyä päällekkäin. */
-        <div className="flex h-10 items-center bg-cream px-4 sm:px-5">
-          <p className="flex items-center gap-1.5 font-display text-[11px] font-bold uppercase tracking-[0.14em] text-[#A83E0A]">
-            <Zap size={12} aria-hidden /> Edullisin kulutuksellasi
+      <div
+        className={`flex h-10 items-center gap-2 px-3.5 sm:px-4 ${
+          cheapest ? "bg-cream" : foxPick ? "bg-gold" : "border-b border-white/10 bg-black/10"
+        }`}
+      >
+        {/* Kermanauha, ei kirkkaanoranssi: oranssi nauha oranssilla
+            kortilla olisi kaksi lähes samaa sävyä päällekkäin. */}
+        {cheapest && (
+          <p className="flex min-w-0 items-center gap-1.5 font-display text-[11px] font-bold uppercase tracking-[0.14em] text-[#A83E0A]">
+            <Zap size={12} className="shrink-0" aria-hidden />
+            <span className="truncate">{campaign ? "Edullisin" : "Edullisin kulutuksellasi"}</span>
           </p>
-        </div>
-      ) : !foxPick ? (
-        /* Tyhjä nauha, ks. perustelu yllä. Tummennus eikä vaalennus:
-           vaalea raita lukisi merkiksi, ja merkitön kortti saisi merkin. */
-        <div className="h-10 border-b border-white/10 bg-black/10" aria-hidden />
-      ) : null}
-      {foxPick && (
-        <div className="flex h-10 items-center gap-2.5 bg-gold px-3.5">
-          {/*
-            KULTAINEN TASSU TUMMALLA LAATALLA — EI TASSUA SUORAAN NAUHALLE.
-
-            Nauha on kultaa, joten kultainen tassu suoraan sen päällä olisi
-            kaksi samaa sävyä päällekkäin eli näkymätön. Tumma pyöreä laatta
-            antaa tassulle taustan, ja samalla merkki alkaa lukea sinettinä
-            eikä ikonina — juuri sitä se on. Kilpailijat rakentavat saman
-            luottamuksen kolmannen osapuolen sertifikaateilla (TÜV, eKomi),
-            joita Ketulla ei ole eikä niitä keksitä. Oma sinetti on ainoa
-            rehellinen tapa saada sama visuaalinen paino.
-
-            Tassu on sivuston yleinen allekirjoitus: sama muoto toistuu
-            jokaisen kortin ominaisuusriveillä, joten lukija on jo oppinut,
-            että tassun vieressä oleva väite on Ketun oma kannanotto eikä
-            sähköyhtiön markkinointitekstiä.
-          */}
-          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#4A2E06] text-gold shadow-[0_1px_2px_rgba(74,26,2,0.4)]">
-            <FoxPaw size={15} />
-          </span>
-          <div className="min-w-0">
-            <p className="font-display text-[11px] font-bold uppercase leading-none tracking-[0.14em] text-[#4A2E06]">
-              Ketun valinta
-            </p>
+        )}
+        {foxPick && (
+          <div className="flex min-w-0 items-center gap-2.5">
             {/*
-              PERUSTELU HETI MERKIN ALLA, EI RIVIN OIKEASSA REUNASSA.
+              KULTAINEN TASSU TUMMALLA LAATALLA — EI TASSUA SUORAAN NAUHALLE.
 
-              Oikeassa reunassa se katosi mobiilissa kokonaan ja työpöydällä
-              se luki niin kaukana merkistä, ettei sitä yhdistetty siihen.
-              Vertailusivun yleisin epäily on "onko tämä nosto ostettu?", ja
-              siihen pitää vastata siinä sekunnissa kun epäily syntyy.
+              Nauha on kultaa, joten kultainen tassu suoraan sen päällä olisi
+              kaksi samaa sävyä päällekkäin eli näkymätön. Tumma pyöreä laatta
+              antaa tassulle taustan, ja samalla merkki alkaa lukea sinettinä
+              eikä ikonina — juuri sitä se on. Kilpailijat rakentavat saman
+              luottamuksen kolmannen osapuolen sertifikaateilla (TÜV, eKomi),
+              joita Ketulla ei ole eikä niitä keksitä. Oma sinetti on ainoa
+              rehellinen tapa saada sama visuaalinen paino.
 
-              Tässä lukee lopputulos, ei kaava. Painotus (hinta 72 %,
-              käyttäjäarvio 28 %) on auki sivun läpinäkyvyysosiossa — se on
-              se paikka, josta epäilevä lukija sen etsii, ja kolmen luvun
-              lukeminen kortin merkistä hidasti kaikkia muita.
+              Tassu on sivuston yleinen allekirjoitus: sama muoto toistuu
+              jokaisen kortin ominaisuusriveillä, joten lukija on jo oppinut,
+              että tassun vieressä oleva väite on Ketun oma kannanotto eikä
+              sähköyhtiön markkinointitekstiä.
             */}
-            <p className="mt-1 truncate font-data text-[10.5px] font-bold leading-none text-[#5C3A08]">
-              Paras hinta-laatusuhde
-            </p>
+            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#4A2E06] text-gold shadow-[0_1px_2px_rgba(74,26,2,0.4)]">
+              <FoxPaw size={15} />
+            </span>
+            <div className="min-w-0">
+              <p className="truncate font-display text-[11px] font-bold uppercase leading-none tracking-[0.14em] text-[#4A2E06]">
+                Ketun valinta
+              </p>
+              {/*
+                PERUSTELU HETI MERKIN ALLA, EI RIVIN OIKEASSA REUNASSA.
+
+                Oikeassa reunassa se katosi mobiilissa kokonaan ja työpöydällä
+                se luki niin kaukana merkistä, ettei sitä yhdistetty siihen.
+                Vertailusivun yleisin epäily on "onko tämä nosto ostettu?", ja
+                siihen pitää vastata siinä sekunnissa kun epäily syntyy.
+
+                Tässä lukee lopputulos, ei kaava. Painotus (ensimmäinen vuosi
+                50 %, kampanjan jälkeinen hinta 50 %) on auki sivun
+                läpinäkyvyysosiossa — se on se paikka, josta epäilevä lukija
+                sen etsii, ja kahden luvun lukeminen kortin merkistä hidasti
+                kaikkia muita.
+              */}
+              <p className="mt-1 truncate font-data text-[10.5px] font-bold leading-none text-[#5C3A08]">
+                Halvin myös kampanjan jälkeen
+              </p>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+        {campaign && (
+          /*
+            KERMANVALKOINEN LAATTA TUMMALLA PALKILLA, TUMMA VAALEALLA.
+
+            Tyhjä palkki on tarkoituksella tummennettu, jotta merkitön
+            kortti ei saisi merkkiä. Kampanjamerkki saa silti olla kirkas:
+            se EI ole koristeraita vaan kortin ainoa aikarajattu tieto,
+            joten sen lukeminen merkiksi on oikein.
+          */
+          <span
+            className={`ml-auto flex shrink-0 items-center gap-1 rounded-md px-2 py-1 font-display text-[10.5px] font-bold leading-none ${
+              cheapest || foxPick ? "bg-[#4A2E06] text-cream" : "bg-cream text-[#A83E0A]"
+            }`}
+            title={campaign.limit ? `Tarjous: ${campaign.limit}` : "Kumppanin oma tarjous"}
+          >
+            <Tag size={11} className="shrink-0" aria-hidden />
+            {campaign.label}
+          </span>
+        )}
+      </div>
 
       {/*
         LOGOPALKKI — kortin ylin rivi.
@@ -192,11 +304,32 @@ export default function PlanCard({
       */}
       <div className="flex items-center gap-2.5 border-b border-line bg-black/10 px-3.5 py-2.5 sm:px-4">
         {rank !== undefined && (
+          /*
+            KOLME KÄRKISIJAA EROTTUVAT — VALOARVOLLA, EI MITALEILLA.
+
+            Palkintopallin idea on oikea: kolmen kärki pitää lukea
+            palkintosijoina eikä juoksevana numerointina. Mitaliemojit
+            🥇🥈🥉 eivät silti käy. Ne ovat käyttöjärjestelmän omia
+            värikuvakkeita, eli ne näyttävät erilaisilta jokaisella
+            laitteella eikä niiden väreihin voi vaikuttaa — punaiset
+            nauhat ja harmaa hopea toisivat sivulle kolme uutta väriä
+            kahden sallitun rinnalle. Emoji lukee myös leikkisänä, ja
+            21 numeroa kolmen emojin perässä näyttäisi virheeltä.
+
+            Sama järjestys tehdään siis kirkkaudella: 1. täysi kerma,
+            2. vahva kermareunus, 3. himmeä kermareunus, loput vaimeat.
+            Kolme kärkeä erottuu yhdellä silmäyksellä, ilme pysyy
+            aikuisena eikä uusia värejä tule yhtään.
+          */
           <span
-            className={`grid h-6 w-6 shrink-0 place-items-center rounded-lg font-data text-[12px] font-extrabold tabular-nums ${
+            className={`grid shrink-0 place-items-center rounded-lg font-data font-extrabold tabular-nums ${
               rank === 1
-                ? "bg-cream text-[#A83E0A]"
-                : "border border-cream/25 bg-black/15 text-cream/75"
+                ? "h-7 w-7 bg-cream text-[13px] text-[#A83E0A] shadow-[0_1px_3px_rgba(74,26,2,0.35)]"
+                : rank === 2
+                  ? "h-6 w-6 border border-cream/60 bg-black/15 text-[12px] text-cream"
+                  : rank === 3
+                    ? "h-6 w-6 border border-cream/35 bg-black/15 text-[12px] text-cream/85"
+                    : "h-6 w-6 border border-cream/15 bg-black/15 text-[12px] text-cream/60"
             }`}
             aria-hidden
           >
@@ -257,6 +390,43 @@ export default function PlanCard({
             kolmen eri pyöristyksen näyttäminen olisi sama ongelma
             uudessa muodossa.
           */}
+          {/* Ero nykyiseen ENNEN hintaa: se on ainoa luku, jota ei voi
+              päätellä muualta kortista, ja se on syy lukea loput. */}
+          {diffMonthly !== null && (
+            <p
+              className={`mb-2 inline-flex items-center gap-1.5 rounded-lg border px-2 py-1 text-[12px] ${
+                diffMonthly > 0.5
+                  ? "border-cream/45 bg-black/15 text-cream"
+                  : "border-cream/15 bg-black/10 text-ink/65"
+              }`}
+            >
+              {diffMonthly > 0.5 ? (
+                <>
+                  <TrendingDown size={13} className="shrink-0" aria-hidden />
+                  <span>
+                    Säästät{" "}
+                    <strong className="font-data font-bold">
+                      {diffMonthly.toLocaleString("fi-FI", { maximumFractionDigits: 0 })} €
+                    </strong>{" "}
+                    / kk nykyiseen verrattuna
+                  </span>
+                </>
+              ) : diffMonthly < -0.5 ? (
+                <>
+                  <TrendingUp size={13} className="shrink-0" aria-hidden />
+                  <span>
+                    <strong className="font-data font-bold">
+                      {Math.abs(diffMonthly).toLocaleString("fi-FI", { maximumFractionDigits: 0 })} €
+                    </strong>{" "}
+                    / kk kalliimpi kuin nykyinen
+                  </span>
+                </>
+              ) : (
+                <span>Käytännössä sama hinta kuin nyt</span>
+              )}
+            </p>
+          )}
+
           <div className="flex items-baseline gap-1.5">
             <span className="font-display font-data font-price text-[30px] font-extrabold leading-none tracking-[-0.03em] text-ink">
               {monthly.toLocaleString("fi-FI", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} €
@@ -264,19 +434,62 @@ export default function PlanCard({
             <span className="font-display text-[13px] font-semibold text-ink/60">/ kk</span>
           </div>
 
-          <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-black/20">
+          <div
+            className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-black/20"
+            role="img"
+            aria-label={`Hinta suhteessa listan halvimpaan: mitä pidempi palkki, sitä halvempi sopimus. Tämä ${barWidth} prosenttia täydestä.`}
+            title="Mitä pidempi palkki, sitä halvempi sopimus"
+          >
             <div
               className="h-full rounded-full bg-cream transition-all duration-500"
               style={{ width: `${barWidth}%` }}
             />
           </div>
 
+          {/* Vuosihinta JA sen alkuperä samalla rivillä. Pelkkä
+              "168 € vuodessa" luetaan yleisenä listahintana; ilman
+              lukua taas katoaa se summa, jolla sopimuksia oikeasti
+              vertaillaan. Rivi sanoo molemmat eikä vie ylimääräistä
+              korkeutta. */}
           <p className="mt-2 text-[12px] text-ink/60">
             {yearly.toLocaleString("fi-FI", { maximumFractionDigits: 0 })} € vuodessa
+            <span className="mx-1.5 text-cream/40" aria-hidden>·</span>
+            {campaign ? "ensimmäinen vuosi kampanjoineen" : "laskettu kulutuksellasi"}
           </p>
-          {savings > 0 && (
-            <p className="mt-1 text-[12px] font-semibold text-accentDark">
-              Säästät {savings.toLocaleString("fi-FI", { maximumFractionDigits: 0 })} € {savingsLabel}
+
+          {/*
+            KAMPANJAN JÄLKEINEN HINTA SANOTAAN HETI ISON LUVUN ALLA.
+
+            Iso euroluku on ensimmäisen vuoden keskiarvo, jossa kampanja
+            on mukana. Kampanjakortissa se on siis pienempi kuin hinta,
+            jonka asiakas maksaa vuoden kuluttua. Jos kortti näyttäisi
+            pelkän kampanjaluvun, se voittaisi vertailun tarjouksella ja
+            asiakas huomaisi eron vasta laskusta — se on yksi peruutus,
+            yksi menetetty palkkio ja yksi asiakas, joka ei palaa. Kolmen
+            kuukauden tarjous ei saa ostaa ykköspaikkaa hiljaisuudella.
+
+            Rajoitus ("vain uusille asiakkaille") on samalla rivillä:
+            se on ainoa asia, joka voi tehdä koko tarjouksesta lukijalle
+            mahdottoman, ja sen lukeminen vasta kumppanin sivulta on
+            hukkaan mennyt klikki molemmille osapuolille.
+          */}
+          {campaign && normalMonthly !== null && (
+            <p className="mt-1 text-[12px] text-ink/60">
+              Kampanjan jälkeen{" "}
+              <span className="font-data font-bold text-ink/80">
+                {normalMonthly.toLocaleString("fi-FI", {
+                  minimumFractionDigits: 1,
+                  maximumFractionDigits: 1,
+                })}{" "}
+                €
+              </span>{" "}
+              / kk
+              {campaign.limit ? (
+                <>
+                  <span className="mx-1.5 text-cream/40" aria-hidden>·</span>
+                  {campaign.limit}
+                </>
+              ) : null}
             </p>
           )}
         </div>
@@ -336,11 +549,37 @@ export default function PlanCard({
           ))}
         </ul>
 
+        {/*
+          TÄHTIRIVI NÄKYY VAIN JOS ARVIO ON OLEMASSA.
+
+          Kumppaniyhtiöille ei ole riippumatonta arviolähdettä, joten
+          niiden `rating` on `null`. Keksitty 4,6 tähteä olisi kortin
+          halvin tapa näyttää luotettavalta ja samalla ainoa väite, jonka
+          lukija voi kumota yhdellä haulla — ja kun yksi luku paljastuu
+          keksityksi, myös hinnat lakkaavat kelpaamasta. Sivuston koko
+          ansaintalogiikka on siinä, että luvut kestävät tarkistuksen.
+
+          Kun arviota ei ole, rivin vasen puoli jää tyhjäksi ja "Tiedot"
+          siirtyy oikeaan reunaan `justify-between`-säännön mukaan. Rivin
+          korkeus säilyy, joten korttien vaakalinja ei liiku.
+        */}
         <div className="mt-3 flex items-center justify-between gap-3 border-t border-line pt-3">
-          <p className="flex items-center gap-1 text-[12px] text-ink/60">
-            <Star size={13} className="fill-star text-star" aria-hidden />
-            <span className="font-data font-bold text-ink">{plan.rating.toFixed(1)}</span> ({plan.reviews})
-          </p>
+          {plan.rating !== null ? (
+            <p className="flex items-center gap-1 text-[12px] text-ink/60">
+              <Star size={13} className="fill-star text-star" aria-hidden />
+              <span className="font-data font-bold text-ink">{plan.rating.toFixed(1)}</span>
+              {plan.reviews !== null ? ` (${plan.reviews})` : ""}
+            </p>
+          ) : (
+            /* Tarkistuspäivä arvion tilalla: se on tieto, joka on
+               oikeasti olemassa, ja se vastaa kortin toiseksi yleisimpään
+               epäilyyn ("onko tämä hinta vanha?"). */
+            <p className="text-[12px] text-ink/55">
+              {plan.checkedAt
+                ? `Hinta tarkistettu ${new Date(plan.checkedAt).toLocaleDateString("fi-FI")}`
+                : ""}
+            </p>
+          )}
           <Link
             href={`/sahkosopimukset/sopimus/${plan.slug}`}
             className="text-[12.5px] font-semibold text-ink/60 underline-offset-4 hover:text-ink hover:underline"
@@ -349,6 +588,17 @@ export default function PlanCard({
           </Link>
         </div>
 
+        {/*
+          NAPIN TEKSTI KERTOO, MITÄ KLIKKI OIKEASTI TEKEE.
+
+          "Tee sopimus" on kumppanilinkki, josta Kettu saa palkkion.
+          Sopimukselle, jonka yhtiön kanssa ei ole kumppanuutta, sama
+          teksti lupaisi tilausputken, jota linkin päässä ei ole.
+          Neutraali teksti pitää listan avoinna myös yhtiöille, jotka
+          eivät maksa — ja juuri se on ainoa syy uskoa, ettei järjestystä
+          ole ostettu. Vertailu, joka näyttää vain maksavat yhtiöt, on
+          mainos, ja mainokselta ei kysytä neuvoa toista kertaa.
+        */}
         <div className="theme-light mt-2.5">
           <AffiliateButton
             href={plan.affiliateUrl}
@@ -357,7 +607,7 @@ export default function PlanCard({
             variant="inverse"
             className="w-full"
           >
-            Tee sopimus
+            {plan.partner ? "Tee sopimus" : "Siirry palveluntarjoajalle"}
           </AffiliateButton>
         </div>
       </div>

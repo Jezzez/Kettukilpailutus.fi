@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { ChevronRight, Clock } from "lucide-react";
 import { getPost, getPosts, SITE } from "@/lib/data";
 import CtaSection from "@/components/CtaSection";
+import FoxPaw from "@/components/FoxPaw";
+import { FEATURES } from "@/lib/features";
 
 export function generateStaticParams() {
   return getPosts().map((p) => ({ slug: p.slug }));
@@ -45,6 +47,16 @@ export default function PostPage({ params }: { params: { slug: string } }) {
     uudelleen eikä laajentaa arvauksella.
   */
   const isEnergy = post.category === "Sähkö";
+  /*
+    Korttiaiheinen artikkeli piilotetun osion aikana: 13 artikkelista 9
+    käsittelee luottokortteja, ja niiden loppukehote osoitti aiemmin
+    korttivertailuun. Nyt se osoite palauttaa 404, joten kehote on
+    korvattava. Sähkökehote tilalle olisi houkutteleva mutta väärä:
+    luottokorttiartikkelin lukija ei ole sähkönostoaikeissa, ja aiheeseen
+    liittymätön kehote on juuri se ele, joka saa vertailusivun
+    näyttämään liidifarmilta.
+  */
+  const cardsHidden = !isEnergy && !FEATURES.cards;
 
   /*
     LUE MYÖS -NOSTOT.
@@ -124,6 +136,31 @@ export default function PostPage({ params }: { params: { slug: string } }) {
       tarkoituksellinen: kun kehote näyttää joka sivulla samalta,
       lukija tunnistaa sen kolmannella sivulla ilman lukemista.
     */}
+    {cardsHidden ? (
+      /*
+        Huomautus, ei kehote. Tämä sivu ei tuota mitään sillä välin kun
+        korttiosio on kiinni — mutta se ei myöskään lupaa mitään, mitä ei
+        voi lunastaa, eikä vie lukijaa umpikujaan. Kun FEATURES.cards
+        kääntyy todeksi, oranssi kehotevyö palaa itsestään tilalle.
+      */
+      <section aria-label="Korttivertailun tilanne" className="mx-auto max-w-3xl px-4 pb-4 sm:px-6">
+        <div className="flex gap-3.5 rounded-2xl border border-line bg-mist p-6">
+          <span className="mt-1 shrink-0 text-accentDark">
+            <FoxPaw size={16} />
+          </span>
+          <div>
+            <p className="font-display text-[15.5px] font-semibold text-ink">
+              Korttivertailu on vielä työn alla
+            </p>
+            <p className="mt-1.5 text-[14.5px] leading-relaxed text-ink/70">
+              Kettu kilpailuttaa toistaiseksi sähkösopimukset. Luottokorttien vertailu
+              avataan vasta, kun jokainen korko, kulu ja etu on tarkistettu kortin
+              myöntäjältä — arvaamalla kootusta taulukosta ei ole kenellekään hyötyä.
+            </p>
+          </div>
+        </div>
+      </section>
+    ) : (
     <CtaSection
       href={isEnergy ? "/sahkosopimukset#vertailu" : "/luottokortit#vertailu"}
       title={
@@ -138,6 +175,7 @@ export default function PostPage({ params }: { params: { slug: string } }) {
       }
       button={isEnergy ? "Kilpailuta sähkö ilmaiseksi" : "Aloita ilmainen vertailu"}
     />
+    )}
 
     <section aria-label="Lue myös" className="mx-auto max-w-[1180px] px-4 py-16 sm:px-6">
       <h2 className="font-display text-[22px] font-semibold text-ink">Lue myös</h2>

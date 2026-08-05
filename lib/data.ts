@@ -37,10 +37,26 @@ export function getFaq(): FaqItem[] {
 }
 
 export const SITE = {
-  name: "Kettukilpailutus",
+  /**
+   * NIMI ON DOMAIN — MUTTA VAIN SIELLÄ MISSÄ SE ON NIMILAPPU.
+   *
+   * `name` menee tunnuksiin, selaimen välilehdelle, hakutuloksen
+   * otsikkoon, og:site_nameen ja footerin tekijänoikeusriville. Näissä
+   * nimi seisoo yksin, ja päätteellinen muoto kertoo kävijälle suoraan
+   * mihin osoitteeseen palataan. Vertailupalvelun toistuva käyttö tulee
+   * pitkälti siitä, että osoite muistetaan ilman hakukonetta — se on
+   * ilmaisinta mahdollista kävijähankintaa.
+   *
+   * LEIPÄTEKSTISSÄ JA LAKISIVUILLA nimi kirjoitetaan yhä muodossa
+   * "Kettukilpailutus". Suomessa domain taipuu kaksoispisteellä
+   * ("Kettukilpailutus.fi:n rekisteriseloste"), ja se muoto lukee
+   * kömpelösti juuri niillä sivuilla, joiden tehtävä on vakuuttaa
+   * lukija siitä, että takana on oikea yritys.
+   */
+  name: "Kettukilpailutus.fi",
   url: "https://www.kettukilpailutus.fi",
   description:
-    "Kettu kilpailuttaa sopimuksesi puolestasi. Sähkösopimukset ja luottokortit puolueettomasti vertailtuna omilla luvuillasi — ilmaiseksi ja selvällä suomella.",
+    "Kettu kilpailuttaa sopimuksesi puolestasi. Sähkösopimukset puolueettomasti vertailtuna omilla luvuillasi — ilmaiseksi ja selvällä suomella.",
 
   /**
    * YLLÄPITÄJÄN TIEDOT — footerin luottamuslohko.

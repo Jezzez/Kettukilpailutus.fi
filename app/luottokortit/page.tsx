@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import Hero from "@/components/Hero";
 import TrustBar from "@/components/TrustBar";
 import Steps from "@/components/Steps";
@@ -13,8 +14,17 @@ import Reveal from "@/components/Reveal";
 import FoxSays from "@/components/FoxSays";
 import SectionHead from "@/components/SectionHead";
 import { getCards, getFaq, SITE } from "@/lib/data";
+import { FEATURES } from "@/lib/features";
 
-export const metadata: Metadata = {
+/*
+  Piilotettuna sivu palauttaa 404, mutta metadata luetaan silti — ja
+  selaimen välilehdellä luki "Vertaa luottokortit" virhesivun päällä.
+  Ristiriita otsikon ja sisällön välillä on juuri se yksityiskohta,
+  josta kävijä päättelee ettei sivustoa ylläpidetä.
+*/
+export const metadata: Metadata = !FEATURES.cards
+  ? { title: "Sivua ei löytynyt", robots: { index: false, follow: false } }
+  : {
   // Layoutin title-template lisää jo "| Kettukilpailutus". Kun se oli myös
   // tässä, selaimen välilehdellä ja Googlen hakutuloksessa luki brändi kahdesti
   // — se lyhentää näkyvää otsikkoa ja näyttää huolimattomalta juuri siinä
@@ -29,9 +39,21 @@ export const metadata: Metadata = {
       "Vertaa Suomen suosituimmat luottokortit: edut, kulut ja korot puolueettomasti rinnakkain.",
     url: "/luottokortit",
   },
-};
+    };
 
 export default function CreditCardsPage() {
+  /*
+    KORTTIOSIO ON PIILOTETTU — SIVU VASTAA 404, EI TYHJÄÄ RUNKOA.
+
+    Linkit tälle sivulle on poistettu navigaatiosta, mutta osoite elää
+    yhä kirjanmerkeissä ja hakukoneen indeksissä. Jos sivu palauttaisi
+    tyhjän tai keskeneräisen näkymän, kävijä tulkitsisi sen rikkinäiseksi
+    palveluksi ja veisi epäluulon mukanaan myös sähkövertailuun. Selkeä
+    404 on rehellisempi ja kertoo Googlelle, ettei osoitetta kannata
+    pitää indeksissä sillä välin kun osio on kiinni.
+  */
+  if (!FEATURES.cards) notFound();
+
   const cards = getCards();
   const faq = getFaq();
 

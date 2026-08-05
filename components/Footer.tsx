@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { getCards, SITE } from "@/lib/data";
 import { getPlans, getEnergyTopics } from "@/lib/energy";
 import FoxMark from "./FoxMark";
+import { FEATURES } from "@/lib/features";
 
 /**
  * Footer seuraa kontekstia: sähköä kilpailuttavalle ei tarjota
@@ -14,7 +15,8 @@ import FoxMark from "./FoxMark";
 export default function Footer() {
   const pathname = usePathname() ?? "/";
   const onEnergy = pathname.startsWith("/sahkosopimukset");
-  const onCards = pathname.startsWith("/luottokortit") || pathname.startsWith("/kortit");
+  const onCards =
+    FEATURES.cards && (pathname.startsWith("/luottokortit") || pathname.startsWith("/kortit"));
 
   const contextNav = onEnergy
     ? {
@@ -40,7 +42,7 @@ export default function Footer() {
           title: "Kilpailuta",
           links: [
             { href: "/sahkosopimukset", label: "Sähkösopimukset" },
-            { href: "/luottokortit", label: "Luottokortit" },
+            ...(FEATURES.cards ? [{ href: "/luottokortit", label: "Luottokortit" }] : []),
             { href: "/blogi", label: "Ketun oppaat" },
           ],
         };
@@ -81,16 +83,35 @@ export default function Footer() {
       <div className="relative mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-4">
         <div className="md:col-span-2">
           <p className="flex items-center gap-2.5 font-display text-[17px] font-bold uppercase tracking-wide text-ink">
-            <FoxMark size={26} /> Kettukilpailutus
+            <FoxMark size={26} />
+            <span>
+              Kettukilpailutus<span className="normal-case">.fi</span>
+            </span>
           </p>
           <p className="mt-2.5 max-w-sm font-display text-[14.5px] font-bold leading-snug text-accentDark">
             Ketuttaako maksaa liikaa? Anna Ketun kilpailuttaa puolestasi.
           </p>
+          {/*
+            "HINNAT OVAT ESIMERKINOMAISIA" POISTETTIIN ALATUNNISTEESTA.
+
+            Alatunniste on joka sivulla. Kun sähkövertailun hinnat on
+            tarkistettu yhtiöiden omilta sivuilta ja päivämäärä näkyy
+            jokaisessa kortissa, sama alatunniste kumosi juuri sen työn:
+            lukija näki kortissa tarkistetun hinnan ja sivun alalaidassa
+            lauseen, jonka mukaan hinnat ovat esimerkkejä. Ristiriita
+            luetaan aina huonompaan suuntaan.
+
+            Varoitus ei kuitenkaan katoa sieltä, missä se on yhä totta:
+            luottokorttien luvut ovat edelleen esimerkkidataa, ja niistä
+            kerrotaan korttisivuilla erikseen. Yleinen kehotus tarkistaa
+            ehdot palveluntarjoajalta jää tähän, koska se pitää paikkansa
+            riippumatta siitä, kuinka tuore hinta on.
+          */}
           <p className="mt-3.5 max-w-md text-[12px] leading-relaxed text-ink/60">
             <strong className="font-bold text-ink/80">Mainostajan ilmoitus:</strong> Saamme
             korvauksen, kun teet sopimuksen kumppanin palvelussa linkkiemme kautta. Korvaus ei
-            vaikuta vertailun sisältöön eikä järjestykseen. Hinnat ovat esimerkinomaisia — tarkista
-            ajantasaiset ehdot palveluntarjoajan sivuilta.
+            vaikuta vertailun sisältöön eikä järjestykseen. Tarkista ajantasainen hinta ja ehdot
+            aina palveluntarjoajan sivuilta ennen sopimuksen tekemistä.
           </p>
 
           <OperatorDetails />

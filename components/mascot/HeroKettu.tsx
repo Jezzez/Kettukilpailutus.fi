@@ -7,17 +7,26 @@ import Kettu, { type KettuPose } from "./Kettu";
 /**
  * Heron Kettu: saapuu kerran ja elää sen jälkeen hillitysti.
  * Ei puhekuplia — maskotti on läsnä, ei äänessä.
+ *
+ * PERUSASENTO ON "OSOITTAA", EI "KORTTI". Kun korttivertailu on
+ * piilotettu, etusivun maskotti ei voi pidellä luottokorttia: kävijä
+ * lukee kuvasta lupauksen, jota navigaatiosta ei löydy, ja ristiriita
+ * kuvan ja valikon välillä luetaan huolimattomuutena juuri sivuston
+ * ensimmäisessä sekunnissa. Kun kortit avataan, vaihda `base` takaisin
+ * arvoon "kortti".
  */
+const base: KettuPose = "osoittaa";
+const alt: KettuPose = "peukku";
 export default function HeroKettu({ height = 560 }: { height?: number }) {
   const reduce = useReducedMotion();
-  const [pose, setPose] = useState<KettuPose>("kortti");
+  const [pose, setPose] = useState<KettuPose>(base);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   useEffect(() => {
     if (reduce) return;
     const loop = setInterval(() => {
-      setPose((p) => (p === "kortti" ? "osoittaa" : "kortti"));
-      timers.current.push(setTimeout(() => setPose("kortti"), 4200));
+      setPose((p) => (p === base ? alt : base));
+      timers.current.push(setTimeout(() => setPose(base), 4200));
     }, 14000);
 
     return () => {

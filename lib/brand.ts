@@ -4,10 +4,10 @@
  * käyttää samaa design-järjestelmää ja maskottia — vain tämä tiedosto vaihtuu.
  */
 export const BRAND = {
-  platform: "Kettukilpailutus",
-  product: "Luottokortit",
+  platform: "Kettukilpailutus.fi",
+  product: "Sähkösopimukset",
   domain: "https://www.kettukilpailutus.fi",
-  tagline: "Kettutaako maksaa liikaa?",
-  promise: "Kettu kilpailuttaa luottokortit puolestasi.",
+  tagline: "Ketuttaako maksaa liikaa?",
+  promise: "Kettu kilpailuttaa sähkösopimuksesi puolestasi.",
   mascot: "Kettu",
 } as const;

@@ -5,7 +5,7 @@ import Reveal from "@/components/Reveal";
 import Kettu from "@/components/mascot/Kettu";
 
 export const metadata: Metadata = {
-  title: "Tietoa meistä – näin Kettukilpailutus toimii",
+  title: "Tietoa meistä – näin Kettukilpailutus.fi toimii",
   description:
     "Kettukilpailutus on riippumaton suomalainen kilpailutuspalvelu. Kerromme avoimesti, miten laskenta toimii, miten sopimukset järjestetään ja miten palvelu ansaitsee.",
   alternates: { canonical: "/tietoa" },
@@ -29,8 +29,9 @@ export default function AboutPage() {
               <p className="mt-4 max-w-prose text-[17px] leading-relaxed text-ink/80">
                 Me teemme sen toisin: hinnat lasketaan euroina sinun omilla luvuillasi,
                 laskukaava on nähtävissä ja kerromme suoraan, miten ansaitsemme. Sähkösopimukset
-                ja luottokortit ovat ensimmäiset kilpailutuksemme — lainat, vakuutukset ja
-                nettiliittymät seuraavat.
+                ovat ensimmäinen kilpailutuksemme — luottokortit, lainat, vakuutukset ja
+                nettiliittymät seuraavat. Avaamme kategorian vasta, kun sen luvut on
+                tarkistettu palveluntarjoajalta.
               </p>
               <Link
                 href="/sahkosopimukset#vertailu"
