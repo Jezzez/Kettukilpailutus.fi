@@ -16,6 +16,36 @@ html {
   color-scheme: light;
   overflow-x: clip;
   -webkit-text-size-adjust: 100%;
+
+  /*
+    JUURIELEMENTIN TAUSTA = SELAIMEN KEHYKSEN VARI SAFARISSA.
+
+    `theme-color`-metatagi (app/layout.tsx) yksin ei riitä Safarissa.
+    Safari ottaa varinsa ensisijaisesti siita, mika vari sivulla oikeasti
+    on ruudun ylareunassa — macOS:ssa valilehtipalkkiin, puhelimessa
+    osoiteriviin ja tilapalkkiin. Kun headerissa oli `.glass-ember`,
+    ylareuna oli oranssi ja selain varittyi. Kun header palautettiin
+    vaaleaksi, oranssi katosi vaikka metatagi jai paikalleen.
+
+    Tama korjaa sen koskematta headeriin. CSS:n taustansiirtosaanto:
+    jos <html>:lla EI ole taustaa, <body>:n tausta siirtyy koko kankaalle.
+    Jos <html>:lla ON tausta, kangas on sen varinen ja <body>:n tausta
+    piirtyy vain bodyn omaan laatikkoon. Body peittaa koko nakyman, joten
+    sivu nayttaa taysin samalta — oranssi jaa nakyviin vain siella, minne
+    body ei ylla: kumilenkkivenytyksessa ja selaimen omassa kehyksessa.
+
+    Header pysyy vaaleana. Tama ei ole oranssi header vaan oranssi kangas
+    sen alla.
+
+    MIKSI TUOTON KANNALTA: puhelimessa varittynyt osoiterivi latautuu
+    ennen yhtaan kuvaa. Se on ainoa brandielementti, joka ehtii nakya
+    ennen sisaltoa — ja paluukavijalle merkki siita, etta han on oikealla
+    sivulla.
+
+    Sama arvo kuin `themeColor`issa ja `.theme-ember`-pohjassa. Jos
+    muutat toista, muuta molemmat.
+  */
+  background-color: #A83E0A;
 }
 
 /* --- PINTAKERROS ---
@@ -159,6 +189,12 @@ html {
 
 body {
   @apply bg-paper text-ink font-body antialiased;
+  /*
+    Bodyn on peitettava koko nakyma, koska kangas sen alla on nyt oranssi
+    (ks. html-saanto ylla). Ilman tata lyhyt sivu — esim. 404 tai
+    tyhja hakutulos — jattaisi oranssin nakyviin sisallon alapuolelle.
+  */
+  min-height: 100vh;
 }
 
 h1, h2, h3 { letter-spacing: -0.02em; }
