@@ -165,6 +165,55 @@ export default function ElectricityExperience({
   */
   const gated = withHero;
   const [step, setStep] = useState(1);
+  /*
+    ASUMISMUODON VALINTA VIE SUORAAN KYSYMYKSEEN 2.
+
+    Vain ensimmäinen kysymys toimii näin. Muissa vaiheissa edetään
+    "Jatka"-napilla kuten ennenkin.
+
+    MIKSI JUURI TÄMÄ KYSYMYS: se on ainoa, jossa vaihtoehdot ovat
+    toisensa poissulkevia ja valinta on lopullinen heti — kerrostalo tai
+    omakotitalo, ei mitään harkittavaa jälkikäteen. Kysymyksissä 3 ja 4
+    käyttäjä voi hyvinkin epäröidä vastaustaan, ja silloin ruudun
+    vaihtuminen alta veisi häneltä mahdollisuuden muuttaa mieltään ennen
+    etenemistä. Kysymys 2 on tekstikenttä, jossa automaattinen siirtymä
+    ei ole edes mahdollinen.
+
+    MIKSI TUOTON KANNALTA: ensimmäinen napinpainallus on koko kyselyn
+    kriittisin. Siinä kohtaa käyttäjä ei ole vielä sitoutunut mihinkään,
+    ja jokainen ylimääräinen ele ennen ensimmäistä edistymisen tunnetta
+    on tilaisuus poistua. Kun ruutu vaihtuu heti, hän on jo matkalla.
+
+    VIIVE ON TARKOITUKSELLINEN, EI VIRHE. Tässä oli aiemmin kommentti,
+    joka perusteli miksi automaattista siirtymää EI tehdä: iäkkäälle
+    käyttäjälle itsestään vaihtuva ruutu on hetki, jolloin hän ei tiedä
+    mitä äsken tapahtui. Perustelu ei ollut väärä, ja siksi valinta ehtii
+    näkyä rastina ennen siirtymää. 260 ms riittää siihen, että silmä
+    rekisteröi rastin, mutta on liian lyhyt tuntuakseen odottamiselta.
+  */
+  const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (advanceTimer.current) clearTimeout(advanceTimer.current);
+  }, []);
+
+  /*
+    JOKAINEN VAIHE ALKAA KYSELYN YLAREUNASTA.
+
+    Ilman tata puhelin jai siihen kohtaan sivua, jossa "Jatka"-nappi oli:
+    uusi kysymys vaihtui ruudun ylapuolelle ja kayttaja katsoi keskelta
+    alkavaa vaihtoehtolistaa tietamatta mihin oli vastaamassa. Kysymys on
+    ruudun tarkein teksti, joten sen on oltava nakyvissa silla sekunnilla
+    kun se vaihtuu.
+
+    Vieritys ajetaan jokaisella vaiheen muutoksella, myos taaksepain, jotta
+    liike on aina sama eika kayttajan tarvitse arvata milloin sivu hyppaa.
+    Ensimmaisella renderoinnilla sita EI ajeta: silloin se repisi kavijan
+    pois herosta heti sivun auettua.
+
+    `reduce` kunnioittaa jarjestelman "vahenna liiketta" -asetusta.
+  */
+  const quizTopRef = useRef<HTMLDivElement>(null);
+  const quizMounted = useRef(false);
   const [submitted, setSubmitted] = useState(false);
   const showResults = !gated || submitted;
 
@@ -230,6 +279,15 @@ export default function ElectricityExperience({
   const [knowsCurrent, setKnowsCurrent] = useState<boolean | null>(null);
 
   const reduce = useReducedMotion();
+
+  useEffect(() => {
+    if (!quizMounted.current) { quizMounted.current = true; return; }
+    if (!gated || submitted) return;
+    quizTopRef.current?.scrollIntoView({
+      behavior: reduce ? "auto" : "smooth",
+      block: "start",
+    });
+  }, [step, gated, submitted, reduce]);
 
   const currentAnnual = useMemo(() => {
     const p = parseFloat(curPrice.replace(",", "."));
@@ -692,7 +750,13 @@ export default function ElectricityExperience({
           title={d.label}
           hint={`Yleensä noin ${d.kwh.toLocaleString("fi-FI")} kWh vuodessa`}
           selected={dwelling === d.key}
-          onClick={() => { setDwelling(d.key); setKwh(d.kwh); setKwhTouched(false); }}
+          onClick={() => {
+            setDwelling(d.key);
+            setKwh(d.kwh);
+            setKwhTouched(false);
+            if (advanceTimer.current) clearTimeout(advanceTimer.current);
+            advanceTimer.current = setTimeout(() => setStep((cur) => (cur === 1 ? 2 : cur)), 260);
+          }}
         />
       ))}
     </div>
@@ -1038,7 +1102,9 @@ export default function ElectricityExperience({
   /** Kysely: yksi vaihe kerrallaan, portin takana. */
   const wizard = (
     <>
-      <div>
+      {/* `scroll-mt-24` pitaa kysymyksen tarttuvan headerin alapuolella,
+          kun vaiheen vaihto vierittaa tanne. Ks. efekti ylempana. */}
+      <div ref={quizTopRef} className="scroll-mt-24">
         <div className="relative">
           <p className="flex items-center gap-2.5 font-display text-[12px] font-bold uppercase tracking-[0.18em] text-accentDark">
             Kysymys {step} / {LAST_STEP}
@@ -1054,16 +1120,19 @@ export default function ElectricityExperience({
             25/30 px erottaa kysymyksen yksiselitteisesti kaikesta
             muusta ruudulla.
           */}
-          <h3 className="mt-2.5 font-display text-[25px] font-bold leading-[1.15] text-ink sm:text-[30px]">
+          <h3 className="mt-2 font-display text-[24px] font-bold leading-[1.15] text-ink sm:mt-2.5 sm:text-[30px]">
             {activeStep.title}
           </h3>
-          <p className="mt-2 max-w-[46ch] text-[15px] leading-relaxed text-ink/70">
+          {/* Alaotsikko on puhelimessa 14,5 px ja tiukemmalla rivivalilla.
+              Kysymyksen ja vastausten valissa oli kolme erillista
+              tekstiriviä ennen ensimmaista vaihtoehtoa. */}
+          <p className="mt-1.5 max-w-[46ch] text-[14.5px] leading-snug text-ink/70 sm:mt-2 sm:text-[15px] sm:leading-relaxed">
             {activeStep.hint}
           </p>
 
           {/* Edistymispalkki. Paloista näkee yhdellä silmäyksellä montako
               on jäljellä; liukuva viiva ei kerro sitä. */}
-          <div className="mt-4 flex gap-1.5" aria-hidden>
+          <div className="mt-3.5 flex gap-1.5 sm:mt-4" aria-hidden>
             {STEPS_Q.map((sq) => (
               <span
                 key={sq.n}
@@ -1076,7 +1145,7 @@ export default function ElectricityExperience({
         </div>
       </div>
 
-      <div className="mt-6">
+      <div className="mt-5 sm:mt-6">
         {step === 1 && dwellingBig}
         {step === 2 && kwhBig}
         {step === 3 && prefBlock}
@@ -1094,7 +1163,7 @@ export default function ElectricityExperience({
         pahin mahdollinen asia käyttäjälle, joka etsii sitä katseella.
         Nyt se on ensimmäisellä ruudulla näkyvissä mutta pois käytöstä.
       */}
-      <div className="mt-7 border-t border-line pt-5">
+      <div className="mt-6 border-t border-line pt-4 sm:mt-7 sm:pt-5">
         {/*
           ESTOTEKSTI ON NAPIN YLÄPUOLELLA, EI ALLA.
 
@@ -1104,7 +1173,7 @@ export default function ElectricityExperience({
           silmään matkalla vaihtoehdoista nappiin, eli juuri siinä
           järjestyksessä kuin ruutua luetaan.
         */}
-        <div className="mb-3.5 flex min-h-[22px] items-center" role="status" aria-live="polite">
+        <div className="mb-3 flex min-h-[22px] items-center sm:mb-3.5" role="status" aria-live="polite">
           {stepBlocker && (
             <p className="flex items-center gap-2 text-[14.5px] font-medium text-ink/70">
               <Info size={15} className="shrink-0 text-accentDark" aria-hidden />
@@ -1187,8 +1256,8 @@ export default function ElectricityExperience({
     <div
       className={
         dark
-          ? "rounded-2xl border border-line bg-white p-5 shadow-lift sm:rounded-[20px] sm:p-7"
-          : "rounded-2xl border border-line bg-white p-5 shadow-card sm:rounded-[20px] sm:p-7"
+          ? "rounded-2xl border border-line bg-white p-4 shadow-lift sm:rounded-[20px] sm:p-7"
+          : "rounded-2xl border border-line bg-white p-4 shadow-card sm:rounded-[20px] sm:p-7"
       }
     >
       {gated && !submitted ? wizard : fullForm}
@@ -1394,19 +1463,28 @@ export default function ElectricityExperience({
                   initial={reduce ? false : { opacity: 0, y: 24, scale: 0.97 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ type: "spring", stiffness: 120, damping: 18 }}
-                  className="halo-glow order-1 hidden shrink-0 md:order-2 md:flex"
+                  className="order-1 hidden shrink-0 md:order-2 md:flex"
                 >
                   {/*
                     Poosi on seisova kettu, ei luottokorttia pitelevä: tällä
                     sivulla maskotti ei voi pidellä korttia, se kertoisi
                     väärästä vertikaalista.
 
-                    HEHKU ON KERMAA, EI ORANSSIA. Aiemmin maskotin takana
-                    oli oranssi `ember-glow`. Oranssilla vyöllä se ei tee
-                    mitään — hehku on samaa väriä kuin pohja. `halo-glow`
-                    on kermanvaalea, eli kettu irtoaa vyöstä valoarvolla.
-                    Varjo on tummanruskea samasta syystä: musta varjo
-                    oranssilla lukisi likana.
+                    EI HEHKUA TYÖPÖYTÄNÄKYMÄSSÄ. Tässä oli `halo-glow`,
+                    kermanvaalea kehä maskotin takana. Perustelu oli, että
+                    hahmo irtoaa oranssista vyöstä valoarvolla. Leveällä
+                    ruudulla se ei toiminut: vyö on siinä niin korkea, että
+                    kehä mahtui kokonaan näkyviin pyöreänä vaaleana läiskänä
+                    hahmon takana, eikä lukenut valona vaan taustagrafiikkana.
+                    Kettu irtoaa vyöstä jo pelkällä varjolla.
+
+                    MOBIILISSA HEHKU JÄÄ (ks. `md:hidden`-versio ylempänä).
+                    Kapealla ruudulla kehä leikkautuu reunoista, jolloin se
+                    lukee valona eikä muotona — ja siellä hahmo on isompi
+                    suhteessa vyöhön, joten irtoaminen tarvitsee apua.
+
+                    Varjo on tummanruskea, ei musta: musta varjo oranssilla
+                    lukisi likana.
                   */}
                   <Image
                     src="/kettu-seisoo.webp"
@@ -2095,11 +2173,17 @@ export default function ElectricityExperience({
  * asian muodolla eikä värillä — se on sekä esteettömyyssääntö että syy
  * sille, ettei käyttäjä klikkaa samaa nappia kolmesti.
  *
- * MIKSI EI AUTOMAATTISTA SIIRTYMÄÄ: valinta EI vie seuraavaan
- * kysymykseen itsestään. Automaattinen siirtymä on nopea tottuneelle
- * käyttäjälle, mutta iäkkäälle se on ruutu, joka vaihtui ilman että hän
- * teki mitään — ja silloin hän ei enää tiedä mitä äsken tapahtui.
- * Käyttäjä valitsee, näkee rastin, ja painaa itse "Jatka".
+ * SIIRTYMÄSTÄ EI PÄÄTETÄ TÄÄLLÄ. Tämä nappi vain ilmoittaa valinnasta;
+ * mahdollisen automaattisen siirtymän käynnistää kutsuva kohta omassa
+ * `onClick`-käsittelijässään. Näin sama nappi kelpaa sekä kysymykseen 1,
+ * jossa valinta vie suoraan eteenpäin, että kysymyksiin 3 ja 4, joissa
+ * edetään "Jatka"-napilla.
+ *
+ * Kummassakin tapauksessa rasti ehtii näkyä ennen kuin mitään muuta
+ * tapahtuu — se on tämän napin tehtävä. Ruutu, joka vaihtuu ennen kuin
+ * käyttäjä on nähnyt valintansa rekisteröityneen, jättää hänet
+ * epätietoiseksi siitä mitä äsken tapahtui, ja se koskee erityisesti
+ * kohderyhmän vanhinta päätä.
  */
 function BigOption({
   icon: Icon, title, hint, selected, onClick,
@@ -2114,7 +2198,11 @@ function BigOption({
     <button
       onClick={onClick}
       aria-pressed={selected}
-      className={`flex w-full items-center gap-4 rounded-2xl border-2 px-4 py-4 text-left transition-all active:scale-[0.99] sm:px-5 ${
+      /* Puhelimessa tiiviimpi: gap-3, py-3.5 ja 40 px ikoni. Nelja
+         vaihtoehtoa allekkain oli 88 px kappale, eli listan loppu jai
+         ruudun alareunan taakse eika kayttaja nahnyt etta valinta on
+         tehty. Kosketuskohde on tiivistettynakin yli 60 px korkea. */
+      className={`flex w-full items-center gap-3 rounded-2xl border-2 px-4 py-3.5 text-left transition-all active:scale-[0.99] sm:gap-4 sm:px-5 sm:py-4 ${
         selected
           ? "border-accent bg-accentSoft shadow-card"
           : "border-line bg-mist hover:border-lineDark hover:bg-night"
@@ -2122,7 +2210,7 @@ function BigOption({
     >
       {Icon && (
         <span
-          className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl transition-colors ${
+          className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl transition-colors sm:h-12 sm:w-12 ${
             selected ? "bg-accent text-onEmber shadow-ember" : "border border-line bg-white text-ink/45"
           }`}
         >
@@ -2131,18 +2219,18 @@ function BigOption({
       )}
       <span className="min-w-0 flex-1">
         <span
-          className={`block font-display text-[17px] font-bold leading-tight ${
+          className={`block font-display text-[16px] font-bold leading-tight sm:text-[17px] ${
             selected ? "text-accentDark" : "text-ink"
           }`}
         >
           {title}
         </span>
         {hint && (
-          <span className="mt-1 block text-[14px] leading-snug text-ink/60">{hint}</span>
+          <span className="mt-0.5 block text-[13.5px] leading-snug text-ink/60 sm:mt-1 sm:text-[14px]">{hint}</span>
         )}
       </span>
       <span
-        className={`grid h-7 w-7 shrink-0 place-items-center rounded-full border-2 transition-colors ${
+        className={`grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 transition-colors sm:h-7 sm:w-7 ${
           selected ? "border-accent bg-accent text-onEmber" : "border-lineDark bg-white"
         }`}
         aria-hidden
