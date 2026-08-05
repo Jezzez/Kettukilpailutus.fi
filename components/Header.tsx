@@ -64,11 +64,25 @@ export default function Header() {
         <Link href="/" className="flex items-center gap-2.5">
           <FoxMark size={34} />
           <span className="leading-none">
-            {/* Pääte ei versaalina: "KETTUKILPAILUTUS.FI" lukee
-                tuoteosanumerona, kun taas pieni ".fi" tunnistetaan
-                verkko-osoitteeksi yhdellä silmäyksellä. */}
+            {/*
+              PÄÄTE ON VERSAALINA, KOKO LOGOTYYPPI SAMASSA KOOSSA.
+
+              Tässä oli aiemmin `normal-case`-poikkeus, joka piirsi päätteen
+              pienellä: "KETTUKILPAILUTUS.fi". Perustelu oli, että pieni
+              ".fi" tunnistetaan verkko-osoitteeksi nopeammin. Se ei
+              kestänyt katsomista: kahdessa koossa piirretty logo näyttää
+              siltä, että pääte on liimattu nimeen jälkikäteen, eikä osalta
+              samaa merkkiä. Verkko-osoitteeksi sen tunnistaa pisteestä,
+              ei kirjasinkoosta.
+
+              MIKSI TÄLLÄ ON VÄLIÄ TUOTON KANNALTA: logo on ainoa asia,
+              joka toistuu jokaisella sivulla ja jokaisessa
+              vierailussa. Kilpailutuspalvelussa klikki tehdään sille,
+              jonka nimen muistaa toisellakin käynnillä — ja yhtenäinen
+              merkki jää mieleen, kahteen kokoon hajoava ei.
+            */}
             <span className="block font-display text-[15px] font-bold uppercase tracking-[0.02em] text-ink">
-              Kettukilpailutus<span className="normal-case">.fi</span>
+              Kettukilpailutus.fi
             </span>
             <span className="mt-0.5 block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink/60">
               {contextLabel(pathname)}

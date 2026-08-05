@@ -84,9 +84,9 @@ export default function Footer() {
         <div className="md:col-span-2">
           <p className="flex items-center gap-2.5 font-display text-[17px] font-bold uppercase tracking-wide text-ink">
             <FoxMark size={26} />
-            <span>
-              Kettukilpailutus<span className="normal-case">.fi</span>
-            </span>
+            {/* Pääte versaalina kuten headerissa — logotyyppi on yksi
+                merkki, ei nimi + siihen liimattu osoite. Ks. Header.tsx. */}
+            <span>Kettukilpailutus.fi</span>
           </p>
           <p className="mt-2.5 max-w-sm font-display text-[14.5px] font-bold leading-snug text-accentDark">
             Ketuttaako maksaa liikaa? Anna Ketun kilpailuttaa puolestasi.
