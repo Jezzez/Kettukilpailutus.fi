@@ -48,7 +48,8 @@
           "Voinko vaihtaa pois milloin vain?",
           "Kyllä. Toistaiseksi voimassa oleva sopimus päättyy 14 vuorokauden irtisanomisajalla, ja uusi yhtiö hoitaa irtisanomisen puolestasi."
         ]
-      ]
+      ],
+      "example": true
     },
     {
       "id": "lumo-kiintea12",
@@ -89,7 +90,8 @@
           "Mitä tapahtuu määräajan jälkeen?",
           "Sopimus jatkuu tyypillisesti toistaiseksi voimassa olevana, ja hinta voi silloin muuttua. Merkitse päättymispäivä kalenteriin ja kilpailuta uudelleen kuukautta ennen sitä."
         ]
-      ]
+      ],
+      "example": true
     },
     {
       "id": "vihrea-tuuli24",
@@ -125,7 +127,8 @@
         "Kilowattitunti maksaa enemmän kuin vuoden sopimuksissa"
       ],
       "bestFor": "Jos et halua kilpailuttaa joka vuosi ja haluat sähkösi tuulesta, tämä hoitaa molemmat kerralla.",
-      "faq": []
+      "faq": [],
+      "example": true
     },
     {
       "id": "kotimaan-perus",
@@ -161,7 +164,8 @@
         "Yhtiö voi muuttaa hintaa ilmoitusajalla"
       ],
       "bestFor": "Muuttamassa tai elämäntilanne auki? Tästä ei tarvitse maksaa itseään irti, kun tilanne muuttuu.",
-      "faq": []
+      "faq": [],
+      "example": true
     },
     {
       "id": "aurinko-spot",
@@ -197,7 +201,8 @@
         "Hinta muuttuu joka tunti"
       ],
       "bestFor": "Kerrostaloasujalle. Kun kulutus on pieni, perusmaksu on iso siivu laskusta — ja tämä on vertailun pienin.",
-      "faq": []
+      "faq": [],
+      "example": true
     },
     {
       "id": "lampo-talvi12",
@@ -233,7 +238,864 @@
         "Perushintaan ei sisälly alkuperätakuuta"
       ],
       "bestFor": "Sähkölämmitteiseen omakotitaloon. Yli 10 000 kilowattitunnin kulutuksella senttien ero syö korkeamman perusmaksun moninkertaisesti.",
-      "faq": []
+      "faq": [],
+      "example": true
+    },
+    {
+      "id": "helen-porssisahko",
+      "slug": "helen-porssisahko",
+      "provider": "Helen",
+      "name": "Pörssisähkö",
+      "type": "spot",
+      "basicFee": 3.99,
+      "energyPrice": null,
+      "spotMargin": 0.42,
+      "green": true,
+      "fixedTermMonths": null,
+      "rating": 4.5,
+      "reviews": 2140,
+      "affiliateUrl": "https://example.com/aff/helen-porssisahko",
+      "example": true,
+      "region": "Helsinki",
+      "gradient": [
+        "#1F1A16",
+        "#3A322B"
+      ],
+      "features": [
+        "Pörssihinta + 0,42 c/kWh marginaali",
+        "100 % uusiutuvaa sähköä",
+        "Perusmaksu 3,99 €/kk",
+        "Ei määräaikaa"
+      ],
+      "summary": "Helen on Helsingin seudun oma sähköyhtiö, joka myy sähköä koko Suomeen. Pörssisopimuksessa maksat tuntihinnan ja 0,42 sentin marginaalin.",
+      "pros": [
+        "Marginaali on koko hinnan erottava tekijä — se on tässä näkyvissä",
+        "Voit irtisanoa sopimuksen milloin tahansa",
+        "Halvat yötunnit näkyvät laskussa heti"
+      ],
+      "cons": [
+        "Hinta muuttuu joka tunti",
+        "Pakkasviikko nostaa laskua välittömästi"
+      ],
+      "bestFor": "Sinulle, joka voit siirtää pyykit, saunan ja auton latauksen halvoille tunneille. Silloin pieni marginaali kertautuu koko vuoden laskussa.",
+      "faq": [
+        [
+          "Mitä marginaali tarkoittaa?",
+          "Maksat sähköstä pörssin tuntihinnan ja sen päälle yhtiön marginaalin, tässä 0,42 c/kWh. Marginaali on se osa hinnasta, jonka yhtiö itse päättää — ja siksi ainoa asia, jolla pörssisopimukset oikeasti eroavat toisistaan."
+        ],
+        [
+          "Voinko vaihtaa pois milloin vain?",
+          "Kyllä. Toistaiseksi voimassa oleva sopimus päättyy 14 vuorokauden irtisanomisajalla, ja uusi yhtiö hoitaa irtisanomisen puolestasi."
+        ]
+      ]
+    },
+    {
+      "id": "tampereen-energia-kiintea-24-kk",
+      "slug": "tampereen-energia-kiintea-24-kk",
+      "provider": "Tampereen Energia",
+      "name": "Kiinteä 24 kk",
+      "type": "fixed",
+      "basicFee": 4.9,
+      "energyPrice": 7.79,
+      "spotMargin": null,
+      "green": true,
+      "fixedTermMonths": 24,
+      "rating": 4.3,
+      "reviews": 980,
+      "affiliateUrl": "https://example.com/aff/tampereen-energia-kiintea-24-kk",
+      "example": true,
+      "region": "Tampere",
+      "gradient": [
+        "#2A231E",
+        "#4A3C33"
+      ],
+      "features": [
+        "Kiinteä 7,79 c/kWh koko kauden",
+        "Määräaika 24 kk",
+        "100 % uusiutuvaa sähköä",
+        "Perusmaksu 4,90 €/kk"
+      ],
+      "summary": "Tampereen Energia on Tampereen seudun oma sähköyhtiö. Kiinteässä sopimuksessa maksat saman 7,79 sentin joka tunti 24 kuukauden ajan.",
+      "pros": [
+        "Hinta ei muutu kesken kauden",
+        "Talvikuukaudet eivät yllätä laskussa",
+        "Helppo budjetoida etukäteen"
+      ],
+      "cons": [
+        "Määräaika sitoo 24 kuukaudeksi",
+        "Jos pörssihinta laskee, maksat silti saman"
+      ],
+      "bestFor": "Sinulle, jolle laskun ennustettavuus on tärkeämpää kuin muutaman euron kuukausisäästö. Erityisesti sähkölämmitteiseen taloon.",
+      "faq": [
+        [
+          "Mitä tapahtuu määräajan päätyttyä?",
+          "Sopimus jatkuu yleensä toistaiseksi voimassa olevana listahinnalla, joka on lähes aina kilpailutettua kalliimpi. Merkitse päättymispäivä kalenteriin ja kilpailuta uudelleen."
+        ],
+        [
+          "Voinko irtisanoa kesken määräajan?",
+          "Voit, mutta siitä voi tulla kuluja. Ehdot vaihtelevat yhtiöittäin, joten tarkista purkukulu sopimusehdoista ennen kuin allekirjoitat."
+        ]
+      ]
+    },
+    {
+      "id": "turku-energia-porssisahko",
+      "slug": "turku-energia-porssisahko",
+      "provider": "Turku Energia",
+      "name": "Pörssisähkö",
+      "type": "spot",
+      "basicFee": 3.6,
+      "energyPrice": null,
+      "spotMargin": 0.35,
+      "green": true,
+      "fixedTermMonths": null,
+      "rating": 4.4,
+      "reviews": 860,
+      "affiliateUrl": "https://example.com/aff/turku-energia-porssisahko",
+      "example": true,
+      "region": "Turku",
+      "gradient": [
+        "#33291F",
+        "#5C4A38"
+      ],
+      "features": [
+        "Pörssihinta + 0,35 c/kWh marginaali",
+        "100 % uusiutuvaa sähköä",
+        "Perusmaksu 3,60 €/kk",
+        "Ei määräaikaa"
+      ],
+      "summary": "Turku Energia on Turun seudun oma sähköyhtiö, joka myy sähköä koko Suomeen. Pörssisopimuksessa maksat tuntihinnan ja 0,35 sentin marginaalin.",
+      "pros": [
+        "Marginaali on koko hinnan erottava tekijä — se on tässä näkyvissä",
+        "Voit irtisanoa sopimuksen milloin tahansa",
+        "Halvat yötunnit näkyvät laskussa heti"
+      ],
+      "cons": [
+        "Hinta muuttuu joka tunti",
+        "Pakkasviikko nostaa laskua välittömästi"
+      ],
+      "bestFor": "Sinulle, joka voit siirtää pyykit, saunan ja auton latauksen halvoille tunneille. Silloin pieni marginaali kertautuu koko vuoden laskussa.",
+      "faq": [
+        [
+          "Mitä marginaali tarkoittaa?",
+          "Maksat sähköstä pörssin tuntihinnan ja sen päälle yhtiön marginaalin, tässä 0,35 c/kWh. Marginaali on se osa hinnasta, jonka yhtiö itse päättää — ja siksi ainoa asia, jolla pörssisopimukset oikeasti eroavat toisistaan."
+        ],
+        [
+          "Voinko vaihtaa pois milloin vain?",
+          "Kyllä. Toistaiseksi voimassa oleva sopimus päättyy 14 vuorokauden irtisanomisajalla, ja uusi yhtiö hoitaa irtisanomisen puolestasi."
+        ]
+      ]
+    },
+    {
+      "id": "vaasan-sahko-porssisahko",
+      "slug": "vaasan-sahko-porssisahko",
+      "provider": "Vaasan Sähkö",
+      "name": "Pörssisähkö",
+      "type": "spot",
+      "basicFee": 0.0,
+      "energyPrice": null,
+      "spotMargin": 0.49,
+      "green": true,
+      "fixedTermMonths": null,
+      "rating": 4.2,
+      "reviews": 720,
+      "affiliateUrl": "https://example.com/aff/vaasan-sahko-porssisahko",
+      "example": true,
+      "region": "Vaasa",
+      "gradient": [
+        "#3E3227",
+        "#6B5745"
+      ],
+      "features": [
+        "Pörssihinta + 0,49 c/kWh marginaali",
+        "100 % uusiutuvaa sähköä",
+        "Ei perusmaksua",
+        "Ei määräaikaa"
+      ],
+      "summary": "Vaasan Sähkö on Vaasan seudun oma sähköyhtiö, joka myy sähköä koko Suomeen. Pörssisopimuksessa maksat tuntihinnan ja 0,49 sentin marginaalin.",
+      "pros": [
+        "Marginaali on koko hinnan erottava tekijä — se on tässä näkyvissä",
+        "Voit irtisanoa sopimuksen milloin tahansa",
+        "Halvat yötunnit näkyvät laskussa heti"
+      ],
+      "cons": [
+        "Hinta muuttuu joka tunti",
+        "Pakkasviikko nostaa laskua välittömästi"
+      ],
+      "bestFor": "Sinulle, joka voit siirtää pyykit, saunan ja auton latauksen halvoille tunneille. Silloin pieni marginaali kertautuu koko vuoden laskussa.",
+      "faq": [
+        [
+          "Mitä marginaali tarkoittaa?",
+          "Maksat sähköstä pörssin tuntihinnan ja sen päälle yhtiön marginaalin, tässä 0,49 c/kWh. Marginaali on se osa hinnasta, jonka yhtiö itse päättää — ja siksi ainoa asia, jolla pörssisopimukset oikeasti eroavat toisistaan."
+        ],
+        [
+          "Voinko vaihtaa pois milloin vain?",
+          "Kyllä. Toistaiseksi voimassa oleva sopimus päättyy 14 vuorokauden irtisanomisajalla, ja uusi yhtiö hoitaa irtisanomisen puolestasi."
+        ]
+      ]
+    },
+    {
+      "id": "lumme-energia-kiintea-12-kk",
+      "slug": "lumme-energia-kiintea-12-kk",
+      "provider": "Lumme Energia",
+      "name": "Kiinteä 12 kk",
+      "type": "fixed",
+      "basicFee": 4.5,
+      "energyPrice": 7.65,
+      "spotMargin": null,
+      "green": false,
+      "fixedTermMonths": 12,
+      "rating": 4.1,
+      "reviews": 540,
+      "affiliateUrl": "https://example.com/aff/lumme-energia-kiintea-12-kk",
+      "example": true,
+      "region": "Mikkeli",
+      "gradient": [
+        "#4A3C2E",
+        "#7C6552"
+      ],
+      "features": [
+        "Kiinteä 7,65 c/kWh koko kauden",
+        "Määräaika 12 kk",
+        "Sähkön alkuperää ei ole eritelty",
+        "Perusmaksu 4,50 €/kk"
+      ],
+      "summary": "Lumme Energia on Mikkelin seudun oma sähköyhtiö. Kiinteässä sopimuksessa maksat saman 7,65 sentin joka tunti 12 kuukauden ajan.",
+      "pros": [
+        "Hinta ei muutu kesken kauden",
+        "Talvikuukaudet eivät yllätä laskussa",
+        "Helppo budjetoida etukäteen"
+      ],
+      "cons": [
+        "Määräaika sitoo 12 kuukaudeksi",
+        "Jos pörssihinta laskee, maksat silti saman"
+      ],
+      "bestFor": "Sinulle, jolle laskun ennustettavuus on tärkeämpää kuin muutaman euron kuukausisäästö. Erityisesti sähkölämmitteiseen taloon.",
+      "faq": [
+        [
+          "Mitä tapahtuu määräajan päätyttyä?",
+          "Sopimus jatkuu yleensä toistaiseksi voimassa olevana listahinnalla, joka on lähes aina kilpailutettua kalliimpi. Merkitse päättymispäivä kalenteriin ja kilpailuta uudelleen."
+        ],
+        [
+          "Voinko irtisanoa kesken määräajan?",
+          "Voit, mutta siitä voi tulla kuluja. Ehdot vaihtelevat yhtiöittäin, joten tarkista purkukulu sopimusehdoista ennen kuin allekirjoitat."
+        ]
+      ]
+    },
+    {
+      "id": "pohjois-karjalan-sahko-porssisahko",
+      "slug": "pohjois-karjalan-sahko-porssisahko",
+      "provider": "Pohjois-Karjalan Sähkö",
+      "name": "Pörssisähkö",
+      "type": "spot",
+      "basicFee": 4.2,
+      "energyPrice": null,
+      "spotMargin": 0.33,
+      "green": true,
+      "fixedTermMonths": null,
+      "rating": 4.3,
+      "reviews": 610,
+      "affiliateUrl": "https://example.com/aff/pohjois-karjalan-sahko-porssisahko",
+      "example": true,
+      "region": "Joensuu",
+      "gradient": [
+        "#564636",
+        "#8B735E"
+      ],
+      "features": [
+        "Pörssihinta + 0,33 c/kWh marginaali",
+        "100 % uusiutuvaa sähköä",
+        "Perusmaksu 4,20 €/kk",
+        "Ei määräaikaa"
+      ],
+      "summary": "Pohjois-Karjalan Sähkö on Joensuun seudun oma sähköyhtiö, joka myy sähköä koko Suomeen. Pörssisopimuksessa maksat tuntihinnan ja 0,33 sentin marginaalin.",
+      "pros": [
+        "Marginaali on koko hinnan erottava tekijä — se on tässä näkyvissä",
+        "Voit irtisanoa sopimuksen milloin tahansa",
+        "Halvat yötunnit näkyvät laskussa heti"
+      ],
+      "cons": [
+        "Hinta muuttuu joka tunti",
+        "Pakkasviikko nostaa laskua välittömästi"
+      ],
+      "bestFor": "Sinulle, joka voit siirtää pyykit, saunan ja auton latauksen halvoille tunneille. Silloin pieni marginaali kertautuu koko vuoden laskussa.",
+      "faq": [
+        [
+          "Mitä marginaali tarkoittaa?",
+          "Maksat sähköstä pörssin tuntihinnan ja sen päälle yhtiön marginaalin, tässä 0,33 c/kWh. Marginaali on se osa hinnasta, jonka yhtiö itse päättää — ja siksi ainoa asia, jolla pörssisopimukset oikeasti eroavat toisistaan."
+        ],
+        [
+          "Voinko vaihtaa pois milloin vain?",
+          "Kyllä. Toistaiseksi voimassa oleva sopimus päättyy 14 vuorokauden irtisanomisajalla, ja uusi yhtiö hoitaa irtisanomisen puolestasi."
+        ]
+      ]
+    },
+    {
+      "id": "seinajoen-energia-toistaiseksi-voimassa-oleva",
+      "slug": "seinajoen-energia-toistaiseksi-voimassa-oleva",
+      "provider": "Seinäjoen Energia",
+      "name": "Toistaiseksi voimassa oleva",
+      "type": "open",
+      "basicFee": 3.9,
+      "energyPrice": 8.45,
+      "spotMargin": null,
+      "green": false,
+      "fixedTermMonths": null,
+      "rating": 4.0,
+      "reviews": 300,
+      "affiliateUrl": "https://example.com/aff/seinajoen-energia-toistaiseksi-voimassa-oleva",
+      "example": true,
+      "region": "Seinäjoki",
+      "gradient": [
+        "#1F1A16",
+        "#3A322B"
+      ],
+      "features": [
+        "Energia 8,45 c/kWh",
+        "Ei määräaikaa",
+        "Sähkön alkuperää ei ole eritelty",
+        "Perusmaksu 3,90 €/kk"
+      ],
+      "summary": "Seinäjoen Energia on Seinäjoen seudun oma sähköyhtiö. Toistaiseksi voimassa olevassa sopimuksessa hinta on 8,45 c/kWh, ja yhtiö voi muuttaa sitä ilmoituksella.",
+      "pros": [
+        "Ei määräaikaa eikä purkukuluja",
+        "Hinta ei heilu tunneittain kuten pörssissä",
+        "Voit vaihtaa heti, jos hinta nousee"
+      ],
+      "cons": [
+        "Yhtiö voi muuttaa hintaa kuukauden varoitusajalla",
+        "Yleensä kalliimpi kuin kilpailutettu kiinteä tai pörssi"
+      ],
+      "bestFor": "Väliaikaisratkaisuksi, kun et halua sitoutua mihinkään. Tarkista hinta uudelleen muutaman kuukauden välein — juuri unohtamiseen tämä sopimustyyppi hinnoitellaan.",
+      "faq": [
+        [
+          "Kuinka nopeasti hinta voi muuttua?",
+          "Sähkömarkkinalain mukaan hinnanmuutoksesta on ilmoitettava vähintään kuukautta etukäteen. Ilmoitus tulee laskun mukana tai sähköpostiin, ja se on helppo ohittaa."
+        ]
+      ]
+    },
+    {
+      "id": "kokkolan-energia-porssisahko",
+      "slug": "kokkolan-energia-porssisahko",
+      "provider": "Kokkolan Energia",
+      "name": "Pörssisähkö",
+      "type": "spot",
+      "basicFee": 4.95,
+      "energyPrice": null,
+      "spotMargin": 0.16,
+      "green": true,
+      "fixedTermMonths": null,
+      "rating": 4.4,
+      "reviews": 410,
+      "affiliateUrl": "https://example.com/aff/kokkolan-energia-porssisahko",
+      "example": true,
+      "region": "Kokkola",
+      "gradient": [
+        "#2A231E",
+        "#4A3C33"
+      ],
+      "features": [
+        "Pörssihinta + 0,16 c/kWh marginaali",
+        "100 % uusiutuvaa sähköä",
+        "Perusmaksu 4,95 €/kk",
+        "Ei määräaikaa"
+      ],
+      "summary": "Kokkolan Energia on Kokkolan seudun oma sähköyhtiö, joka myy sähköä koko Suomeen. Pörssisopimuksessa maksat tuntihinnan ja 0,16 sentin marginaalin.",
+      "pros": [
+        "Marginaali on koko hinnan erottava tekijä — se on tässä näkyvissä",
+        "Voit irtisanoa sopimuksen milloin tahansa",
+        "Halvat yötunnit näkyvät laskussa heti"
+      ],
+      "cons": [
+        "Hinta muuttuu joka tunti",
+        "Pakkasviikko nostaa laskua välittömästi"
+      ],
+      "bestFor": "Sinulle, joka voit siirtää pyykit, saunan ja auton latauksen halvoille tunneille. Silloin pieni marginaali kertautuu koko vuoden laskussa.",
+      "faq": [
+        [
+          "Mitä marginaali tarkoittaa?",
+          "Maksat sähköstä pörssin tuntihinnan ja sen päälle yhtiön marginaalin, tässä 0,16 c/kWh. Marginaali on se osa hinnasta, jonka yhtiö itse päättää — ja siksi ainoa asia, jolla pörssisopimukset oikeasti eroavat toisistaan."
+        ],
+        [
+          "Voinko vaihtaa pois milloin vain?",
+          "Kyllä. Toistaiseksi voimassa oleva sopimus päättyy 14 vuorokauden irtisanomisajalla, ja uusi yhtiö hoitaa irtisanomisen puolestasi."
+        ]
+      ]
+    },
+    {
+      "id": "herrfors-porssisahko",
+      "slug": "herrfors-porssisahko",
+      "provider": "Herrfors",
+      "name": "Pörssisähkö",
+      "type": "spot",
+      "basicFee": 3.5,
+      "energyPrice": null,
+      "spotMargin": 0.29,
+      "green": false,
+      "fixedTermMonths": null,
+      "rating": 4.1,
+      "reviews": 380,
+      "affiliateUrl": "https://example.com/aff/herrfors-porssisahko",
+      "example": true,
+      "region": "Pietarsaari",
+      "gradient": [
+        "#33291F",
+        "#5C4A38"
+      ],
+      "features": [
+        "Pörssihinta + 0,29 c/kWh marginaali",
+        "Sähkön alkuperää ei ole eritelty",
+        "Perusmaksu 3,50 €/kk",
+        "Ei määräaikaa"
+      ],
+      "summary": "Herrfors on Pietarsaaren seudun oma sähköyhtiö, joka myy sähköä koko Suomeen. Pörssisopimuksessa maksat tuntihinnan ja 0,29 sentin marginaalin.",
+      "pros": [
+        "Marginaali on koko hinnan erottava tekijä — se on tässä näkyvissä",
+        "Voit irtisanoa sopimuksen milloin tahansa",
+        "Halvat yötunnit näkyvät laskussa heti"
+      ],
+      "cons": [
+        "Hinta muuttuu joka tunti",
+        "Pakkasviikko nostaa laskua välittömästi"
+      ],
+      "bestFor": "Sinulle, joka voit siirtää pyykit, saunan ja auton latauksen halvoille tunneille. Silloin pieni marginaali kertautuu koko vuoden laskussa.",
+      "faq": [
+        [
+          "Mitä marginaali tarkoittaa?",
+          "Maksat sähköstä pörssin tuntihinnan ja sen päälle yhtiön marginaalin, tässä 0,29 c/kWh. Marginaali on se osa hinnasta, jonka yhtiö itse päättää — ja siksi ainoa asia, jolla pörssisopimukset oikeasti eroavat toisistaan."
+        ],
+        [
+          "Voinko vaihtaa pois milloin vain?",
+          "Kyllä. Toistaiseksi voimassa oleva sopimus päättyy 14 vuorokauden irtisanomisajalla, ja uusi yhtiö hoitaa irtisanomisen puolestasi."
+        ]
+      ]
+    },
+    {
+      "id": "omavoima-kiintea-12-kk",
+      "slug": "omavoima-kiintea-12-kk",
+      "provider": "Omavoima",
+      "name": "Kiinteä 12 kk",
+      "type": "fixed",
+      "basicFee": 4.2,
+      "energyPrice": 7.95,
+      "spotMargin": null,
+      "green": false,
+      "fixedTermMonths": 12,
+      "rating": 4.0,
+      "reviews": 450,
+      "affiliateUrl": "https://example.com/aff/omavoima-kiintea-12-kk",
+      "example": true,
+      "region": "Kajaani",
+      "gradient": [
+        "#3E3227",
+        "#6B5745"
+      ],
+      "features": [
+        "Kiinteä 7,95 c/kWh koko kauden",
+        "Määräaika 12 kk",
+        "Sähkön alkuperää ei ole eritelty",
+        "Perusmaksu 4,20 €/kk"
+      ],
+      "summary": "Omavoima on Kajaanin seudun oma sähköyhtiö. Kiinteässä sopimuksessa maksat saman 7,95 sentin joka tunti 12 kuukauden ajan.",
+      "pros": [
+        "Hinta ei muutu kesken kauden",
+        "Talvikuukaudet eivät yllätä laskussa",
+        "Helppo budjetoida etukäteen"
+      ],
+      "cons": [
+        "Määräaika sitoo 12 kuukaudeksi",
+        "Jos pörssihinta laskee, maksat silti saman"
+      ],
+      "bestFor": "Sinulle, jolle laskun ennustettavuus on tärkeämpää kuin muutaman euron kuukausisäästö. Erityisesti sähkölämmitteiseen taloon.",
+      "faq": [
+        [
+          "Mitä tapahtuu määräajan päätyttyä?",
+          "Sopimus jatkuu yleensä toistaiseksi voimassa olevana listahinnalla, joka on lähes aina kilpailutettua kalliimpi. Merkitse päättymispäivä kalenteriin ja kilpailuta uudelleen."
+        ],
+        [
+          "Voinko irtisanoa kesken määräajan?",
+          "Voit, mutta siitä voi tulla kuluja. Ehdot vaihtelevat yhtiöittäin, joten tarkista purkukulu sopimusehdoista ennen kuin allekirjoitat."
+        ]
+      ]
+    },
+    {
+      "id": "keravan-energia-porssisahko",
+      "slug": "keravan-energia-porssisahko",
+      "provider": "Keravan Energia",
+      "name": "Pörssisähkö",
+      "type": "spot",
+      "basicFee": 3.2,
+      "energyPrice": null,
+      "spotMargin": 0.4,
+      "green": true,
+      "fixedTermMonths": null,
+      "rating": 4.3,
+      "reviews": 340,
+      "affiliateUrl": "https://example.com/aff/keravan-energia-porssisahko",
+      "example": true,
+      "region": "Kerava",
+      "gradient": [
+        "#4A3C2E",
+        "#7C6552"
+      ],
+      "features": [
+        "Pörssihinta + 0,40 c/kWh marginaali",
+        "100 % uusiutuvaa sähköä",
+        "Perusmaksu 3,20 €/kk",
+        "Ei määräaikaa"
+      ],
+      "summary": "Keravan Energia on Keravan seudun oma sähköyhtiö, joka myy sähköä koko Suomeen. Pörssisopimuksessa maksat tuntihinnan ja 0,40 sentin marginaalin.",
+      "pros": [
+        "Marginaali on koko hinnan erottava tekijä — se on tässä näkyvissä",
+        "Voit irtisanoa sopimuksen milloin tahansa",
+        "Halvat yötunnit näkyvät laskussa heti"
+      ],
+      "cons": [
+        "Hinta muuttuu joka tunti",
+        "Pakkasviikko nostaa laskua välittömästi"
+      ],
+      "bestFor": "Sinulle, joka voit siirtää pyykit, saunan ja auton latauksen halvoille tunneille. Silloin pieni marginaali kertautuu koko vuoden laskussa.",
+      "faq": [
+        [
+          "Mitä marginaali tarkoittaa?",
+          "Maksat sähköstä pörssin tuntihinnan ja sen päälle yhtiön marginaalin, tässä 0,40 c/kWh. Marginaali on se osa hinnasta, jonka yhtiö itse päättää — ja siksi ainoa asia, jolla pörssisopimukset oikeasti eroavat toisistaan."
+        ],
+        [
+          "Voinko vaihtaa pois milloin vain?",
+          "Kyllä. Toistaiseksi voimassa oleva sopimus päättyy 14 vuorokauden irtisanomisajalla, ja uusi yhtiö hoitaa irtisanomisen puolestasi."
+        ]
+      ]
+    },
+    {
+      "id": "porvoon-energia-porssisahko",
+      "slug": "porvoon-energia-porssisahko",
+      "provider": "Porvoon Energia",
+      "name": "Pörssisähkö",
+      "type": "spot",
+      "basicFee": 3.8,
+      "energyPrice": null,
+      "spotMargin": 0.38,
+      "green": true,
+      "fixedTermMonths": null,
+      "rating": 4.4,
+      "reviews": 420,
+      "affiliateUrl": "https://example.com/aff/porvoon-energia-porssisahko",
+      "example": true,
+      "region": "Porvoo",
+      "gradient": [
+        "#564636",
+        "#8B735E"
+      ],
+      "features": [
+        "Pörssihinta + 0,38 c/kWh marginaali",
+        "100 % uusiutuvaa sähköä",
+        "Perusmaksu 3,80 €/kk",
+        "Ei määräaikaa"
+      ],
+      "summary": "Porvoon Energia on Porvoon seudun oma sähköyhtiö, joka myy sähköä koko Suomeen. Pörssisopimuksessa maksat tuntihinnan ja 0,38 sentin marginaalin.",
+      "pros": [
+        "Marginaali on koko hinnan erottava tekijä — se on tässä näkyvissä",
+        "Voit irtisanoa sopimuksen milloin tahansa",
+        "Halvat yötunnit näkyvät laskussa heti"
+      ],
+      "cons": [
+        "Hinta muuttuu joka tunti",
+        "Pakkasviikko nostaa laskua välittömästi"
+      ],
+      "bestFor": "Sinulle, joka voit siirtää pyykit, saunan ja auton latauksen halvoille tunneille. Silloin pieni marginaali kertautuu koko vuoden laskussa.",
+      "faq": [
+        [
+          "Mitä marginaali tarkoittaa?",
+          "Maksat sähköstä pörssin tuntihinnan ja sen päälle yhtiön marginaalin, tässä 0,38 c/kWh. Marginaali on se osa hinnasta, jonka yhtiö itse päättää — ja siksi ainoa asia, jolla pörssisopimukset oikeasti eroavat toisistaan."
+        ],
+        [
+          "Voinko vaihtaa pois milloin vain?",
+          "Kyllä. Toistaiseksi voimassa oleva sopimus päättyy 14 vuorokauden irtisanomisajalla, ja uusi yhtiö hoitaa irtisanomisen puolestasi."
+        ]
+      ]
+    },
+    {
+      "id": "nurmijarven-sahko-kiintea-24-kk",
+      "slug": "nurmijarven-sahko-kiintea-24-kk",
+      "provider": "Nurmijärven Sähkö",
+      "name": "Kiinteä 24 kk",
+      "type": "fixed",
+      "basicFee": 4.6,
+      "energyPrice": 8.15,
+      "spotMargin": null,
+      "green": true,
+      "fixedTermMonths": 24,
+      "rating": 4.2,
+      "reviews": 260,
+      "affiliateUrl": "https://example.com/aff/nurmijarven-sahko-kiintea-24-kk",
+      "example": true,
+      "region": "Nurmijärvi",
+      "gradient": [
+        "#1F1A16",
+        "#3A322B"
+      ],
+      "features": [
+        "Kiinteä 8,15 c/kWh koko kauden",
+        "Määräaika 24 kk",
+        "100 % uusiutuvaa sähköä",
+        "Perusmaksu 4,60 €/kk"
+      ],
+      "summary": "Nurmijärven Sähkö on Nurmijärven seudun oma sähköyhtiö. Kiinteässä sopimuksessa maksat saman 8,15 sentin joka tunti 24 kuukauden ajan.",
+      "pros": [
+        "Hinta ei muutu kesken kauden",
+        "Talvikuukaudet eivät yllätä laskussa",
+        "Helppo budjetoida etukäteen"
+      ],
+      "cons": [
+        "Määräaika sitoo 24 kuukaudeksi",
+        "Jos pörssihinta laskee, maksat silti saman"
+      ],
+      "bestFor": "Sinulle, jolle laskun ennustettavuus on tärkeämpää kuin muutaman euron kuukausisäästö. Erityisesti sähkölämmitteiseen taloon.",
+      "faq": [
+        [
+          "Mitä tapahtuu määräajan päätyttyä?",
+          "Sopimus jatkuu yleensä toistaiseksi voimassa olevana listahinnalla, joka on lähes aina kilpailutettua kalliimpi. Merkitse päättymispäivä kalenteriin ja kilpailuta uudelleen."
+        ],
+        [
+          "Voinko irtisanoa kesken määräajan?",
+          "Voit, mutta siitä voi tulla kuluja. Ehdot vaihtelevat yhtiöittäin, joten tarkista purkukulu sopimusehdoista ennen kuin allekirjoitat."
+        ]
+      ]
+    },
+    {
+      "id": "nivos-energia-porssisahko",
+      "slug": "nivos-energia-porssisahko",
+      "provider": "Nivos Energia",
+      "name": "Pörssisähkö",
+      "type": "spot",
+      "basicFee": 4.4,
+      "energyPrice": null,
+      "spotMargin": 0.44,
+      "green": false,
+      "fixedTermMonths": null,
+      "rating": 4.0,
+      "reviews": 230,
+      "affiliateUrl": "https://example.com/aff/nivos-energia-porssisahko",
+      "example": true,
+      "region": "Mäntsälä",
+      "gradient": [
+        "#2A231E",
+        "#4A3C33"
+      ],
+      "features": [
+        "Pörssihinta + 0,44 c/kWh marginaali",
+        "Sähkön alkuperää ei ole eritelty",
+        "Perusmaksu 4,40 €/kk",
+        "Ei määräaikaa"
+      ],
+      "summary": "Nivos Energia on Mäntsälän seudun oma sähköyhtiö, joka myy sähköä koko Suomeen. Pörssisopimuksessa maksat tuntihinnan ja 0,44 sentin marginaalin.",
+      "pros": [
+        "Marginaali on koko hinnan erottava tekijä — se on tässä näkyvissä",
+        "Voit irtisanoa sopimuksen milloin tahansa",
+        "Halvat yötunnit näkyvät laskussa heti"
+      ],
+      "cons": [
+        "Hinta muuttuu joka tunti",
+        "Pakkasviikko nostaa laskua välittömästi"
+      ],
+      "bestFor": "Sinulle, joka voit siirtää pyykit, saunan ja auton latauksen halvoille tunneille. Silloin pieni marginaali kertautuu koko vuoden laskussa.",
+      "faq": [
+        [
+          "Mitä marginaali tarkoittaa?",
+          "Maksat sähköstä pörssin tuntihinnan ja sen päälle yhtiön marginaalin, tässä 0,44 c/kWh. Marginaali on se osa hinnasta, jonka yhtiö itse päättää — ja siksi ainoa asia, jolla pörssisopimukset oikeasti eroavat toisistaan."
+        ],
+        [
+          "Voinko vaihtaa pois milloin vain?",
+          "Kyllä. Toistaiseksi voimassa oleva sopimus päättyy 14 vuorokauden irtisanomisajalla, ja uusi yhtiö hoitaa irtisanomisen puolestasi."
+        ]
+      ]
+    },
+    {
+      "id": "imatran-seudun-sahko-porssisahko",
+      "slug": "imatran-seudun-sahko-porssisahko",
+      "provider": "Imatran Seudun Sähkö",
+      "name": "Pörssisähkö",
+      "type": "spot",
+      "basicFee": 0.0,
+      "energyPrice": null,
+      "spotMargin": 0.52,
+      "green": false,
+      "fixedTermMonths": null,
+      "rating": 4.1,
+      "reviews": 510,
+      "affiliateUrl": "https://example.com/aff/imatran-seudun-sahko-porssisahko",
+      "example": true,
+      "region": "Imatra",
+      "gradient": [
+        "#33291F",
+        "#5C4A38"
+      ],
+      "features": [
+        "Pörssihinta + 0,52 c/kWh marginaali",
+        "Sähkön alkuperää ei ole eritelty",
+        "Ei perusmaksua",
+        "Ei määräaikaa"
+      ],
+      "summary": "Imatran Seudun Sähkö on Imatran seudun oma sähköyhtiö, joka myy sähköä koko Suomeen. Pörssisopimuksessa maksat tuntihinnan ja 0,52 sentin marginaalin.",
+      "pros": [
+        "Marginaali on koko hinnan erottava tekijä — se on tässä näkyvissä",
+        "Voit irtisanoa sopimuksen milloin tahansa",
+        "Halvat yötunnit näkyvät laskussa heti"
+      ],
+      "cons": [
+        "Hinta muuttuu joka tunti",
+        "Pakkasviikko nostaa laskua välittömästi"
+      ],
+      "bestFor": "Sinulle, joka voit siirtää pyykit, saunan ja auton latauksen halvoille tunneille. Silloin pieni marginaali kertautuu koko vuoden laskussa.",
+      "faq": [
+        [
+          "Mitä marginaali tarkoittaa?",
+          "Maksat sähköstä pörssin tuntihinnan ja sen päälle yhtiön marginaalin, tässä 0,52 c/kWh. Marginaali on se osa hinnasta, jonka yhtiö itse päättää — ja siksi ainoa asia, jolla pörssisopimukset oikeasti eroavat toisistaan."
+        ],
+        [
+          "Voinko vaihtaa pois milloin vain?",
+          "Kyllä. Toistaiseksi voimassa oleva sopimus päättyy 14 vuorokauden irtisanomisajalla, ja uusi yhtiö hoitaa irtisanomisen puolestasi."
+        ]
+      ]
+    },
+    {
+      "id": "haminan-energia-toistaiseksi-voimassa-oleva",
+      "slug": "haminan-energia-toistaiseksi-voimassa-oleva",
+      "provider": "Haminan Energia",
+      "name": "Toistaiseksi voimassa oleva",
+      "type": "open",
+      "basicFee": 3.6,
+      "energyPrice": 8.7,
+      "spotMargin": null,
+      "green": false,
+      "fixedTermMonths": null,
+      "rating": 3.9,
+      "reviews": 190,
+      "affiliateUrl": "https://example.com/aff/haminan-energia-toistaiseksi-voimassa-oleva",
+      "example": true,
+      "region": "Hamina",
+      "gradient": [
+        "#3E3227",
+        "#6B5745"
+      ],
+      "features": [
+        "Energia 8,70 c/kWh",
+        "Ei määräaikaa",
+        "Sähkön alkuperää ei ole eritelty",
+        "Perusmaksu 3,60 €/kk"
+      ],
+      "summary": "Haminan Energia on Haminan seudun oma sähköyhtiö. Toistaiseksi voimassa olevassa sopimuksessa hinta on 8,70 c/kWh, ja yhtiö voi muuttaa sitä ilmoituksella.",
+      "pros": [
+        "Ei määräaikaa eikä purkukuluja",
+        "Hinta ei heilu tunneittain kuten pörssissä",
+        "Voit vaihtaa heti, jos hinta nousee"
+      ],
+      "cons": [
+        "Yhtiö voi muuttaa hintaa kuukauden varoitusajalla",
+        "Yleensä kalliimpi kuin kilpailutettu kiinteä tai pörssi"
+      ],
+      "bestFor": "Väliaikaisratkaisuksi, kun et halua sitoutua mihinkään. Tarkista hinta uudelleen muutaman kuukauden välein — juuri unohtamiseen tämä sopimustyyppi hinnoitellaan.",
+      "faq": [
+        [
+          "Kuinka nopeasti hinta voi muuttua?",
+          "Sähkömarkkinalain mukaan hinnanmuutoksesta on ilmoitettava vähintään kuukautta etukäteen. Ilmoitus tulee laskun mukana tai sähköpostiin, ja se on helppo ohittaa."
+        ]
+      ]
+    },
+    {
+      "id": "valkeakosken-energia-kiintea-12-kk",
+      "slug": "valkeakosken-energia-kiintea-12-kk",
+      "provider": "Valkeakosken Energia",
+      "name": "Kiinteä 12 kk",
+      "type": "fixed",
+      "basicFee": 4.3,
+      "energyPrice": 7.85,
+      "spotMargin": null,
+      "green": false,
+      "fixedTermMonths": 12,
+      "rating": 4.0,
+      "reviews": 170,
+      "affiliateUrl": "https://example.com/aff/valkeakosken-energia-kiintea-12-kk",
+      "example": true,
+      "region": "Valkeakoski",
+      "gradient": [
+        "#4A3C2E",
+        "#7C6552"
+      ],
+      "features": [
+        "Kiinteä 7,85 c/kWh koko kauden",
+        "Määräaika 12 kk",
+        "Sähkön alkuperää ei ole eritelty",
+        "Perusmaksu 4,30 €/kk"
+      ],
+      "summary": "Valkeakosken Energia on Valkeakosken seudun oma sähköyhtiö. Kiinteässä sopimuksessa maksat saman 7,85 sentin joka tunti 12 kuukauden ajan.",
+      "pros": [
+        "Hinta ei muutu kesken kauden",
+        "Talvikuukaudet eivät yllätä laskussa",
+        "Helppo budjetoida etukäteen"
+      ],
+      "cons": [
+        "Määräaika sitoo 12 kuukaudeksi",
+        "Jos pörssihinta laskee, maksat silti saman"
+      ],
+      "bestFor": "Sinulle, jolle laskun ennustettavuus on tärkeämpää kuin muutaman euron kuukausisäästö. Erityisesti sähkölämmitteiseen taloon.",
+      "faq": [
+        [
+          "Mitä tapahtuu määräajan päätyttyä?",
+          "Sopimus jatkuu yleensä toistaiseksi voimassa olevana listahinnalla, joka on lähes aina kilpailutettua kalliimpi. Merkitse päättymispäivä kalenteriin ja kilpailuta uudelleen."
+        ],
+        [
+          "Voinko irtisanoa kesken määräajan?",
+          "Voit, mutta siitä voi tulla kuluja. Ehdot vaihtelevat yhtiöittäin, joten tarkista purkukulu sopimusehdoista ennen kuin allekirjoitat."
+        ]
+      ]
+    },
+    {
+      "id": "naantalin-energia-porssisahko",
+      "slug": "naantalin-energia-porssisahko",
+      "provider": "Naantalin Energia",
+      "name": "Pörssisähkö",
+      "type": "spot",
+      "basicFee": 3.95,
+      "energyPrice": null,
+      "spotMargin": 0.36,
+      "green": true,
+      "fixedTermMonths": null,
+      "rating": 4.2,
+      "reviews": 210,
+      "affiliateUrl": "https://example.com/aff/naantalin-energia-porssisahko",
+      "example": true,
+      "region": "Naantali",
+      "gradient": [
+        "#564636",
+        "#8B735E"
+      ],
+      "features": [
+        "Pörssihinta + 0,36 c/kWh marginaali",
+        "100 % uusiutuvaa sähköä",
+        "Perusmaksu 3,95 €/kk",
+        "Ei määräaikaa"
+      ],
+      "summary": "Naantalin Energia on Naantalin seudun oma sähköyhtiö, joka myy sähköä koko Suomeen. Pörssisopimuksessa maksat tuntihinnan ja 0,36 sentin marginaalin.",
+      "pros": [
+        "Marginaali on koko hinnan erottava tekijä — se on tässä näkyvissä",
+        "Voit irtisanoa sopimuksen milloin tahansa",
+        "Halvat yötunnit näkyvät laskussa heti"
+      ],
+      "cons": [
+        "Hinta muuttuu joka tunti",
+        "Pakkasviikko nostaa laskua välittömästi"
+      ],
+      "bestFor": "Sinulle, joka voit siirtää pyykit, saunan ja auton latauksen halvoille tunneille. Silloin pieni marginaali kertautuu koko vuoden laskussa.",
+      "faq": [
+        [
+          "Mitä marginaali tarkoittaa?",
+          "Maksat sähköstä pörssin tuntihinnan ja sen päälle yhtiön marginaalin, tässä 0,36 c/kWh. Marginaali on se osa hinnasta, jonka yhtiö itse päättää — ja siksi ainoa asia, jolla pörssisopimukset oikeasti eroavat toisistaan."
+        ],
+        [
+          "Voinko vaihtaa pois milloin vain?",
+          "Kyllä. Toistaiseksi voimassa oleva sopimus päättyy 14 vuorokauden irtisanomisajalla, ja uusi yhtiö hoitaa irtisanomisen puolestasi."
+        ]
+      ]
     }
   ]
 }

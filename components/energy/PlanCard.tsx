@@ -11,6 +11,21 @@ import FoxPaw from "../FoxPaw";
 export type PlanBadge = { kind: "cheapest" | "fox"; note?: string } | null;
 
 /**
+ * Hintarivien luvut aina kahdella desimaalilla.
+ *
+ * `toLocaleString` pudottaa turhat nollat, joten sama kortti saattoi näyttää
+ * "0,40 c/kWh" ominaisuuslistassa ja "0,4 c/kWh" hintataulukossa. Vertailussa
+ * epätasainen desimaali luetaan huolimattomuutena, ja huolimaton hintataulukko
+ * on juuri se, joka saa kävijän tarkistamaan luvut muualta.
+ */
+function money(n: number): string {
+  return n.toLocaleString("fi-FI", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
+/**
  * Sähkösopimuskortti.
  *
  * Hintapalkki on ymmärrettävyyden ydin: silmä vertaa palkkien pituuksia
@@ -41,27 +56,31 @@ export default function PlanCard({
   const barWidth = Math.max(8, Math.round((yearly / maxCost) * 100));
 
   /*
-    YKSI KORTTI KUUDESTA ON ORANSSI — EI KAIKKI.
+    KAIKKI KORTIT OVAT ORANSSEJA — JÄRJESTYS TEHDÄÄN NAUHALLA, EI POHJAVÄRILLÄ.
 
-    Oranssi kortti on listan vahvin katseankkuri, ja siksi se annetaan
-    sille kortille, jonka haluamme klikattavan: halvimmalle käyttäjän
-    omalla kulutuksella. Kun kaikki kuusi olisivat oransseja, väri ei
-    enää erottaisi mitään — ja pahempaa: "Tee sopimus" -nappi on
-    oranssi, joten oranssilla kortilla se katoaisi pohjaansa. Sivun
-    ainoa ostonappi vaihdettaisiin heikommaksi vain, jotta lista
-    näyttäisi värikkäämmältä. Väärä vaihtokauppa.
+    Aiemmin vain halvin kortti oli oranssi ja loput vaaleita. Kun koko
+    ruudukko on oranssi, pohjaväri ei enää erota mitään, joten kortin
+    rooli on siirrettävä johonkin muuhun. Se on nyt kortin ylin nauha:
+    kerma = edullisin, kulta = Ketun valinta, ei nauhaa = tavallinen.
+    Kaksi nauhaa kahdellakymmenellänejällä kortilla erottuu oranssista
+    yhtä hyvin kuin yksi oranssi kortti erottui vaaleista — ja lisäksi
+    nauhassa lukee SYY, jota pelkkä väri ei kertonut.
 
-    Tällä kortilla nappi on siis kermanvalkoinen (`inverse` +
-    `theme-light`), jolloin se on koko listan kirkkain piste — juuri
-    siinä kortissa, jonka klikkaus tuottaa eniten.
+    OSTONAPPI: oranssi nappi oranssilla kortilla katoaisi pohjaansa,
+    joten jokaisen kortin nappi on nyt kermanvalkoinen (`inverse` +
+    `theme-light`). Se on kortin kirkkain piste, eli juuri se, mihin
+    silmä päätyy. Tämä on koko muutoksen ainoa oikea riski: kun kaikki
+    napit ovat yhtä kirkkaita, mikään ei ohjaa ylöspäin listalla.
+    Sijaluku logon vieressä ja hintapalkki tekevät sen työn nyt yksin.
 
     EMBER-ANSA: `theme-ember` kääntää `bg-white`-luokan oranssiksi ja
-    `text-accentDark`-luokan vaaleaksi kermaksi. Alla merkityt kohdat
-    ovat ne, joissa käännös olisi rikkonut jotain: yhtiön logo tarvitsee
-    aidosti valkoisen pohjan, ja "Uusiutuva"-merkki olisi ollut kermaa
-    kermalla eli näkymätön.
+    `text-accentDark`-luokan vaaleaksi kermaksi. Koska kortteja ei ole
+    enää yhtään vaaleaa, jokainen aidosti valkoista pohjaa tarvitseva
+    kohta — yhtiön logo, kettukuva, ostonappi — on käärittävä
+    `theme-light`-luokkaan.
   */
-  const ember = badge?.kind === "cheapest";
+  const cheapest = badge?.kind === "cheapest";
+  const foxPick = badge?.kind === "fox";
 
   return (
     /*
@@ -73,12 +92,12 @@ export default function PlanCard({
       `.lift` kunnioittaa myös `prefers-reduced-motion`-asetusta.
     */
     <article
-      className={`lift group relative flex h-full flex-col overflow-hidden rounded-2xl border ${
-        ember
-          ? "theme-ember ember-surface border-line shadow-cardHover hover:border-cream/55"
-          : badge?.kind === "fox"
-            ? "bg-white border-lineDark shadow-cardHover hover:border-accent/35"
-            : "bg-white border-line shadow-card hover:border-accent/35"
+      className={`lift theme-ember ember-surface group relative flex h-full flex-col overflow-hidden rounded-2xl border shadow-cardHover ${
+        cheapest
+          ? "border-cream/70 hover:border-cream"
+          : foxPick
+            ? "border-gold hover:border-gold"
+            : "border-line hover:border-cream/55"
       }`}
     >
       {/*
@@ -92,49 +111,61 @@ export default function PlanCard({
         kortti pitää lukea erikseen. Tyhjä palkki maksaa 44 pikseliä
         korkeutta ja ostaa sillä koko listan luettavuuden.
       */}
-      {ember ? (
+      {cheapest ? (
         /* Kermanauha, ei kirkkaanoranssi: oranssi nauha oranssilla
            kortilla olisi kaksi lähes samaa sävyä päällekkäin. */
-        <div className="flex h-11 items-center bg-cream px-5">
-          <p className="flex items-center gap-1.5 font-display text-[11.5px] font-bold uppercase tracking-[0.14em] text-[#A83E0A]">
+        <div className="flex h-10 items-center bg-cream px-4 sm:px-5">
+          <p className="flex items-center gap-1.5 font-display text-[11px] font-bold uppercase tracking-[0.14em] text-[#A83E0A]">
             <Zap size={12} aria-hidden /> Edullisin kulutuksellasi
           </p>
         </div>
-      ) : badge?.kind !== "fox" ? (
-        <div className="h-11 border-b border-line bg-mist/40" aria-hidden />
+      ) : !foxPick ? (
+        /* Tyhjä nauha, ks. perustelu yllä. Tummennus eikä vaalennus:
+           vaalea raita lukisi merkiksi, ja merkitön kortti saisi merkin. */
+        <div className="h-10 border-b border-white/10 bg-black/10" aria-hidden />
       ) : null}
-      {/*
-        "KETUN VALINTA" -SINETTI.
+      {foxPick && (
+        <div className="flex h-10 items-center gap-2.5 bg-gold px-3.5">
+          {/*
+            KULTAINEN TASSU TUMMALLA LAATALLA — EI TASSUA SUORAAN NAUHALLE.
 
-        MIKSI SINETIN MUOTOINEN: kilpailijoilla (Verivox, sahkon-kilpailutus.fi)
-        luottamus rakennetaan kolmannen osapuolen sertifikaateilla — TÜV, eKomi,
-        tähtiarviot. Kettu ei voi näyttää niitä, koska niitä ei ole, eikä niitä
-        keksitä. Ainoa rehellinen tapa saada sama visuaalinen paino on antaa
-        Ketulle OMA sinetti ja painaa sen kriteeri näkyviin viereen.
+            Nauha on kultaa, joten kultainen tassu suoraan sen päällä olisi
+            kaksi samaa sävyä päällekkäin eli näkymätön. Tumma pyöreä laatta
+            antaa tassulle taustan, ja samalla merkki alkaa lukea sinettinä
+            eikä ikonina — juuri sitä se on. Kilpailijat rakentavat saman
+            luottamuksen kolmannen osapuolen sertifikaateilla (TÜV, eKomi),
+            joita Ketulla ei ole eikä niitä keksitä. Oma sinetti on ainoa
+            rehellinen tapa saada sama visuaalinen paino.
 
-        MIKSI KRITEERI ON SINETISSÄ ITSESSÄÄN: sertifikaatti, jonka mittari
-        lukee merkin vieressä, on vahvempi kuin sertifikaatti, jonka mittarin
-        joutuu etsimään. Se vastaa vertailusivujen yleisimpään epäilyyn —
-        "onko tämä nosto ostettu?" — siinä sekunnissa kun epäily syntyy, eikä
-        vasta sivun alalaidan läpinäkyvyysosiossa. Mobiilissa kaava jää pois,
-        koska siellä tila menisi yhtiön nimeltä; sama kaava on auki
-        läpinäkyvyysosiossa.
-
-        Kultareunus erottaa merkin oranssista "Edullisin" -merkistä. Ne
-        tarkoittavat eri asiaa, joten ne eivät saa näyttää samalta: oranssi on
-        laskennan tulos, kulta on Ketun oma kannanotto.
-      */}
-      {badge?.kind === "fox" && (
-        <div className="flex h-11 items-center gap-2.5 border-b border-gold/30 bg-gold/[0.09] px-4 sm:px-5">
-          <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-gold/55 bg-white text-goldInk">
-            <FoxPaw size={12} />
+            Tassu on sivuston yleinen allekirjoitus: sama muoto toistuu
+            jokaisen kortin ominaisuusriveillä, joten lukija on jo oppinut,
+            että tassun vieressä oleva väite on Ketun oma kannanotto eikä
+            sähköyhtiön markkinointitekstiä.
+          */}
+          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#4A2E06] text-gold shadow-[0_1px_2px_rgba(74,26,2,0.4)]">
+            <FoxPaw size={15} />
           </span>
-          <p className="font-display text-[11.5px] font-bold uppercase tracking-[0.14em] text-goldInk">
-            Ketun valinta
-          </p>
-          <span className="ml-auto hidden whitespace-nowrap font-data text-[10.5px] font-semibold text-ink/50 sm:block">
-            hinta 72 % · arvio 28 %
-          </span>
+          <div className="min-w-0">
+            <p className="font-display text-[11px] font-bold uppercase leading-none tracking-[0.14em] text-[#4A2E06]">
+              Ketun valinta
+            </p>
+            {/*
+              PERUSTELU HETI MERKIN ALLA, EI RIVIN OIKEASSA REUNASSA.
+
+              Oikeassa reunassa se katosi mobiilissa kokonaan ja työpöydällä
+              se luki niin kaukana merkistä, ettei sitä yhdistetty siihen.
+              Vertailusivun yleisin epäily on "onko tämä nosto ostettu?", ja
+              siihen pitää vastata siinä sekunnissa kun epäily syntyy.
+
+              Tässä lukee lopputulos, ei kaava. Painotus (hinta 72 %,
+              käyttäjäarvio 28 %) on auki sivun läpinäkyvyysosiossa — se on
+              se paikka, josta epäilevä lukija sen etsii, ja kolmen luvun
+              lukeminen kortin merkistä hidasti kaikkia muita.
+            */}
+            <p className="mt-1 truncate font-data text-[10.5px] font-bold leading-none text-[#5C3A08]">
+              Paras hinta-laatusuhde
+            </p>
+          </div>
         </div>
       )}
 
@@ -159,15 +190,13 @@ export default function PlanCard({
         valitulla mittarilla, ja kutonen kertoo, ettei alaspäin selaamalla
         löydy halvempaa. Se lyhentää harkintaa ja vie klikin ylös listalle.
       */}
-      <div className="flex items-center gap-3 border-b border-line bg-mist/70 px-4 py-3 sm:px-5">
+      <div className="flex items-center gap-2.5 border-b border-line bg-black/10 px-3.5 py-2.5 sm:px-4">
         {rank !== undefined && (
           <span
-            className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg font-data text-[13px] font-extrabold tabular-nums ${
+            className={`grid h-6 w-6 shrink-0 place-items-center rounded-lg font-data text-[12px] font-extrabold tabular-nums ${
               rank === 1
-                ? ember
-                  ? "bg-cream text-[#A83E0A]"
-                  : "bg-accent text-onEmber"
-                : "border border-line bg-white text-ink/45"
+                ? "bg-cream text-[#A83E0A]"
+                : "border border-cream/25 bg-black/15 text-cream/75"
             }`}
             aria-hidden
           >
@@ -176,12 +205,12 @@ export default function PlanCard({
         )}
         <ProviderLogo provider={plan.provider} logo={plan.logo} />
         <div className="min-w-0 flex-1">
-          <h3 className="truncate font-display text-[16px] font-bold leading-tight text-ink">
+          <h3 className="truncate font-display text-[15px] font-bold leading-tight text-ink">
             <Link href={`/sahkosopimukset/sopimus/${plan.slug}`} className="underline-offset-4 hover:underline">
               {plan.provider}
             </Link>
           </h3>
-          <p className="mt-0.5 truncate text-[12.5px] text-ink/60">{plan.name}</p>
+          <p className="mt-0.5 truncate text-[12px] text-ink/60">{plan.name}</p>
         </div>
       </div>
 
@@ -196,21 +225,21 @@ export default function PlanCard({
         asettuvat samaan vaakalinjaan joka kortissa, jolloin sopimustyypin
         vertailu onnistuu silmäilemällä yhtä riviä.
       */}
-      <div className="flex flex-wrap items-center gap-2 border-b border-line px-4 py-2.5 sm:px-5">
-        <span className="whitespace-nowrap rounded-md border border-line bg-mist px-2 py-0.5 text-[11px] font-semibold text-ink/70">
+      <div className="flex flex-wrap items-center gap-1.5 border-b border-line px-3.5 py-2 sm:px-4">
+        <span className="whitespace-nowrap rounded-md border border-cream/25 bg-black/15 px-2 py-0.5 text-[10.5px] font-semibold text-ink/80">
           {TYPE_LABEL[plan.type]}
           {plan.fixedTermMonths ? ` · ${plan.fixedTermMonths} kk` : ""}
         </span>
         {plan.green && (
           /* `theme-light`: ilman sitä tausta ja teksti olisivat ember-vyöllä
              molemmat vaaleaa kermaa, eli merkki olisi tyhjä laatikko. */
-          <span className="theme-light inline-flex items-center gap-1 whitespace-nowrap rounded-md border border-accent/25 bg-accentSoft px-2 py-0.5 text-[11px] font-semibold text-accentDark">
+          <span className="theme-light inline-flex items-center gap-1 whitespace-nowrap rounded-md border border-accent/25 bg-accentSoft px-2 py-0.5 text-[10.5px] font-semibold text-accentDark">
             <Leaf size={11} aria-hidden /> Uusiutuva
           </span>
         )}
       </div>
 
-      <div className="flex flex-1 flex-col p-5">
+      <div className="flex flex-1 flex-col p-4">
         <div>
           {/*
             YKSI DESIMAALI, EI PYÖRISTYSTÄ KOKONAISIIN EUROIHIN.
@@ -229,24 +258,24 @@ export default function PlanCard({
             uudessa muodossa.
           */}
           <div className="flex items-baseline gap-1.5">
-            <span className="font-display font-data font-price text-[38px] font-extrabold leading-none tracking-[-0.03em] text-ink">
+            <span className="font-display font-data font-price text-[30px] font-extrabold leading-none tracking-[-0.03em] text-ink">
               {monthly.toLocaleString("fi-FI", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} €
             </span>
-            <span className="font-display text-[14px] font-semibold text-ink/60">/ kk</span>
+            <span className="font-display text-[13px] font-semibold text-ink/60">/ kk</span>
           </div>
 
-          <div className={`mt-3 h-1.5 w-full overflow-hidden rounded-full ${ember ? "bg-cream/25" : "bg-night"}`}>
+          <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-black/20">
             <div
-              className={`h-full rounded-full transition-all duration-500 ${ember ? "bg-cream" : "bg-ink/25"}`}
+              className="h-full rounded-full bg-cream transition-all duration-500"
               style={{ width: `${barWidth}%` }}
             />
           </div>
 
-          <p className="mt-2 text-[12.5px] text-ink/60">
+          <p className="mt-2 text-[12px] text-ink/60">
             {yearly.toLocaleString("fi-FI", { maximumFractionDigits: 0 })} € vuodessa
           </p>
           {savings > 0 && (
-            <p className="mt-1 text-[12.5px] font-semibold text-accentDark">
+            <p className="mt-1 text-[12px] font-semibold text-accentDark">
               Säästät {savings.toLocaleString("fi-FI", { maximumFractionDigits: 0 })} € {savingsLabel}
             </p>
           )}
@@ -273,18 +302,18 @@ export default function PlanCard({
           </p>
         )}
 
-        <dl className="mt-5 space-y-2 rounded-xl border border-line bg-mist p-3.5">
-          <div className="flex justify-between text-[12.5px]">
+        <dl className="mt-3.5 space-y-1.5 rounded-xl border border-line bg-black/10 p-3">
+          <div className="flex justify-between text-[12px]">
             <dt className="text-ink/60">{plan.type === "spot" ? "Marginaali" : "Energia"}</dt>
             <dd className="font-data font-bold text-ink">
               {plan.type === "spot"
-                ? `${plan.spotMargin?.toLocaleString("fi-FI")} c/kWh + pörssi`
-                : `${plan.energyPrice?.toLocaleString("fi-FI")} c/kWh`}
+                ? `${money(plan.spotMargin ?? 0)} c/kWh + pörssi`
+                : `${money(plan.energyPrice ?? 0)} c/kWh`}
             </dd>
           </div>
-          <div className="flex justify-between text-[12.5px]">
+          <div className="flex justify-between text-[12px]">
             <dt className="text-ink/60">Perusmaksu</dt>
-            <dd className="font-data font-bold text-ink">{plan.basicFee.toLocaleString("fi-FI")} €/kk</dd>
+            <dd className="font-data font-bold text-ink">{money(plan.basicFee)} €/kk</dd>
           </div>
         </dl>
 
@@ -296,10 +325,10 @@ export default function PlanCard({
           Sama tassu on "Ketun valinta" -merkissä, joten kahden välille
           syntyy yhteys ilman että sitä tarvitsee selittää.
         */}
-        <ul className="mt-4 flex-1 space-y-1.5">
+        <ul className="mt-3 flex-1 space-y-1">
           {plan.features.slice(0, 3).map((f) => (
-            <li key={f} className="flex items-start gap-2 text-[13px] leading-snug text-ink/80">
-              <span className={`mt-[3px] shrink-0 ${ember ? "text-cream/75" : "text-accent/70"}`} aria-hidden>
+            <li key={f} className="flex items-start gap-2 text-[12.5px] leading-snug text-ink/80">
+              <span className="mt-[3px] shrink-0 text-cream/75" aria-hidden>
                 <FoxPaw />
               </span>
               {f}
@@ -307,25 +336,25 @@ export default function PlanCard({
           ))}
         </ul>
 
-        <div className="mt-4 flex items-center justify-between gap-3 border-t border-line pt-3.5">
+        <div className="mt-3 flex items-center justify-between gap-3 border-t border-line pt-3">
           <p className="flex items-center gap-1 text-[12px] text-ink/60">
             <Star size={13} className="fill-star text-star" aria-hidden />
             <span className="font-data font-bold text-ink">{plan.rating.toFixed(1)}</span> ({plan.reviews})
           </p>
           <Link
             href={`/sahkosopimukset/sopimus/${plan.slug}`}
-            className="text-[13px] font-semibold text-ink/60 underline-offset-4 hover:text-ink hover:underline"
+            className="text-[12.5px] font-semibold text-ink/60 underline-offset-4 hover:text-ink hover:underline"
           >
             Tiedot
           </Link>
         </div>
 
-        <div className={`mt-3 ${ember ? "theme-light" : ""}`}>
+        <div className="theme-light mt-2.5">
           <AffiliateButton
             href={plan.affiliateUrl}
             cardId={plan.id}
             placement="energy-grid"
-            variant={ember ? "inverse" : "primary"}
+            variant="inverse"
             className="w-full"
           >
             Tee sopimus
@@ -354,7 +383,7 @@ function ProviderLogo({ provider, logo }: { provider: string; logo?: string }) {
       /* `theme-light`: yhtiöiden logot on tehty valkoiselle pohjalle. Ember-
          kortilla `bg-white` olisi oranssi ja logo vääristyisi — se olisi
          tavaramerkin väärinkäyttöä, ei tyylivalinta. */
-      <span className="theme-light grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-xl border border-line bg-white p-1.5">
+      <span className="theme-light grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-xl border border-line bg-white p-1.5">
         <Image
           src={logo}
           alt={`${provider} logo`}
@@ -377,7 +406,7 @@ function ProviderLogo({ provider, logo }: { provider: string; logo?: string }) {
 
   return (
     <span
-      className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-line bg-mist font-display text-[15px] font-bold tracking-tight text-ink/45"
+      className="theme-light grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-line bg-mist font-display text-[13px] font-bold tracking-tight text-ink/55"
       title={provider}
       aria-hidden
     >

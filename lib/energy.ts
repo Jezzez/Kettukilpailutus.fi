@@ -26,6 +26,19 @@ export interface ElectricityPlan {
    * Ilman kenttää kortti näyttää yhtiön nimikirjaimet.
    */
   logo?: string;
+  /**
+   * Onko sopimuksen hinta vielä esimerkkiluku.
+   *
+   * Sivustoa rakennetaan, eikä yhdenkään yhtiön ehtoja ole vielä tarkistettu.
+   * Lippu on sopimuskohtainen, jotta tarkistustyön voi tehdä yksi yhtiö
+   * kerrallaan: kun luvut on varmistettu, tästä tulee `false` ja juuri se
+   * sopimus on julkaisukelpoinen. Ilman sopimuskohtaista lippua ainoa
+   * vaihtoehto olisi kääntää koko sivusto kerralla oikeaksi, ja käytännössä
+   * se tarkoittaa, että lippu käännetään liian aikaisin.
+   */
+  example?: boolean;
+  /** Yhtiön kotipaikka. Tarkistettu tieto myös silloin, kun hinta ei ole. */
+  region?: string;
   gradient: [string, string];
   features: string[];
   summary: string;
@@ -51,12 +64,19 @@ export const ASSUMED_SPOT_AVG: number = electricityJson.assumedSpotAverage;
 export const PRICE_DATE: string = electricityJson.priceDate;
 
 /**
- * Kertoo, ovatko luvut vielä esimerkkidataa. Päivämäärän korottaminen ilman
- * että hinnat on oikeasti tarkistettu olisi kuluttajalle valehtelua, joten
- * vanhentumista ei piiloteta — se kerrotaan. Kun `data/electricity.json`
- * saa todelliset hinnat, aseta `isExampleData: false` ja huomautus katoaa.
+ * Kertoo, ovatko luvut vielä esimerkkidataa.
+ *
+ * MIKSI TÄTÄ EI LUETA PELKÄSTÄÄN YLÄTASON LIPUSTA: se olisi yksi rivi, jonka
+ * kääntämällä koko esimerkkihuomautus katoaa sivulta — myös silloin, kun
+ * kahdenkymmenen sopimuksen hinnat ovat yhä keksittyjä. Juuri se virhe on
+ * tässä projektissa kallein mahdollinen: julkaistu vertailu, joka näyttää
+ * tarkistetulta mutta ei ole. Siksi huomautus on päällä niin kauan kuin
+ * yhdessäkin sopimuksessa on `example: true`, eikä sitä voi sammuttaa
+ * muuten kuin tarkistamalla luvut yksi sopimus kerrallaan.
  */
-export const IS_EXAMPLE_DATA: boolean = electricityJson.isExampleData === true;
+export const IS_EXAMPLE_DATA: boolean =
+  electricityJson.isExampleData === true ||
+  (electricityJson.plans as ElectricityPlan[]).some((p) => p.example === true);
 
 export function getPlans(): ElectricityPlan[] {
   return electricityJson.plans as ElectricityPlan[];
