@@ -1486,27 +1486,43 @@ export default function ElectricityExperience({
       {!showResults && (
         <section className="theme-light bg-paper pt-14">
           {/*
-            KETTU NOJAA PANEELIN ALAREUNAAN, TASSUT REUNAN YLI.
+            KETTU SYTYTTÄÄ LAMPUN PANEELIN SISÄLLÄ, REUNASTA REUNAAN.
 
-            Miksi kuva on paneelin ULKOPUOLELLA: `.pelt-surface` asettaa
-            `overflow: hidden` itse CSS:ssä, joten paneelin sisältä mikään
-            ei voi ylittää reunaa. Kuva on siksi sisaruksena ja asemoitu
-            paneelin päälle — vain näin tassut voivat mennä reunaviivan yli.
+            Tässä oli aiemmin vaakakuva, jossa Kettu kurkisti paneelin
+            reunan yli. Kuva oli siksi paneelin ULKOPUOLELLA sisaruksena
+            ja asemoitu sen päälle — `.pelt-surface` asettaa CSS:ssä
+            `overflow: hidden`, joten mikään sisältä ei voi ylittää reunaa.
 
-            Miksi näin ylipäätään: tämä paneeli on portti. Se kertoo, ettei
+            Uusi kuva on pystykuva, jossa hahmo kurkottaa YLÖS. Sitä ei voi
+            pudottaa vanhaan paikkaan: 240 pikselin korkuisena kohotettu
+            käsi ja kipinät kutistuisivat tunnistamattomiksi, eikä seisova
+            hahmo nojaa mihinkään. Kuva on siksi nyt paneelin SISÄLLÄ
+            normaalina taittoelementtinä.
+
+            KAKSI LEIKKAUSKOHTAA OSUU TARKALLEEN PANEELIN REUNOIHIN.
+            Kuvan ylin kymmenys on pelkkää riippujohtoa ja alareuna on
+            leikattu reidestä. `-mt-10` kumoaa paneelin `pt-10`:n, jolloin
+            johto lähtee ylhäältä paneelin reunasta — lamppu näyttää
+            roikkuvan katosta paneelin yläpuolelta. Paneelista poistettiin
+            alapehmuste kokonaan (`pb` on nyt tekstisarakkeella), jolloin
+            hahmon alaleikkaus osuu alareunaan ja hän nousee paneelin
+            takaa. Vapaasti leijuessaan kumpikin pää näyttäisi katkaistulta.
+
+            MIKSI NÄIN YLIPÄÄTÄÄN: tämä paneeli on portti. Se kertoo, ettei
             hintoja näytetä ennen vastauksia, ja se on hetki jolloin osa
-            kävijöistä poistuu. Reunan yli nojaava Kettu tekee lukosta
-            leikkisän eikä esteen — sama ele kuin joku kurkistaisi tiskin
-            yli katsomaan mitä olet kirjoittamassa.
+            kävijöistä poistuu näkemättä yhtään hintaa. Sytytetty lamppu ja
+            työkaluvyö kertovat sekunnissa, että kyse on sähköstä ja että
+            joku hoitaa homman puolestasi — kurkistava kettu ei kertonut
+            kumpaakaan.
 
-            Mobiilissa paneelille varataan alaosaan tilaa, jotta kuva ei
-            mene tekstin päälle; leveällä ruudulla se siirtyy oikeaan
-            reunaan tekstin viereen.
+            Mobiilissa hahmo on tekstin alla ja matalampi, jottei se vie
+            koko ruutua ennen kuin lukija on lukenut miksi hänen kannattaa
+            vastata.
           */}
           <div className="relative mx-auto max-w-[1180px] px-4 sm:px-6">
-            <div className="pelt-surface overflow-hidden rounded-3xl border border-gold/30 px-6 pb-[216px] pt-10 sm:px-10 lg:pb-10">
-              <div className="relative z-[1] flex flex-col items-center gap-9 lg:flex-row lg:items-center lg:justify-between">
-                <div className="max-w-md text-center lg:text-left">
+            <div className="pelt-surface overflow-hidden rounded-3xl border border-gold/30 px-6 pt-10 sm:px-10">
+              <div className="relative z-[1] flex flex-col items-center gap-4 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
+                <div className="max-w-md pb-10 text-center lg:self-center lg:text-left">
                   <p className="flex items-center justify-center gap-2.5 font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-accentDark lg:justify-start">
                     <Lock size={13} aria-hidden /> Sopimukset avautuvat vastausten jälkeen
                   </p>
@@ -1523,17 +1539,20 @@ export default function ElectricityExperience({
                   </p>
                 </div>
 
-                {/* Varjopaikka: pitää tekstisarakkeen leveyden samana kuin
-                    ennen, vaikka itse kuva on asemoitu paneelin ulkopuolelle. */}
-                <div className="hidden shrink-0 lg:block" style={{ width: 294, height: 240 }} aria-hidden />
+                {/*
+                  `!h-` on tarkoituksellinen: FoxSlot asettaa korkeuden
+                  tyylimääreenä, ja vain !important-luokka voi kääntää sen
+                  näyttökoon mukaan. Korkeus 470 on valittu niin, että
+                  hahmo täyttää paneelin ylhäältä alas kun `-mt-10` on
+                  kumonnut yläpehmusteen.
+                */}
+                <FoxSlot
+                  id="laskuri"
+                  height={470}
+                  className="pointer-events-none -mt-6 shrink-0 !h-[340px] drop-shadow-[0_10px_24px_rgba(90,45,10,0.14)] lg:-mt-10 lg:!h-[470px]"
+                />
               </div>
             </div>
-
-            <FoxSlot
-              id="laskuri"
-              height={240}
-              className="pointer-events-none absolute bottom-0 left-1/2 z-[2] -translate-x-1/2 translate-y-[12%] drop-shadow-[0_10px_24px_rgba(90,45,10,0.18)] lg:left-auto lg:right-12 lg:translate-x-0"
-            />
           </div>
         </section>
       )}

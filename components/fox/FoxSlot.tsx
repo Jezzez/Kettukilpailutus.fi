@@ -56,13 +56,31 @@ export const FOX_SLOTS: Record<FoxSlotId, SlotSpec> = {
     alt: "Kettu, Kettukilpailutuksen maskotti",
     brief: "Koko vartalo, kolmineljäsosaprofiili, itsevarma. Valo sivusta.",
   },
+  /*
+    LASKURI — VAIHDETTU KURKISTAJASTA LAMPUNSYTYTTÄJÄÄN.
+
+    Tässä oli vaakakuva (760x620), jossa Kettu kurkisti paneelin reunan
+    yli. Ele oli hyvä, mutta kuva oli aiheeton: sama kurkistaja olisi
+    käynyt lainoihin ja vakuutuksiin. Tämä paikka on sähkövertailun
+    portti, ja portti on se kohta, jossa osa kävijöistä poistuu ennen
+    kuin on nähnyt yhtään hintaa. Aiheeseen osuva kuva — syttyvä lamppu
+    ja työkaluvyö — kertoo yhdellä silmäyksellä mistä sivulla on kyse ja
+    pitää heidät hetken pidempään. Se on suoraan pois poistumisista.
+
+    MITAT: pystykuva 489x960, rajattu läpinäkyvän alueen mukaan. Ylin
+    kymmenys on pelkkää riippujohtoa ja alareuna on leikattu reidestä —
+    kumpikin leikkauskohta on TARKOITUS asemoida paneelin reunaan, jolloin
+    lamppu näyttää roikkuvan paneelin yläpuolelta ja hahmo nousevan sen
+    takaa. Vapaasti leijuessaan kumpikin pää näyttäisi katkaistulta.
+    Ks. ElectricityExperience.tsx, porttipaneeli.
+  */
   laskuri: {
-    src: "/kettu-kurkistaa.webp",
-    w: 760,
-    h: 620,
+    src: "/kettu-lamppu.webp",
+    w: 489,
+    h: 960,
     alt: "",
     brief:
-      "Puolivartalo, kurkistaa laskurin reunan yli käyttäjän lukuja. Keskittynyt, hieman huvittunut. Kyynärpäät voivat nojata reunaan.",
+      "Kokovartalo alaviistosta, kurkottaa ylös sytyttämään riippulampun. Villapaita ja työkaluvyö. Johto jatkuu kuvan yläreunan yli.",
   },
   luottamus: {
     src: null,
