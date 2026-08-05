@@ -206,38 +206,17 @@ h1, h2, h3 { letter-spacing: -0.02em; }
 /* Headerin lasi. Vaalea, koska sivu on vaalea — musta palkki kermanvärisen
    heron päällä leikkaisi ruudun kahtia heti ensisilmäyksellä.
 
-   EI ENÄÄ KÄYTÖSSÄ HEADERISSA, ks. `.glass-ember`. Jätetty tähän, koska
-   vaalea lasi on oikea ratkaisu, jos header joskus palaa hiekanväriseksi. */
+   KOKEILTU JA HYLÄTTY: oranssi header, joka jatkaisi selaimen oranssia
+   kehystä yhtenäisenä pintana. Se toimi teknisesti, mutta teki jokaisen
+   sivun yläreunasta värillisen myös silloin, kun sivulla ei ole oranssia
+   vyötä — ja sivuston rytmi on nimenomaan vaalea pohja, jota oranssit vyöt
+   jaksottavat. Selaimen kehys saa olla oranssi ilman tätä (ks. layout.tsx
+   `themeColor`): vaalea palkki oranssin kehyksen alla lukee otsikkopalkkina,
+   ei saumana. */
 .glass-light {
   background: rgba(251, 246, 237, 0.86);
   backdrop-filter: saturate(1.2) blur(16px);
   -webkit-backdrop-filter: saturate(1.2) blur(16px);
-}
-
-/* HEADERIN ORANSSI LASI.
-
-   MIKSI HEADER ON ORANSSI: selain värittää ikkunan kehyksen sivun
-   `theme-color`-arvolla (Safarin välilehtipalkki, mobiiliselainten
-   osoiterivi). Kun kehys on kettuoranssi mutta sen alla oleva palkki on
-   hiekkaa, väliin jää saumakohta, joka lukee virheeltä. Nyt kehys, header
-   ja heron oranssi vyö ovat samaa väriä, jolloin koko ikkunan yläosa on
-   yksi esine — sama ele, jolla Sortter ja muut vertailujätit erottuvat
-   harrastussivuista. Se on halvin olemassa oleva luottamussignaali:
-   nollan tavun lisäys sivun painoon, näkyy jokaisella sivulla.
-
-   MIKSI UMPINAINEN EIKÄ LÄPIKUULTAVA: header on `sticky`, ei `fixed`.
-   Se varaa oman rivinsä ylhäältä, joten sen takana EI ole heron oranssi
-   vaan sivun kermanvaalea pohja. Läpikuultava oranssi sekoittui siihen
-   ja palkista tuli maitoinen ruskeanpunainen, joka ei vastannut mitään
-   muuta pintaa sivulla. Umpinainen #A83E0A on tarkalleen ember-pohjan
-   tummin sävy, eli sama väri kuin heron gradientin lähtöpiste.
-
-   Heron gradientti kirkastuu oikealle ylös, joten palkin alareunaan jää
-   hiuksenhieno valoraja. Se on tarkoituksellinen: se lukee palkin
-   reunana, ei virheenä, ja on sama suunta kuin `.ember-surface`-pinnan
-   oma valo. */
-.glass-ember {
-  background: #A83E0A;
 }
 
 /* KORTIN NOSTO.

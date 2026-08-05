@@ -69,17 +69,22 @@ export const viewport: Viewport = {
    * joka on käytännössä valkoinen: selain näytti täsmälleen samalta kuin
    * millä tahansa sivulla, eikä väri tehnyt mitään.
    *
-   * Nyt arvo on `.theme-ember`-pohjan oranssi #A83E0A — sama kuin
-   * headerin lasi ja heron vyö. Kolme pintaa peräkkäin samaa väriä
-   * tekee ikkunan yläosasta yhden esineen sen sijaan, että sivu näyttäisi
-   * asiakirjalta selaimen sisällä.
+   * Nyt arvo on `.theme-ember`-pohjan oranssi #A83E0A — sama kuin heron
+   * vyön pohja.
+   *
+   * HEADER JÄÄ TARKOITUKSELLA VAALEAKSI. Oranssi header kokeiltiin, ja se
+   * teki jokaisen sivun yläreunasta värillisen myös silloin, kun sivulla
+   * ei ole oranssia vyötä. Vaalea palkki oranssin kehyksen alla ei ole
+   * sauma vaan tavallinen otsikkopalkki — selaimen kehys on selaimen, ei
+   * sivun, ja lukija erottaa ne toisistaan itsestään.
    *
    * MIKSI TUOTON KANNALTA: puhelimessa oranssi osoiterivi on ensimmäinen
    * asia, joka latautuu — ennen kuin yksikään kuva on paikallaan. Se on
    * ainoa brändielementti, joka ehtii näkyä ennen sisältöä.
    *
    * ÄLÄ laita tähän kirkasta #E8691B: se on maskotin turkin väri, ja
-   * selaimen kehyksen pitää olla sitä tummempi, jotta kettu erottuu.
+   * selaimen kehyksen pitää olla sitä tummempi, jotta kettu erottuu — ja
+   * kirkas oranssi selainpalkki lukee halvalta.
    */
   themeColor: "#A83E0A",
 };

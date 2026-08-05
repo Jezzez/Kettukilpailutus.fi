@@ -26,33 +26,13 @@ import FoxPaw from "./FoxPaw";
  * MUOTO ON YHDESSÄ PAIKASSA: se tulee `FoxPaw`-komponentista, joten
  * logo ja luettelomerkki eivät voi ajautua eri muotoisiksi.
  */
-/**
- * `tone` KÄÄNTÄÄ LAATAN ORANSSILLA POHJALLA.
- *
- * Oranssi laatta oranssilla palkilla on lähes näkymätön: erotus on vain
- * kahden saman värin valoarvo. Kun header on oranssi, logo tarvitsee
- * päinvastaisen ratkaisun — kermanvaalea laatta ja oranssi tassu. Se on
- * sama kääntösääntö kuin loppukehotuksen napissa, eli logo ja pääkehote
- * lukevat yhtenä parina palkin molemmissa päissä.
- *
- * Värit ovat KIINTEITÄ eivätkä teemamuuttujia: logon pitää näyttää
- * samalta riippumatta siitä, minkä teemaluokan sisään se pudotetaan.
- */
-export default function FoxMark({
-  size = 30,
-  tone = "accent",
-}: {
-  size?: number;
-  tone?: "accent" | "cream";
-}) {
+export default function FoxMark({ size = 30 }: { size?: number }) {
   return (
     // Ei `shadow-ember`: se on napeille mitoitettu 32 pikselin pehmennys, ja
     // 34 pikselin laatan alla se olisi oranssi tahra eikä varjo.
     <span
       aria-hidden
-      className={`grid shrink-0 place-items-center rounded-[30%] ${
-        tone === "cream" ? "bg-[#FFFCF7] text-[#A83E0A]" : "bg-accent text-onEmber"
-      }`}
+      className="grid shrink-0 place-items-center rounded-[30%] bg-accent text-onEmber"
       style={{ width: size, height: size }}
     >
       <FoxPaw size={Math.round(size * 0.6)} className="-rotate-[10deg]" />

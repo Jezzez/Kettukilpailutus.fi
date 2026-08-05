@@ -51,34 +51,9 @@ export default function Header() {
   }, []);
 
   return (
-    /*
-      HEADER ON ORANSSI, EI HIEKANVÄRINEN.
-
-      MIKSI: selain värittää ikkunan kehyksen sivun `theme-color`-arvolla
-      — Safarissa välilehtipalkin, puhelimessa osoiterivin. Kun se on
-      kettuoranssi, myös sen alla olevan palkin on oltava oranssi, tai
-      väliin jää vaakaraita, joka lukee virheeltä. Yhdessä ne tekevät
-      ikkunan yläosasta yhden esineen: kehys, header ja heron vyö samaa
-      väriä.
-
-      MIKSI TÄMÄ NOSTAA TUOTTOA: brändiväri on nyt joka sivulla, myös
-      niillä, joilla ei ole oranssia vyötä (oppaat, tietosuoja,
-      sopimussivut). Vertailupalvelun suurin este on epäily siitä, onko
-      sivu oikea yritys — ja tunnistettava, johdonmukainen väri koko
-      ikkunan levyisenä on halvin tapa näyttää siltä, että on.
-
-      MITÄ TÄMÄ MAKSAA: sivuston rytmi oli "vaalea sivu, oranssit vyöt".
-      Nyt jokaisen sivun yläreuna on oranssi riippumatta siitä, onko
-      siellä vyötä. `DESIGN.md`:n sääntö "ainoa pysyvä värillinen pinta
-      on alatunniste" ei enää pidä paikkaansa.
-
-      `theme-ember` kääntää `text-ink`-luokan kermaksi, joten navigaation
-      luokkia ei tarvitse kirjoittaa uusiksi. Kaksi kohtaa kääntyy
-      väärin päin (nappi ja `accentSoft`), ja ne on korjattu alla.
-    */
     <header
-      className={`theme-ember glass-ember sticky top-0 z-50 transition-[border-color,box-shadow] duration-300 ${
-        scrolled ? "border-b border-line/40 shadow-[0_10px_28px_-22px_rgba(74,26,2,0.9)]" : "border-b border-transparent"
+      className={`glass-light sticky top-0 z-50 transition-[border-color,box-shadow] duration-300 ${
+        scrolled ? "border-b border-line shadow-[0_8px_24px_-20px_rgba(20,18,15,0.6)]" : "border-b border-transparent"
       }`}
     >
       <div
@@ -87,7 +62,7 @@ export default function Header() {
         }`}
       >
         <Link href="/" className="flex items-center gap-2.5">
-          <FoxMark size={34} tone="cream" />
+          <FoxMark size={34} />
           <span className="leading-none">
             {/* Pääte ei versaalina: "KETTUKILPAILUTUS.FI" lukee
                 tuoteosanumerona, kun taas pieni ".fi" tunnistetaan
@@ -114,7 +89,7 @@ export default function Header() {
               >
                 {item.label}
                 {active && (
-                  <span className="absolute -bottom-1 left-0 h-[2.5px] w-full rounded-full bg-cream" />
+                  <span className="absolute -bottom-1 left-0 h-[2.5px] w-full rounded-full bg-accent" />
                 )}
               </Link>
             );
@@ -122,33 +97,22 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
-          {/*
-            EMBER-ANSA: tässä oli `btn-ember` eli oranssi gradienttinappi.
-            Oranssilla palkilla se katosi kokonaan. Nappi on nyt palkin
-            ainoa vaalea pinta, kuten loppukehotuksen vyössä — ja teksti on
-            kiinteä `#A83E0A`, koska `text-accentDark` kääntyy emberissä
-            kermaksi eli katoaisi kermanappiin.
-          */}
           <Link
             href={ctaHref(pathname)}
-            className="hidden rounded-xl bg-cream px-6 py-2.5 font-display text-sm font-bold text-[#A83E0A] shadow-[0_6px_18px_-10px_rgba(74,26,2,0.9)] transition-colors hover:bg-[#FFFFFF] sm:inline-flex"
+            className="hidden btn-ember rounded-xl px-6 py-2.5 font-display text-sm font-bold text-onEmber transition-all sm:inline-flex"
           >
             Aloita vertailu
           </Link>
           {/*
-            Alle 640 pikselin leveydellä headerin "Aloita vertailu" on
-            piilotettu tilan vuoksi, joten tämä nappi on puhelimessa
-            headerin ainoa painettava kohde. Sen on siis näytettävä
-            painikkeelta.
-
-            EMBER-ANSA: tässä oli `bg-accentSoft text-accentDark`. Ne ovat
-            vaalealla pohjalla persikka ja tumma oranssi, mutta
-            `.theme-ember` kääntää MOLEMMAT kermaksi — nappi olisi ollut
-            kermaa kermalla eli täysin näkymätön. Nyt tausta on läpikuultava
-            kerma ja ikoni umpikerma.
+            Valikkonappi on oranssisävyinen, ei beige. Alle 640 pikselin
+            leveydellä headerin "Aloita vertailu" on piilotettu tilan
+            vuoksi, joten tämä nappi on puhelimessa headerin ainoa
+            painettava kohde. Beige laatikko beigellä palkilla ei näytä
+            painikkeelta lainkaan — sävytetty tausta ja oranssi ikoni
+            kertovat sekunnissa, että tästä aukeaa jotain.
           */}
           <button
-            className="grid h-10 w-10 place-items-center rounded-xl border border-cream/30 bg-cream/15 text-cream transition-colors hover:bg-cream/25 lg:hidden"
+            className="grid h-10 w-10 place-items-center rounded-xl border border-accent/25 bg-accentSoft text-accentDark transition-colors hover:border-accent/45 lg:hidden"
             onClick={() => setOpen(!open)}
             aria-expanded={open}
             aria-label={open ? "Sulje valikko" : "Avaa valikko"}
@@ -159,10 +123,7 @@ export default function Header() {
       </div>
 
       {open && (
-        /* `bg-white` on emberissä kirkkaampi oranssi kuin palkki (199 76 14
-           vs 168 62 10), joten auki vedetty paneeli erottuu itsestään
-           ilman uutta väriä. Älä "korjaa" tätä valkoiseksi. */
-        <nav className="border-t border-line/40 bg-white px-4 py-4 lg:hidden" aria-label="Mobiilivalikko">
+        <nav className="border-t border-line bg-white px-4 py-4 lg:hidden" aria-label="Mobiilivalikko">
           <ul className="space-y-1">
             {NAV.map((item) => (
               <li key={item.label}>
@@ -170,7 +131,7 @@ export default function Header() {
                   href={item.href}
                   onClick={() => setOpen(false)}
                   className={`block rounded-xl px-4 py-3 font-display text-[15px] font-medium ${
-                    pathname.startsWith(item.match) ? "bg-cream text-[#A83E0A]" : "text-ink/80 hover:bg-mist"
+                    pathname.startsWith(item.match) ? "bg-accentSoft text-accentDark" : "text-ink/80 hover:bg-mist"
                   }`}
                 >
                   {item.label}
@@ -192,7 +153,7 @@ export default function Header() {
           <Link
             href={ctaHref(pathname)}
             onClick={() => setOpen(false)}
-            className="mt-3 flex items-center justify-center gap-2 rounded-xl bg-cream px-6 py-3.5 font-display text-[15px] font-bold text-[#A83E0A]"
+            className="btn-ember mt-3 flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 font-display text-[15px] font-bold text-onEmber"
           >
             Aloita vertailu <ArrowRight size={17} aria-hidden />
           </Link>
