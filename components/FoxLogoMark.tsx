@@ -1,0 +1,45 @@
+/**
+ * Kettukilpailutuksen logomerkki: ketun pää geometrisena viivapiirroksena.
+ *
+ * MIKSI OMA KOMPONENTTI EIKÄ PNG: merkki esiintyy headerissa 34 pikselin,
+ * footerissa 26 pikselin ja selaimen välilehdessä 16 pikselin kokoisena.
+ * Rasterikuva olisi jokaisessa noista joko sumea tai turhan raskas, ja
+ * lisäksi väri on tässä muuttuja — merkki piirtyy kermana oranssin laatan
+ * päällä ja oranssina vaalealla. `currentColor` hoitaa sen ilman toista
+ * tiedostoa. Polku on jäljennetty alkuperäisestä logotiedostosta
+ * (`public/KETTU LOGO ORANSSI.png`), joten muoto on sama.
+ *
+ * MIKSI EI PYÖRISTYKSIÄ TAI VARJOJA: merkki on suunniteltu suoriksi
+ * viivoiksi, ja pienessä koossa jokainen pehmennys muuttuu sumuksi.
+ *
+ * VIEWBOX ON 789 × 1000 eli merkki on korkeampi kuin leveä. Kun asetat sen
+ * neliöön, mitoita korkeuden mukaan — leveys seuraa itsestään.
+ */
+export default function FoxLogoMark({
+  height = 20,
+  className = "",
+}: {
+  height?: number;
+  className?: string;
+}) {
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 789 1000"
+      height={height}
+      width={(height * 789) / 1000}
+      fill="currentColor"
+      className={className}
+    >
+      <path
+        fillRule="evenodd"
+        d="M394.0 997.5L54.5 672.0L3.7 621.0L93.2 621.7L393.5 890.6L543.2 754.4L694.3 622.1L782.0 621.2L742.1 662.0L483.4 913.2L394.0 997.5Z
+          M395.9 797.4L394.0 799.6L391.3 798.4L306.0 668.5L307.5 665.6L339.6 665.5L306.0 598.5L283.6 558.3L263.7 515.8L249.8 505.0L239.5 500.0L238.1 497.5L140.7 437.8L122.6 425.4L121.0 422.6L120.9 246.0L119.5 242.6L121.1 241.3L178.5 323.4L241.9 419.5L246.6 424.2L389.4 515.2L396.2 515.1L410.2 506.4L508.1 442.8L519.9 437.2L542.3 419.3L659.9 247.0L666.4 242.3L666.0 422.1L652.5 432.8L572.6 482.6L557.9 490.0L522.4 514.0L502.5 557.7L445.9 664.4L445.9 666.7L482.0 665.9L482.7 667.9L395.9 797.4Z
+          M481.6 741.3L479.9 739.3L487.6 726.9L502.5 690.5L505.0 688.2L505.0 684.9L512.4 671.3L512.4 667.5L519.9 655.3L529.9 630.2L532.3 627.9L582.8 517.5L661.1 517.4L614.4 598.9L600.0 620.1L659.2 620.5L659.2 623.2L598.1 664.2L587.7 669.2L579.0 676.6L481.6 741.3Z
+          M305.5 739.6L210.9 676.6L150.8 639.3L131.0 624.4L127.8 624.1L127.4 621.2L184.7 620.2L144.3 553.3L125.0 517.6L202.9 517.1L206.5 521.2L228.9 573.8L231.3 576.1L263.7 647.8L266.2 650.1L266.2 653.4L268.7 655.7L296.0 720.0L306.0 736.5L305.5 739.6Z
+          M74.7 579.6L0.0 526.7L0.0 -0.3L226.5 192.8L393.7 328.4L398.1 328.4L456.5 281.1L767.1 15.5L784.8 1.7L786.7 2.4L786.4 526.1L782.0 529.8L711.6 579.6L708.6 579.6L709.3 139.9L518.3 318.5L405.8 421.1L393.9 429.7L190.0 245.5L75.8 139.2L76.5 577.7L74.7 579.6Z
+          M395.3 318.4L318.3 242.3L320.0 241.0L474.5 241.3L474.5 243.8L395.3 318.4Z"
+      />
+    </svg>
+  );
+}
