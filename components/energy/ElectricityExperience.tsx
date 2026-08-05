@@ -2153,7 +2153,23 @@ export default function ElectricityExperience({
       </section>
       )}
 
-      {showResults && <EnergyStickyBar plan={cheapestPlan} kwh={kwh} anchor={resultsRef} />}
+      {/*
+        PALKISSA ON KETUN VALINTA, EI HALVIN.
+
+        Palkki naytti aiemmin `cheapestPlan`in. Se oli ristiriita sivun
+        oman logiikan kanssa: listan ylapuolella Kettu nimeaa YHDEN
+        sopimuksen ja perustelee sen nelja kertaa, ja korteissa on sama
+        merkki. Jos ruudun alareunassa roikkuva nappi vei eri sopimukseen,
+        sivu antoi kaksi eri vastausta samaan kysymykseen — ja kavijalle,
+        joka on jo lukenut suosituksen, se nakyy siina etta halvin ja
+        suositeltu ovat eri hintaisia ilman selitysta.
+
+        Tuoton kannalta tama on se nappi, jota puhelimessa oikeasti
+        painetaan: se on ainoa, joka on peukalon ulottuvilla koko
+        vertailun ajan. Sen on vietava siihen sopimukseen, jonka sivu on
+        perustellut.
+      */}
+      {showResults && <EnergyStickyBar plan={recommendedPlan} kwh={kwh} anchor={resultsRef} />}
     </>
   );
 }
