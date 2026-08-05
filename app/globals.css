@@ -204,11 +204,40 @@ h1, h2, h3 { letter-spacing: -0.02em; }
 }
 
 /* Headerin lasi. Vaalea, koska sivu on vaalea — musta palkki kermanvärisen
-   heron päällä leikkaisi ruudun kahtia heti ensisilmäyksellä. */
+   heron päällä leikkaisi ruudun kahtia heti ensisilmäyksellä.
+
+   EI ENÄÄ KÄYTÖSSÄ HEADERISSA, ks. `.glass-ember`. Jätetty tähän, koska
+   vaalea lasi on oikea ratkaisu, jos header joskus palaa hiekanväriseksi. */
 .glass-light {
   background: rgba(251, 246, 237, 0.86);
   backdrop-filter: saturate(1.2) blur(16px);
   -webkit-backdrop-filter: saturate(1.2) blur(16px);
+}
+
+/* HEADERIN ORANSSI LASI.
+
+   MIKSI HEADER ON ORANSSI: selain värittää ikkunan kehyksen sivun
+   `theme-color`-arvolla (Safarin välilehtipalkki, mobiiliselainten
+   osoiterivi). Kun kehys on kettuoranssi mutta sen alla oleva palkki on
+   hiekkaa, väliin jää saumakohta, joka lukee virheeltä. Nyt kehys, header
+   ja heron oranssi vyö ovat samaa väriä, jolloin koko ikkunan yläosa on
+   yksi esine — sama ele, jolla Sortter ja muut vertailujätit erottuvat
+   harrastussivuista. Se on halvin olemassa oleva luottamussignaali:
+   nollan tavun lisäys sivun painoon, näkyy jokaisella sivulla.
+
+   MIKSI UMPINAINEN EIKÄ LÄPIKUULTAVA: header on `sticky`, ei `fixed`.
+   Se varaa oman rivinsä ylhäältä, joten sen takana EI ole heron oranssi
+   vaan sivun kermanvaalea pohja. Läpikuultava oranssi sekoittui siihen
+   ja palkista tuli maitoinen ruskeanpunainen, joka ei vastannut mitään
+   muuta pintaa sivulla. Umpinainen #A83E0A on tarkalleen ember-pohjan
+   tummin sävy, eli sama väri kuin heron gradientin lähtöpiste.
+
+   Heron gradientti kirkastuu oikealle ylös, joten palkin alareunaan jää
+   hiuksenhieno valoraja. Se on tarkoituksellinen: se lukee palkin
+   reunana, ei virheenä, ja on sama suunta kuin `.ember-surface`-pinnan
+   oma valo. */
+.glass-ember {
+  background: #A83E0A;
 }
 
 /* KORTIN NOSTO.
@@ -404,6 +433,60 @@ h1, h2, h3 { letter-spacing: -0.02em; }
   box-shadow: inset 0 1px 0 rgba(255, 235, 220, 0.28), 0 10px 28px -10px rgba(232, 105, 27, 0.6);
 }
 .btn-ember:hover { background-image: linear-gradient(180deg, #FF8A3C 0%, #E8691B 100%); }
+
+/*
+  KYSELYN "JATKA": VASTAUKSEN JÄLKEEN NAPPI KIRKASTUU JA HOHTAA.
+
+  Kyselyn nappi on koko ajan ruudulla, ja ennen vastausta se on
+  himmennetty. Ongelma ei ole himmennys vaan se, ettei mikään kerro
+  himmennyksen loppuneen: kun käyttäjä valitsee vaihtoehdon, nappi
+  muuttuu käytettäväksi täysin äänettömästi. Katse on tuolloin
+  vaihtoehdoissa, ei napissa, joten muutos jää huomaamatta ja
+  kyselyyn syntyy tauko juuri siinä kohdassa, jossa käyttäjä oli
+  valmis etenemään.
+
+  Siksi valmis tila EROTTUU perustilastakin: kirkkaampi oranssi,
+  vahvempi hohde ja kertaluonteinen pieni pomppu, joka vetää katseen
+  vaihtoehdoista nappiin. Animaatio soi kerran per vaihe — luokka
+  irtoaa aina kun seuraava kysymys nollaa vastauksen, joten se
+  käynnistyy uudelleen jokaisella vastauksella.
+
+  Tuotto: kyselyn läpäisyprosentti ratkaisee, moniko ylipäätään näkee
+  sopimuslistan. Jokainen vaihe, jossa käyttäjä epäröi "mitä nyt",
+  vuotaa osan kävijöistä pois ennen "Tee sopimus" -nappia.
+*/
+.btn-ready {
+  background-image: linear-gradient(180deg, #FF8A3C 0%, #E8691B 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 235, 220, 0.34),
+    0 12px 30px -10px rgba(232, 105, 27, 0.78),
+    0 0 0 4px rgba(232, 105, 27, 0.15);
+}
+.btn-ready:hover {
+  background-image: linear-gradient(180deg, #FF9A50 0%, #F0752A 100%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .btn-ready { animation: btn-ready-in 560ms cubic-bezier(0.22, 1, 0.36, 1) 1; }
+}
+
+@keyframes btn-ready-in {
+  0% {
+    transform: scale(1);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 235, 220, 0.34),
+      0 12px 30px -10px rgba(232, 105, 27, 0.78),
+      0 0 0 0 rgba(232, 105, 27, 0.45);
+  }
+  55% { transform: scale(1.025); }
+  100% {
+    transform: scale(1);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 235, 220, 0.34),
+      0 12px 30px -10px rgba(232, 105, 27, 0.78),
+      0 0 0 4px rgba(232, 105, 27, 0.15);
+  }
+}
 
 ::selection { background: rgba(232, 105, 27, 0.3); }
 

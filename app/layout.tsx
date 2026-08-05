@@ -18,7 +18,7 @@ const display = Schibsted_Grotesk({ subsets: ["latin"], weight: ["500", "600", "
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: SITE.name + " – kilpailuta sähkö, kortit ja sopimukset",
+    default: SITE.name + " – kilpailuta sähkösopimukset ilmaiseksi",
     template: "%s | " + SITE.name,
   },
   description: SITE.description,
@@ -27,12 +27,12 @@ export const metadata: Metadata = {
     type: "website",
     locale: "fi_FI",
     siteName: SITE.name,
-    title: "Kettukilpailutus – kilpailuta sopimuksesi minuutissa",
+    title: SITE.name + " – kilpailuta sopimuksesi minuutissa",
     description: SITE.description,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Kettukilpailutus – kilpailuta sopimuksesi minuutissa",
+    title: SITE.name + " – kilpailuta sopimuksesi minuutissa",
     description: SITE.description,
   },
   robots: { index: true, follow: true },
@@ -61,7 +61,27 @@ export const viewport: Viewport = {
   initialScale: 1,
   minimumScale: 1,
   maximumScale: 5,
-  themeColor: "#F0EEE9",
+  /*
+   * THEME-COLOR = SELAIMEN OMA PINTA.
+   *
+   * Safari värittää tällä koko välilehtipalkin ja ikkunan yläreunan,
+   * Chrome ja Safari puhelimessa osoiterivin. Arvo oli hiekka #F0EEE9,
+   * joka on käytännössä valkoinen: selain näytti täsmälleen samalta kuin
+   * millä tahansa sivulla, eikä väri tehnyt mitään.
+   *
+   * Nyt arvo on `.theme-ember`-pohjan oranssi #A83E0A — sama kuin
+   * headerin lasi ja heron vyö. Kolme pintaa peräkkäin samaa väriä
+   * tekee ikkunan yläosasta yhden esineen sen sijaan, että sivu näyttäisi
+   * asiakirjalta selaimen sisällä.
+   *
+   * MIKSI TUOTON KANNALTA: puhelimessa oranssi osoiterivi on ensimmäinen
+   * asia, joka latautuu — ennen kuin yksikään kuva on paikallaan. Se on
+   * ainoa brändielementti, joka ehtii näkyä ennen sisältöä.
+   *
+   * ÄLÄ laita tähän kirkasta #E8691B: se on maskotin turkin väri, ja
+   * selaimen kehyksen pitää olla sitä tummempi, jotta kettu erottuu.
+   */
+  themeColor: "#A83E0A",
 };
 
 const orgJsonLd = {
