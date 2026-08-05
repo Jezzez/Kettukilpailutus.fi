@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Schibsted_Grotesk } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -114,6 +115,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Header />
         <main id="sisalto">{children}</main>
         <Footer />
+        {/*
+          VERCEL WEB ANALYTICS.
+
+          Tämä oli aiemmin `app/sitemap.ts`:ssä pelkkänä importtina, jota ei
+          käytetty missään: sitemap ei renderöi mitään selaimeen, joten
+          skriptiä ei koskaan ladattu eikä yksikään käyntä kirjautunut.
+          Komponentin on oltava juurilayoutin bodyssa, jotta se on mukana
+          jokaisella sivulla.
+
+          MIKSI TÄMÄ ON TUOTON KANNALTA OLENNAINEN: sivusto ansaitsee vasta
+          affiliate-klikistä, ja ilman kävijädataa ei tiedä, kaatuuko
+          suppilo laskuriin, korttilistaan vai nappiin. Analytiikka ei tuo
+          euroakaan itsessään, mutta ilman sitä jokainen CRO-muutos on
+          arvaus.
+
+          HUOM: mittaus toimii vain Vercelissä ja vasta kun Web Analytics on
+          kytketty päälle projektin asetuksista. Paikallisessa devissä
+          komponentti ei lähetä mitään.
+        */}
+        <Analytics />
       </body>
     </html>
   );
