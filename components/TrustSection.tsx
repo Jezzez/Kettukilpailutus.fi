@@ -2,27 +2,52 @@ import { BadgeCheck, Scale, RefreshCw, HandCoins } from "lucide-react";
 import Reveal from "./Reveal";
 import SectionHead from "./SectionHead";
 import { CARDS_ARE_EXAMPLE_DATA } from "@/lib/data";
+import { FEATURES } from "@/lib/features";
 
+/*
+  NELJÄ LUPAUSTA — KIRJOITETTU UUSIKSI, KOSKA NE OLIVAT VANHENTUNEET.
+
+  Teksti kuvasi korttivertailua ("pankki", "kortti", "Sopivuus-luku
+  70 % / 30 %") aikana, jolloin korttivertailu on piilotettu ja ainoa
+  auki oleva vertikaali on sähkö. Kaksi väitettä oli suoraan väärin:
+
+  1) Käyttäjäarviot poistettiin sähkövertailusta kokonaan, koska niille
+     ei ole riippumatonta lähdettä — mutta tämä sivu lupasi yhä, että
+     järjestykseen vaikuttaa 30 % painolla käyttäjäarviot.
+
+  2) "Vertailussa on mukana kortteja myös pankeilta, jotka eivät maksa
+     meille mitään." Sähkövertailussa se ei pidä tällä hetkellä
+     paikkaansa: kaikki 16 näkyvää sopimusta ovat kumppaneita, koska
+     vain niiden hinnat on ehditty tarkistaa.
+
+  Väärä läpinäkyvyyslupaus on pahempi kuin lupauksen puuttuminen. Tämä
+  on se osio, jonka lukee epäilevä kävijä — juuri hän myös tarkistaa
+  väitteen, ja kiinni jäänyt lupaus vie sekä klikin että paluukäynnin.
+
+  Teksti on nyt kirjoitettu vertikaalista riippumattomaksi
+  ("sopimus", "palveluntarjoaja"), jotta se kestää lainojen ja
+  vakuutusten avaamisen ilman uutta korjauskierrosta.
+*/
 const POINTS = [
   {
     icon: Scale,
-    title: "Näin kortit järjestetään",
-    text: "Sopivuus-luku lasketaan avoimella kaavalla: 70 % painolla osuvuus sinun valintoihisi ja 30 % painolla käyttäjäarviot. Raha ei vaikuta järjestykseen.",
+    title: "Näin vertailu järjestetään",
+    text: "Järjestys perustuu hintaan, joka lasketaan sinun omalla kulutuksellasi — kampanjaetu mukaan luettuna ensimmäiseltä vuodelta. Ketun valinta painottaa puoliksi ensimmäisen vuoden hintaa ja puoliksi kampanjan jälkeistä hintaa. Raha ei vaikuta järjestykseen.",
   },
   {
     icon: HandCoins,
     title: "Näin Kettu ansaitsee",
-    text: "Voimme saada pankilta korvauksen, kun haet korttia linkkiemme kautta. Korvaus ei koskaan muuta vertailun sisältöä, lukuja tai järjestystä.",
+    text: "Saamme kumppanilta korvauksen, kun teet sopimuksen linkkiemme kautta. Korvaus ei koskaan muuta vertailun sisältöä, lukuja tai järjestystä.",
   },
   {
     icon: RefreshCw,
-    title: "Tarkista aina pankilta",
-    text: "Korttien ehdot muuttuvat, ja lopullisen hinnan päättää aina pankki. Siksi kehotamme varmistamaan korko-, kulu- ja etutiedot pankin omilta sivuilta ennen hakemuksen lähettämistä.",
+    title: "Tarkista aina palveluntarjoajalta",
+    text: "Hinnat ja ehdot muuttuvat. Jokaisessa sopimuksessa näkyy päivä, jolloin hinta on viimeksi tarkistettu — mutta lopullisen hinnan päättää aina palveluntarjoaja, joten varmista se ennen sopimuksen tekemistä.",
   },
   {
     icon: BadgeCheck,
-    title: "Riippumaton vertailu",
-    text: "Vertailussa on mukana kortteja myös pankeilta, jotka eivät maksa meille mitään. Sinun etusi on aina etusijalla.",
+    title: "Emme väitä kattavamme koko markkinaa",
+    text: "Näytämme vain sopimukset, joiden hinnan olemme itse tarkistaneet. Tällä hetkellä ne ovat kaikki kumppaneidemme sopimuksia. Lisäämme yhtiöitä myös ilman kumppanuutta sitä mukaa kun niiden luvut on tarkistettu.",
   },
 ];
 
@@ -63,7 +88,14 @@ export default function TrustSection() {
           ))}
         </div>
 
-        {CARDS_ARE_EXAMPLE_DATA && (
+        {/*
+          Korttien esimerkkidatavaroitus näkyy vasta, kun korttivertailu on
+          auki. Piilotettuna se väitti tällä sivulla, että "vertailun luvut
+          ovat esimerkkejä" — samaan aikaan kun sähkövertailun jokaisessa
+          kortissa lukee tarkistuspäivä. Ristiriita luetaan aina huonompaan
+          suuntaan, ja tämä osio on nimenomaan luottamusosio.
+        */}
+        {FEATURES.cards && CARDS_ARE_EXAMPLE_DATA && (
           <Reveal delay={0.24}>
             <p className="mx-auto mt-8 max-w-3xl rounded-2xl border border-gold/30 bg-gold/[0.07] px-5 py-4 text-[13.5px] leading-relaxed text-ink/80">
               <span className="font-bold text-goldInk">Huom.</span> Vertailun korko-, kulu- ja
