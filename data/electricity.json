@@ -1,6 +1,6 @@
 {
   "assumedSpotAverage": 6.2,
-  "priceDate": "2026-08-05",
+  "priceDate": "2026-08-06",
   "isExampleData": false,
   "plans": [
     {
@@ -16,7 +16,7 @@
       "fixedTermMonths": null,
       "rating": null,
       "reviews": null,
-      "affiliateUrl": "https://ion.fortum.com/t/t?a=1874973852&as=2098832052&t=2&tk=1",
+      "affiliateUrl": "https://ion.fortum.com/t/t?a=2025963582&as=2098832052&t=2&tk=1",
       "partner": true,
       "checkedAt": "2026-08-05",
       "sourceUrl": "https://www.fortum.com/fi/sahkoa/sahkoa-kotiin/kampanja/affiliate-fortum-sahkosopimukset",
@@ -71,10 +71,10 @@
       "fixedTermMonths": 24,
       "rating": null,
       "reviews": null,
-      "affiliateUrl": "https://ion.fortum.com/t/t?a=1874973852&as=2098832052&t=2&tk=1",
+      "affiliateUrl": "https://ion.fortum.com/t/t?a=1874973852&as=2098832052&t=2&tk=1&url=https%3A%2F%2Fwww.fortum.fi%2Ffi%2Fsahkoa%2Fsahkoa-kotiin%2Ffortum-takuu",
       "partner": true,
-      "checkedAt": "2026-08-05",
-      "sourceUrl": "https://www.fortum.com/fi/sahkoa/sahkoa-kotiin/kampanja/affiliate-fortum-sahkosopimukset",
+      "checkedAt": "2026-08-06",
+      "sourceUrl": "https://www.fortum.fi/fi/sahkoa/sahkoa-kotiin/fortum-takuu",
       "gradient": [
         "#2A231E",
         "#4A3C33"
@@ -174,7 +174,7 @@
       "fixedTermMonths": null,
       "rating": null,
       "reviews": null,
-      "affiliateUrl": "https://go.adt267.com/t/t?a=1884560810&as=2098832052&t=2&tk=1",
+      "affiliateUrl": "https://go.adt267.com/t/t?a=2027550605&as=2098832052&t=2&tk=1",
       "partner": true,
       "checkedAt": "2026-08-05",
       "sourceUrl": "https://www.vattenfall.fi/kampanjat/sahkoa-kotiin/",
@@ -216,10 +216,10 @@
       }
     },
     {
-      "id": "vattenfall-ilmasto-mix-24kk",
-      "slug": "vattenfall-ilmasto-mix-24-kk",
+      "id": "vattenfall-ilmasto-mix",
+      "slug": "vattenfall-ilmasto-mix",
       "provider": "Vattenfall",
-      "name": "Ilmasto Mix 24 kk",
+      "name": "Ilmasto Mix 12–24 kk",
       "type": "fixed",
       "basicFee": 5.95,
       "energyPrice": 10.2,
@@ -230,81 +230,29 @@
       "reviews": null,
       "affiliateUrl": "https://go.adt267.com/t/t?a=1884560810&as=2098832052&t=2&tk=1",
       "partner": true,
-      "checkedAt": "2026-08-05",
+      "checkedAt": "2026-08-06",
       "sourceUrl": "https://www.vattenfall.fi/kampanjat/sahkoa-kotiin/",
       "gradient": [
         "#4A3C2E",
         "#7C6552"
       ],
       "features": [
-        "Kiinteä 10,20 c/kWh kahden vuoden ajan",
-        "Perusmaksu 0 € kolme ensimmäistä kuukautta",
-        "Sähkö vesi-, tuuli- ja ydinvoimasta — fossiilivapaa"
+        "Kaksi kestoa: 24 kk 10,20 c/kWh tai 12 kk 11,35 c/kWh",
+        "Perusmaksu 5,95 €/kk, ensimmäiset kolme kuukautta 0 €",
+        "Sähkö vesi-, tuuli- ja ydinvoimasta — fossiilivapaa",
+        "Vertailun luku perustuu edullisempaan 24 kuukauden kauteen"
       ],
-      "summary": "Kahden vuoden kiinteä hinta fossiilivapaalla sähköllä. Energian hinta 10,20 c/kWh ja kolmen kuukauden perusmaksuetu.",
+      "summary": "Vattenfallin kiinteä fossiilivapaa sopimus kahdella kestolla. 24 kuukauden kausi maksaa 10,20 c/kWh ja 12 kuukauden 11,35 c/kWh — perusmaksu on kummassakin 5,95 €/kk, joten lyhyempi kausi on aina kalliimpi. Vertailun euromäärä lasketaan 24 kuukauden hinnalla.",
       "pros": [
+        "Voit valita kestoksi yhden tai kaksi vuotta samalla sivulla",
         "Fossiilivapaa tuotanto ilman lisämaksua",
-        "Hinta lukossa kaksi vuotta",
-        "Kolmen kuukauden perusmaksuetu"
+        "Kolmen kuukauden perusmaksuetu kummassakin kestossa"
       ],
       "cons": [
-        "Kalliimpi kuin halvimmat kiinteät sopimukset",
-        "Kahden vuoden sitoutuminen"
+        "Kalliimpi kuin vertailun halvimmat kiinteät sopimukset",
+        "Vuoden kausi maksaa 1,15 c/kWh enemmän kuin kahden vuoden"
       ],
-      "bestFor": "Valitse tämä, jos haluat sekä kiinteän hinnan että päästöttömästi tuotetun sähkön.",
-      "faq": [
-        [
-          "Mitä kiinteä hinta tarkoittaa?",
-          "Energian hinta pysyy samana koko sopimuskauden riippumatta siitä, mitä pörssissä tapahtuu. Maksat siitä yleensä hieman enemmän kuin pörssin keskihinta — kyseessä on vakuutus hintapiikkejä vastaan."
-        ],
-        [
-          "Voinko irtisanoa määräaikaisen sopimuksen kesken?",
-          "Määräaikainen sopimus sitoo molempia osapuolia sovitun ajan. Ennenaikaisesta päättämisestä voi seurata korvaus, joten tarkista ehdot yhtiön omilta sivuilta ennen tilausta."
-        ]
-      ],
-      "campaign": {
-        "label": "Perusmaksu 0 € · 3 kk",
-        "months": 3,
-        "basicFee": 0
-      }
-    },
-    {
-      "id": "vattenfall-ilmasto-mix-12kk",
-      "slug": "vattenfall-ilmasto-mix-12-kk",
-      "provider": "Vattenfall",
-      "name": "Ilmasto Mix 12 kk",
-      "type": "fixed",
-      "basicFee": 5.95,
-      "energyPrice": 11.35,
-      "spotMargin": null,
-      "green": false,
-      "fixedTermMonths": 12,
-      "rating": null,
-      "reviews": null,
-      "affiliateUrl": "https://go.adt267.com/t/t?a=1884560810&as=2098832052&t=2&tk=1",
-      "partner": true,
-      "checkedAt": "2026-08-05",
-      "sourceUrl": "https://www.vattenfall.fi/kampanjat/sahkoa-kotiin/",
-      "gradient": [
-        "#564636",
-        "#8B735E"
-      ],
-      "features": [
-        "Kiinteä 11,35 c/kWh vuoden ajan",
-        "Perusmaksu 0 € kolme ensimmäistä kuukautta",
-        "Sähkö vesi-, tuuli- ja ydinvoimasta — fossiilivapaa"
-      ],
-      "summary": "Vuoden mittainen kiinteä sopimus fossiilivapaalla sähköllä. Lyhyempi sitoutuminen kuin 24 kuukauden versiossa, mutta kilowattitunti maksaa enemmän.",
-      "pros": [
-        "Vain vuoden sitoutuminen",
-        "Fossiilivapaa tuotanto",
-        "Kolmen kuukauden perusmaksuetu"
-      ],
-      "cons": [
-        "Vertailun kallein kiinteä energiahinta",
-        "Vuoden päästä hinta on taas kilpailutettava"
-      ],
-      "bestFor": "Valitse tämä, jos haluat kiinteän hinnan mutta et halua sitoutua kahdeksi vuodeksi.",
+      "bestFor": "Valitse tämä, jos haluat sekä kiinteän hinnan että päästöttömästi tuotetun sähkön. Ota 24 kuukauden kausi, jos vain pystyt — se on selvästi halvempi.",
       "faq": [
         [
           "Mitä kiinteä hinta tarkoittaa?",
@@ -334,9 +282,9 @@
       "fixedTermMonths": null,
       "rating": null,
       "reviews": null,
-      "affiliateUrl": "https://go.adt246.net/t/t?a=1875124667&as=2098832052&t=2&tk=1",
+      "affiliateUrl": "https://go.adt246.net/t/t?a=1875124667&as=2098832052&t=2&tk=1&url=https%3A%2F%2Fsopimus.aaltoenergia.com%2Ffossiilivapaa_porssisahko",
       "partner": true,
-      "checkedAt": "2026-08-05",
+      "checkedAt": "2026-08-06",
       "sourceUrl": "https://aaltoenergia.com/",
       "gradient": [
         "#1F1A16",
@@ -380,6 +328,117 @@
       }
     },
     {
+      "id": "aalto-ankkuri",
+      "slug": "aalto-energia-ankkuri-kiintea",
+      "provider": "Aalto Energia",
+      "name": "Ankkuri Kiinteä 6–24 kk",
+      "type": "fixed",
+      "basicFee": 5.95,
+      "energyPrice": 10.19,
+      "spotMargin": null,
+      "green": false,
+      "fixedTermMonths": 24,
+      "rating": null,
+      "reviews": null,
+      "affiliateUrl": "https://go.adt246.net/t/t?a=1875124667&as=2098832052&t=2&tk=1&url=https%3A%2F%2Fsopimus.aaltoenergia.com%2Fankkuri24",
+      "partner": true,
+      "checkedAt": "2026-08-06",
+      "sourceUrl": "https://aaltoenergia.com/sahkosopimukset/maaraaikaiset/",
+      "gradient": [
+        "#2B2620",
+        "#4E4238"
+      ],
+      "features": [
+        "Neljä kestoa: 24 kk 10,19 c/kWh, 12 kk 11,59, 9 kk 12,79, 6 kk 13,79",
+        "Perusmaksu 5,95 €/kk kaikissa kestoissa",
+        "24 kuukauden sopimuksessa perusmaksu 0 € kolme kuukautta, muissa yksi",
+        "Kulutusraja 30 000 kWh vuodessa (6 kk: 35 000 kWh)"
+      ],
+      "summary": "Aallon kiinteä sopimus neljällä kestolla. Hinta laskee mitä pidemmälle sitoudut: kaksi vuotta maksaa 10,19 c/kWh ja puoli vuotta 13,79 c/kWh. Vertailun euromäärä ja tilauslinkki koskevat edullisinta 24 kuukauden kautta; muut kestot löytyvät Aallon omilta sivuilta.",
+      "pros": [
+        "Poikkeuksellisen laaja valikoima kestoja — 6, 9, 12 tai 24 kuukautta",
+        "Kolmen kuukauden perusmaksuetu kahden vuoden sopimuksessa",
+        "Fossiilivapaa sähkö ilman lisämaksua"
+      ],
+      "cons": [
+        "Perusmaksu 5,95 €/kk on vertailun korkeampaa päätä",
+        "Lyhyet kaudet ovat huomattavasti kalliimpia",
+        "Ei sovi suurkuluttajalle: raja on 30 000 kWh vuodessa"
+      ],
+      "bestFor": "Valitse tämä, jos haluat hinnan lukkoon mutta et koko kahdeksi vuodeksi — Aalto on ainoa kumppani, jolta saa myös 6 tai 9 kuukauden kiinteän sopimuksen.",
+      "faq": [
+        [
+          "Mitä kiinteä hinta tarkoittaa?",
+          "Energian hinta pysyy samana koko sopimuskauden riippumatta siitä, mitä pörssissä tapahtuu. Maksat siitä yleensä hieman enemmän kuin pörssin keskihinta — kyseessä on vakuutus hintapiikkejä vastaan."
+        ],
+        [
+          "Voinko irtisanoa määräaikaisen sopimuksen kesken?",
+          "Määräaikainen sopimus sitoo molempia osapuolia sovitun ajan. Ennenaikaisesta päättämisestä voi seurata korvaus, joten tarkista ehdot yhtiön omilta sivuilta ennen tilausta."
+        ]
+      ],
+      "campaign": {
+        "label": "Perusmaksu 0 € · 3 kk",
+        "months": 3,
+        "basicFee": 0
+      }
+    },
+    {
+      "id": "aalto-huoleton",
+      "slug": "aalto-energia-huoleton",
+      "provider": "Aalto Energia",
+      "name": "Huoleton",
+      "type": "open",
+      "basicFee": 5.95,
+      "energyPrice": 6.99,
+      "spotMargin": null,
+      "green": false,
+      "fixedTermMonths": null,
+      "rating": null,
+      "reviews": null,
+      "affiliateUrl": "https://go.adt246.net/t/t?a=1875124667&as=2098832052&t=2&tk=1&url=https%3A%2F%2Fsopimus.aaltoenergia.com%2Fhuoleton",
+      "partner": true,
+      "checkedAt": "2026-08-06",
+      "sourceUrl": "https://aaltoenergia.com/sahkosopimukset/",
+      "gradient": [
+        "#25201B",
+        "#443A31"
+      ],
+      "features": [
+        "Tarjoushinta 6,99 c/kWh voimassa 31.8.2026 asti",
+        "Perusmaksu 5,95 €/kk, ensimmäinen kuukausi 0 €",
+        "Toistaiseksi voimassa oleva — ei määräaikaa",
+        "Fossiilivapaa sähkö"
+      ],
+      "summary": "Vertailun halvin kiinteä energiahinta, 6,99 c/kWh, ilman määräaikaa. Kyseessä on kuitenkin tarjoushinta, joka on voimassa vain 31.8.2026 asti — sen jälkeen Aalto voi muuttaa hintaa ilmoittamalla siitä etukäteen. Alla oleva euromäärä kertoo, mitä sopimus maksaisi nykyhinnalla, ei mitä se maksaa ensi vuonna.",
+      "pros": [
+        "Halvin kiinteä energiahinta koko vertailussa",
+        "Ei määräaikaa — voit vaihtaa milloin tahansa ilman korvausta",
+        "Ensimmäinen kuukausi ilman perusmaksua",
+        "Fossiilivapaa sähkö"
+      ],
+      "cons": [
+        "Hinta on tarjous, joka umpeutuu 31.8.2026 — sen jälkeistä hintaa ei ole julkaistu",
+        "Toistaiseksi voimassa olevan sopimuksen hintaa saa muuttaa kesken kaiken, toisin kuin määräaikaisen",
+        "Perusmaksu 5,95 €/kk on vertailun korkeampaa päätä"
+      ],
+      "bestFor": "Valitse tämä, jos haluat matalan hinnan nyt etkä halua sitoutua — mutta varaudu tarkistamaan hinta uudelleen syyskuussa.",
+      "faq": [
+        [
+          "Mitä toistaiseksi voimassa oleva sopimus tarkoittaa?",
+          "Sopimuksessa ei ole määräaikaa, joten voit vaihtaa milloin tahansa ilman korvausta. Vastapainoksi myöskään yhtiö ei ole sidottu hintaan: se saa muuttaa sitä ilmoittamalla muutoksesta etukäteen. Kiinteähintainen määräaikainen sopimus lukitsee hinnan, tämä ei."
+        ],
+        [
+          "Miksi hinnassa lukee päivämäärä?",
+          "Aalto on ilmoittanut 6,99 sentin hinnan olevan tarjous, joka on voimassa 31.8.2026 asti. Emme tiedä vielä, mikä hinta on sen jälkeen, joten emme voi luvata että vertailun euromäärä pätee ensi vuonna."
+        ]
+      ],
+      "campaign": {
+        "label": "Perusmaksu 0 € · 1 kk",
+        "months": 1,
+        "basicFee": 0
+      }
+    },
+    {
       "id": "hehku-porssi",
       "slug": "hehku-porssi",
       "provider": "Hehku Energia",
@@ -392,9 +451,9 @@
       "fixedTermMonths": null,
       "rating": null,
       "reviews": null,
-      "affiliateUrl": "https://go.adt246.net/t/t?a=2034103803&as=2098832052&t=2&tk=1",
+      "affiliateUrl": "https://go.adt246.net/t/t?a=2034103803&as=2098832052&t=2&tk=1&url=https%3A%2F%2Fhehkuenergia.fi%2Ftilauslomake%2F%3Fp%3Dporssi",
       "partner": true,
-      "checkedAt": "2026-08-05",
+      "checkedAt": "2026-08-06",
       "sourceUrl": "https://hehkuenergia.fi/sahkosopimukset/",
       "gradient": [
         "#2A231E",
@@ -436,44 +495,45 @@
       "region": "Helsinki"
     },
     {
-      "id": "hehku-kiintea-24kk",
-      "slug": "hehku-kiintea-24-kk",
+      "id": "hehku-kiintea",
+      "slug": "hehku-kiintea",
       "provider": "Hehku Energia",
-      "name": "Kiinteä 24 kk",
+      "name": "Kiinteä 12–24 kk",
       "type": "fixed",
-      "basicFee": 5.9,
-      "energyPrice": 9.49,
+      "basicFee": 4.9,
+      "energyPrice": 9.68,
       "spotMargin": null,
       "green": false,
       "fixedTermMonths": 24,
       "rating": null,
       "reviews": null,
-      "affiliateUrl": "https://go.adt246.net/t/t?a=2034099617&as=2098832052&t=2&tk=1",
+      "affiliateUrl": "https://go.adt246.net/t/t?a=2034099617&as=2098832052&t=2&tk=1&url=https%3A%2F%2Fhehkuenergia.fi%2Ftilauslomake%2F%3Fp%3D24kk",
       "partner": true,
-      "checkedAt": "2026-08-05",
-      "sourceUrl": "https://hehkuenergia.fi/sahkosopimukset/",
+      "checkedAt": "2026-08-06",
+      "sourceUrl": "https://hehkuenergia.fi/sahkosopimukset/maaraaikainen/",
       "gradient": [
         "#33291F",
         "#5C4A38"
       ],
       "features": [
-        "Kiinteä 9,49 c/kWh — vertailun edullisin kiinteä hinta",
+        "Kolme kestoa: 24 kk 9,68 c/kWh, 15 kk 9,49 c/kWh, 12 kk 10,19 c/kWh",
+        "Perusmaksu 4,90 €/kk — paitsi 15 kk -sopimuksessa 5,90 €/kk",
         "Perusmaksu 0 € kolme ensimmäistä kuukautta",
-        "Sopimuksen on alettava viimeistään 1.9.2026",
-        "Enintään 50 000 kWh vuodessa"
+        "Vertailun luku perustuu 24 kuukauden kauteen"
       ],
-      "summary": "Vertailun edullisin kiinteä energiahinta, 9,49 c/kWh, lukittuna kahdeksi vuodeksi. Sopimuksen on kuitenkin alettava viimeistään 1.9.2026.",
+      "summary": "Hehkun kiinteä sopimus kolmella kestolla. Halvin energiahinta on 15 kuukauden kaudessa (9,49 c/kWh), mutta sen perusmaksu on euron korkeampi, joten 24 kuukauden kausi tulee alle noin 6 300 kWh vuosikulutuksella halvemmaksi. Vertailun euromäärä ja tilauslinkki koskevat 24 kuukauden kautta; muut kestot löytyvät Hehkun omilta sivuilta.",
       "pros": [
-        "Halvin kiinteä energiahinta kumppaneiden joukossa",
-        "Hinta lukossa kaksi vuotta",
-        "Kolmen kuukauden perusmaksuetu"
+        "Vertailun edullisimpia kiinteitä energiahintoja",
+        "Matala perusmaksu 4,90 €/kk",
+        "Kolmen kuukauden perusmaksuetu",
+        "Voit valita kestoksi 12, 15 tai 24 kuukautta"
       ],
       "cons": [
-        "Viimeinen aloituspäivä 1.9.2026 — tarjous umpeutuu pian",
-        "Kulutusraja 50 000 kWh vuodessa",
-        "Kahden vuoden sitoutuminen"
+        "15 kuukauden kausi on tilattava viimeistään 1.9.2026 ja siinä on 50 000 kWh vuosiraja",
+        "12 kuukauden kausi on selvästi kallein vaihtoehto",
+        "Määräaikaista sopimusta ei voi purkaa kesken kauden"
       ],
-      "bestFor": "Valitse tämä, jos haluat kiinteän hinnan ja pystyt tekemään sopimuksen ennen syyskuun alkua.",
+      "bestFor": "Valitse tämä, jos haluat hinnan lukkoon edullisesti. Jos kulutat yli 6 300 kWh vuodessa ja ehdit tilata ennen syyskuuta, 15 kuukauden kausi on vielä hieman halvempi.",
       "faq": [
         [
           "Mitä kiinteä hinta tarkoittaa?",
@@ -488,14 +548,13 @@
         "label": "Perusmaksu 0 € · 3 kk",
         "months": 3,
         "basicFee": 0
-      },
-      "region": "Helsinki"
+      }
     },
     {
-      "id": "hehku-hiilivapaa-24kk",
-      "slug": "hehku-hiilivapaa-24-kk",
+      "id": "hehku-hiilivapaa",
+      "slug": "hehku-hiilivapaa",
       "provider": "Hehku Energia",
-      "name": "Hiilivapaa 24 kk",
+      "name": "Hiilivapaa 12–24 kk",
       "type": "fixed",
       "basicFee": 4.9,
       "energyPrice": 10.19,
@@ -504,30 +563,32 @@
       "fixedTermMonths": 24,
       "rating": null,
       "reviews": null,
-      "affiliateUrl": "https://go.adt246.net/t/t?a=1893918387&as=2098832052&t=2&tk=1",
+      "affiliateUrl": "https://go.adt246.net/t/t?a=1893918387&as=2098832052&t=2&tk=1&url=https%3A%2F%2Fhehkuenergia.fi%2Ftilauslomake%2F%3Fp%3Dhiilivapaa-24kk",
       "partner": true,
-      "checkedAt": "2026-08-05",
-      "sourceUrl": "https://hehkuenergia.fi/sahkosopimukset/",
+      "checkedAt": "2026-08-06",
+      "sourceUrl": "https://hehkuenergia.fi/sahkosopimukset/hiilivapaa/",
       "gradient": [
         "#3E3227",
         "#6B5745"
       ],
       "features": [
-        "Kiinteä 10,19 c/kWh kahden vuoden ajan",
-        "Perusmaksu 0 € kuusi ensimmäistä kuukautta",
-        "Sähkö ydinvoimalla ja uusiutuvilla — ei fossiilisia"
+        "Kaksi kestoa: 24 kk 10,19 c/kWh tai 12 kk 10,79 c/kWh",
+        "Perusmaksu 4,90 €/kk molemmissa",
+        "24 kuukauden sopimuksessa perusmaksu 0 € kuusi kuukautta, 12 kuukauden sopimuksessa kolme",
+        "100 % fossiilivapaata sähköä"
       ],
-      "summary": "Fossiilivapaa kiinteä sopimus kahdeksi vuodeksi. Perusmaksu 4,90 €/kk on kiinteistä sopimuksista matalin, ja se on nollassa puoli vuotta.",
+      "summary": "Hehkun fossiilivapaa kiinteä sopimus kahdella kestolla. Kahden vuoden kausi maksaa 10,19 c/kWh ja vuoden kausi 10,79 c/kWh, perusmaksu on kummassakin 4,90 €/kk. Vertailun euromäärä ja tilauslinkki koskevat edullisempaa 24 kuukauden kautta; vuoden kauden voi valita Hehkun omilta sivuilta.",
       "pros": [
-        "Puolen vuoden perusmaksuetu",
-        "Matalin perusmaksu kiinteistä sopimuksista",
-        "Fossiilivapaa tuotanto"
+        "Fossiilivapaa sähkö ilman lisämaksua",
+        "Kuuden kuukauden perusmaksuetu kahden vuoden sopimuksessa",
+        "Matala perusmaksu 4,90 €/kk"
       ],
       "cons": [
-        "Energian hinta korkeampi kuin Hehkun tavallisessa kiinteässä",
-        "Kahden vuoden sitoutuminen"
+        "Kalliimpi kuin saman yhtiön tavallinen kiinteä sopimus",
+        "Fossiilivapaa ei tarkoita samaa kuin 100 % uusiutuva",
+        "Määräaikaista sopimusta ei voi purkaa kesken kauden"
       ],
-      "bestFor": "Valitse tämä, jos haluat kiinteän hinnan ilman fossiilisia polttoaineita ja arvostat matalaa perusmaksua.",
+      "bestFor": "Valitse tämä, jos haluat kiinteän hinnan ja että sähkö on tuotettu ilman fossiilisia polttoaineita.",
       "faq": [
         [
           "Mitä kiinteä hinta tarkoittaa?",
@@ -546,6 +607,61 @@
       "region": "Helsinki"
     },
     {
+      "id": "hehku-hiilivapaa-porssi",
+      "slug": "hehku-hiilivapaa-porssisahko",
+      "provider": "Hehku Energia",
+      "name": "Hiilivapaa Pörssi",
+      "type": "spot",
+      "basicFee": 5.9,
+      "energyPrice": null,
+      "spotMargin": 0.69,
+      "green": false,
+      "fixedTermMonths": null,
+      "rating": null,
+      "reviews": null,
+      "affiliateUrl": "https://go.adt246.net/t/t?a=1893918387&as=2098832052&t=2&tk=1&url=https%3A%2F%2Fhehkuenergia.fi%2Ftilauslomake%2F%3Fp%3Dhiilivapaa-porssi",
+      "partner": true,
+      "checkedAt": "2026-08-06",
+      "sourceUrl": "https://hehkuenergia.fi/sahkosopimukset/hiilivapaa/",
+      "gradient": [
+        "#2E2B22",
+        "#55503E"
+      ],
+      "features": [
+        "Marginaali 0,69 c/kWh pörssin varttituntihinnan päälle",
+        "Perusmaksu 5,90 €/kk, ensimmäiset kuusi kuukautta 0 €",
+        "100 % fossiilivapaata sähköä",
+        "Ei määräaikaa"
+      ],
+      "summary": "Pörssisähköä fossiilivapaalla tuotannolla. Marginaali 0,69 c/kWh on korkeampi kuin Hehkun tavallisessa pörssisopimuksessa, eli fossiilivapaudesta maksaa tässä noin 0,30 c/kWh enemmän.",
+      "pros": [
+        "Fossiilivapaa tuotanto myös pörssisopimuksessa",
+        "Kuuden kuukauden perusmaksuetu",
+        "Ei määräaikaa — voit vaihtaa milloin tahansa"
+      ],
+      "cons": [
+        "Marginaali on 0,30 c/kWh korkeampi kuin saman yhtiön tavallisessa pörssisopimuksessa",
+        "Perusmaksu 5,90 €/kk on korkeampi kuin Hehkun muissa sopimuksissa",
+        "Pörssisähkön lasku vaihtelee kuukausittain"
+      ],
+      "bestFor": "Valitse tämä, jos haluat pörssisähkön joustavuuden mutta et halua fossiilisilla tuotettua sähköä.",
+      "faq": [
+        [
+          "Mitä marginaali tarkoittaa?",
+          "Maksat sähköstä pörssin hinnan sen hetken mukaan ja päälle yhtiön marginaalin sekä kuukausittaisen perusmaksun. Marginaali ja perusmaksu ovat ne kaksi lukua, joilla pörssisopimukset oikeasti eroavat toisistaan — pörssihinta on kaikilla sama."
+        ],
+        [
+          "Mihin vertailun euromäärä perustuu?",
+          "Kulutukseesi ja pörssin oletuskeskihintaan. Todellinen lasku riippuu siitä, milloin sähköä käytät: pörssisopimuksessa yöllä ja tuulisina päivinä kulutettu sähkö on halvempaa kuin pakkasaamun sähkö."
+        ]
+      ],
+      "campaign": {
+        "label": "Perusmaksu 0 € · 6 kk",
+        "months": 6,
+        "basicFee": 0
+      }
+    },
+    {
       "id": "hehku-jatkuva",
       "slug": "hehku-jatkuva",
       "provider": "Hehku Energia",
@@ -558,10 +674,10 @@
       "fixedTermMonths": null,
       "rating": null,
       "reviews": null,
-      "affiliateUrl": "https://go.adt246.net/t/t?a=1893918387&as=2098832052&t=2&tk=1",
+      "affiliateUrl": "https://go.adt246.net/t/t?a=1893918387&as=2098832052&t=2&tk=1&url=https%3A%2F%2Fhehkuenergia.fi%2Ftilauslomake%2F%3Fp%3Djatkuva",
       "partner": true,
-      "checkedAt": "2026-08-05",
-      "sourceUrl": "https://hehkuenergia.fi/sahkosopimukset/",
+      "checkedAt": "2026-08-06",
+      "sourceUrl": "https://hehkuenergia.fi/sahkosopimukset/jatkuva/",
       "gradient": [
         "#4A3C2E",
         "#7C6552"
@@ -669,10 +785,10 @@
       "fixedTermMonths": null,
       "rating": null,
       "reviews": null,
-      "affiliateUrl": "https://go.adt246.net/t/t?a=1914907838&as=2098832052&t=2&tk=1",
+      "affiliateUrl": "https://go.adt246.net/t/t?a=1914907838&as=2098832052&t=2&tk=1&url=https%3A%2F%2Fwww.cheapenergy.fi%2Ftilauslomake%2F%3Fp%3Dporssisahko",
       "partner": true,
-      "checkedAt": "2026-08-05",
-      "sourceUrl": "https://www.cheapenergy.fi/",
+      "checkedAt": "2026-08-06",
+      "sourceUrl": "https://www.cheapenergy.fi/sahkosopimus/porssisahko/",
       "gradient": [
         "#1F1A16",
         "#3A322B"
@@ -712,42 +828,45 @@
       }
     },
     {
-      "id": "cheap-maaraaikainen-36kk",
-      "slug": "cheap-energy-maaraaikainen-36-kk",
+      "id": "cheap-maaraaikainen",
+      "slug": "cheap-energy-maaraaikainen",
       "provider": "Cheap Energy",
-      "name": "Määräaikainen 36 kk",
+      "name": "Määräaikainen 6–36 kk",
       "type": "fixed",
-      "basicFee": 5.45,
-      "energyPrice": 9.55,
+      "basicFee": 3.9,
+      "energyPrice": 9.65,
       "spotMargin": null,
       "green": false,
-      "fixedTermMonths": 36,
+      "fixedTermMonths": 24,
       "rating": null,
       "reviews": null,
-      "affiliateUrl": "https://go.adt246.net/t/t?a=1914907838&as=2098832052&t=2&tk=1",
+      "affiliateUrl": "https://go.adt246.net/t/t?a=1914907838&as=2098832052&t=2&tk=1&url=https%3A%2F%2Fwww.cheapenergy.fi%2Ftilauslomake%2F%3Fp%3Dmaaraaikainen-24kk",
       "partner": true,
-      "checkedAt": "2026-08-05",
-      "sourceUrl": "https://www.cheapenergy.fi/",
+      "checkedAt": "2026-08-06",
+      "sourceUrl": "https://www.cheapenergy.fi/sahkosopimus/maaraaikainen/",
       "gradient": [
         "#2A231E",
         "#4A3C33"
       ],
       "features": [
-        "Kiinteä 9,55 c/kWh kolmen vuoden ajan",
-        "Perusmaksu 0 € kolme ensimmäistä kuukautta",
-        "Vertailun pisin hintalukko"
+        "Kolme kestoa: 24 kk 9,65 c/kWh, 36 kk 9,55 c/kWh, 6 kk 14,90 c/kWh",
+        "Perusmaksu 24 kk 3,90 €/kk, 36 kk 5,45 €/kk, 6 kk 3,50 €/kk",
+        "Perusmaksu 0 € ensimmäiset 3–4 kuukautta kestosta riippuen",
+        "Hintatakuu 24 ja 36 kuukauden sopimuksissa"
       ],
-      "summary": "Kolmen vuoden kiinteä hinta 9,55 c/kWh. Pisin hintalukko vertailussa — ja sitä myöten myös pisin sitoutuminen.",
+      "summary": "Cheap Energyn kiinteä sopimus kolmella kestolla. 24 kuukauden kausi on kokonaisuutena halvin: energiahinta on 0,10 c/kWh korkeampi kuin kolmen vuoden kaudessa, mutta perusmaksu 1,55 €/kk matalampi. Vertailun euromäärä ja tilauslinkki koskevat 24 kuukauden kautta; muut kestot löytyvät Cheap Energyn omilta sivuilta.",
       "pros": [
-        "Hinta lukossa kolme vuotta",
+        "Vertailun matalimpia perusmaksuja, 3,90 €/kk",
         "Edullinen kiinteä energiahinta",
-        "Kolmen kuukauden perusmaksuetu"
+        "Hintatakuu pidemmissä kausissa",
+        "Voit valita kestoksi puoli vuotta, kaksi vuotta tai kolme vuotta"
       ],
       "cons": [
+        "Kuuden kuukauden kausi maksaa 14,90 c/kWh — selvästi muita kalliimpi",
         "Kolmen vuoden sitoutuminen on pitkä aika sähkömarkkinassa",
         "Jos pörssihinta laskee, olet lukossa"
       ],
-      "bestFor": "Valitse tämä, jos arvostat ennustettavuutta enemmän kuin liikkumavaraa ja uskot hintojen pikemmin nousevan kuin laskevan.",
+      "bestFor": "Valitse tämä, jos arvostat ennustettavuutta ja haluat matalan perusmaksun. 24 kuukauden kausi on lähes kaikilla kulutuksilla halvin.",
       "faq": [
         [
           "Mitä kiinteä hinta tarkoittaa?",
@@ -759,8 +878,8 @@
         ]
       ],
       "campaign": {
-        "label": "Perusmaksu 0 € · 3 kk",
-        "months": 3,
+        "label": "Perusmaksu 0 € · 4 kk",
+        "months": 4,
         "basicFee": 0
       }
     },
@@ -777,10 +896,10 @@
       "fixedTermMonths": null,
       "rating": null,
       "reviews": null,
-      "affiliateUrl": "https://go.adt212.net/t/t?a=1902900993&as=2098832052&t=2&tk=1",
+      "affiliateUrl": "https://go.adt212.net/t/t?a=1902900993&as=2098832052&t=2&tk=1&url=https%3A%2F%2Fteesopimus.vihreaenergia.fi%2Fproduct%2F808",
       "partner": true,
-      "checkedAt": "2026-08-05",
-      "sourceUrl": "https://vihreaenergia.fi/",
+      "checkedAt": "2026-08-06",
+      "sourceUrl": "https://vihreaenergia.fi/sahkosopimukset/hintalukko/",
       "gradient": [
         "#33291F",
         "#5C4A38"
@@ -816,8 +935,64 @@
       "region": "Tampere"
     },
     {
-      "id": "vae-vire-tuuli",
-      "slug": "vihrea-alyenergia-vire-tuuli",
+      "id": "vae-verraton",
+      "slug": "vihrea-alyenergia-verraton",
+      "provider": "Vihreä Älyenergia",
+      "name": "Verraton",
+      "type": "spot",
+      "basicFee": 4.99,
+      "energyPrice": null,
+      "spotMargin": 0.59,
+      "green": false,
+      "fixedTermMonths": null,
+      "rating": null,
+      "reviews": null,
+      "affiliateUrl": "https://go.adt212.net/t/t?a=1902900993&as=2098832052&t=2&tk=1&url=https%3A%2F%2Fteesopimus.vihreaenergia.fi%2Fproduct%2F822",
+      "partner": true,
+      "checkedAt": "2026-08-06",
+      "sourceUrl": "https://vihreaenergia.fi/sahkosopimukset/verraton/",
+      "gradient": [
+        "#2A2A22",
+        "#4F5040"
+      ],
+      "features": [
+        "Ensimmäiset 12 kuukautta marginaali 0,34 c/kWh ja perusmaksu 2,99 €/kk",
+        "Sen jälkeen 0,59 c/kWh ja 4,99 €/kk",
+        "Ei määräaikaa",
+        "Fossiilivapaa sähkö"
+      ],
+      "summary": "Vihreän Älyenergian edullisin pörssisopimus. Ensimmäisen vuoden marginaali on 0,34 c/kWh ja perusmaksu 2,99 €/kk, minkä jälkeen molemmat nousevat samalle tasolle kuin yhtiön Hintalukko-sopimuksessa.",
+      "pros": [
+        "Vertailun matalimpia marginaaleja ensimmäisenä vuonna",
+        "Perusmaksu vain 2,99 €/kk ensimmäisen vuoden",
+        "Ei määräaikaa — voit vaihtaa milloin tahansa"
+      ],
+      "cons": [
+        "Vuoden jälkeen hinta nousee 0,59 senttiin ja perusmaksu 4,99 euroon",
+        "Pörssisähkön lasku vaihtelee kuukausittain",
+        "Ei hintakattoa toisin kuin saman yhtiön Hintalukossa"
+      ],
+      "bestFor": "Valitse tämä, jos haluat halvimman mahdollisen pörssisopimuksen ensimmäiselle vuodelle ja aiot kilpailuttaa uudelleen sen jälkeen.",
+      "faq": [
+        [
+          "Mitä marginaali tarkoittaa?",
+          "Maksat sähköstä pörssin hinnan sen hetken mukaan ja päälle yhtiön marginaalin sekä kuukausittaisen perusmaksun. Marginaali ja perusmaksu ovat ne kaksi lukua, joilla pörssisopimukset oikeasti eroavat toisistaan — pörssihinta on kaikilla sama."
+        ],
+        [
+          "Mihin vertailun euromäärä perustuu?",
+          "Kulutukseesi ja pörssin oletuskeskihintaan. Todellinen lasku riippuu siitä, milloin sähköä käytät: pörssisopimuksessa yöllä ja tuulisina päivinä kulutettu sähkö on halvempaa kuin pakkasaamun sähkö."
+        ]
+      ],
+      "campaign": {
+        "label": "0,34 c/kWh · 12 kk",
+        "months": 12,
+        "basicFee": 2.99,
+        "spotMargin": 0.34
+      }
+    },
+    {
+      "id": "vae-vire-tuuli-porssi",
+      "slug": "vihrea-alyenergia-vire-tuuli-porssisahko",
       "provider": "Vihreä Älyenergia",
       "name": "Vire Tuuli",
       "type": "spot",
@@ -828,32 +1003,33 @@
       "fixedTermMonths": null,
       "rating": null,
       "reviews": null,
-      "affiliateUrl": "https://go.adt212.net/t/t?a=1902900993&as=2098832052&t=2&tk=1",
+      "affiliateUrl": "https://go.adt212.net/t/t?a=2030811273&as=2098832052&t=2&tk=1&url=https%3A%2F%2Fteesopimus.vihreaenergia.fi%2Fproduct%2F811",
       "partner": true,
-      "checkedAt": "2026-08-05",
-      "sourceUrl": "https://vihreaenergia.fi/",
+      "checkedAt": "2026-08-06",
+      "sourceUrl": "https://vihreaenergia.fi/sahkosopimukset/vire-tuuli/",
       "gradient": [
-        "#3E3227",
-        "#6B5745"
+        "#26302A",
+        "#4A5F4E"
       ],
       "features": [
-        "Vuoden ajan 0,45 c/kWh ja perusmaksu 2,99 €/kk",
-        "Kaksi ensimmäistä kuukautta kokonaan ilman perusmaksua",
+        "Ensimmäiset 12 kuukautta marginaali 0,45 c/kWh ja perusmaksu 2,99 €/kk",
         "Sen jälkeen 0,99 c/kWh ja 5,99 €/kk",
+        "Kaksi ensimmäistä kuukautta ilman perusmaksua",
         "100 % uusiutuvaa tuulisähköä alkuperätakuulla"
       ],
-      "summary": "Vertailun ainoa sopimus, jonka sähkö on sataprosenttisesti uusiutuvaa tuulivoimaa alkuperätakuulla. Alennettu hinta kestää vuoden.",
+      "summary": "Pörssisähköä, jonka alkuperä on sataprosenttisesti tuulivoima. Ensimmäisen vuoden marginaali on 0,45 c/kWh ja perusmaksu 2,99 €/kk, minkä jälkeen hinta nousee 0,99 senttiin ja 5,99 euroon.",
       "pros": [
-        "Ainoa täysin uusiutuva vaihtoehto vertailussa",
-        "Alennus kestää koko vuoden",
+        "Vertailun ainoa täysin uusiutuva pörssisopimus",
+        "Halpa aloitusvuosi: 0,45 c/kWh ja 2,99 €/kk",
         "Kaksi ensimmäistä kuukautta ilman perusmaksua",
         "Ei määräaikaa"
       ],
       "cons": [
-        "Normaali marginaali 0,99 c/kWh nousee vuoden jälkeen selvästi",
-        "Ensimmäisen vuoden arvio ei sisällä kahta ilmaista perusmaksukuukautta — todellinen hinta on hieman tätä pienempi"
+        "Vuoden jälkeen marginaali lähes tuplaantuu 0,99 senttiin",
+        "Normaali perusmaksu 5,99 €/kk on vertailun korkeampaa päätä",
+        "Pörssisähkön lasku vaihtelee kuukausittain"
       ],
-      "bestFor": "Valitse tämä, jos haluat että sähkösi on oikeasti tuulivoimaa etkä tyydy pelkkään fossiilivapaaseen.",
+      "bestFor": "Valitse tämä, jos haluat pörssisähkön joustavuuden ja että sähkö on oikeasti tuulivoimaa — ja muistat tarkistaa hinnan vuoden päästä.",
       "faq": [
         [
           "Mitä marginaali tarkoittaa?",
@@ -869,7 +1045,108 @@
         "months": 12,
         "basicFee": 2.99,
         "spotMargin": 0.45
-      },
+      }
+    },
+    {
+      "id": "vae-vire-tuuli-kiintea",
+      "slug": "vihrea-alyenergia-vire-tuuli-kiintea",
+      "provider": "Vihreä Älyenergia",
+      "name": "Vire Tuuli 12–24 kk",
+      "type": "fixed",
+      "basicFee": 5.99,
+      "energyPrice": 11.64,
+      "spotMargin": null,
+      "green": true,
+      "fixedTermMonths": 24,
+      "rating": null,
+      "reviews": null,
+      "affiliateUrl": "https://go.adt212.net/t/t?a=2030811273&as=2098832052&t=2&tk=1&url=https%3A%2F%2Fteesopimus.vihreaenergia.fi%2Fproduct%2F580",
+      "partner": true,
+      "checkedAt": "2026-08-06",
+      "sourceUrl": "https://vihreaenergia.fi/sahkosopimukset/?e-filter-52d406c-category=kiintea-hinta",
+      "gradient": [
+        "#3E3227",
+        "#6B5745"
+      ],
+      "features": [
+        "Kaksi kestoa: 24 kk 11,64 c/kWh tai 12 kk 11,99 c/kWh",
+        "Perusmaksu 5,99 €/kk molemmissa",
+        "Vain alle 7 000 kWh vuodessa kuluttaviin kohteisiin",
+        "100 % uusiutuvaa tuulisähköä alkuperätakuulla"
+      ],
+      "summary": "Kiinteä hinta ja sähkö, joka on sataprosenttisesti tuulivoimaa alkuperätakuulla. Kestoksi voi valita yhden tai kaksi vuotta — kahden vuoden kausi on halvempi. Yhtiö tarkistaa vuosikulutuksen verkkoyhtiön arviosta: tuote on tarkoitettu alle 7 000 kWh kohteisiin. Vertailun euromäärä ja tilauslinkki koskevat 24 kuukauden kautta; vuoden kauden voi valita yhtiön omilta sivuilta.",
+      "pros": [
+        "Täysin uusiutuva sähkö myös kiinteähintaisena",
+        "Hinta lukossa — ei pörssiosuutta lainkaan",
+        "Tuulisähköstä ei peritä erillistä lisämaksua"
+      ],
+      "cons": [
+        "Vertailun kalleimpia kiinteitä energiahintoja",
+        "Sopimusta ei voi purkaa eikä vaihtaa kesken kauden",
+        "Ei sovi omakotitaloon eikä sähkölämmitteiseen taloon: raja on 7 000 kWh vuodessa"
+      ],
+      "bestFor": "Valitse tämä, jos asut kerros- tai rivitalossa, haluat hinnan lukkoon etkä halua että sähköstä osa on ydinvoimaa.",
+      "faq": [
+        [
+          "Mitä kiinteä hinta tarkoittaa?",
+          "Energian hinta pysyy samana koko sopimuskauden riippumatta siitä, mitä pörssissä tapahtuu. Maksat siitä yleensä hieman enemmän kuin pörssin keskihinta — kyseessä on vakuutus hintapiikkejä vastaan."
+        ],
+        [
+          "Voinko irtisanoa määräaikaisen sopimuksen kesken?",
+          "Vihreä Älyenergia kertoo suoraan, ettei sopimusta voi purkaa tai vaihtaa kesken kauden. Kaksi vuotta on siis kaksi vuotta — tarkista ehdot yhtiön omilta sivuilta ennen tilausta."
+        ]
+      ],
+      "region": "Tampere"
+    },
+    {
+      "id": "vae-vankka",
+      "slug": "vihrea-alyenergia-vankka",
+      "provider": "Vihreä Älyenergia",
+      "name": "Vankka 12–24 kk",
+      "type": "fixed",
+      "basicFee": 4.99,
+      "energyPrice": 11.14,
+      "spotMargin": null,
+      "green": false,
+      "fixedTermMonths": 24,
+      "rating": null,
+      "reviews": null,
+      "affiliateUrl": "https://go.adt212.net/t/t?a=2030810856&as=2098832052&t=2&tk=1&url=https%3A%2F%2Fteesopimus.vihreaenergia.fi%2Fproduct%2F498",
+      "partner": true,
+      "checkedAt": "2026-08-06",
+      "sourceUrl": "https://vihreaenergia.fi/sahkosopimukset/?e-filter-52d406c-category=kiintea-hinta",
+      "gradient": [
+        "#463A2C",
+        "#77624E"
+      ],
+      "features": [
+        "Kaksi kestoa: 24 kk 11,14 c/kWh tai 12 kk 11,49 c/kWh",
+        "Perusmaksu 4,99 €/kk molemmissa",
+        "Vain alle 7 000 kWh vuodessa kuluttaviin kohteisiin",
+        "100 % fossiilivapaata sähköä ilman lisämaksua"
+      ],
+      "summary": "Vihreän Älyenergian kiinteistä sopimuksista edullisempi, kahdella kestolla. Kahden vuoden kausi maksaa 11,14 c/kWh ja vuoden kausi 11,49 c/kWh, perusmaksu on kummassakin 4,99 €/kk. Sähkö on tuuli- ja ydinvoimaa, eli fossiilivapaata muttei kokonaan uusiutuvaa. Vertailun euromäärä ja tilauslinkki koskevat 24 kuukauden kautta; vuoden kauden voi valita yhtiön omilta sivuilta.",
+      "pros": [
+        "Halvempi kuin saman yhtiön tuulisähkösopimus — sekä energiahinta että perusmaksu",
+        "Voit valita kestoksi yhden tai kaksi vuotta",
+        "Fossiilivapaasta sähköstä ei peritä lisämaksua"
+      ],
+      "cons": [
+        "Kalliimpi kuin vertailun halvimmat kiinteät sopimukset",
+        "Sopimusta ei voi purkaa eikä vaihtaa kesken kauden",
+        "Ei sovi omakotitaloon eikä sähkölämmitteiseen taloon: raja on 7 000 kWh vuodessa"
+      ],
+      "bestFor": "Valitse tämä, jos haluat hinnan lukkoon kahdeksi vuodeksi etkä maksa erikseen siitä, että sähkö on nimenomaan tuulta.",
+      "faq": [
+        [
+          "Mitä kiinteä hinta tarkoittaa?",
+          "Energian hinta pysyy samana koko sopimuskauden riippumatta siitä, mitä pörssissä tapahtuu. Maksat siitä yleensä hieman enemmän kuin pörssin keskihinta — kyseessä on vakuutus hintapiikkejä vastaan."
+        ],
+        [
+          "Voinko irtisanoa määräaikaisen sopimuksen kesken?",
+          "Vihreä Älyenergia kertoo suoraan, ettei sopimusta voi purkaa tai vaihtaa kesken kauden. Kaksi vuotta on siis kaksi vuotta — tarkista ehdot yhtiön omilta sivuilta ennen tilausta."
+        ]
+      ],
       "region": "Tampere"
     },
     {
