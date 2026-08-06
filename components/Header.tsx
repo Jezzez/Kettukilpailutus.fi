@@ -5,7 +5,9 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { ArrowRight, Menu, X } from "lucide-react";
 import FoxMark from "./FoxMark";
+import AffiliateButton from "./AffiliateButton";
 import { FEATURES } from "@/lib/features";
+import { LOAN_PARTNER } from "@/lib/loans";
 
 const NAV = [
   { href: "/sahkosopimukset", label: "Sähkö", match: "/sahkosopimukset" },
@@ -16,6 +18,7 @@ const NAV = [
   ...(FEATURES.cards
     ? [{ href: "/luottokortit", label: "Luottokortit", match: "/luottokortit" }]
     : []),
+  ...(FEATURES.loans ? [{ href: "/lainat", label: "Lainat", match: "/lainat" }] : []),
   { href: "/blogi", label: "Oppaat", match: "/blogi" },
   { href: "/tietoa", label: "Tietoa", match: "/tietoa" },
 ];
@@ -25,6 +28,7 @@ function contextLabel(pathname: string): string {
   if (pathname.startsWith("/sahkosopimukset")) return "Sähkösopimukset";
   if (FEATURES.cards && (pathname.startsWith("/luottokortit") || pathname.startsWith("/kortit")))
     return "Luottokortit";
+  if (FEATURES.loans && pathname.startsWith("/lainat")) return "Lainat";
   if (pathname.startsWith("/blogi")) return "Oppaat";
   return "Kilpailutuspalvelu";
 }
@@ -34,6 +38,17 @@ function ctaHref(pathname: string): string {
   if (FEATURES.cards && (pathname.startsWith("/luottokortit") || pathname.startsWith("/kortit")))
     return "/luottokortit#vertailu";
   return "/sahkosopimukset#vertailu";
+}
+
+/**
+ * Ollaanko lainasivulla. Headerin kehote on erikoistapaus siellä:
+ * lainasivulla ei ole omaa vertailua, johon kehote voisi vierittää,
+ * joten sisäinen "Aloita vertailu" veisi kävijän sähkövertailuun —
+ * eli pois sivulta, jonka ainoa ansaintatapa on siirtymä Sortterille.
+ * Ruudun kirkkain nappi osoittaisi silloin väärään suuntaan.
+ */
+function isLoanPage(pathname: string): boolean {
+  return FEATURES.loans && pathname.startsWith("/lainat");
 }
 
 export default function Header() {
@@ -111,12 +126,27 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Link
-            href={ctaHref(pathname)}
-            className="hidden btn-ember rounded-xl px-6 py-2.5 font-display text-sm font-bold text-onEmber transition-all sm:inline-flex"
-          >
-            Aloita vertailu
-          </Link>
+          {isLoanPage(pathname) ? (
+            /* Lainasivulla headerin nappi menee suoraan kumppanille.
+               Sama nappi, sama paikka — vain kohde vaihtuu siihen, mistä
+               tämä sivu ansaitsee. Oma `placement`, jotta seurannasta
+               näkee erikseen kuinka moni lähtee headerista. */
+            <AffiliateButton
+              href={LOAN_PARTNER.url}
+              cardId={LOAN_PARTNER.id}
+              placement="lainat-header"
+              className="hidden !rounded-xl !px-6 !py-2.5 !text-sm sm:inline-flex"
+            >
+              Hae lainatarjoukset
+            </AffiliateButton>
+          ) : (
+            <Link
+              href={ctaHref(pathname)}
+              className="hidden btn-ember rounded-xl px-6 py-2.5 font-display text-sm font-bold text-onEmber transition-all sm:inline-flex"
+            >
+              Aloita vertailu
+            </Link>
+          )}
           {/*
             Valikkonappi on oranssisävyinen, ei beige. Alle 640 pikselin
             leveydellä headerin "Aloita vertailu" on piilotettu tilan
@@ -164,13 +194,24 @@ export default function Header() {
             eikä valikon avaaja joudu arvaamaan, kätkeytyykö
             kilpailutus "Sähkön" vai "Luottokorttien" taakse.
           */}
-          <Link
-            href={ctaHref(pathname)}
-            onClick={() => setOpen(false)}
-            className="btn-ember mt-3 flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 font-display text-[15px] font-bold text-onEmber"
-          >
-            Aloita vertailu <ArrowRight size={17} aria-hidden />
-          </Link>
+          {isLoanPage(pathname) ? (
+            <AffiliateButton
+              href={LOAN_PARTNER.url}
+              cardId={LOAN_PARTNER.id}
+              placement="lainat-valikko"
+              className="mt-3 flex w-full !rounded-xl !px-6 !py-3.5"
+            >
+              Hae lainatarjoukset <ArrowRight size={17} aria-hidden />
+            </AffiliateButton>
+          ) : (
+            <Link
+              href={ctaHref(pathname)}
+              onClick={() => setOpen(false)}
+              className="btn-ember mt-3 flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 font-display text-[15px] font-bold text-onEmber"
+            >
+              Aloita vertailu <ArrowRight size={17} aria-hidden />
+            </Link>
+          )}
         </nav>
       )}
     </header>

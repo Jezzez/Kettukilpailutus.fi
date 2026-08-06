@@ -26,6 +26,7 @@ const CATEGORIES = [
     desc: "Vertaa pörssi- ja kiinteähintaiset sopimukset omalla kulutuksellasi.",
     highlight: "Suosituin",
     live: true,
+    cta: null,
   },
   {
     href: "/luottokortit",
@@ -38,10 +39,26 @@ const CATEGORIES = [
        näyttäisi siltä, että jotain hajosi; tulossa-tila kertoo saman
        asian tavalla joka rakentaa alustan mielikuvaa eikä pura sitä. */
     live: FEATURES.cards,
+    cta: null,
   },
-  { href: "#", icon: Landmark, title: "Lainat", desc: "Kilpailuta lainat ja säästä koroissa.", highlight: null, live: false },
-  { href: "#", icon: ShieldCheck, title: "Vakuutukset", desc: "Koti, auto ja matka — vertaa hinnat.", highlight: null, live: false },
-  { href: "#", icon: Globe, title: "Nettiliittymät", desc: "Nopein netti kotiisi oikeaan hintaan.", highlight: null, live: false },
+  {
+    href: "/lainat",
+    icon: Landmark,
+    title: "Lainat",
+    /* Kuvaus ei lupaa vertailua, koska Kettu ei vertaile lainoja vaan
+       ohjaa kumppanille. Jos ruutu lupaisi vertailun ja sivu ei sitä
+       anna, kävijä kokee tulleensa harhautetuksi juuri siinä kohdassa,
+       jossa hänen pitäisi painaa hakemusnappia. */
+    desc: "Yksi hakemus, tarjoukset useasta pankista rinnakkain.",
+    highlight: null,
+    live: FEATURES.loans,
+    /* Oma kehote. Yhteinen "Aloita vertailu" lupaisi vertailun, jota
+       Kettu ei lainoissa tee — ja ruudun lupaus on ensimmäinen asia,
+       jonka kävijä muistaa, kun sivu ei vastaakaan sitä. */
+    cta: "Kilpailuta laina",
+  },
+  { href: "#", icon: ShieldCheck, title: "Vakuutukset", desc: "Koti, auto ja matka — vertaa hinnat.", highlight: null, live: false, cta: null },
+  { href: "#", icon: Globe, title: "Nettiliittymät", desc: "Nopein netti kotiisi oikeaan hintaan.", highlight: null, live: false, cta: null },
 ] as const;
 
 export default function HubPage() {
@@ -179,7 +196,7 @@ export default function HubPage() {
                     <h2 className="mt-4 font-display text-xl font-semibold text-ink">{c.title}</h2>
                     <p className="mt-1.5 flex-1 text-[14px] leading-relaxed text-ink/70">{c.desc}</p>
                     <span className="mt-4 inline-flex items-center gap-1.5 font-display text-[14px] font-semibold text-accentDark">
-                      Aloita vertailu
+                      {c.cta ?? "Aloita vertailu"}
                       <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" aria-hidden />
                     </span>
                   </Link>

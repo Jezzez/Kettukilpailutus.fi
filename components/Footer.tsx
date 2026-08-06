@@ -43,6 +43,7 @@ export default function Footer() {
           links: [
             { href: "/sahkosopimukset", label: "Sähkösopimukset" },
             ...(FEATURES.cards ? [{ href: "/luottokortit", label: "Luottokortit" }] : []),
+            ...(FEATURES.loans ? [{ href: "/lainat", label: "Lainat" }] : []),
             { href: "/blogi", label: "Ketun oppaat" },
           ],
         };

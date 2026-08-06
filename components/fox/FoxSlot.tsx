@@ -34,6 +34,7 @@ export type FoxSlotId =
   | "tyhja"
   | "voitto"
   | "neuvoo"
+  | "lainaHero"
   | "eiLoytynyt"
   | "footer";
 
@@ -127,6 +128,32 @@ export const FOX_SLOTS: Record<FoxSlotId, SlotSpec> = {
     h: 1000,
     alt: "",
     brief: "Osoittaa sormella. Vinkit ja neuvot.",
+  },
+  /*
+    LAINASIVUN HERO — OMA KUVA, EI JAETTUA TIEDOSTOA.
+
+    Tämä on ainoa paikka, jossa tuolikuvaa käytetään. Oma tiedosto on
+    tarkoituksellinen: lainasivu on ainoa vertikaali, joka ei vertaile
+    mitään itse, ja oma asento erottaa sen sähkövertailusta myös
+    silmälle. Jaettu naamakuva toimi, mutta se toistuu jo kahdessa
+    muussa paikassa sivustolla.
+
+    KUVA ON RAJATTU LÄPINÄKYVÄN ALUEEN MUKAAN. Alkuperäisessä
+    tiedostossa hahmo oli oikeassa laidassa ja vasen puoli oli tyhjää.
+    Oranssilla vyöllä tyhjä puolisko olisi piirtynyt pelkkänä taustana
+    ja kutistanut hahmon puoleen siitä koosta, jonka palsta sallii.
+
+    EI SUORIA LEIKKAUSREUNOJA: koko hahmo tuoleineen on kuvassa, joten
+    tämä ei tarvitse aaltoreunaa piilottamaan katkokohtaa vaan asettuu
+    keskelle kuvapalstaa halon päälle.
+  */
+  lainaHero: {
+    src: "/kettu-tuolissa.webp",
+    w: 712,
+    h: 993,
+    alt: "",
+    brief:
+      "Kettu istuu toimistotuolissa, sormi ylhäällä. Rento asiantuntija, ei myyjä — sopii sivulle, joka ohjaa asian hoitavalle kumppanille.",
   },
   eiLoytynyt: {
     src: null,
