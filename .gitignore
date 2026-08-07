@@ -9,3 +9,4 @@ tsconfig.tsbuildinfo
 # Affiliate-linkit ja tyolistat - eivat kuulu julkaistavaan sivustoon
 affiliate-linkit.md
 sahkoyhtiot-lisattavat.md
+.tarkistus/

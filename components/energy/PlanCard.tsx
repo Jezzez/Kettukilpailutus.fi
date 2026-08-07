@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Leaf, Star, Tag, TrendingDown, TrendingUp, Zap } from "lucide-react";
+import { useState } from "react";
+import { ChevronDown, Leaf, Star, Tag, TrendingDown, TrendingUp, Zap } from "lucide-react";
 import type { ElectricityPlan } from "@/lib/energy";
 import { annualCost, normalAnnualCost, TYPE_LABEL } from "@/lib/energy";
 import AffiliateButton from "../AffiliateButton";
@@ -41,6 +42,8 @@ export default function PlanCard({
   minCost,
   maxCost,
   rank,
+  pinned = false,
+  strength,
 }: {
   plan: ElectricityPlan;
   kwh: number;
@@ -55,8 +58,21 @@ export default function PlanCard({
   /** Listan halvin vuosihinta. Hintapalkin nollakohta. */
   minCost: number;
   maxCost: number;
-  /** Sijaluku valitussa järjestyksessä. Ks. perustelu logopalkin kommentissa. */
+  /** Sijaluku valitussa järjestyksessä. Ks. perustelu logokaistan kommentissa. */
   rank?: number;
+  /**
+   * Kortti on nostettu paikalleen Ketun suosituksena, ei hintajärjestyksen
+   * perusteella. Silloin siinä näkyy tassu eikä sijalukua — numero väittäisi
+   * järjestystä, jota kortin omat hinnat eivät tue.
+   */
+  pinned?: boolean;
+  /**
+   * Yhden lauseen vahvuus merkittömälle kortille, esim. "Pienin perusmaksu"
+   * tai "+0,70 € / kk halvimpaan". Laskettu vertailtavasta joukosta
+   * `ElectricityExperience`-komponentissa — ks. sen `vahvuudet`-kommentti.
+   * Näytetään vain, kun kortilla ei ole Ketun merkkiä.
+   */
+  strength?: string;
 }) {
   const yearly = annualCost(plan, kwh);
   const monthly = yearly / 12;
@@ -145,6 +161,28 @@ export default function PlanCard({
      on se pettymys, joka menettää asiakkaan ja tuo valituksen. */
   const normalMonthly = campaign ? normalAnnualCost(plan, kwh) / 12 : null;
 
+  /*
+    MOBIILISSA YKSITYISKOHDAT AVATAAN, TYÖPÖYDÄLLÄ NE OVAT AINA AUKI.
+
+    Kortti oli mobiilissa 527 pikseliä korkea eli 88 % puhelimen ruudusta,
+    ja 21 korttia teki sivusta 30 ruudullista. Selaaminen ei silloin ole
+    vertailua vaan urakka, ja urakka keskeytetään ennen ostonappia.
+
+    Piiloon menee vain PÄÄTÖKSEN JÄLKEINEN tieto: marginaali, perusmaksu ja
+    ominaisuuslista. Niitä ei lueta selatessa vaan vasta kun kaksi sopimusta
+    on jo valittu vertailtavaksi. Näkyviin jää kaikki, millä valinta tehdään
+    — sija, logo, tyyppi, €/kk, hintapalkki, ero nykyiseen ja kampanjan
+    jälkeinen hinta.
+
+    Kampanjan jälkeinen hinta EI mene piiloon, vaikka se on rivi lisää.
+    Halvimman ensimmäisen vuoden näyttäminen ja pysyvän hinnan piilottaminen
+    napin taakse olisi täsmälleen se temppu, jota tämä sivusto ei tee.
+
+    Työpöydällä tilaa on eikä ongelmaa ollut, joten siellä kaikki näkyy
+    kuten ennenkin: `hidden sm:block` piilottaa vain kapealla ruudulla.
+  */
+  const [avattu, setAvattu] = useState(false);
+
   return (
     /*
       Nosto tulee yhteisestä `.lift`-säännöstä (globals.css), ei kortin
@@ -179,7 +217,7 @@ export default function PlanCard({
       }`}
     >
       {/*
-        MERKKIPALKKI ON AINA 44 PIKSELIÄ KORKEA — MYÖS TYHJÄNÄ.
+        MERKKIPALKKI ON AINA 44 PIKSELIÄ KORKEA — MYÖS ILMAN MERKKIÄ.
 
         Kaksi korttia kuudesta saa merkin. Jos merkitön kortti jättää
         palkin kokonaan pois, sen sisältö nousee palkin verran ylemmäs,
@@ -260,6 +298,31 @@ export default function PlanCard({
             </div>
           </div>
         )}
+        {!cheapest && !foxPick && strength && (
+          /*
+            MERKITTÖMÄN KORTIN VAHVUUSLAUSE — HILJAINEN, EI KOLMAS MERKKI.
+
+            Palkki oli merkittömillä korteilla tyhjä, ja tyhjä palkki luki
+            keskeneräiseltä juuri niissä korteissa, jotka muutenkin katosivat
+            massaan. Nyt siinä lukee se yksi asia, jossa kortti on koko listan
+            kärki — tai ero halvimpaan, jos kärkeä ei ole. Molemmat ovat
+            laskettuja lukuja, eivät markkinointilauseita.
+
+            TYPOGRAFIA ON TARKOITUKSELLA HILJAINEN: pieni kirjain, ei
+            harvennusta, ei ikonia, kerma 70 %:n peitolla. "Edullisin" ja
+            "Ketun valinta" ovat versaalilla, harvennettuina ja kirkkaalla
+            nauhalla. Jos vahvuuslause näyttäisi samalta, kortteja olisi kuusi
+            merkittyä eli nolla merkittyä — merkki toimii vain, jos merkittömiä
+            on enemmän. Tämä on kuvateksti, ei mitali.
+
+            Ei valkoista: kerma on sivuston oma vaalea, ja kiinteä valkoinen
+            olisi kolmas vaalea sävy oranssin päällä.
+          */
+          <p className="flex min-w-0 items-center gap-2 text-[11.5px] font-semibold leading-none text-cream/70">
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-cream/45" aria-hidden />
+            <span className="truncate">{strength}</span>
+          </p>
+        )}
         {campaign && (
           /*
             KERMANVALKOINEN LAATTA TUMMALLA PALKILLA, TUMMA VAALEALLA.
@@ -282,30 +345,49 @@ export default function PlanCard({
       </div>
 
       {/*
-        LOGOPALKKI — kortin ylin rivi.
+        LOGOKAISTA — VAALEA VYÖ KORTIN YLÄOSASSA, LOGO ISONA KESKELLÄ.
 
-        MIKSI OMANA PALKKINAAN: sähkövertailussa yhtiö tunnistetaan logosta
+        Logo oli aiemmin 40 pikselin laatta yhtiön nimen vieressä. Siinä koossa
+        se ei tehnyt työtään: sähkövertailussa yhtiö tunnistetaan logosta
         nopeammin kuin nimestä, ja tunnistettu yhtiö madaltaa kynnystä painaa
-        "Tee sopimus" -nappia. Tuntematon nimi taas saa kävijän poistumaan
-        googlaamaan yhtiötä muualle — ja se kävijä ei useimmiten palaa.
-        Omalla pinnalla ja alarajalla palkki toimii samalla ankkurina: kun
-        kuusi korttia alkaa samalla vaakaraidalla, silmä löytää rivin alun
-        ilman että sen tarvitsee lukea mitään.
+        "Tee sopimus" -nappia. Tuntematon yhtiö taas saa kävijän poistumaan
+        googlaamaan — ja se kävijä ei useimmiten palaa. Peukalonkynnen kokoinen
+        kuvake ei ehdi tuottaa sitä tunnistusta.
 
-        Logo on valkoisella laatalla ja `object-contain`: yhtiöiden logot on
-        tehty valkoiselle pohjalle ja ne on säilytettävä sellaisina.
-        Rajaaminen tai värjääminen olisi tavaramerkin vääristämistä.
+        VYÖ ON ORANSSI, EI VAALEA. Jessen valinta: vaalea kaista katkaisi
+        kortin kahtia ja näytti siltä, että logo on liimattu päälle. Oranssilla
+        kortti luetaan yhtenä pintana ja brändi pysyy yhtenäisenä.
 
-        SIJALUKU logon edessä: ilman numeroa kuusi samannäköistä korttia
-        näyttää sekalaiselta listalta, ja kävijä alkaa epäillä, onko järjestys
-        maksettu. Numero tekee järjestyksen näkyväksi — ykkönen on ykkönen
-        valitulla mittarilla, ja kutonen kertoo, ettei alaspäin selaamalla
-        löydy halvempaa. Se lyhentää harkintaa ja vie klikin ylös listalle.
+        Hinta on se, että logoja ei ole tehty oranssille pohjalle. Osalla
+        kumppaneista tunnus on läpinäkyvä PNG (Fortum, Nordic Green, Oomi,
+        Vattenfall) ja istuu suoraan vyölle. Osalla tunnus tulee mukanaan oman
+        värillisen neliönsä kanssa (Aalto tummanvihreä, Cheap Energy keltainen,
+        Hehku persikka) — niitä ei saa muokata läpinäkyväksi, koska tunnuksen
+        muuttaminen on tavaramerkin vääristämistä. Ne näkyvät siis värillisinä
+        neliöinä oranssilla. Ainoa oikea korjaus on hakea kumppanin omat
+        läpinäkyvät logotiedostot (Adtractionin mediapankki), ei kuvankäsittely.
+
+        `theme-ember` kääntää `bg-white`-luokan oranssiksi, joten vyö tehdään
+        `bg-black/10`-kerroksella: sama oranssi hitusen syvempänä, jolloin
+        kortissa on yhä rakennetta ilman toista väriä.
+
+        SIJALUKU on absoluuttisesti vasemmassa reunassa: rivissä se työntäisi
+        logon numeron verran oikealle, eivätkä kuuden kortin logot osuisi
+        samaan pystylinjaan.
       */}
-      <div className="flex items-center gap-2.5 border-b border-line bg-black/10 px-3.5 py-2.5 sm:px-4">
-        {rank !== undefined && (
+      <div className="relative flex items-center justify-center border-b border-cream/15 bg-black/10 px-12 py-4">
+        {(rank !== undefined || pinned) && (
           /*
             KOLME KÄRKISIJAA EROTTUVAT — VALOARVOLLA, EI MITALEILLA.
+
+            KETUN VALINNALLA ON TASSU, EI NUMEROA. Kortti on kiinnitetty
+            toiseksi Ketun suosituksena eikä hintajärjestyksen perusteella.
+            Jos siinä lukisi "2", numero väittäisi sitä listan toiseksi
+            halvimmaksi — ja koska hinnat ovat kortissa näkyvissä, lukija
+            huomaisi väitteen vääräksi yhdessä sekunnissa. Yksi kiinni jäänyt
+            numero vie uskottavuuden kaikilta muiltakin luvuilta, ja juuri
+            lukujen uskominen on tämän sivuston koko ansaintalogiikka.
+            Tassu kertoo saman rehellisesti: tämä on Ketun nosto.
 
             Palkintopallin idea on oikea: kolmen kärki pitää lukea
             palkintosijoina eikä juoksevana numerointina. Mitaliemojit
@@ -322,57 +404,52 @@ export default function PlanCard({
             aikuisena eikä uusia värejä tule yhtään.
           */
           <span
-            className={`grid shrink-0 place-items-center rounded-lg font-data font-extrabold tabular-nums ${
-              rank === 1
-                ? "h-7 w-7 bg-cream text-[13px] text-[#A83E0A] shadow-[0_1px_3px_rgba(74,26,2,0.35)]"
-                : rank === 2
-                  ? "h-6 w-6 border border-cream/60 bg-black/15 text-[12px] text-cream"
-                  : rank === 3
-                    ? "h-6 w-6 border border-cream/35 bg-black/15 text-[12px] text-cream/85"
-                    : "h-6 w-6 border border-cream/15 bg-black/15 text-[12px] text-cream/60"
+            className={`absolute left-3 top-1/2 grid -translate-y-1/2 place-items-center rounded-lg font-data font-extrabold tabular-nums ${
+              pinned
+                ? "h-7 w-7 bg-gold text-[#4A2E06]"
+                : rank === 1
+                  ? "h-7 w-7 bg-cream text-[13px] text-[#A83E0A] shadow-[0_1px_3px_rgba(74,26,2,0.35)]"
+                  : rank === 2
+                    ? "h-6 w-6 border border-cream/60 bg-black/15 text-[12px] text-cream"
+                    : rank === 3
+                      ? "h-6 w-6 border border-cream/35 bg-black/15 text-[12px] text-cream/85"
+                      : "h-6 w-6 border border-cream/15 bg-black/15 text-[12px] text-cream/60"
             }`}
+            title={pinned ? "Ketun valinta" : undefined}
             aria-hidden
           >
-            {rank}
+            {pinned ? <FoxPaw size={15} /> : rank}
           </span>
         )}
         <ProviderLogo provider={plan.provider} logo={plan.logo} />
-        <div className="min-w-0 flex-1">
-          <h3 className="truncate font-display text-[15px] font-bold leading-tight text-ink">
-            <Link href={`/sahkosopimukset/sopimus/${plan.slug}`} className="underline-offset-4 hover:underline">
-              {plan.provider}
-            </Link>
-          </h3>
-          <p className="mt-0.5 truncate text-[12px] text-ink/60">{plan.name}</p>
-        </div>
       </div>
 
       {/*
-        MERKKIRIVI omalla rivillään logopalkin alla.
+        NIMI JA MERKIT KESKITETTYNÄ LOGON ALLE.
 
-        Tyyppimerkki oli aiemmin logopalkin oikeassa reunassa, ja se söi
-        nimeltä niin paljon tilaa, että kolmen kortin rivillä luki
-        "LämpöVoi…" ja "Vihreä Sä…". Katkaistu yhtiön nimi on pahempi kuin
-        merkin siirtäminen: tunnistamaton yhtiö on juuri se, jonka kohdalla
-        kävijä lähtee googlaamaan eikä palaa. Omalla rivillään merkit myös
-        asettuvat samaan vaakalinjaan joka kortissa, jolloin sopimustyypin
-        vertailu onnistuu silmäilemällä yhtä riviä.
+        Vasemmalle tasattu nimi keskitetyn logon alla näyttäisi siltä, että
+        toinen niistä on pudonnut väärään kohtaan. Kun koko yläosa on yhdellä
+        keskilinjalla, kortti luetaan yhtenä tuotteena eikä kahdesta osasta
+        kootuksi.
+
+        Tyyppimerkit ovat samassa lohkossa eivätkä omalla rivillään: yksi
+        vaakaviiva vähemmän kortissa. Kun kortteja on kymmeniä allekkain,
+        viivat alkavat lukea raitakuviona eikä rakenteena — juuri se saa
+        listan näyttämään tuhannelta samalta kortilta.
       */}
-      <div className="flex flex-wrap items-center gap-1.5 border-b border-line px-3.5 py-2 sm:px-4">
-        <span className="whitespace-nowrap rounded-md border border-cream/25 bg-black/15 px-2 py-0.5 text-[10.5px] font-semibold text-ink/80">
-          {TYPE_LABEL[plan.type]}
-          {plan.fixedTermMonths ? ` · ${plan.fixedTermMonths} kk` : ""}
-        </span>
-        {plan.green && (
-          /* `theme-light`: ilman sitä tausta ja teksti olisivat ember-vyöllä
-             molemmat vaaleaa kermaa, eli merkki olisi tyhjä laatikko. */
-          <span className="theme-light inline-flex items-center gap-1 whitespace-nowrap rounded-md border border-accent/25 bg-accentSoft px-2 py-0.5 text-[10.5px] font-semibold text-accentDark">
-            <Leaf size={11} aria-hidden /> Uusiutuva
-          </span>
-        )}
+      <div className="border-b border-line px-3.5 py-3 text-center sm:px-4">
+        <h3 className="truncate font-display text-[16px] font-bold leading-tight text-ink">
+          <Link href={`/sahkosopimukset/sopimus/${plan.slug}`} className="underline-offset-4 hover:underline">
+            {plan.provider}
+          </Link>
+        </h3>
+        <p className="mt-0.5 truncate text-[12.5px] text-ink/60">{plan.name}</p>
+        <div className="mt-2 flex flex-wrap items-center justify-center gap-1.5">
+          <TypeBadges plan={plan} />
+        </div>
       </div>
 
-      <div className="flex flex-1 flex-col p-4">
+      <div className="flex flex-1 flex-col p-3.5 sm:p-4">
         <div>
           {/*
             YKSI DESIMAALI, EI PYÖRISTYSTÄ KOKONAISIIN EUROIHIN.
@@ -515,6 +592,13 @@ export default function PlanCard({
           </p>
         )}
 
+        {/* Avattava osa alkaa. `flex-1` on tässä kääreessä, jotta ostonappi
+            painuu kortin alareunaan myös suljettuna — muuten suljetut kortit
+            olisivat eri korkuisia ja napit sahalaitana. */}
+        <div
+          id={`tiedot-${plan.id}`}
+          className={`flex-1 flex-col ${avattu ? "flex" : "hidden sm:flex"}`}
+        >
         <dl className="mt-3.5 space-y-1.5 rounded-xl border border-line bg-black/10 p-3">
           <div className="flex justify-between text-[12px]">
             <dt className="text-ink/60">{plan.type === "spot" ? "Marginaali" : "Energia"}</dt>
@@ -548,6 +632,8 @@ export default function PlanCard({
             </li>
           ))}
         </ul>
+        </div>
+        {/* Avattava osa loppuu. */}
 
         {/*
           TÄHTIRIVI NÄKYY VAIN JOS ARVIO ON OLEMASSA.
@@ -580,9 +666,35 @@ export default function PlanCard({
                 : ""}
             </p>
           )}
+          {/*
+            SAMA PAIKKA, KAKSI ERI ELETTÄ RUUDUN LEVEYDEN MUKAAN.
+
+            Työpöydällä yksityiskohdat ovat jo näkyvissä, joten linkki vie
+            sopimussivulle kuten ennenkin. Mobiilissa samassa kohdassa on
+            nappi, joka avaa piilotetun osan kortin sisällä.
+
+            Mobiilissa EI näytetä molempia. Kaksi lähes samannimistä linkkiä
+            ostonapin vieressä jakaisi huomion juuri siinä kohdassa, jossa
+            sivusto ansaitsee — ja sopimussivulle pääsee joka tapauksessa
+            yhtiön nimestä kortin yläreunassa.
+          */}
+          <button
+            type="button"
+            onClick={() => setAvattu((v) => !v)}
+            aria-expanded={avattu}
+            aria-controls={`tiedot-${plan.id}`}
+            className="flex shrink-0 items-center gap-1 rounded-lg border border-cream/25 bg-black/15 px-2.5 py-1 text-[12.5px] font-semibold text-ink/75 sm:hidden"
+          >
+            {avattu ? "Piilota" : "Tiedot"}
+            <ChevronDown
+              size={14}
+              className={avattu ? "rotate-180" : ""}
+              aria-hidden
+            />
+          </button>
           <Link
             href={`/sahkosopimukset/sopimus/${plan.slug}`}
-            className="text-[12.5px] font-semibold text-ink/60 underline-offset-4 hover:text-ink hover:underline"
+            className="hidden text-[12.5px] font-semibold text-ink/60 underline-offset-4 hover:text-ink hover:underline sm:inline"
           >
             Tiedot
           </Link>
@@ -616,32 +728,58 @@ export default function PlanCard({
 }
 
 /**
- * Yhtiön logo — tai sen paikka, kunnes oikea logo on olemassa.
+ * Sopimustyyppi ja uusiutuvuus — samat merkit kahdessa paikassa.
  *
- * Nykyiset yhtiöt ovat esimerkkidataa, joten logotiedostoja ei ole. Keksityn
- * logon piirtäminen olisi juuri sitä, mitä tämä sivusto ei tee: se antaisi
- * olemattomalle yhtiölle uskottavan ilmeen. Siksi ilman logoa näytetään
- * yhtiön nimikirjaimet neutraalilla laatalla — se on rehellinen paikanpitäjä
- * ja näyttää silti viimeistellyltä.
+ * Mobiilissa merkit ovat yhtiön nimen alla, työpöydällä omalla rivillään.
+ * Yhtenä komponenttina siksi, että kahteen paikkaan kopioitu merkkilista
+ * erkanee ensimmäisessä muutoksessa, ja eri tavalla merkitty sopimustyyppi
+ * puhelimessa ja koneella on juuri se ero, joka luetaan virheeksi.
+ */
+function TypeBadges({ plan }: { plan: ElectricityPlan }) {
+  return (
+    <>
+      <span className="whitespace-nowrap rounded-md border border-cream/25 bg-black/15 px-2 py-0.5 text-[10.5px] font-semibold text-ink/80">
+        {TYPE_LABEL[plan.type]}
+        {plan.fixedTermMonths ? ` · ${plan.fixedTermMonths} kk` : ""}
+      </span>
+      {plan.green && (
+        /* `theme-light`: ilman sitä tausta ja teksti olisivat ember-vyöllä
+           molemmat vaaleaa kermaa, eli merkki olisi tyhjä laatikko. */
+        <span className="theme-light inline-flex items-center gap-1 whitespace-nowrap rounded-md border border-accent/25 bg-accentSoft px-2 py-0.5 text-[10.5px] font-semibold text-accentDark">
+          <Leaf size={11} aria-hidden /> Uusiutuva
+        </span>
+      )}
+    </>
+  );
+}
+
+/**
+ * Yhtiön logo — tai sen paikka, kun logoa ei ole.
  *
- * Kun `logo`-kenttä täytetään `data/electricity.json`-tiedostoon, oikea kuva
- * ilmestyy tähän ilman muita muutoksia.
+ * Kumppaniyhtiöiden logot on haettu yhtiöiden omilta sivuilta ja normalisoitu
+ * 256×256 PNG:ksi kansioon `public/logot/`. Neliömäinen tunnus eikä tekstilogo:
+ * tekstilogot ovat eri levyisiä, ja kahdeksan eri suhteista logoa 40 pikselin
+ * laatassa näyttäisi siltä, että ne on liitetty huolimattomasti.
+ *
+ * Loput 24 sopimusta ovat esimerkkidataa, eikä keksitylle yhtiölle piirretä
+ * logoa — se antaisi olemattomalle yhtiölle uskottavan ilmeen. Niissä
+ * näytetään nimikirjaimet: rehellinen paikanpitäjä, joka näyttää silti
+ * viimeistellyltä.
  */
 function ProviderLogo({ provider, logo }: { provider: string; logo?: string }) {
   if (logo) {
     return (
-      /* `theme-light`: yhtiöiden logot on tehty valkoiselle pohjalle. Ember-
-         kortilla `bg-white` olisi oranssi ja logo vääristyisi — se olisi
-         tavaramerkin väärinkäyttöä, ei tyylivalinta. */
-      <span className="theme-light grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-xl border border-line bg-white p-1.5">
-        <Image
-          src={logo}
-          alt={`${provider} logo`}
-          width={96}
-          height={96}
-          className="h-full w-full object-contain"
-        />
-      </span>
+      /* Ei laattaa, ei reunusta, ei taustaa: logo istuu suoraan oranssilla
+         vyöllä. Laatta laatan sisällä näyttäisi siltä, että logo on liitetty
+         korttiin jälkikäteen — ja juuri sitä vaikutelmaa vertailusivu ei
+         kestä, koska se sama epäilys koskee sitten myös hintoja. */
+      <Image
+        src={logo}
+        alt={`${provider} logo`}
+        width={224}
+        height={224}
+        className="h-14 w-auto max-w-[60%] object-contain"
+      />
     );
   }
 
@@ -656,7 +794,7 @@ function ProviderLogo({ provider, logo }: { provider: string; logo?: string }) {
 
   return (
     <span
-      className="theme-light grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-line bg-mist font-display text-[13px] font-bold tracking-tight text-ink/55"
+      className="grid h-14 w-14 place-items-center rounded-2xl border border-cream/25 bg-black/15 font-display text-[19px] font-bold tracking-tight text-cream/60"
       title={provider}
       aria-hidden
     >

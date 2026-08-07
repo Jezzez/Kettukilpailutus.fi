@@ -56,7 +56,8 @@
         "label": "Perusmaksu 0 € · 3 kk",
         "months": 3,
         "basicFee": 0
-      }
+      },
+      "logo": "/logot/fortum.png"
     },
     {
       "id": "fortum-takuu-24kk",
@@ -106,7 +107,8 @@
           "Voinko irtisanoa määräaikaisen sopimuksen kesken?",
           "Määräaikainen sopimus sitoo molempia osapuolia sovitun ajan. Ennenaikaisesta päättämisestä voi seurata korvaus, joten tarkista ehdot yhtiön omilta sivuilta ennen tilausta."
         ]
-      ]
+      ],
+      "logo": "/logot/fortum.png"
     },
     {
       "id": "oomi-kiintea-24kk",
@@ -159,7 +161,8 @@
         "label": "Perusmaksu 0 € · 5 kk",
         "months": 5,
         "basicFee": 0
-      }
+      },
+      "logo": "/logot/oomi.png"
     },
     {
       "id": "vattenfall-optimi",
@@ -213,7 +216,8 @@
         "label": "Perusmaksu 0 € · 6 kk",
         "months": 6,
         "basicFee": 0
-      }
+      },
+      "logo": "/logot/vattenfall.png"
     },
     {
       "id": "vattenfall-ilmasto-mix",
@@ -267,7 +271,8 @@
         "label": "Perusmaksu 0 € · 3 kk",
         "months": 3,
         "basicFee": 0
-      }
+      },
+      "logo": "/logot/vattenfall.png"
     },
     {
       "id": "aalto-luotsi",
@@ -325,7 +330,8 @@
         "basicFee": 0,
         "spotMargin": 0.34,
         "limit": "vain uusille asiakkaille"
-      }
+      },
+      "logo": "/logot/aalto-energia.png"
     },
     {
       "id": "aalto-ankkuri",
@@ -380,7 +386,8 @@
         "label": "Perusmaksu 0 € · 3 kk",
         "months": 3,
         "basicFee": 0
-      }
+      },
+      "logo": "/logot/aalto-energia.png"
     },
     {
       "id": "aalto-huoleton",
@@ -436,7 +443,8 @@
         "label": "Perusmaksu 0 € · 1 kk",
         "months": 1,
         "basicFee": 0
-      }
+      },
+      "logo": "/logot/aalto-energia.png"
     },
     {
       "id": "hehku-porssi",
@@ -492,7 +500,8 @@
         "months": 3,
         "basicFee": 0
       },
-      "region": "Helsinki"
+      "region": "Helsinki",
+      "logo": "/logot/hehku-energia.png"
     },
     {
       "id": "hehku-kiintea",
@@ -548,7 +557,8 @@
         "label": "Perusmaksu 0 € · 3 kk",
         "months": 3,
         "basicFee": 0
-      }
+      },
+      "logo": "/logot/hehku-energia.png"
     },
     {
       "id": "hehku-hiilivapaa",
@@ -604,7 +614,8 @@
         "months": 6,
         "basicFee": 0
       },
-      "region": "Helsinki"
+      "region": "Helsinki",
+      "logo": "/logot/hehku-energia.png"
     },
     {
       "id": "hehku-hiilivapaa-porssi",
@@ -659,7 +670,8 @@
         "label": "Perusmaksu 0 € · 6 kk",
         "months": 6,
         "basicFee": 0
-      }
+      },
+      "logo": "/logot/hehku-energia.png"
     },
     {
       "id": "hehku-jatkuva",
@@ -714,7 +726,8 @@
         "months": 1,
         "basicFee": 0
       },
-      "region": "Helsinki"
+      "region": "Helsinki",
+      "logo": "/logot/hehku-energia.png"
     },
     {
       "id": "nordic-green-ilmasto",
@@ -770,7 +783,8 @@
         "months": 12,
         "basicFee": 2.99,
         "spotMargin": 0.34
-      }
+      },
+      "logo": "/logot/nordic-green-energy.png"
     },
     {
       "id": "cheap-porssisahko",
@@ -825,7 +839,8 @@
         "months": 6,
         "basicFee": 0,
         "spotMargin": 0.39
-      }
+      },
+      "logo": "/logot/cheap-energy.png"
     },
     {
       "id": "cheap-maaraaikainen",
@@ -881,7 +896,8 @@
         "label": "Perusmaksu 0 € · 4 kk",
         "months": 4,
         "basicFee": 0
-      }
+      },
+      "logo": "/logot/cheap-energy.png"
     },
     {
       "id": "vae-hintalukko",
@@ -932,7 +948,8 @@
           "Kulutukseesi ja pörssin oletuskeskihintaan. Todellinen lasku riippuu siitä, milloin sähköä käytät: pörssisopimuksessa yöllä ja tuulisina päivinä kulutettu sähkö on halvempaa kuin pakkasaamun sähkö."
         ]
       ],
-      "region": "Tampere"
+      "region": "Tampere",
+      "logo": "/logot/vihrea-alyenergia.png"
     },
     {
       "id": "vae-verraton",
@@ -988,7 +1005,8 @@
         "months": 12,
         "basicFee": 2.99,
         "spotMargin": 0.34
-      }
+      },
+      "logo": "/logot/vihrea-alyenergia.png"
     },
     {
       "id": "vae-vire-tuuli-porssi",
@@ -1045,7 +1063,8 @@
         "months": 12,
         "basicFee": 2.99,
         "spotMargin": 0.45
-      }
+      },
+      "logo": "/logot/vihrea-alyenergia.png"
     },
     {
       "id": "vae-vire-tuuli-kiintea",
@@ -1096,7 +1115,8 @@
           "Vihreä Älyenergia kertoo suoraan, ettei sopimusta voi purkaa tai vaihtaa kesken kauden. Kaksi vuotta on siis kaksi vuotta — tarkista ehdot yhtiön omilta sivuilta ennen tilausta."
         ]
       ],
-      "region": "Tampere"
+      "region": "Tampere",
+      "logo": "/logot/vihrea-alyenergia.png"
     },
     {
       "id": "vae-vankka",
@@ -1147,7 +1167,8 @@
           "Vihreä Älyenergia kertoo suoraan, ettei sopimusta voi purkaa tai vaihtaa kesken kauden. Kaksi vuotta on siis kaksi vuotta — tarkista ehdot yhtiön omilta sivuilta ennen tilausta."
         ]
       ],
-      "region": "Tampere"
+      "region": "Tampere",
+      "logo": "/logot/vihrea-alyenergia.png"
     },
     {
       "id": "pohjolan-spot",

@@ -4,8 +4,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from "framer-motion";
 import {
-  ArrowLeft, ArrowRight, Building2, Check, Flame, Home, House, Info, Leaf, Lock,
-  Pencil, Plug, RefreshCw, ShieldCheck, Timer, TrendingDown, Wallet, X,
+  ArrowLeft, ArrowRight, Building2, Check, ChevronDown, Flame, Home, House, Info, Leaf,
+  Lock, Pencil, Plug, RefreshCw, ShieldCheck, Timer, TrendingDown, Wallet, X,
 } from "lucide-react";
 import type { ElectricityPlan } from "@/lib/energy";
 import {
@@ -244,6 +244,27 @@ export default function ElectricityExperience({
   */
   const [sort, setSort] = useState<"cost" | "basic" | "campaign">("cost");
 
+  /*
+    KUUSI KORTTIA HETI, LOPUT NAPIN TAKAA.
+
+    Kaikki 21 korttia kerralla teki mobiilisivusta noin 30 ruudullista.
+    Kukaan ei vertaile kahtakymmentä sähkösopimusta — käytännössä valinta
+    tehdään kärjestä, ja loppupää on siellä vain todistamassa, ettei listaa
+    ole karsittu. Kuusi korttia riittää siihen, että valinta tuntuu
+    valinnalta eikä yhden vaihtoehdon esittelyltä.
+
+    Loput EI piiloteta pysyvästi vaan yhden napin taakse, ja napissa lukee
+    montako on jäljellä. Se on koko ero: kävijä näkee että lista jatkuu ja
+    voi tarkistaa sen itse. Piilotettu loppupää ilman lukumäärää lukisi
+    karsituksi listaksi, ja karsitulta vertailulta ei kysytä neuvoa.
+
+    Tila ei palaudu järjestystä vaihdettaessa. Kerran auki avattu lista,
+    joka sulkeutuu itsestään käyttäjän toisen valinnan takia, luetaan
+    virheeksi.
+  */
+  const NAYTA_ALUKSI = 6;
+  const [naytaKaikki, setNaytaKaikki] = useState(false);
+
   // Nykyinen sopimus (vapaaehtoinen) — tekee säästöluvusta todellisen
   const [showCurrent, setShowCurrent] = useState(false);
   const [curPrice, setCurPrice] = useState<string>("");
@@ -442,6 +463,107 @@ export default function ElectricityExperience({
     [foxId, filtered, cheapestPlan]
   );
   const recommendedIsCheapest = recommendedPlan !== null && recommendedPlan.id === cheapestId;
+
+  /*
+    KETUN VALINTA NOSTETAAN AINA TOISEKSI KORTIKSI.
+
+    Ketun valinta on koko sivun vastaus kysymykseen "mikä minun pitäisi
+    ottaa", mutta hintajärjestyksessä se saattoi pudota viidenneksi tai
+    kahdeksanneksi — eli kohtaan, jota mobiilikävijä ei näe koskaan.
+    Suositus, joka ei ole ruudulla, ei tuota klikkiä.
+
+    Ykköspaikkaa se ei saa. Halvin sopimus on ainoa väite, jonka kävijä voi
+    tarkistaa kortin omista luvuista sekunnissa, ja jos listan kärjessä on
+    jokin muu, koko järjestys lukee ostetuksi. Toinen paikka on ensimmäinen,
+    jonka voi antaa menettämättä sitä.
+
+    Nosto tehdään VAIN hintajärjestyksessä. Muissa järjestyksissä (pienin
+    perusmaksu, suurin kampanjaetu) korttien merkit on jo kytketty pois,
+    koska Ketun valinta lasketaan hinnasta — nosto ilman merkkiä olisi
+    selittämätön hyppy järjestyksessä.
+
+    Järjestys ei muuta numerointia: nostettu kortti saa tassun numeron
+    tilalle ja muut kortit numeroidaan juoksevasti. Ks. PlanCard.tsx.
+  */
+  const { jarjestetyt, nostettuId } = useMemo(() => {
+    if (sort !== "cost" || !foxId) return { jarjestetyt: filtered, nostettuId: null };
+    const i = filtered.findIndex((p) => p.id === foxId);
+    // Jo kärjessä (esim. halvin on myös Ketun valinta) — ei siirrettävää.
+    if (i < 2) return { jarjestetyt: filtered, nostettuId: null };
+    const kopio = filtered.slice();
+    kopio.splice(1, 0, kopio.splice(i, 1)[0]);
+    return { jarjestetyt: kopio, nostettuId: foxId };
+  }, [filtered, foxId, sort]);
+
+  /*
+    VAHVUUSLAUSE MERKITTÖMILLE KORTEILLE.
+
+    Kaksi korttia kuudesta saa merkin (Edullisin, Ketun valinta). Lopuilla
+    merkkipalkin vasen puoli jäi tyhjäksi, ja tyhjä palkki luki keskeneräiseltä
+    — sitä pahemmin, mitä alemmas listassa mentiin. Sivun alkuperäinen vika
+    oli juuri se, että kortit näyttivät tuhannelta samalta kortilta; merkitön
+    kortti on niistä kaikkein anonyymein.
+
+    Lause LASKETAAN, ei kirjoiteta käsin. Jokainen kortti saa sen tiedon,
+    jossa se on koko suodatetun listan ainoa kärki:
+
+      · pienin perusmaksu    · pienin marginaali (vain pörssisopimukset)
+      · pisin hintatakuu
+
+    "Ainoa kärki" tarkoittaa tässä aidosti ainoaa: jos kaksi sopimusta on
+    tasan samassa luvussa, kumpikaan ei saa lausetta. Tasapelissä annettu
+    "pienin perusmaksu" olisi kirjaimellisesti valhe, ja tällä sivustolla
+    yksi kiinni jäänyt väite maksaa kaikkien muidenkin lukujen uskottavuuden.
+
+    Kärki lasketaan koko suodatetusta listasta eikä näkyvistä kuudesta.
+    Muuten lause vaihtuisi sillä sekunnilla, kun käyttäjä painaa "Näytä
+    loput" — ja liikkuva väite näyttää siltä, että sitä sovitellaan.
+
+    Loput saavat varalauseen (ero halvimpaan, ks. kutsukohta). Se on
+    tarkoituksella pieni luku eikä varoitus: 45 euron kuukausilaskussa
+    +0,70 € ei ole syy hylätä yhtiötä, jonka kävijä muuten haluaisi. Ilman
+    lukua hän joutuisi arvaamaan eron ja arvaus on aina liioitteleva.
+  */
+  const vahvuudet = useMemo(() => {
+    const nimet = new Map<string, string>();
+
+    /** Ainoan kärjen id, tai null jos kärkeä ei ole tai siitä on tasapeli. */
+    const ainoaKarki = (
+      joukko: ElectricityPlan[],
+      arvo: (p: ElectricityPlan) => number | null,
+      suunta: "min" | "max"
+    ): string | null => {
+      const kelpaavat = joukko.filter((p) => arvo(p) !== null);
+      if (kelpaavat.length < 2) return null;
+      const luvut = kelpaavat.map((p) => arvo(p) as number);
+      const karki = suunta === "min" ? Math.min(...luvut) : Math.max(...luvut);
+      const voittajat = kelpaavat.filter((p) => arvo(p) === karki);
+      return voittajat.length === 1 ? voittajat[0].id : null;
+    };
+
+    const aseta = (id: string | null, teksti: string) => {
+      if (id && !nimet.has(id)) nimet.set(id, teksti);
+    };
+
+    aseta(
+      ainoaKarki(filtered, (p) => p.basicFee, "min"),
+      "Pienin perusmaksu"
+    );
+    aseta(
+      ainoaKarki(
+        filtered.filter((p) => p.type === "spot"),
+        (p) => p.spotMargin,
+        "min"
+      ),
+      "Pienin marginaali"
+    );
+    aseta(
+      ainoaKarki(filtered, (p) => p.fixedTermMonths, "max"),
+      "Pisin hintatakuu"
+    );
+
+    return nimet;
+  }, [filtered]);
 
   /*
     "MIKSI JUURI TÄMÄ?" — NELJÄ PERUSTELUA, KAIKKI LASKETTUJA.
@@ -2052,10 +2174,16 @@ export default function ElectricityExperience({
           <LayoutGroup>
             <motion.div layout={!reduce} className="mt-4 grid gap-4 pt-2 sm:grid-cols-2 lg:grid-cols-3">
               <AnimatePresence mode="popLayout">
-                {filtered.map((plan, i) => {
+                {(naytaKaikki ? jarjestetyt : jarjestetyt.slice(0, NAYTA_ALUKSI)).map((plan, i) => {
                   const cost = annualCost(plan, kwh);
                   const isCheapest = plan.id === cheapestId;
                   const isFox = plan.id === foxId;
+                  /* Nostettu kortti ei ole omalla paikallaan hintajärjestyksessä,
+                     joten sille ei anneta numeroa vaan tassu. Koska se on
+                     poissa numeroinnista, muut kortit numeroidaan juoksevasti
+                     eikä listaan jää aukkoa kohtaan, josta se nostettiin. */
+                  const nostettu = nostettuId !== null && plan.id === nostettuId;
+                  const numero = nostettu ? undefined : nostettuId !== null && i >= 2 ? i : i + 1;
                   const badge: PlanBadge = isCheapest
                     ? {
                         kind: "cheapest",
@@ -2069,6 +2197,30 @@ export default function ElectricityExperience({
                           note: "Ei halvin ensimmäisenä vuonna, mutta paras kokonaisuus kun kampanjan jälkeinen hinta lasketaan mukaan.",
                         }
                       : null;
+                  /* Vahvuuslause vain merkittömille korteille: merkin rinnalla
+                     se veisi tilaa siltä tiedolta, jonka takia kortti klikataan.
+                     Jos kortilla ei ole omaa kärkeä, kerrotaan ero halvimpaan
+                     — laskettu luku eikä mainoslause. Ks. vahvuudet-kommentti. */
+                  const eroKk = cheapestCost === null ? 0 : (cost - cheapestCost) / 12;
+                  const vahvuus = badge
+                    ? undefined
+                    : (vahvuudet.get(plan.id) ??
+                      (eroKk >= 0.05
+                        ? `+${eroKk.toLocaleString("fi-FI", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })} € / kk halvimpaan`
+                        : /* Alle viisi senttiä kuussa on pyöristysvirheen kokoinen
+                             ero — alle 60 senttiä vuodessa. "+0,02 € / kk" olisi
+                             tosi mutta typerä: se saisi kortin näyttämään
+                             kalliimmalta ilman että se on sitä.
+
+                             "Sama hinta" ei ole liioittelua vaan sama väite, jonka
+                             kortin oma luku jo tekee: molemmissa korteissa lukee
+                             yhden desimaalin tarkkuudella sama €/kk. Jos teksti
+                             sanoisi jotain muuta, se olisi ristiriidassa kortin
+                             oman hintaluvun kanssa. */
+                          "Sama hinta kuin halvin"));
                   return (
                     <motion.div
                       key={plan.id}
@@ -2085,7 +2237,9 @@ export default function ElectricityExperience({
                         compareDiff={savingsBase === null ? null : savingsBase - cost}
                         minCost={cheapestCost}
                         maxCost={maxShown}
-                        rank={i + 1}
+                        rank={numero}
+                        pinned={nostettu}
+                        strength={sort === "cost" ? vahvuus : vahvuudet.get(plan.id)}
                       />
                     </motion.div>
                   );
@@ -2093,6 +2247,33 @@ export default function ElectricityExperience({
               </AnimatePresence>
             </motion.div>
           </LayoutGroup>
+
+          {/*
+            NAPPI KERTOO LUKUMÄÄRÄN, EI PELKKÄÄ "NÄYTÄ LISÄÄ".
+
+            "Näytä lisää" ei kerro, onko takana kolme vai kolmekymmentä
+            sopimusta, joten kävijä ei tiedä kannattaako painaa. Luku
+            vastaa siihen ja samalla todistaa, ettei listaa ole karsittu.
+
+            Nappi on vaimea reunanappi eikä oranssi täyttönappi: sen
+            vieressä on kuusi "Tee sopimus" -nappia, ja kirkas laajennusnappi
+            veisi klikkejä juuri siltä napilta, joka tuottaa.
+          */}
+          {!naytaKaikki && filtered.length > NAYTA_ALUKSI && (
+            <div className="mt-6 flex flex-col items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setNaytaKaikki(true)}
+                className="lift flex items-center gap-2 rounded-xl border border-lineDark bg-white px-6 py-3 font-display text-[14.5px] font-bold text-ink"
+              >
+                Näytä loput {filtered.length - NAYTA_ALUKSI} sopimusta
+                <ChevronDown size={16} aria-hidden />
+              </button>
+              <p className="text-[12.5px] text-ink/55">
+                Mikään sopimus ei ole piilossa — lista jatkuu samassa järjestyksessä.
+              </p>
+            </div>
+          )}
 
           {filtered.length === 0 && (
             /*

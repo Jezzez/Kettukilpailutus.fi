@@ -70,13 +70,15 @@ export interface ElectricityPlan {
   /** Sivu, jolta hinnat luettiin. Nakyy sopimussivulla lahdeviitteena. */
   sourceUrl?: string;
   /**
-   * Yhtiön logo, polku `public/`-kansiosta (esim. "/logot/lumo.svg").
+   * Yhtiön logo, polku `public/`-kansiosta (esim. "/logot/fortum.png").
    *
-   * Vapaaehtoinen tarkoituksella: nykyiset yhtiöt ovat esimerkkidataa, joten
-   * oikeita logoja ei ole eikä keksittyä logoa saa piirtää. Kun Adtractionin
-   * mediapankista tulee kumppanin logo, tiedosto viedään `public/logot/` ja
-   * polku tähän kenttään — kortti alkaa näyttää sen ilman koodimuutoksia.
-   * Ilman kenttää kortti näyttää yhtiön nimikirjaimet.
+   * Kaikilla kumppaniyhtiöillä on logo — tiedostot on haettu yhtiöiden omilta
+   * sivuilta ja normalisoitu 256×256 PNG:ksi. Neliömäinen tunnus, ei
+   * tekstilogo: eri levyiset tekstilogot rikkoisivat korttiruudukon rivityksen.
+   *
+   * Kenttä on silti vapaaehtoinen, koska loput 24 sopimusta ovat keksittyä
+   * esimerkkidataa eikä keksitylle yhtiölle saa piirtää logoa. Ilman kenttää
+   * kortti näyttää yhtiön nimikirjaimet.
    */
   logo?: string;
   /**
