@@ -1422,10 +1422,9 @@ export default function ElectricityExperience({
     width={432}
     height={1325}
     priority
-    className="absolute bottom-0 right-[0%] h-[10%] w-auto max-w-none object-contain opacity-40"
+    className="absolute bottom-0 right-[0%] h-[100%] w-auto max-w-none object-contain opacity-40"
     style={{
-      WebkitMaskImage: "linear-gradient(to left, #000 14%, transparent 74%)",
-      maskImage: "linear-gradient(to left, #000 14%, transparent 74%)",
+    
     }}
   />
 </div>
