@@ -105,7 +105,7 @@ export default function HubPage() {
             {/* Antiikva ja normaalipaino: kun otsikko ei ole lihava, sivun
                 painavin elementti on kermanvalkoinen nappi. */}
             <h1 className="mt-4 font-hero text-[2.6rem] leading-[1.04] text-cream sm:text-[3.5rem]">
-              Yksi kettu.<br />Kaikki <em className="text-goldInk">kilpailutukset</em>.
+              Anna ketun<br /> <em className="text-goldInk">Kilpailuttaa</em> puolestasi.
             </h1>
             {/*
               Mobiilissa Kettu on ingressin vieressä, ei omana ruudullisenaan.
@@ -115,15 +115,25 @@ export default function HubPage() {
             */}
             <div className="mt-5 flex items-start gap-3">
               <p className="max-w-md flex-1 text-[16px] leading-relaxed text-ink/85">
-                Anna Ketun kilpailuttaa puolestasi. Laskemme sopimustesi todelliset
-                hinnat omilla luvuillasi — puolueettomasti, ilmaiseksi ja selvällä suomella.
+                Vertaa sähkösopimuksia, lainoja ja muita arjen palveluita samalla tavalla.
+                Näet todelliset kustannukset omilla tiedoillasi ennen kuin teet päätöksen.
               </p>
               {/* Kermanvalkoinen hehku, ei aamunkajo: oranssilla pohjalla
                   vain vaaleampi hehku irrottaa hahmon taustasta. */}
               <div className="halo-glow relative -mb-6 -mt-4 shrink-0 md:hidden">
-                {/* Sama syy kuin HeroKetussa: ei korttia kädessä
-                    niin kauan kuin korttivertailu on piilossa. */}
-                <Kettu pose="osoittaa" height={150} priority />
+                {/*
+                  SAMA ASENTO KUIN TYÖPÖYDÄN HEROSSA — muuten etusivulla
+                  olisi eri kettu puhelimessa kuin koneella, eli sama
+                  ongelma kuin asennonvaihdossa, vain hitaammin havaittuna.
+
+                  KORKEUS ON 128, EI 150. Tuolikuva on leveä (0,72:1) kun
+                  osoittava oli kapea (0,42:1), joten sama korkeus olisi
+                  syönyt ingressiltä yli 40 pikseliä leveyttä. Puhelimessa
+                  se on kolmisen merkkiä joka riviltä, ja tämä kappale on
+                  se kohta, jossa kävijälle kerrotaan mitä sivu tekee.
+                  Kuva on brändi, teksti on lupaus — teksti voittaa.
+                */}
+                <Kettu pose="tuolissa" height={128} priority />
               </div>
             </div>
             {/*
@@ -144,7 +154,7 @@ export default function HubPage() {
                 href="/sahkosopimukset"
                 className="group inline-flex items-center gap-2.5 rounded-xl bg-cream px-7 py-4 font-display text-[15.5px] font-bold text-[#A83E0A] shadow-lift transition-all hover:bg-[#FFFFFF] active:scale-[0.98]"
               >
-                <Zap size={18} aria-hidden /> Kilpailuta sähkö
+                <Zap size={18} aria-hidden /> Kilpailuta sähkösopimukset
                 <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" aria-hidden />
               </Link>
               {FEATURES.cards && (
@@ -152,7 +162,7 @@ export default function HubPage() {
                   href="/luottokortit"
                   className="inline-flex items-center gap-2.5 rounded-xl border border-cream/45 px-7 py-4 font-display text-[15.5px] font-bold text-cream transition-all hover:border-cream hover:bg-cream/10 active:scale-[0.98]"
                 >
-                  <CreditCard size={18} className="text-cream/70" aria-hidden /> Vertaa kortit
+                  <CreditCard size={18} className="text-cream/70" aria-hidden /> Vertaa luottokortteja
                 </Link>
               )}
             </div>

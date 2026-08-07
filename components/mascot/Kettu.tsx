@@ -9,9 +9,26 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
  * Asennonvaihto on ristiinhäivytys + pieni pomppu, jolloin hahmo
  * tuntuu elävältä ilman kehysanimaatiota.
  */
-export type KettuPose = "kortti" | "osoittaa" | "peukku";
+export type KettuPose = "kortti" | "osoittaa" | "peukku" | "tuolissa";
 
 const ASSETS: Record<KettuPose, { src: string; w: number; h: number; alt: string }> = {
+  /*
+    TUOLISSA — ETUSIVUN HERON ASENTO.
+
+    Sama tiedosto kuin lainasivun herossa (ks. FoxSlot, `lainaHero`).
+    Tämä on kuvasuhteeltaan poikkeus: muut asennot ovat kapeita pystykuvia
+    (0,42:1), tämä on leveä (0,72:1). Sama korkeus tuottaa siis lähes
+    kaksi kertaa leveämmän hahmon — heron kuvapalstassa se on hyvä, koska
+    kapea hahmo jätti palstan reunoille pelkkää oranssia, mutta pienissä
+    paikoissa (mobiilin 150 px) se vie leveyttä leipätekstiltä. Tarkista
+    aina leveys, älä vain korkeutta, kun tätä käyttää uudessa paikassa.
+  */
+  tuolissa: {
+    src: "/kettu-tuolissa.webp",
+    w: 712,
+    h: 993,
+    alt: "Kettu, Kettukilpailutuksen maskotti",
+  },
   kortti: {
     src: "/kettu-kortti.webp",
     w: 657,
