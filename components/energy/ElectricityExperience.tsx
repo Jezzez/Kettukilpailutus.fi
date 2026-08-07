@@ -1587,7 +1587,7 @@ export default function ElectricityExperience({
                 voi mennä päällekkäin millään näytön leveydellä.
               */}
               <div className="mx-auto flex w-full max-w-[420px] flex-col md:max-w-none md:flex-row md:items-end md:justify-end md:gap-4">
-                <<SpotPriceLive className="order-2 mt-6 hidden md:order-1 md:mb-1 md:mt-0 md:block md:w-[19rem] md:shrink-0" />
+                <SpotPriceLive className="order-2 mt-6 hidden md:order-1 md:mb-1 md:mt-0 md:block md:w-[19rem] md:shrink-0" />
 
                 <motion.div
                   initial={reduce ? false : { opacity: 0, y: 24, scale: 0.97 }}
