@@ -8,6 +8,7 @@ import SectionHead from "@/components/SectionHead";
 import FoxSlot from "@/components/fox/FoxSlot";
 import TailSweep from "@/components/fox/TailSweep";
 import LoanStickyCta from "@/components/loans/LoanStickyCta";
+import SortterCalculator from "@/components/loans/SortterCalculator";
 import { SITE } from "@/lib/data";
 import { FEATURES } from "@/lib/features";
 import { LOAN_FAQ, LOAN_PARTNER, LOAN_STEPS } from "@/lib/loans";
@@ -78,7 +79,7 @@ export const metadata: Metadata = {
 const BIG_BTN = "w-full sm:w-auto !px-9 !py-5 !text-[17px]";
 
 /** Heron luottamusrivi. Jokainen kohta on tosi ja tarkistettavissa. */
-const HERO_CHECKS = ["Yksi hakemus, useita pankkeja", "Maksuton", "Ei sido mihinkään"];
+const HERO_CHECKS = ["Yksi hakemus", "Useita pankkeja", "Maksuton vertailu"];
 
 export default function LoansPage() {
   /* Kytkin on sama laite kuin korteilla: jos vertikaali suljetaan,
@@ -120,13 +121,13 @@ export default function LoansPage() {
           <div>
             <Reveal>
               <span className="font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-goldInk">
-                Lainat
+                Lainavertailu
               </span>
 
               <h1 className="mt-4 font-hero text-[2.7rem] leading-[1.03] text-cream sm:text-[3.6rem]">
-                Yksi hakemus.
+                Kilpailuta lainat
                 <br />
-                <em className="text-goldInk">Monta</em> tarjousta.
+                <em className="text-goldInk">Yhdellä</em> hakemuksella.
               </h1>
 
               {/*
@@ -137,9 +138,7 @@ export default function LoansPage() {
                 eli juuri ennen sitä kohtaa, josta palkkio syntyy.
               */}
               <p className="mt-5 max-w-lg text-[17px] leading-relaxed text-ink/90">
-                Kettu ei vertaile lainoja itse, vaan ohjaa sinut kumppanilleen{" "}
-                {LOAN_PARTNER.name}ille — se lähettää yhden hakemuksesi usealle
-                pankille ja näyttää tarjoukset rinnakkain.
+                Kettu ohjaa sinut Suomen suosituimpiin kuuluvaan lainanvertailupalveluun. Yksi hakemus riittää sillä tarjoukset tulevat useilta pankeilta ja lainanantajilta yhdellä kertaa.
               </p>
             </Reveal>
 
@@ -173,8 +172,7 @@ export default function LoansPage() {
               </ul>
 
               <p className="mt-4 text-[13px] leading-relaxed text-ink/70">
-                Siirryt {LOAN_PARTNER.name}in sivulle. Saamme kumppanilta palkkion,
-                jos teet hakemuksen — se ei näy sinun lainasi hinnassa.
+                Hakemus tehdään turvallisesti Sortterin palvelussa.
               </p>
             </Reveal>
           </div>
@@ -211,6 +209,83 @@ export default function LoansPage() {
 
       <div className="theme-light bg-paper">
         {/*
+          LASKURI HETI HERON ALLE.
+
+          MIKSI TÄHÄN EIKÄ HERON SISÄÄN: heron oikea palsta on 0,95fr eli
+          noin 520 pikseliä, ja siinä on kettukuva. Laskuri kahdella
+          liu'ulla ja isolla euroluvulla ei mahdu siihen ilman että
+          kumpikin puristuu — ja mobiilissa se työntäisi heron oman napin
+          ulos ensimmäisestä ruudullisesta, mikä on tämän sivun ainoa
+          mittari. Heti heron ALLA laskuri saa koko leveyden eikä vie
+          napilta yhtään pikseliä. Järjestys on sama kuin sähkösivulla:
+          työkalu ennen myyntipuhetta, koska kävijä jää tekemään mutta ei
+          jää lukemaan.
+
+          LASKURIA EI KÄÄRITÄ OMAAN KORTTIIN. Ensimmäinen versio oli
+          `rounded-3xl`-kortti otsikkokaistoineen, ja se näytti virheeltä:
+          widget piirtää itse valkoisen, pyöreän ja varjostetun kortin,
+          joten ruudulla oli kortti kortin sisällä. Nyt kehyksiä on yksi
+          ja se on widgetin oma. Sortterin paneelin saa näyttää Sortterin
+          paneelilta — sivun oma lupaus on juuri se, ettei Kettu vertaile
+          lainoja itse.
+
+          MIKSI EI OLE HOUKUTELTU MUOKKAAMAAN WIDGETIN SISUSTA: se on
+          varjo-DOM:issa, joten ainoa tapa olisi injektoida tyylejä
+          Sortterin omilla luokkanimillä. Ne ovat tiivistehäntäisiä
+          moduulinimiä (`widget-calculator-module--…--QfGbo`) ja koodi
+          tulee unpkg:sta ilman versionumeroa, eli se voi vaihtua
+          tuotannossa ilmoittamatta. Sellainen viritys hajoaisi joskus
+          hiljaa juuri sillä sivulla, joka tuottaa. Värit sen sijaan
+          menevät perille widgetin omista attribuuteista — ks.
+          SortterCalculator.tsx.
+        */}
+        <section className="pt-12 md:pt-14">
+          <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
+            <Reveal>
+              {/*
+                TÄSSÄ EI KÄYTETÄ `SectionHead`-KOMPONENTTIA, VAIKKA JOKA
+                MUU OSIO KÄYTTÄÄ. Syy on se, että widget piirtää itse
+                otsikon "Kilpailuta lainat". Kaksi isoa otsikkoa peräkkäin
+                lukee kahdeksi eri osioksi, joiden väliin ei jäänyt
+                mitään — ja koska widgetin otsikkoa ei voi vaihtaa
+                attribuutilla, meidän on väistettävä. Tämä on siis
+                yläotsikko ja yksi rivi, ei osion ankkuri: widgetin oma
+                otsikko toimii ankkurina.
+
+                RIVI KERTOO MITÄ LASKURI EI OLE. "Suuntaa antava" ja
+                "lopullisen korkosi ratkaisee vasta hakemus" eivät ole
+                varauksia lakimiestä varten vaan tämän sivun koko
+                myyntiargumentti: lainan hintaa ei voi lukea taulukosta,
+                ja juuri siksi kannattaa kilpailuttaa. Kun sen sanoo itse
+                ENNEN lukua, luku ei ole lupaus jota vasten pettyä.
+              */}
+              <div className="text-center">
+                <p className="font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-accentDark">
+                  Arvioi kuukausieräsi ennen hakemusta
+                </p>
+                <p className="mx-auto mt-3 max-w-xl text-[15.5px] leading-relaxed text-ink/70 sm:text-[16.5px]">
+                  Säädä lainasummaa ja laina-aikaa.
+                  Näet heti suuntaa-antavan kuukausierän ennen kuin kilpailutat lainasi.
+                </p>
+              </div>
+            </Reveal>
+
+            {/*
+              NEGATIIVISET MARGINAALIT SIISTIVÄT WIDGETIN OMAN VÄLIN.
+              Sortterin uloin säiliö on `margin: 76px 0`, joten ilman
+              tätä otsikon ja kortin väliin jäisi lähes sata pikseliä
+              tyhjää ja saman verran alle — osio näyttäisi siltä, että
+              siitä puuttuu jotain. Negatiivinen marginaali on tässä
+              oikea työkalu, koska se ei kajoa widgetin sisään vaan
+              siirtää sen kokonaisuutta: se kestää Sortterin päivitykset.
+            */}
+            <Reveal delay={0.08} className="mx-auto -mb-10 -mt-16 max-w-[760px]">
+              <SortterCalculator />
+            </Reveal>
+          </div>
+        </section>
+
+        {/*
           ASKELKAISTA. Kolme riviä, ei kolmea kappaletta — tämän osion
           tehtävä on kumota yksi pelko ("onko tämä työlästä") yhdellä
           silmäyksellä ja päättyä nappiin.
@@ -220,7 +295,7 @@ export default function LoansPage() {
             <Reveal>
               <SectionHead
                 eyebrow="Näin se etenee"
-                title="Kolme askelta, muutama minuutti."
+                title="Yksi hakemus. Useita lainatarjouksia."
                 align="center"
               />
             </Reveal>
@@ -257,7 +332,7 @@ export default function LoansPage() {
                   <ArrowRight size={19} aria-hidden />
                 </AffiliateButton>
                 <span className="text-[13.5px] text-ink/70">
-                  Ilmainen. Ei sido. Voit jättää lainan nostamatta.
+                  Hakeminen on maksutonta eikä velvoita ottamaan lainaa.
                 </span>
               </div>
             </Reveal>
@@ -274,7 +349,7 @@ export default function LoansPage() {
             <Reveal>
               <SectionHead
                 eyebrow="Usein kysyttyä"
-                title="Neljä kysymystä, jotka pysäyttävät hakemuksen."
+                title="Usein kysyttyä lainojen kilpailutuksesta"
                 align="center"
               />
             </Reveal>
@@ -302,11 +377,10 @@ export default function LoansPage() {
           <div className="mx-auto flex max-w-6xl flex-col items-center gap-10 px-4 py-24 text-center sm:px-6 md:flex-row md:py-28 md:text-left">
             <div className="flex-1">
               <h2 className="mx-auto max-w-xl font-hero text-[2rem] leading-[1.08] text-cream sm:text-[2.6rem] md:mx-0">
-                Selvitä oma korkosi, älä mainoksen korkoa.
+                Mainoksen korko ei ole sinun korkosi.
               </h2>
               <p className="mx-auto mt-4 max-w-md text-[16px] leading-relaxed text-ink/85 md:mx-0">
-                Yksi hakemus lähtee usealle pankille kerralla, ja näet tarjoukset
-                rinnakkain. Hakeminen ei sido sinua mihinkään.
+                Täytä yksi hakemus ja saat henkilökohtaiset lainatarjoukset useilta pankeilta yhdellä kertaa. Voit vertailla tarjoukset rauhassa ilman sitoutumista.
               </p>
 
               <div className="theme-light mt-8" data-loan-cta>
@@ -323,8 +397,7 @@ export default function LoansPage() {
               </div>
 
               <p className="mt-4 text-[13.5px] text-ink/75">
-                Palvelun tarjoaa {LOAN_PARTNER.name}. Kettu saa palkkion
-                hakemuksesta, sinä et maksa mitään.
+                Palvelun toteuttaa Sortter. Palvelu on sinulle maksuton.
               </p>
             </div>
 

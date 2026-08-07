@@ -46,6 +46,63 @@ export const LOAN_PARTNER = {
 } as const;
 
 /**
+ * SORTTERIN LASKURIVIDGET (`<sortter-reseller-form>`).
+ *
+ * MIKSI SE ON SIVULLA: tämän sivun tunnustettu heikkous on ollut se,
+ * ettei täällä ole työkalua jonka äärelle kävijä jäisi — pelkkä nappi ei
+ * anna mitään tekemistä, ja ilman tekemistä jokainen vieritetty ruutu on
+ * pelkkää poistumisriskiä. Kahden liu'un laskuri antaa kävijälle oman
+ * summan ja oman takaisinmaksuajan ennen kuin hän lähtee mihinkään, ja
+ * hakemus avautuu Sortterilla nuo arvot valmiiksi täytettyinä. Se on
+ * lyhyempi matka hakemukseen, ei pidempi.
+ *
+ * MIKSI LUKUJEN KIELTO EI RIKKOUDU: tämän tiedoston yläkommentti kieltää
+ * omat lainaluvut. Widgetin luvut eivät ole meidän: laskennan tekee
+ * Sortter omalla korkotaulullaan, ja widget tulostaa itse alalaitaansa
+ * kuluttajansuojalain 7 luvun vaatiman edustavan esimerkin — lainasumma,
+ * korko, avausmaksu, tilinhoitomaksu, kuukausierä, takaisinmaksettava
+ * summa ja todellinen vuosikorko. Tarkistettu widgetin lähdekoodista:
+ * tuo teksti EI ole minkään attribuutin takana, vaan se piirtyy aina.
+ * Jos Sortter joskus poistaa sen, widget on otettava pois sivulta.
+ *
+ * ⚠ AVOIN KYSYMYS — PALKKION KULKU. Tämän sivun muut napit menevät
+ * Adtractionin kautta (`LOAN_PARTNER.url`), ja Adtraction kirjaa
+ * palkkion vain, jos kävijä kulkee tuon uudelleenohjauksen läpi.
+ * Widgetin oma nappi EI kulje siitä: se rakentaa osoitteen muodossa
+ * `b2cUrl?amount=…&period=…&utm…` eli suoraan sortter.fi:hin. Palkkio
+ * syntyy siis vain, jos Sortterin jälleenmyyjäohjelma maksaa tämän
+ * `utm`-tunnisteen perusteella. Se on varmistettava Sortterilta ennen
+ * kuin tämä julkaistaan — muuten widget syö juuri sen klikin, joka
+ * tähän asti on tuottanut.
+ */
+export const LOAN_WIDGET = {
+  /**
+   * Sortterin oma jakelu. HUOM: osoitteessa ei ole versionumeroa, joten
+   * Sortter voi vaihtaa tuotannossa ajettavan koodin milloin tahansa
+   * ilman että me huomaamme. Jos Sortterilta saa versioidun osoitteen
+   * (…@1.2.3/dist/…), se kannattaa vaihtaa tähän.
+   */
+  src: "https://www.unpkg.com/@sortter/sortter-resellers-web-component/dist/sortter-reseller-form.js.umd.js",
+
+  /**
+   * Liukujen aloitusarvot: 25 000 € ja 6 vuotta. Ne eivät ole väite
+   * mistään — ne ovat vain se kohta, josta kävijä alkaa raahata. Sortter
+   * ehdotti näitä, ja ne osuvat lainojen yhdistämisen kokoluokkaan, joka
+   * on tämän sivun todennäköisin kävijä.
+   */
+  amount: 25000,
+  periodYears: 6,
+
+  /**
+   * Sortterin seurantatunniste. `utm_source` oli Sortterin esimerkissä
+   * `your-site` eli paikkamerkki — jos se jäisi paikalleen, liikennettä
+   * ei voisi tunnistaa meidän tuomaksi. `utm_medium=slider` on Sortterin
+   * oma arvo, eikä sitä muuteta: he voivat raportoida sen perusteella.
+   */
+  utm: "utm_source=kettukilpailutus.fi&utm_medium=slider",
+} as const;
+
+/**
  * Kolme askelta. Tehtävä on kumota yksi pelko — "onko tämä työlästä" —
  * ja päättyä nappiin. Jokainen teksti on yksi rivi: tämä on silmäiltävä
  * kaista, ei luettava osio.
