@@ -76,11 +76,8 @@ export const SITE = {
    * footerin lohko ilmestyy itsestään.
    */
   operator: {
-    /** esim. "Kettukilpailutus Oy" */
-    legalName: "Kettukilpailutus Oy",
-    /** esim. "1234567-8" */
-    businessId: "3326500-5",
-    /** osoite johon kävijä voi kirjoittaa, esim. "info@kettukilpailutus.fi" */
-    email: "kettu@kettukilpailutus.fi",
+    legalName: "Mucho Vendo Oy",
+    businessId: "3602151-6", 
+    email: "info@kettukilpailutus.fi",
   },
 };

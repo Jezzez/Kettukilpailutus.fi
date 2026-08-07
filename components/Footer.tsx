@@ -179,22 +179,23 @@ export default function Footer() {
  */
 function OperatorDetails() {
   const { legalName, businessId, email } = SITE.operator;
-  const rows = [legalName, businessId ? `Y-tunnus ${businessId}` : "", email].filter(Boolean);
 
-  if (rows.length === 0) return null;
+  /* Lohko piilottaa itsensä kokonaan, jos yhtään kenttää ei ole täytetty. */
+  if (!legalName && !businessId && !email) return null;
 
+  /*
+    KOLME RIVIÄ ALLEKKAIN, EI PISTEELLÄ EROTELTUA RIVIÄ. Y-tunnus on luku,
+    jota kävijä saattaa haluta tarkistaa PRH:n rekisteristä — omalla
+    rivillään se on silmälle poimittavissa ja maalattavissa hiirellä
+    ilman että mukaan tarttuu erotinmerkkejä.
+  */
   return (
     <div className="mt-3.5 max-w-md">
-      {/* Otsikkorivi "Sivuston ylläpitäjä" poistettiin: Y-tunnus kertoo
-          itse mitä rivi on, eikä otsikko ansainnut omaa riviväliä. */}
-      <p className="text-[12.5px] leading-relaxed text-ink/70">
-        {rows.map((r, i) => (
-          <span key={r}>
-            {i > 0 && <span className="text-ink/30"> · </span>}
-            {r}
-          </span>
-        ))}
-      </p>
+      <div className="space-y-1 text-xs leading-relaxed text-ink/70">
+        {legalName && <div>{legalName}</div>}
+        {businessId && <div>Y-tunnus: {businessId}</div>}
+        {email && <div>{email}</div>}
+      </div>
     </div>
   );
 }

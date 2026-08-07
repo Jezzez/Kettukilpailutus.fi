@@ -22,22 +22,33 @@ export default function AboutPage() {
                 Kettu on sinun puolellasi.
               </h1>
               <p className="mt-5 max-w-prose text-[17px] leading-relaxed text-ink/80">
-                Kettukilpailutus syntyi yksinkertaisesta havainnosta: arjen sopimusten
-                vertailu on Suomessa tehty tarpeettoman vaikeaksi. Hinnat esitetään sentteinä
-                kilowattitunnilta, ehdot ovat pitkiä ja vertailusivujen järjestykseen ei voi luottaa.
+                Sähkösopimusten, lainojen ja muiden arjen palveluiden vertaileminen on yllättävän vaikeaa. Hinnat ilmoitetaan eri tavoilla, tarjoukset näyttävät hyviltä mutta eivät aina kerro koko totuutta, ja vertailu vie helposti enemmän aikaa kuin pitäisi.
+              </p>
+              {/*
+                KOLME ERILLISTÄ <p>:tä, EI YHTÄ. Tyhjä rivi JSX:n sisällä ei
+                tee kappaletta vaan katoaa väliyönniksi, joten yhdessä
+                elementissä nämä olisivat renderöityneet yhdeksi pötköksi ja
+                viimeinen rivi olisi jäänyt roikkumaan edellisen virkkeen
+                perään. Se rivi on sivun iskulause, ja iskulause toimii vain
+                jos sen ympärillä on tilaa.
+              */}
+              <p className="mt-4 max-w-prose text-[17px] leading-relaxed text-ink/80">
+                Meidän tavoitteemme on tehdä vertailusta yksinkertaista. Emme halua näyttää
+                pelkkiä hintoja tai mainoslauseita – haluamme näyttää, mitä palvelu oikeasti
+                maksaa juuri sinun tilanteessasi.
               </p>
               <p className="mt-4 max-w-prose text-[17px] leading-relaxed text-ink/80">
-                Me teemme sen toisin: hinnat lasketaan euroina sinun omilla luvuillasi,
-                laskukaava on nähtävissä ja kerromme suoraan, miten ansaitsemme. Sähkösopimukset
-                ovat ensimmäinen kilpailutuksemme — luottokortit, lainat, vakuutukset ja
-                nettiliittymät seuraavat. Avaamme kategorian vasta, kun sen luvut on
-                tarkistettu palveluntarjoajalta.
+                Jokainen laskelma perustuu samoihin tietoihin, jotta eri vaihtoehtoja voi
+                vertailla reilusti.
+              </p>
+              <p className="mt-4 max-w-prose font-display text-[17px] font-bold leading-relaxed text-accentDark">
+                Kettu ei arvaa. Se laskee.
               </p>
               <Link
-                href="/sahkosopimukset#vertailu"
+                href="/"
                 className="btn-ember mt-7 inline-flex rounded-xl px-7 py-3.5 font-display text-[15px] font-bold text-onEmber transition-all active:scale-[0.98]"
               >
-                Kilpailuta sähkösopimus
+                Aloita kilpailutus
               </Link>
             </div>
             <div className="hidden justify-center md:flex">
@@ -58,9 +69,9 @@ export default function AboutPage() {
             <p className="mt-2 max-w-prose text-[15px] leading-relaxed text-ink/80">
               Palaute, korjausehdotukset ja yhteistyötiedustelut:{" "}
               <a href="mailto:kettu@kettukilpailutus.fi" className="font-semibold text-accentDark underline underline-offset-4">
-                kettu@kettukilpailutus.fi
+                info@kettukilpailutus.fi
               </a>
-              . Jos huomaat vertailussa vanhentuneen tiedon, kerro siitä — korjaamme sen nopeasti.
+              . Jos huomaat vertailussa vanhentuneen tiedon, kerro siitä niin korjaamme sen.
             </p>
           </div>
         </Reveal>
