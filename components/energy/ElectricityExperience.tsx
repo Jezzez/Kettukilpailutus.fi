@@ -1412,6 +1412,23 @@ export default function ElectricityExperience({
           jotta kettu on vyön vaalein kohta eikä sulaudu siihen.
         */}
         <section className="theme-ember ember-surface relative overflow-hidden pb-28 pt-9 md:pb-28 md:pt-12">
+          <div
+  aria-hidden
+  className="pointer-events-none absolute inset-y-0 right-0 z-0 w-[74%] overflow-hidden md:hidden"
+>
+  <Image
+    src="/kettu-seisoo.webp"
+    alt=""
+    width={432}
+    height={1325}
+    priority
+    className="absolute bottom-0 right-[0%] h-[100%] w-auto max-w-none object-contain opacity-40"
+    style={{
+      WebkitMaskImage: "linear-gradient(to left, #000 14%, transparent 100%)",
+      maskImage: "linear-gradient(to left, #000 14%, transparent 74%)",
+    }}
+  />
+</div>
           <div className="relative z-[1] mx-auto max-w-[1180px] px-5 sm:px-6">
             <div className="grid items-center gap-6 md:grid-cols-[1.08fr_0.92fr] md:gap-8">
               <div>
@@ -1500,16 +1517,7 @@ export default function ElectricityExperience({
                       );
                     })}
                   </ul>
-                  <div className="halo-glow relative -mb-10 -mt-3 shrink-0 md:hidden">
-                    <Image
-                      src="/kettu-seisoo.webp"
-                      alt="Kettu, Kettukilpailutuksen maskotti"
-                      width={432}
-                      height={1325}
-                      priority
-                      className="relative h-[152px] w-auto drop-shadow-[0_14px_24px_rgba(80,28,2,0.38)]"
-                    />
-                  </div>
+             
                 </div>
 
                 <AnimatePresence initial={false}>
@@ -1897,11 +1905,15 @@ export default function ElectricityExperience({
                   transition={{ duration: 0.5, delay: reduce ? 0 : 0.12, ease: [0.22, 1, 0.36, 1] }}
                   className="shrink-0"
                 >
+                  {/* `width`/`height` ovat kuvan todelliset mitat (432×1325).
+                      Aiemmin tässä luki 520×640, mikä ei vastannut mitään
+                      tiedostoa — Next laski varausalueen väärässä
+                      kuvasuhteessa, ja kortti nytkähti kun kuva latautui. */}
                   <Image
-                    src="/kettu-osoittaa.webp"
+                    src="/kettu-seisoo.webp"
                     alt=""
-                    width={520}
-                    height={640}
+                    width={432}
+                    height={1325}
                     className="mx-auto h-32 w-auto object-contain md:h-40"
                   />
                 </motion.div>

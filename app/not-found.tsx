@@ -14,9 +14,11 @@ import TailSweep from "@/components/fox/TailSweep";
  * vyö tekee kermanvalkoisesta napista ruudun ainoan kirkkaan pisteen,
  * eli sen mihin katse menee ennen kuin käsi ehtii selaimen nuoleen.
  *
- * Kettu osoittaa: hahmo suuntaa katseen nappeihin päin, ja samalla
- * virhesivu näyttää tehdyltä eikä rikkoutuneelta. Se on brändin puolustus
- * juuri siinä hetkessä, jossa palvelu näyttää huonoimmalta.
+ * Kettu on paikalla: virhesivu näyttää tehdyltä eikä rikkoutuneelta. Se on
+ * brändin puolustus juuri siinä hetkessä, jossa palvelu näyttää huonoimmalta.
+ * Asento on rauhallinen seisonta — aiemmin tässä oli osoittava kettu, jonka
+ * ele luettiin virhesivulla helposti syyttäväksi ("sinä menit väärään
+ * paikkaan"). Se on väärä sävy sivulla, jonka vika on meidän.
  */
 export default function NotFound() {
   return (
@@ -54,7 +56,7 @@ export default function NotFound() {
           </div>
         </div>
         <div className="halo-glow relative mx-auto hidden md:block">
-          <Kettu pose="osoittaa" height={380} />
+          <Kettu pose="seisoo" height={440} />
         </div>
       </div>
 

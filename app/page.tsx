@@ -176,7 +176,7 @@ export default function HubPage() {
             `--c-paper`-muuttujan ratkeamaan alapuolisen vyöhykkeen
             vaaleaksi eikä tämän osion oranssiksi. */}
         <div className="theme-light">
-          <TailSweep fill="rgb(var(--c-paper))" height={64} />
+          <TailSweep fill="rgb(var(--c-paper))" height={0} />
         </div>
       </section>
 

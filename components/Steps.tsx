@@ -14,7 +14,7 @@ export default function Steps() {
     <section aria-label="Näin se toimii" className="border-y border-line bg-white py-16 md:py-24">
       <Reveal>
         <div className="mx-auto mb-10 flex max-w-[1180px] flex-col items-center gap-5 px-4 sm:px-6">
-          <Kettu pose="osoittaa" height={190} />
+          <Kettu pose="seisoo" height={190} />
           <SectionHead
             align="center"
             eyebrow="Näin se toimii"

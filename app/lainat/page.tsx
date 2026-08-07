@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowRight, Check } from "lucide-react";
 import AffiliateButton from "@/components/AffiliateButton";
 import Faq from "@/components/Faq";
 import Reveal from "@/components/Reveal";
 import SectionHead from "@/components/SectionHead";
-import FoxSlot from "@/components/fox/FoxSlot";
+import FoxSlot, { FOX_SLOTS } from "@/components/fox/FoxSlot";
 import TailSweep from "@/components/fox/TailSweep";
 import LoanStickyCta from "@/components/loans/LoanStickyCta";
 import SortterCalculator from "@/components/loans/SortterCalculator";
@@ -117,6 +118,50 @@ export default function LoansPage() {
         mutta se ei ansaitse omaa korttiaan heron sisältä.
       */}
       <section className="theme-ember ember-surface relative overflow-hidden">
+        {/*
+          MOBIILIN KETTU ON TAUSTAKUVA, EI OMA PALSTA.
+
+          MIKSI TAUSTALLA EIKÄ TEKSTIN ALLA OMANA LOHKONA: tämän sivun
+          ainoa mittari on "Hae lainatarjoukset" -napin painallus, ja
+          mobiilissa se on aina kilpailussa ruudun korkeudesta. Kuva omana
+          lohkonaan lisäisi heroon 300–400 pikseliä ja työntäisi napin
+          taitteen alle — se maksaisi klikkejä riippumatta siitä, kuinka
+          hyvä kuva on. Absoluuttisesti sijoitettuna kettu ei vie yhtään
+          pystysuoraa tilaa: hero on täsmälleen yhtä korkea kuin ennen,
+          mutta ei enää tyhjä.
+
+          MIKSI SE ON HÄIVYTETTY: otsikko ja ingressi ovat kermanvärisiä,
+          ja ketun puku on myös kerma. Täydellä peitolla teksti katoaisi
+          hahmon päälle. Vasemmalle häipyvä maski pitää hahmon tiheimmän
+          kohdan oikeassa laidassa, jossa tekstiä ei ole, ja liukuu
+          olemattomiin ennen kuin se ehtii otsikon alle. Peitto 55 % pitää
+          kontrastin luettavana myös auringossa.
+
+          MIKSI OIKEALLE JA REUNAN YLI: sama paikka kuin työpöydällä, eli
+          sama sivu pienemmässä ruudussa — ei eri taitto. Reunan yli
+          valuva hahmo lukee myös tarkoitukselliselta rajaukselta, kun
+          taas keskelle mahtumaan kutistettu hahmo lukee pieneltä.
+
+          `aria-hidden`: kuva ei kerro mitään, mitä otsikossa ei jo lue.
+        */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 right-0 z-0 w-[74%] overflow-hidden md:hidden"
+        >
+          <Image
+            src={FOX_SLOTS.lainaHero.src ?? ""}
+            alt=""
+            width={FOX_SLOTS.lainaHero.w}
+            height={FOX_SLOTS.lainaHero.h}
+            priority
+            className="absolute bottom-0 right-[-22%] h-[82%] w-auto max-w-none object-contain opacity-40"
+            style={{
+              WebkitMaskImage: "linear-gradient(to left, #000 14%, transparent 74%)",
+              maskImage: "linear-gradient(to left, #000 14%, transparent 74%)",
+            }}
+          />
+        </div>
+
         <div className="relative z-[1] mx-auto grid max-w-[1180px] items-center gap-8 px-4 pb-16 pt-12 sm:px-6 md:grid-cols-[1.05fr_0.95fr] md:pb-20 md:pt-16">
           <div>
             <Reveal>
@@ -202,9 +247,7 @@ export default function LoansPage() {
           </Reveal>
         </div>
 
-        <div className="theme-light">
-          <TailSweep fill="rgb(var(--c-paper))" height={64} />
-        </div>
+
       </section>
 
       <div className="theme-light bg-paper">

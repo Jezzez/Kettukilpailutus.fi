@@ -122,12 +122,15 @@ export const FOX_SLOTS: Record<FoxSlotId, SlotSpec> = {
     alt: "",
     brief: "Peukku ylös. Iso säästö löytyi.",
   },
+  /* Osoittava kettu poistettiin käytöstä koko sivustolta, joten tämä
+     paikka osoittaa nyt seisovaan asentoon. Slottia ei tällä hetkellä
+     renderöidä missään — se on varaus tuleville vinkkiosioille. */
   neuvoo: {
-    src: "/kettu-osoittaa.webp",
-    w: 416,
-    h: 1000,
+    src: "/kettu-seisoo.webp",
+    w: 432,
+    h: 1325,
     alt: "",
-    brief: "Osoittaa sormella. Vinkit ja neuvot.",
+    brief: "Rauhallinen seisonta. Vinkit ja neuvot.",
   },
   /*
     LAINASIVUN HERO — OMA KUVA, EI JAETTUA TIEDOSTOA.
