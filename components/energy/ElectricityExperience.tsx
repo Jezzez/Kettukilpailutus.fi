@@ -296,8 +296,6 @@ export default function ElectricityExperience({
     arvattu vastaus rajaisi listan väärin.
   */
   const [pricePref, setPricePref] = useState<"steady" | "cheapest" | "unsure" | null>(null);
-  /** Tietääkö käyttäjä nykyisen hintansa. `null` = ei vastattu vielä. */
-  const [knowsCurrent, setKnowsCurrent] = useState<boolean | null>(null);
 
   const reduce = useReducedMotion();
 
@@ -310,12 +308,39 @@ export default function ElectricityExperience({
     });
   }, [step, gated, submitted, reduce]);
 
+  /*
+    YKSI KENTTÄ, KAKSI ERI LUKUA — JA SIKSI TULKINTA NÄYTETÄÄN AUKI.
+
+    Laskussa lukeva hinta on eri asia riippuen sopimuksesta:
+    kiinteässä se on koko energian hinta (esim. 8,90 c/kWh), pörssissä
+    vain marginaali (esim. 0,49 c/kWh), jonka päälle tulee pörssin
+    hinta. Sama luku samassa kentässä siis tarkoittaa kahta eri asiaa.
+
+    Emme kysy kumpi se on, koska se olisi kyselyyn kuudes kysymys —
+    ja juuri tässä kohdassa kysely on jo pisimmillään. Sen sijaan luku
+    tulkitaan suuruudesta: Suomessa pörssimarginaalit ovat 0,2–1,5
+    c/kWh ja kiinteät energiahinnat 4–15 c/kWh. Väliin jää tyhjä
+    kaista, joten 3 c/kWh erottaa ne luotettavasti.
+
+    TULKINTA EI SAA JÄÄDÄ PIILOON. Jos arvaisimme väärin, säästöluku
+    olisi väärin — ja säästöluku on koko sivun ainoa ostoperuste.
+    Siksi kenttien alla luetaan ääneen mitä oletimme ja mihin lukuun
+    se johtaa, jolloin käyttäjä näkee virheen itse sekunnissa.
+  */
+  const MARGIN_MAX = 3;
+
+  const curEnergy = useMemo(() => {
+    const raw = parseFloat(curPrice.replace(",", "."));
+    if (!raw || raw <= 0) return null;
+    const isMargin = raw < MARGIN_MAX;
+    return { raw, isMargin, price: isMargin ? raw + ASSUMED_SPOT_AVG : raw };
+  }, [curPrice]);
+
   const currentAnnual = useMemo(() => {
-    const p = parseFloat(curPrice.replace(",", "."));
-    if (!p || p <= 0) return null;
+    if (!curEnergy) return null;
     const b = parseFloat(curBasic.replace(",", ".")) || 0;
-    return b * 12 + (p * kwh) / 100;
-  }, [curPrice, curBasic, kwh]);
+    return b * 12 + (curEnergy.price * kwh) / 100;
+  }, [curEnergy, curBasic, kwh]);
 
   const filtered = useMemo(
     () =>
@@ -726,6 +751,35 @@ export default function ElectricityExperience({
       </div>
   );
 
+  /** Sentit suomalaisittain: 6,69 eikä 6.69. */
+  const cnt = (n: number) => n.toLocaleString("fi-FI", { maximumFractionDigits: 2 });
+
+  /*
+    TULKINTARIVI. Näyttää, luettiinko syötetty luku marginaaliksi vai
+    kiinteäksi hinnaksi, ja mihin c/kWh-lukuun se johtaa. Rivi on
+    tarkoituksella kultainen eikä harmaa: se ei ole pikkuteksti vaan
+    kohta, jossa käyttäjä tarkistaa oman säästölukunsa lähtöarvon.
+  */
+  const curReadout = curEnergy ? (
+    <p className="mt-3 flex items-start gap-2 rounded-xl border border-gold/30 bg-gold/[0.07] px-3 py-2.5 text-[13px] leading-relaxed text-ink/80">
+      <Info size={14} className="mt-[3px] shrink-0 text-goldInk" aria-hidden />
+      {curEnergy.isMargin ? (
+        <span>
+          Luku luettiin <strong className="font-semibold">pörssisopimuksen marginaaliksi</strong>:{" "}
+          {cnt(curEnergy.raw)} + pörssin keskihinta {cnt(ASSUMED_SPOT_AVG)} ={" "}
+          <strong className="font-semibold">{cnt(curEnergy.price)} c/kWh</strong>. Jos sinulla on
+          kiinteä hinta, kirjoita tähän koko energian hinta.
+        </span>
+      ) : (
+        <span>
+          Luku luettiin <strong className="font-semibold">kiinteäksi energian hinnaksi</strong>{" "}
+          ({cnt(curEnergy.price)} c/kWh). Jos kyseessä on pörssisopimuksen marginaali, kirjoita
+          tähän pelkkä marginaali.
+        </span>
+      )}
+    </p>
+  ) : null;
+
   /*
     Nykyinen sopimus: tekee säästöluvusta oman, ei markkinointiluvun.
 
@@ -769,19 +823,11 @@ export default function ElectricityExperience({
                 </button>
               )}
             </div>
+            {/* Sama kenttäpari kuin kyselyn vaiheessa 4, samassa
+                järjestyksessä: perusmaksu ensin, marginaali tai hinta
+                toisena. Eri järjestys samoille kentöille luetaan eri
+                kysymykseksi, vaikka kysymys on sama. */}
             <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-3">
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  inputMode="decimal"
-                  placeholder="8,90"
-                  value={curPrice}
-                  onChange={(e) => setCurPrice(e.target.value)}
-                  aria-label="Nykyinen energian hinta senttiä kilowattitunnilta"
-                  className="w-24 rounded-xl border border-lineDark bg-mist px-3 py-2.5 text-right font-data text-[16px] font-bold text-ink placeholder:font-normal placeholder:text-ink/35 focus:border-accent focus:outline-none"
-                />
-                <span className="text-[13px] text-ink/60">c/kWh</span>
-              </div>
               <div className="flex items-center gap-2">
                 <input
                   type="text"
@@ -794,7 +840,20 @@ export default function ElectricityExperience({
                 />
                 <span className="text-[13px] text-ink/60">€/kk perusmaksu</span>
               </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  placeholder="0,49"
+                  value={curPrice}
+                  onChange={(e) => setCurPrice(e.target.value)}
+                  aria-label="Nykyinen marginaali tai energian hinta senttiä kilowattitunnilta"
+                  className="w-24 rounded-xl border border-lineDark bg-mist px-3 py-2.5 text-right font-data text-[16px] font-bold text-ink placeholder:font-normal placeholder:text-ink/35 focus:border-accent focus:outline-none"
+                />
+                <span className="text-[13px] text-ink/60">c/kWh marginaali tai hinta</span>
+              </div>
             </div>
+            {curReadout}
             <p className="mt-2 text-[12px] text-ink/55">
               Molemmat luvut näkyvät sähkölaskusi erittelyssä kohdassa &quot;sähköenergia&quot;.
               {alwaysOpen && " Voit myös jättää kentät tyhjiksi. Silloin säästölukua ei näytetä lainkaan."}
@@ -933,96 +992,81 @@ export default function ElectricityExperience({
   );
 
   /*
-    NYKYINEN HINTA KYSYTÄÄN KAHDESSA OSASSA.
+    VAIHE 4 ON KAKSI KENTTÄÄ, EI KYSYMYS KENTISTÄ.
 
-    Aiemmin vaiheessa 2 oli suoraan kaksi numerokenttää otsikolla
-    "Nykyinen sopimuksesi (vapaaehtoinen)". Se, joka ei tiennyt lukujaan,
-    näki kaksi tyhjää kenttää eikä tiennyt saako niistä jatkaa —
-    tyhjä pakollisen näköinen kenttä pysäyttää kyselyn varmemmin kuin
-    vaikea kysymys. Nyt ensin kysytään tiedätkö, ja kentät ilmestyvät
-    vasta myöntävän vastauksen jälkeen. "En tiedä" on yhtä iso ja yhtä
-    laillinen vastaus kuin "kyllä".
+    Tässä oli aiemmin kyllä/en-portti, jonka takaa kentät avautuivat.
+    Portti oli lisätty siksi, että kaksi tyhjää kenttää näytti
+    pakolliselta ja pysäytti kyselyn. Se ongelma ratkaistaan nyt
+    halvemmalla: kentät ovat auki, mutta "vapaaehtoinen" lukee
+    otsikossa ja jatkonappi toimii tyhjillä kentillä. Portti maksoi
+    yhden klikin jokaiselta vastaajalta ja piilotti kentät juuri siltä
+    ryhmältä, joka olisi ne täyttänyt — luku laskusta on nopeampi
+    antaa kuin kysymykseen "tiedätkö lukusi" on vastata.
 
-    Tämä kysymys kannattaa kysyä, vaikka se pidentää kyselyä: se on
-    ainoa lähde sivun rehellisimmälle hetkelle ("älä vaihda, sinulla on
-    jo halvempi") ja ainoa tapa näyttää säästö euroina keksimättä sitä.
+    Kentät ovat silti tämän kyselyn tärkein kohta: ne ovat ainoa lähde
+    sivun rehellisimmälle hetkelle ("älä vaihda, sinulla on jo
+    halvempi") ja ainoa tapa näyttää säästö euroina keksimättä sitä.
   */
   const currentChoiceBlock = (
     <div>
-      <div className="grid gap-2.5 sm:grid-cols-2">
-        <BigOption
-          icon={Wallet}
-          title="Kyllä, lasku on käsillä"
-          hint="Kaksi lukua laskusta riittää."
-          selected={knowsCurrent === true}
-          onClick={() => { setKnowsCurrent(true); setShowCurrent(true); }}
-        />
-        <BigOption
-          icon={X}
-          title="En tiedä juuri nyt"
-          hint="Ei haittaa. Hinnat näkyvät silti."
-          selected={knowsCurrent === false}
-          onClick={() => { setKnowsCurrent(false); setCurPrice(""); setCurBasic(""); }}
-        />
-      </div>
+      <div className="rounded-2xl border border-line bg-mist p-4 sm:p-5">
+        <p className="flex flex-wrap items-center gap-2 font-display text-[14px] font-bold text-ink">
+          <Wallet size={16} className="text-ink/40" aria-hidden />
+          Nykyinen sopimuksesi
+          <span className="rounded-full border border-line bg-white px-2 py-0.5 text-[11px] font-semibold text-ink/55">
+            vapaaehtoinen
+          </span>
+        </p>
 
-      <AnimatePresence initial={false}>
-        {knowsCurrent === true && (
-          <motion.div
-            initial={reduce ? false : { opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={reduce ? undefined : { opacity: 0, height: 0 }}
-            className="overflow-hidden"
-          >
-            <div className="mt-4 rounded-2xl border border-line bg-mist p-4 sm:p-5">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="block">
-                  <span className="block font-display text-[14.5px] font-bold text-ink">
-                    1. Sähkön hinta
-                  </span>
-                  <span className="mt-0.5 block text-[13px] text-ink/60">
-                    Laskussa senttiä kilowattitunnilta
-                  </span>
-                  <span className="mt-2 flex items-center gap-2">
-                    <input
-                      type="text"
-                      inputMode="decimal"
-                      placeholder="8,90"
-                      value={curPrice}
-                      onChange={(e) => setCurPrice(e.target.value)}
-                      className="w-32 rounded-xl border-2 border-lineDark bg-white px-3 py-3 text-right font-data text-[20px] font-bold text-ink placeholder:font-normal placeholder:text-ink/30 focus:border-accent focus:outline-none"
-                    />
-                    <span className="font-display text-[14px] font-semibold text-ink/65">c/kWh</span>
-                  </span>
-                </label>
-                <label className="block">
-                  <span className="block font-display text-[14.5px] font-bold text-ink">
-                    2. Perusmaksu
-                  </span>
-                  <span className="mt-0.5 block text-[13px] text-ink/60">
-                    Kiinteä kuukausimaksu laskussa
-                  </span>
-                  <span className="mt-2 flex items-center gap-2">
-                    <input
-                      type="text"
-                      inputMode="decimal"
-                      placeholder="4,50"
-                      value={curBasic}
-                      onChange={(e) => setCurBasic(e.target.value)}
-                      className="w-32 rounded-xl border-2 border-lineDark bg-white px-3 py-3 text-right font-data text-[20px] font-bold text-ink placeholder:font-normal placeholder:text-ink/30 focus:border-accent focus:outline-none"
-                    />
-                    <span className="font-display text-[14px] font-semibold text-ink/65">€/kk</span>
-                  </span>
-                </label>
-              </div>
-              <p className="mt-3 text-[13.5px] leading-relaxed text-ink/65">
-                Molemmat luvut ovat sähkölaskusi erittelyssä otsikon
-                &quot;sähköenergia&quot; alla. Jos toinen ei löydy, jätä se tyhjäksi.
-              </p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <label className="block">
+            <span className="block font-display text-[14.5px] font-bold text-ink">
+              1. Perusmaksu
+            </span>
+            <span className="mt-0.5 block text-[13px] text-ink/60">
+              Kiinteä kuukausimaksu laskussa
+            </span>
+            <span className="mt-2 flex items-center gap-2">
+              <input
+                type="text"
+                inputMode="decimal"
+                placeholder="4,50"
+                value={curBasic}
+                onChange={(e) => setCurBasic(e.target.value)}
+                className="w-32 rounded-xl border-2 border-lineDark bg-white px-3 py-3 text-right font-data text-[20px] font-bold text-ink placeholder:font-normal placeholder:text-ink/30 focus:border-accent focus:outline-none"
+              />
+              <span className="font-display text-[14px] font-semibold text-ink/65">€/kk</span>
+            </span>
+          </label>
+          <label className="block">
+            <span className="block font-display text-[14.5px] font-bold text-ink">
+              2. Marginaali tai hinta
+            </span>
+            <span className="mt-0.5 block text-[13px] text-ink/60">
+              Pörssissä marginaali, kiinteässä energian hinta
+            </span>
+            <span className="mt-2 flex items-center gap-2">
+              <input
+                type="text"
+                inputMode="decimal"
+                placeholder="0,49"
+                value={curPrice}
+                onChange={(e) => setCurPrice(e.target.value)}
+                className="w-32 rounded-xl border-2 border-lineDark bg-white px-3 py-3 text-right font-data text-[20px] font-bold text-ink placeholder:font-normal placeholder:text-ink/30 focus:border-accent focus:outline-none"
+              />
+              <span className="font-display text-[14px] font-semibold text-ink/65">c/kWh</span>
+            </span>
+          </label>
+        </div>
+
+        {curReadout}
+
+        <p className="mt-3 text-[13.5px] leading-relaxed text-ink/65">
+          Molemmat luvut ovat sähkölaskusi erittelyssä otsikon
+          &quot;sähköenergia&quot; alla. Voit myös jättää kentät tyhjiksi ja jatkaa —
+          silloin Kettu näyttää hinnat, mutta ei säästöä.
+        </p>
+      </div>
     </div>
   );
 
@@ -1072,7 +1116,7 @@ export default function ElectricityExperience({
 
   /* ── Kyselyn ohjaus ───────────────────────────────────────────────────
 
-     VIISI VAIHETTA, YKSI KYSYMYS RUUDULLA.
+     NELJÄ VAIHETTA, YKSI KYSYMYS RUUDULLA.
 
      Kysely oli kolmivaiheinen, mutta vaiheet 2 ja 3 sisälsivät kaksi
      kysymystä kumpikin — eli ruudulla oli kaksi päätöstä yhtä aikaa,
@@ -1080,18 +1124,20 @@ export default function ElectricityExperience({
      täsmälleen se tilanne, jossa iäkkäämpi käyttäjä ei tiedä mihin
      vastata ensin eikä siihen, onko tyhjä kenttä virhe.
 
-     Pidempi kysely EI ole tässä huonompi. Poistumista ei aiheuta
-     vaiheiden määrä vaan epätietoisuus siitä, mitä pitäisi tehdä:
-     viisi ruutua, joilla kullakin on yksi selvä kysymys ja yksi iso
-     oranssi nappi, täytetään loppuun useammin kuin kolme ruutua, joilla
-     on kaksi kysymystä ja epäselvä eteneminen. Jokainen vaihe kertoo
-     lisäksi lyhyesti MIKSI kysytään — perusteltu kysymys ei tunnu
-     tietojen keräämiseltä.
+     Jokainen vaihe kertoo lyhyesti MIKSI kysytään — perusteltu kysymys
+     ei tunnu tietojen keräämiseltä, ja yksi selvä kysymys ruudulla
+     täytetään loppuun useammin kuin kaksi päällekkäistä.
 
-     Vaihe 5 on yhteenveto. Se ei kysy mitään, vaan näyttää vastaukset
-     ja antaa muuttaa niitä. Se on tämän kyselyn tärkein yksittäinen
-     ruutu iäkkäälle käyttäjälle: se poistaa pelon siitä, että jotain
-     tuli vastattua väärin eikä sitä enää saa korjattua. */
+     VIIDES VAIHE, YHTEENVETO, ON POISTETTU. Se ei kysynyt mitään, vaan
+     näytti vastaukset ja antoi korjata niitä. Perustelu oli hyvä —
+     pelko väärin vastaamisesta — mutta se ratkaistiin väärässä
+     paikassa: ruutu, joka ei kysy mitään, on kyselyn viimeinen este
+     juuri siinä kohdassa, jossa käyttäjä on jo luvattu palkita
+     hinnoilla. Sama korjattavuus on olemassa ilman sitä, koska
+     tuloslistan vieressä ovat auki samat kentät (`fullForm`): kulutus,
+     perusmaksu ja marginaali, ja niiden muuttaminen päivittää listan
+     heti. Vastauksia siis pääsee korjaamaan yhtä hyvin, mutta hinnat
+     ovat jo ruudulla sitä tehtäessä. */
 
   const STEPS_Q = [
     {
@@ -1111,13 +1157,8 @@ export default function ElectricityExperience({
     },
     {
       n: 4,
-      title: "Tiedätkö, paljonko maksat sähköstä nyt?",
-      hint: "Ilman tätä lukua säästöä ei voi laskea. Kettu ei arvaa sitä puolestasi.",
-    },
-    {
-      n: 5,
-      title: "Tarkista vastauksesi",
-      hint: "Korjaa mitä tahansa kohtaa. Sen jälkeen Kettu näyttää sopimukset.",
+      title: "Mitä maksat sähköstä nyt?",
+      hint: "Kaksi lukua laskustasi. Ilman niitä Kettu näyttää hinnat mutta ei säästöäsi — sitä ei arvata.",
     },
   ] as const;
 
@@ -1127,7 +1168,6 @@ export default function ElectricityExperience({
     step === 1 ? dwelling !== null || kwhTouched
     : step === 2 ? kwh >= 500
     : step === 3 ? pricePref !== null
-    : step === 4 ? knowsCurrent !== null
     : true;
 
   /** Miksi "Jatka" ei vielä toimi. Sanotaan ääneen — harmaa nappi ilman
@@ -1135,15 +1175,16 @@ export default function ElectricityExperience({
    *
    *  Vaiheet 1 ja 3 saavat saman lauseen tarkoituksella: molemmissa
    *  tehtävä on täsmälleen sama, ja sama tehtävä eri sanoilla luetaan
-   *  uudestaan. Vaiheet 2 ja 4 pysyvät omissaan, koska niissä tehtävä
-   *  on eri — kentässä kirjoitetaan luku, ja vaiheessa 4 on tärkeää
-   *  sanoa että myös "en" vie eteenpäin. Ilman sitä osa arvaa, että
-   *  vain "kyllä" kelpaa, ja keksii luvun. Keksitty lähtöhinta tuottaa
-   *  keksityn säästön, ja se on tämän sivun pahin virhe. */
+   *  uudestaan. Vaihe 2 pysyy omassaan, koska siinä kirjoitetaan luku.
+   *
+   *  Vaiheella 4 ei ole estotekstiä, koska sillä ei ole estoa: kentät
+   *  ovat vapaaehtoiset ja tyhjilläkin pääsee eteenpäin. Se on
+   *  tarkoituksellista — pakotettuna osa keksisi luvun, ja keksitty
+   *  lähtöhinta tuottaa keksityn säästön. Se on tämän sivun pahin
+   *  virhe, pahempi kuin täyttämättä jäänyt kenttä. */
   const stepBlocker =
     stepValid ? null
     : step === 2 ? "Kirjoita kulutus, vähintään 500 kWh. Tai palaa taaksepäin valitsemaan koti."
-    : step === 4 ? "Valitse kyllä tai en. Kumpikin vie eteenpäin."
     : "Valitse yksi vaihtoehto jatkaaksesi.";
 
   const activeStep = STEPS_Q[step - 1];
