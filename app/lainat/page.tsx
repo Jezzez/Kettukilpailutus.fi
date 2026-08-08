@@ -155,9 +155,8 @@ export default function LoansPage() {
             height={FOX_SLOTS.lainaHero.h}
             priority
             className="absolute bottom-0 right-[-22%] h-[82%] w-auto max-w-none object-contain opacity-40"
-    style={{
-      WebkitMaskImage: "linear-gradient(to left, #000 84%, transparent 100%)",
-      maskImage: "linear-gradient(to left, #000 84%, transparent 100%)",
+            style={{
+             
             }}
           />
         </div>
