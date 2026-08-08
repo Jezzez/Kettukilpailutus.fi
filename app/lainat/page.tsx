@@ -146,7 +146,7 @@ export default function LoansPage() {
         */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-y-0 right-0 z-0 w-[74%] overflow-hidden md:hidden"
+          className="pointer-events-none absolute inset-y-0 right-0 z-0 w-[100%] overflow-hidden md:hidden"
         >
           <Image
             src={FOX_SLOTS.lainaHero.src ?? ""}
