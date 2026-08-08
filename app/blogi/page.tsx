@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import BlogList from "@/components/BlogList";
 import Reveal from "@/components/Reveal";
-import Kettu from "@/components/mascot/Kettu";
 import TailSweep from "@/components/fox/TailSweep";
 import { getPosts } from "@/lib/data";
 
@@ -39,6 +39,25 @@ export default function BlogPage() {
         sama otsikkokoko, sama pystytäyte. Älä säädä vain tätä sivua.
       */}
       <section className="theme-ember ember-surface relative overflow-hidden">
+        <div
+  aria-hidden
+  className="pointer-events-none absolute inset-0 z-0 overflow-hidden md:hidden"
+>
+  <Image
+    src="/kettu-blogi.png"
+    alt=""
+    width={1536}
+    height={1024}
+    priority
+    className="absolute bottom-[-2%] right-[-14%] h-[100%] w-auto max-w-none object-contain opacity-40"
+    style={{
+      WebkitMaskImage:
+        "linear-gradient(to left, #000 18%, transparent 100%)",
+      maskImage:
+        "linear-gradient(to left, #000 18%, transparent 100%)",
+    }}
+  />
+</div>
         <div className="relative z-[1] mx-auto grid max-w-[1180px] items-center gap-8 px-4 pb-16 pt-12 sm:px-6 md:grid-cols-[1.05fr_0.95fr] md:pb-20 md:pt-16">
           <div>
             <Reveal>
@@ -70,9 +89,16 @@ export default function BlogPage() {
               oranssia lukee keskeneräiseltä. 500 antaa noin 163 px, ja
               jalat asettuvat häntäaallon päälle kuten muillakin sivuilla.
             */}
-            <div className="halo-glow relative flex justify-center">
-              <Kettu pose="seisoo" height={500} priority />
-            </div>
+            <div className="relative flex justify-center">
+  <Image
+    src="/kettu-blogi.png"
+    alt="Kettu lukemassa kirjaa"
+    width={1536}
+    height={1024}
+    priority
+    className="h-[500px] w-auto object-contain"
+  />
+</div>
           </Reveal>
         </div>
 
