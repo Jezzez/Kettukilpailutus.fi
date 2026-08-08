@@ -156,7 +156,6 @@ export default function LoansPage() {
             priority
             className="absolute bottom-0 right-[-22%] h-[82%] w-auto max-w-none object-contain opacity-40"
             style={{
-              
             }}
           />
         </div>

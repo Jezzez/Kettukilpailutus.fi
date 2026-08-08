@@ -77,7 +77,7 @@ export default function BlogPage() {
         </div>
 
         <div className="theme-light">
-          <TailSweep fill="rgb(var(--c-paper))" height={64} />
+          <TailSweep fill="rgb(var(--c-paper))" height={24} />
         </div>
       </section>
 
