@@ -154,10 +154,10 @@ export default function LoansPage() {
             width={FOX_SLOTS.lainaHero.w}
             height={FOX_SLOTS.lainaHero.h}
             priority
-            className="absolute bottom-0 right-[-22%] h-[100%] w-auto max-w-none object-contain opacity-40"
+            className="absolute bottom-0 right-[-22%] h-[82%] w-auto max-w-none object-contain opacity-40"
             style={{
-              WebkitMaskImage: "linear-gradient(to left, #000 7%, transparent 100%)",
-              maskImage: "linear-gradient(to left, #000 7%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to left, #000 14%, transparent 74%)",
+              maskImage: "linear-gradient(to left, #000 14%, transparent 74%)",
             }}
           />
         </div>
