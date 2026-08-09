@@ -16,6 +16,9 @@ import {
   IS_EXAMPLE_DATA,
   normalAnnualCost,
   PRICE_DATE,
+  SPOT_AVG_BASIS,
+  SPOT_AVG_SOURCE,
+  SPOT_AVG_VAT,
 } from "@/lib/energy";
 import PlanCard, { type PlanBadge } from "./PlanCard";
 import AffiliateButton from "../AffiliateButton";
@@ -2602,8 +2605,27 @@ export default function ElectricityExperience({
           <p className="mt-6 flex items-start gap-2 text-[12px] leading-relaxed text-ink/60">
             <Info size={13} className="mt-0.5 shrink-0" aria-hidden />
             <span>
+              {/*
+                KESKIHINNAN PERUSTE ON PAKKO NÄKYÄ TÄSSÄ, EI VAIN KOODISSA.
+                Pörssin keskihinta on laskurin painavin yksittäinen oletus:
+                se on noin kaksi kolmasosaa pörssisopimuksen arviosta. Pelkkä
+                "5,08 c/kWh" on lukijalle merkityksetön luku, jota hän ei voi
+                tarkistaa — ja juuri tarkistettavuus on se, mikä erottaa
+                luotettavan vertailun mainoksesta. Peruste + alv-tila + linkki
+                lähteeseen maksavat yhden rivin ja ostavat sen luottamuksen,
+                jota "Tee sopimus" -nappi tarvitsee.
+              */}
               Pörssisopimusten arviot laskettu {ASSUMED_SPOT_AVG.toLocaleString("fi-FI")} c/kWh
-              keskihinnalla; toteutunut hinta vaihtelee tunneittain. Hinnat tarkistettu{" "}
+              keskihinnalla{" "}
+              <a
+                href={SPOT_AVG_SOURCE}
+                target="_blank"
+                rel="noopener nofollow"
+                className="underline decoration-ink/30 underline-offset-2 hover:decoration-ink/70"
+              >
+                ({SPOT_AVG_BASIS}, {SPOT_AVG_VAT})
+              </a>
+              ; toteutunut hinta vaihtelee tunneittain. Hinnat tarkistettu{" "}
               {new Date(PRICE_DATE).toLocaleDateString("fi-FI")}. Arviot eivät sisällä
               siirtomaksua, joka on sama sopimuksesta riippumatta.
               {/*

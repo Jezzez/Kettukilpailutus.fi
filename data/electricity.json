@@ -1,5 +1,8 @@
 {
-  "assumedSpotAverage": 6.2,
+  "assumedSpotAverage": 5.08,
+  "spotAverageBasis": "vuoden 2025 toteutunut keskihinta",
+  "spotAverageVat": "alv 25,5 % mukana",
+  "spotAverageSource": "https://sahkotanaan.fi/porssisahkon-keskihinta-2025/",
   "priceDate": "2026-08-09",
   "isExampleData": false,
   "plans": [

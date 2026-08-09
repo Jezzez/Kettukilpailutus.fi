@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { ChevronDown, Leaf, Star, Tag, TrendingDown, TrendingUp, Zap } from "lucide-react";
 import type { ElectricityPlan } from "@/lib/energy";
-import { annualCost, normalAnnualCost, TYPE_LABEL } from "@/lib/energy";
+import { annualCost, normalAnnualCost, ownChargesAnnual, TYPE_LABEL } from "@/lib/energy";
 import AffiliateButton from "../AffiliateButton";
 import FoxPaw from "../FoxPaw";
 
@@ -206,6 +206,32 @@ export default function PlanCard({
 
   const perusmaksuKampanja =
     campaign?.basicFee != null ? `${money(campaign.basicFee)} €/kk` : null;
+
+  /*
+    YHTIÖN OMA OSUUS — HINTA ILMAN PÖRSSIN SPOT-HINTAA.
+
+    Pörssikortin iso euroluku sisältää itse sähkön, joka lasketaan
+    oletuskeskihinnalla (ASSUMED_SPOT_AVG). Se on oikea tapa esittää
+    kokonaishinta — ilman sitä pörssi- ja kiinteä hintaiset sopimukset eivät
+    olisi vertailukelpoisia keskenään, koska kiinteän energiahinta sisältää
+    sähkön ja pörssin marginaali ei. Mutta se tekee isosta luvusta osittain
+    ennusteen, ja ennuste on aina väärässä jollain määrällä.
+
+    Tämä rivi erottaa niistä kahdesta sen osan, joka EI ole ennuste:
+    perusmaksu ja marginaali ovat sopimuksen ehtoja, eivät arvioita. Se on
+    myös ainoa osa, johon kilpailuttaminen vaikuttaa — pörssin hinta on
+    sama riippumatta siitä, minkä yhtiön valitsee.
+
+    Lukija saa siis kaksi lukua eri tarkoitukseen: iso luku vastaa
+    kysymykseen "paljonko lasku on", tämä rivi kysymykseen "paljonko tämä
+    yhtiö veloittaa". Jälkimmäinen on tarkka, ja sen voi tarkistaa
+    sopimusehdoista, mikä on tällä sivulla arvokkaampaa kuin yksi
+    euromäärä lisää.
+
+    Vain pörssisopimuksille. Kiinteässä sopimuksessa energiahinta on osa
+    yhtiön omaa hinnastoa, joten "ilman pörssiä" ei tarkoittaisi mitään.
+  */
+  const omaOsuusVuosi = ownChargesAnnual(plan, kwh);
 
   /*
     MOBIILISSA YKSITYISKOHDAT AVATAAN, TYÖPÖYDÄLLÄ NE OVAT AINA AUKI.
@@ -669,6 +695,25 @@ export default function PlanCard({
               )}
             </dd>
           </div>
+
+          {/* Ks. `omaOsuusVuosi`-kommentti komponentin ylaosassa. Erotettu
+              viivalla, koska tama ei ole hinnaston rivi vaan yhteenveto
+              kahdesta ylla olevasta. */}
+          {omaOsuusVuosi !== null && (
+            <div className="flex items-start justify-between gap-3 border-t border-line pt-2 text-[11.5px]">
+              <dt className="text-ink/55">Ilman pörssin hintaa</dt>
+              <dd className="text-right font-data font-bold text-ink/75">
+                {(omaOsuusVuosi / 12).toLocaleString("fi-FI", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}{" "}
+                €/kk
+                <span className="mt-0.5 block text-[10.5px] font-medium leading-tight text-ink/50">
+                  vain yhtiön oma osuus
+                </span>
+              </dd>
+            </div>
+          )}
         </dl>
 
         {/*

@@ -114,8 +114,31 @@ export interface EnergyTopic {
   faq: [string, string][];
 }
 
-/** Pörssin oletuskeskihinta laskurissa (c/kWh) — kerrotaan käyttäjälle avoimesti. */
+/**
+ * Pörssin oletuskeskihinta laskurissa (c/kWh) — kerrotaan käyttäjälle avoimesti.
+ *
+ * TÄMÄ ON LASKURIN TÄRKEIN YKSITTÄINEN LUKU. Pörssisopimuksen arviosta noin
+ * kaksi kolmasosaa on tätä lukua; marginaali on muutama prosentti ja
+ * perusmaksu loput. Jos tämä on väärin, jokainen pörssikortin euromäärä on
+ * väärin samalla kertoimella — eikä yksikään muu korjaus sivustolla auta.
+ *
+ * Siksi luvun rinnalla kulkee peruste ja lähde, ja ne näytetään sivulla.
+ * Aiemmin tässä oli 6,2 ilman mitään perustelua. Lähteetön luku on tällä
+ * sivustolla pahempi kuin väärä luku, koska väärän voi korjata ja
+ * lähteettömän kanssa ei tiedä kumpi se on.
+ *
+ * ALV: sopimusten marginaalit ja perusmaksut ovat kuluttajahintoja eli
+ * arvonlisäverollisia, joten myös keskihinnan on oltava verollinen. Sama
+ * luku ilman alv:tä olisi 4,05 c/kWh, ja sen käyttäminen aliarvioisi
+ * jokaisen pörssiarvion noin viidenneksellä.
+ */
 export const ASSUMED_SPOT_AVG: number = electricityJson.assumedSpotAverage;
+/** Mihin `ASSUMED_SPOT_AVG` perustuu, esim. "vuoden 2025 toteutunut keskihinta". */
+export const SPOT_AVG_BASIS: string = electricityJson.spotAverageBasis;
+/** Keskihinnan alv-tila, esim. "alv 25,5 % mukana". */
+export const SPOT_AVG_VAT: string = electricityJson.spotAverageVat;
+/** Lähde, josta keskihinta on luettu. Näytetään läpinäkyvyysosiossa. */
+export const SPOT_AVG_SOURCE: string = electricityJson.spotAverageSource;
 export const PRICE_DATE: string = electricityJson.priceDate;
 
 /**
@@ -233,6 +256,45 @@ export function annualCost(plan: ElectricityPlan, kwhPerYear: number): number {
     plan.basicFee * rest +
     (campEnergy * kwhPerMonth * months) / 100 +
     (normEnergy * kwhPerMonth * rest) / 100
+  );
+}
+
+/**
+ * Yhtion oma osuus ensimmaisena vuonna (€) — perusmaksu ja marginaali,
+ * ILMAN porssin spot-hintaa. Vain porssisopimuksille; palauttaa `null`
+ * muille.
+ *
+ * MIKSI TAMA ON OMA FUNKTIONSA EIKA VAHENNYSLASKU KOMPONENTISSA:
+ * `annualCost` painottaa kampanjan ja normaalin jakson eri pituisiksi,
+ * joten "kokonaishinta miinus ASSUMED_SPOT_AVG × kWh" antaisi oikean
+ * luvun vain sattumalta. Kampanja voi muuttaa marginaalia, ja silloin
+ * yhtion oma osuus jakautuu kahdelle eri tasolle tasmalleen samoin kuin
+ * kokonaishinta. Sama painotus lasketaan siis tassa uudestaan.
+ *
+ * Luku on tarkka, ei arvio: perusmaksu ja marginaali ovat sopimusehtoja.
+ * Se on myos ainoa osa laskusta, johon kilpailuttaminen vaikuttaa.
+ */
+export function ownChargesAnnual(
+  plan: ElectricityPlan,
+  kwhPerYear: number
+): number | null {
+  if (plan.type !== "spot") return null;
+
+  const margin = plan.spotMargin ?? 0;
+  const c = plan.campaign;
+  if (!c) return plan.basicFee * 12 + (margin * kwhPerYear) / 100;
+
+  const months = Math.max(0, Math.min(c.months, 12));
+  const rest = 12 - months;
+  const kwhPerMonth = kwhPerYear / 12;
+  const campFee = c.basicFee ?? plan.basicFee;
+  const campMargin = c.spotMargin ?? margin;
+
+  return (
+    campFee * months +
+    plan.basicFee * rest +
+    (campMargin * kwhPerMonth * months) / 100 +
+    (margin * kwhPerMonth * rest) / 100
   );
 }
 

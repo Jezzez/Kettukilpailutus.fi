@@ -2,7 +2,15 @@ import { BadgeCheck, Calculator, Coins, PawPrint, Scale } from "lucide-react";
 import Reveal from "../Reveal";
 import TailSweep from "../fox/TailSweep";
 import FoxSlot from "../fox/FoxSlot";
-import { ASSUMED_SPOT_AVG, IS_EXAMPLE_DATA, PRICE_DATE, getPlans } from "@/lib/energy";
+import {
+  ASSUMED_SPOT_AVG,
+  IS_EXAMPLE_DATA,
+  PRICE_DATE,
+  SPOT_AVG_BASIS,
+  SPOT_AVG_SOURCE,
+  SPOT_AVG_VAT,
+  getPlans,
+} from "@/lib/energy";
 
 /**
  * Läpinäkyvyysosio.
@@ -134,11 +142,23 @@ export default function EnergyTrust() {
                   {new Date(PRICE_DATE).toLocaleDateString("fi-FI")}
                 </span>
               </span>
+              {/* Luvun vierella on nyt peruste ja alv-tila. Pelkka "5,08 c/kWh"
+                  on lukijalle merkitykseton — se on laskurin painavin oletus,
+                  ja lukija voi arvioida arvion luotettavuutta vasta kun tietaa
+                  mista luku on otettu. Ks. ASSUMED_SPOT_AVG lib/energy.ts. */}
               <span>
                 Pörssin laskentakeskiarvo{" "}
                 <span className="font-data font-bold text-ink/85">
                   {ASSUMED_SPOT_AVG.toLocaleString("fi-FI")} c/kWh
-                </span>
+                </span>{" "}
+                <a
+                  href={SPOT_AVG_SOURCE}
+                  target="_blank"
+                  rel="noopener nofollow"
+                  className="underline decoration-ink/25 underline-offset-2 hover:decoration-ink/60"
+                >
+                  ({SPOT_AVG_BASIS}, {SPOT_AVG_VAT})
+                </a>
               </span>
               <span>
                 Sopimuksia vertailussa{" "}
