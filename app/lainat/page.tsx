@@ -116,7 +116,7 @@ export default function LoansPage() {
             width={712}
             height={993}
             priority
-            className="absolute bottom-0 left-0 h-[92%] w-auto max-w-full object-contain opacity-40"
+            className="absolute bottom-0 left-60 h-[92%] w-auto max-w-full object-contain opacity-40"
             style={{
               WebkitMaskImage:
                 "linear-gradient(to left, #000 84%, transparent 100%)",
