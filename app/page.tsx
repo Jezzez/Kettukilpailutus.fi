@@ -11,9 +11,9 @@ import { SITE } from "@/lib/data";
 import { FEATURES } from "@/lib/features";
 
 export const metadata: Metadata = {
-  title: "Kettukilpailutus.fi – kilpailuta sähkösopimukset ilmaiseksi",
+  title: "Kettukilpailutus.fi – Kilpailuta ja säästä",
   description:
-    "Kettu kilpailuttaa puolestasi: sähkösopimukset nyt, pian myös luottokortit, lainat, vakuutukset ja nettiliittymät. Puolueeton vertailu suomalaisille — ilmaiseksi.",
+    "Anna ketun kilpailuttaa puolestasi.",
   alternates: { canonical: "/" },
 };
 

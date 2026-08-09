@@ -19,7 +19,7 @@ const display = Schibsted_Grotesk({ subsets: ["latin"], weight: ["500", "600", "
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: SITE.name + " – kilpailuta sähkösopimukset ilmaiseksi",
+    default: SITE.name + " – kilpailuta sopimuksesi ja säästä",
     template: "%s | " + SITE.name,
   },
   description: SITE.description,
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "fi_FI",
     siteName: SITE.name,
-    title: SITE.name + " – kilpailuta sopimuksesi minuutissa",
+    title: SITE.name + " – Kilpailuta ja säästä",
     description: SITE.description,
   },
   twitter: {
