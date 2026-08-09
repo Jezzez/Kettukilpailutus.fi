@@ -199,61 +199,85 @@ export default function LoansPage() {
         <div className="relative z-20 mx-auto -mt-40 max-w-[900px] px-4 sm:px-6 md:-mt-44">
           <SortterCalculator />
         </div>
+      </div>
 
-        {/*
-          ASKELKAISTA. Kolme riviä, ei kolmea kappaletta — tämän osion
-          tehtävä on kumota yksi pelko ("onko tämä työlästä") yhdellä
-          silmäyksellä ja päättyä nappiin.
-        */}
-        <section className="pt-14 md:pt-16">
-          <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
-            <Reveal>
-              <SectionHead
-                eyebrow="Näin se etenee"
-                title="Yksi hakemus. Useita lainatarjouksia."
-                align="center"
-              />
-            </Reveal>
+      <section className="theme-ember ember-surface relative -mt-40 overflow-hidden pb-20 pt-36 md:-mt-44 md:pb-24 md:pt-40">
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-16 rotate-180">
+          <div className="theme-light">
+            <TailSweep fill="rgb(var(--c-paper))" height={64} />
+          </div>
+        </div>
 
-            <Reveal delay={0.08}>
-              <div className="mt-9 overflow-hidden rounded-3xl border border-line bg-white shadow-lift">
-                <div className="grid gap-px bg-line md:grid-cols-3">
-                  {LOAN_STEPS.map((s, i) => (
-                    <div key={s.title} className="lift h-full bg-white p-6 text-center sm:p-7">
-                      <span className="font-data text-[12px] font-bold uppercase tracking-[0.16em] text-accentDark">
-                        Askel 0{i + 1}
-                      </span>
-                      <h3 className="mt-2.5 font-display text-[18px] font-bold text-ink">{s.title}</h3>
-                      <p className="mt-2 text-[14px] leading-relaxed text-ink/70">{s.text}</p>
-                    </div>
-                  ))}
-                </div>
+        <div className="relative z-[1] mx-auto max-w-[1180px] px-4 sm:px-6">
+          <Reveal>
+            <div className="flex items-center justify-center gap-3">
+              <span className="font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-goldInk">
+                Näin se etenee
+              </span>
+            </div>
+            <h2 className="mx-auto mt-4 max-w-[20ch] text-center font-hero text-[2rem] leading-[1.08] text-cream sm:text-[2.5rem]">
+              Yksi hakemus. Useita lainatarjouksia.
+            </h2>
+            <p className="mx-auto mt-3.5 max-w-[52ch] text-center text-[15.5px] leading-relaxed text-ink/85 sm:text-[16.5px]">
+              Täytä yksi hakemus, vertaa saamasi tarjoukset rauhassa ja
+              päätä itse, hyväksytkö niistä yhden. Hakeminen ei sido lainan
+              nostamiseen.
+            </p>
+          </Reveal>
+
+          <Reveal delay={0.08}>
+            <div className="theme-light mt-9 overflow-hidden rounded-3xl border border-line bg-white shadow-lift">
+              <div className="grid gap-px bg-line md:grid-cols-3">
+                {LOAN_STEPS.map((s, i) => (
+                  <div
+                    key={s.title}
+                    className="lift relative h-full overflow-hidden bg-white p-6 text-center sm:p-7"
+                  >
+                    <span className="relative font-data text-[12px] font-bold uppercase tracking-[0.16em] text-accentDark">
+                      Askel 0{i + 1}
+                    </span>
+                    <h3 className="relative mt-2.5 font-display text-[18px] font-bold text-ink">
+                      {s.title}
+                    </h3>
+                    <p className="relative mt-2 text-[14px] leading-relaxed text-ink/70">
+                      {s.text}
+                    </p>
+                  </div>
+                ))}
               </div>
-            </Reveal>
+            </div>
+          </Reveal>
 
-            {/*
-              Osion päätepiste. Vaalealla pinnalla oranssi `primary`-nappi
-              on ruudun kuumin piste — kermanappi toimisi vain vyöllä.
-            */}
-            <Reveal delay={0.14}>
-              <div className="mt-9 flex flex-col items-center gap-3 text-center" data-loan-cta>
+          <Reveal delay={0.14}>
+            <div
+              className="mt-9 flex flex-col items-center gap-3 text-center"
+              data-loan-cta
+            >
+              <div className="theme-light">
                 <AffiliateButton
                   href={LOAN_PARTNER.url}
                   cardId={LOAN_PARTNER.id}
                   placement="lainat-askeleet"
+                  variant="inverse"
                   className={BIG_BTN}
                 >
                   Hae lainatarjoukset
                   <ArrowRight size={19} aria-hidden />
                 </AffiliateButton>
-                <span className="text-[13.5px] text-ink/70">
-                  Hakeminen on maksutonta eikä velvoita ottamaan lainaa.
-                </span>
               </div>
-            </Reveal>
-          </div>
-        </section>
+              <span className="text-[13.5px] text-ink/85">
+                Hakeminen on maksutonta eikä velvoita ottamaan lainaa.
+              </span>
+            </div>
+          </Reveal>
+        </div>
 
+        <div className="theme-light">
+          <TailSweep fill="rgb(var(--c-paper))" height={64} />
+        </div>
+      </section>
+
+      <div className="theme-light bg-paper">
         {/*
           UKK on viimeinen vastalauseiden purku ennen loppunappia.
           Neljä kysymystä, ei enempää — jokainen lisäkysymys on uusi
