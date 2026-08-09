@@ -199,7 +199,7 @@ export default function LoansPage() {
       </section>
 
       <div className="theme-light bg-paper pt-px">
-        <div className="relative z-20 mx-auto -mt-40 max-w-[900px] px-4 sm:px-6 md:-mt-44">
+        <div className="relative z-20 mx-auto -mt-40 max-w-[1180px] px-4 sm:px-6 md:-mt-44">
           <SortterCalculator />
         </div>
       </div>

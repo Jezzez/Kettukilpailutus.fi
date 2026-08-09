@@ -63,7 +63,7 @@ export default function BlogPage() {
           <div>
             <Reveal>
               <span className="font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-goldInk">
-                Ketun oppaat
+                Älä maksa ketunhäntää kainalossa
               </span>
               <h1 className="mt-4 font-hero text-[2.7rem] leading-[1.03] text-cream sm:text-[3.6rem]">
                 Fiksummat päätökset<br />
