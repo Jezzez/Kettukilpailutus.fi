@@ -77,7 +77,7 @@ export default function Header() {
         }`}
       >
         <Link href="/" className="flex items-center gap-2.5">
-          <FoxMark size={34} />
+          <FoxMark size={34} priority />
           <span className="leading-none">
             {/*
               PÄÄTE ON VERSAALINA, KOKO LOGOTYYPPI SAMASSA KOOSSA.
