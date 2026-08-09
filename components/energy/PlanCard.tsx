@@ -481,18 +481,17 @@ export default function PlanCard({
                 <>
                   <TrendingDown size={13} className="shrink-0" aria-hidden />
                   <span>
-                    Arviolta{" "}
+                    Säästät{" "}
                     <strong className="font-data font-bold">
                       {diffMonthly.toLocaleString("fi-FI", { maximumFractionDigits: 0 })} €
                     </strong>{" "}
-                    / kk edullisempi kuin nykyinen
+                    / kk nykyiseen verrattuna
                   </span>
                 </>
               ) : diffMonthly < -0.5 ? (
                 <>
                   <TrendingUp size={13} className="shrink-0" aria-hidden />
                   <span>
-                    Arviolta{" "}
                     <strong className="font-data font-bold">
                       {Math.abs(diffMonthly).toLocaleString("fi-FI", { maximumFractionDigits: 0 })} €
                     </strong>{" "}
@@ -500,7 +499,7 @@ export default function PlanCard({
                   </span>
                 </>
               ) : (
-                <span>Arviolta sama hinta kuin nyt</span>
+                <span>Käytännössä sama hinta kuin nyt</span>
               )}
             </p>
           )}
@@ -530,7 +529,7 @@ export default function PlanCard({
               vertaillaan. Rivi sanoo molemmat eikä vie ylimääräistä
               korkeutta. */}
           <p className="mt-2 text-[12px] text-ink/60">
-            Arvio {yearly.toLocaleString("fi-FI", { maximumFractionDigits: 0 })} € vuodessa
+            {yearly.toLocaleString("fi-FI", { maximumFractionDigits: 0 })} € vuodessa
             <span className="mx-1.5 text-cream/40" aria-hidden>·</span>
             {campaign ? "ensimmäinen vuosi kampanjoineen" : "laskettu kulutuksellasi"}
           </p>
@@ -723,9 +722,6 @@ export default function PlanCard({
             {plan.partner ? "Tee sopimus" : "Siirry palveluntarjoajalle"}
           </AffiliateButton>
         </div>
-        <p className="mt-2 text-center text-[11.5px] leading-snug text-ink/55">
-          Linkki avautuu uuteen välilehteen. Sopimus viimeistellään palveluntarjoajan sivulla.
-        </p>
       </div>
     </article>
   );

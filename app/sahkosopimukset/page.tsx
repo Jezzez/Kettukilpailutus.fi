@@ -34,9 +34,9 @@ const ENERGY_FAQ: { q: string; a: string }[] = [
 ];
 
 const STEPS = [
-  ["Vastaa neljään kysymykseen", "Kerro kotisi, vuosikulutuksesi ja hintatoiveesi. Nykyinen energiahintasi on vapaaehtoinen, eikä yhteystietoja kysytä."],
-  ["Vertaa samalla laskutavalla", "Näet arvioidut kuukausi- ja vuosikustannukset omalla kulutuksellasi. Edullisin vaihtoehto on merkitty selvästi."],
-  ["Viimeistele yhtiön sivulla", "Tarkista vielä sopimuskausi, lopullinen hinta ja alkamispäivä. Sopimus syntyy vasta, kun hyväksyt tilauksen sähköyhtiön sivulla."],
+  ["Vastaa neljään kysymykseen", "Asumismuoto, vuosikulutus, se mikä on sinulle tärkeintä ja nykyinen hintasi. Yhteystietoja ei kysytä."],
+  ["Valitse sopimus", "Vertaa euroja, älä senttejä. Halvin on merkitty, ja hintapalkeista näet erot ilman laskemista."],
+  ["Tee sopimus verkossa", "Täytä uuden yhtiön lomake parissa minuutissa. Loput hoituu ilman sinua."],
 ];
 
 export default function ElectricityPage() {
@@ -84,12 +84,12 @@ export default function ElectricityPage() {
       */}
       <FoxSays
         className="pt-14 md:pt-16"
-        quote="Kettu ei vertaa pelkkää senttihintaa. Se laskee energiahinnan ja perusmaksun yhteen sinun kulutuksellasi, jotta näet sopimusten kustannukset euroina."
+        quote="Sähköyhtiö ei kerro sinulle, mitä sen sopimus maksaa. Se kertoo sentin. Euromäärä syntyy vasta, kun sentti kerrotaan sinun kulutuksellasi."
         /* Ei "yllä näkyvä euromäärä": kysely on nyt tulosten edessä, joten
            osa lukijoista näkee tämän ennen kuin yhtään lukua on ruudulla.
            Viittaus johonkin, mitä ei ole, saa palvelun näyttämään
            rikkinäiseltä juuri luottamusrepliikin kohdalla. */
-        note="Vertailuhinta sisältää sähköenergian hinnan, perusmaksun ja arvonlisäveron. Sähkönsiirtoa ei voi kilpailuttaa, joten sitä ei lisätä sopimusten vertailuhintoihin."
+        note="Vertailun euromäärä sisältää energian hinnan, kuukausimaksun ja arvonlisäveron. Siirtomaksu tulee verkkoyhtiöltäsi eikä muutu sopimusta vaihtamalla, joten se ei kuulu vertailuun."
       />
 
       {/*
@@ -135,10 +135,10 @@ export default function ElectricityPage() {
               </span>
             </div>
             <h2 className="mx-auto mt-4 max-w-[20ch] text-center font-hero text-[2rem] leading-[1.08] text-cream sm:text-[2.5rem]">
-              Kolme askelta. Kettu pitää polun selkeänä.
+              Kolme askelta, viisi minuuttia.
             </h2>
             <p className="mx-auto mt-3.5 max-w-[52ch] text-center text-[15.5px] leading-relaxed text-ink/85 sm:text-[16.5px]">
-              Vertailu tehdään täällä ilman yhteystietoja. Kun olet valinnut sopimuksen, viimeistelet tilauksen sähköyhtiön sivulla ja uusi myyjä hoitaa vaihdon.
+              Uusi yhtiö irtisanoo vanhan sopimuksen, siirtoyhtiö pysyy samana ja sähkö kulkee koko ajan. Sinulle jää lomakkeen täyttö.
             </p>
           </Reveal>
 
@@ -167,8 +167,8 @@ export default function ElectricityPage() {
                 17-numeroinen tunnus" antaa täydellisen syyn palata asiaan
                 myöhemmin — eikä myöhempää käyntiä tule.
 
-                Tieto ei kadonnut: sama luettelo on heron "Vertailu vie noin
-                minuutin" -kohdan takana, jonka lukija avaa itse silloin
+                Tieto ei kadonnut: sama luettelo on heron "Vie noin 5
+                minuuttia" -kohdan takana, jonka lukija avaa itse silloin
                 kun haluaa tietää mitä vaihto vaatii.
 
                 Peruutusoikeus jää näkyviin, koska se POISTAA riskiä sen
@@ -176,7 +176,7 @@ export default function ElectricityPage() {
               */}
               <p className="flex items-center justify-center gap-2 border-t border-line px-6 py-4 text-center text-[13px] font-medium text-ink/70 sm:px-7">
                 <ShieldCheck size={15} className="shrink-0 text-ink/40" aria-hidden />
-                Verkossa tehdyllä sähkösopimuksella on yleensä 14 päivän peruuttamisoikeus.
+                Etämyynnissä sopimuksella on aina 14 vuorokauden peruutusoikeus.
               </p>
             </div>
           </Reveal>
@@ -288,8 +288,8 @@ export default function ElectricityPage() {
 
       <CtaSection
         href="/sahkosopimukset#vertailu"
-        title="Kettu kilpailuttaa. Sinä päätät."
-        text="Vastaa neljään kysymykseen ja näet sopimusten arvioidut kustannukset samalla tavalla laskettuna. Jos nykyinen sopimuksesi on jo edullinen, Kettu kertoo senkin."
+        title="Kettu kilpailuttaa. Sinä säästät."
+        text="Vastaa muutamaan kysymykseen ja Kettu laskee todellisen hinnan puolestasi. Näet selkeästi, mikä sähkösopimus säästää eniten rahaa juuri sinun kodissasi."
         button="Kilpailuta sähkösopimus"
       />
     </>
