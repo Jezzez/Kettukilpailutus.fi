@@ -132,7 +132,7 @@ export default function EnergyStickyBar({
               <FoxPaw size={10} />
             </span>
             <span className="font-display text-[10.5px] font-bold uppercase leading-none tracking-[0.14em] text-goldInk">
-              Ketun valinta
+              Ketun valinta · arvio
             </span>
           </p>
           <p className="mt-1 flex items-baseline gap-1.5 truncate">

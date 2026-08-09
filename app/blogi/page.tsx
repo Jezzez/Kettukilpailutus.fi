@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { ArrowDown, BookOpen } from "lucide-react";
 import BlogList from "@/components/BlogList";
 import Reveal from "@/components/Reveal";
 import TailSweep from "@/components/fox/TailSweep";
@@ -69,10 +70,21 @@ export default function BlogPage() {
                 <em className="text-goldInk">Alkavat</em> tiedosta.
               </h1>
               <p className="mt-5 max-w-lg text-[17px] leading-relaxed text-ink/90">
-                Kettu purkaa pienellä kirjoitetut ehdot, selittää vaikeat termit ja näyttää, mitä ne
-                tarkoittavat oikeasti euroissasi. Jokainen opas on kirjoitettu auttamaan sinua
-                tekemään paremman päätöksen.
+                Kettu avaa sopimusten pikkupräntin ja kertoo, mitä se tarkoittaa lompakollesi. Oppaat auttavat sinua tekemään taloutesi kannalta parempia päätöksiä.
               </p>
+              <div className="mt-7 flex flex-wrap items-center gap-4">
+                <a
+                  href="#oppaat"
+                  className="group inline-flex items-center gap-2.5 rounded-xl bg-cream px-6 py-3.5 font-display text-[15px] font-bold text-[#A83E0A] shadow-lift transition-all hover:bg-[#FFFFFF] active:scale-[0.98]"
+                >
+                  Selaa {posts.length} opasta
+                  <ArrowDown size={17} className="transition-transform group-hover:translate-y-0.5" aria-hidden />
+                </a>
+                <span className="inline-flex items-center gap-2 text-[13px] font-medium text-ink/80">
+                  <BookOpen size={15} className="text-goldInk" aria-hidden />
+                  Selkeästi ja ilman myyntipuhetta
+                </span>
+              </div>
             </Reveal>
           </div>
 
@@ -81,24 +93,23 @@ export default function BlogPage() {
             ensimmäinen artikkeliotsikko — se on tämän sivun ainoa klikki.
             Puhelimessa kuva veisi juuri sen rivin.
           */}
-          <Reveal delay={0.15} className="relative mx-auto hidden w-full max-w-[520px] md:block">
+          <Reveal delay={0.15} className="relative mx-auto hidden h-[520px] w-full max-w-[560px] md:block">
             {/*
-              KORKEUS ON 500, EI 430. Seisova asento on setin kapein
-              (0,33:1), joten 430 pikselillä hahmo olisi vain 140 px leveä
-              runsaassa 500 pikselin palstassa — kapea tikku keskellä
-              oranssia lukee keskeneräiseltä. 500 antaa noin 163 px, ja
-              jalat asettuvat häntäaallon päälle kuten muillakin sivuilla.
+              Lähdekuvan vasen puolisko on läpinäkyvä. Siksi koko kuvan
+              tavallinen keskitys siirtäisi itse hahmon palstan oikeaan
+              reunaan ja saisi sen näyttämään muiden herojen Kettua
+              pienemmältä. Kuva asemoidaan oman sisältönsä mukaan: hahmo
+              keskelle ja 540 px korkeaksi, samaan mittakaavaan muiden
+              työpöytäherojen kanssa.
             */}
-            <div className="relative flex justify-center">
-  <Image
-    src="/kettu-blogi.png"
-    alt="Kettu lukemassa kirjaa"
-    width={1536}
-    height={1024}
-    priority
-    className="h-[500px] w-auto object-contain"
-  />
-</div>
+            <Image
+              src="/kettu-blogi.png"
+              alt="Kettu lukemassa kirjaa"
+              width={1536}
+              height={1024}
+              priority
+              className="absolute bottom-0 left-1/2 h-[540px] w-auto max-w-none -translate-x-[72%] object-contain drop-shadow-[0_24px_42px_rgba(80,28,2,0.38)]"
+            />
           </Reveal>
         </div>
 
@@ -107,7 +118,7 @@ export default function BlogPage() {
         </div>
       </section>
 
-      <div className="mx-auto max-w-[1180px] px-4 pb-16 pt-8 sm:px-6">
+      <div id="oppaat" className="mx-auto max-w-[1180px] scroll-mt-24 px-4 pb-16 pt-8 sm:px-6">
         <Reveal>
           <BlogList posts={posts} />
         </Reveal>

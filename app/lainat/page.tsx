@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowRight, Check } from "lucide-react";
 import AffiliateButton from "@/components/AffiliateButton";
 import Faq from "@/components/Faq";
 import Reveal from "@/components/Reveal";
 import SectionHead from "@/components/SectionHead";
-import FoxSlot, { FOX_SLOTS } from "@/components/fox/FoxSlot";
+import FoxSlot from "@/components/fox/FoxSlot";
 import TailSweep from "@/components/fox/TailSweep";
 import LoanStickyCta from "@/components/loans/LoanStickyCta";
 import SortterCalculator from "@/components/loans/SortterCalculator";
@@ -118,48 +117,6 @@ export default function LoansPage() {
         mutta se ei ansaitse omaa korttiaan heron sisältä.
       */}
       <section className="theme-ember ember-surface relative overflow-hidden">
-        {/*
-          MOBIILIN KETTU ON TAUSTAKUVA, EI OMA PALSTA.
-
-          MIKSI TAUSTALLA EIKÄ TEKSTIN ALLA OMANA LOHKONA: tämän sivun
-          ainoa mittari on "Hae lainatarjoukset" -napin painallus, ja
-          mobiilissa se on aina kilpailussa ruudun korkeudesta. Kuva omana
-          lohkonaan lisäisi heroon 300–400 pikseliä ja työntäisi napin
-          taitteen alle — se maksaisi klikkejä riippumatta siitä, kuinka
-          hyvä kuva on. Absoluuttisesti sijoitettuna kettu ei vie yhtään
-          pystysuoraa tilaa: hero on täsmälleen yhtä korkea kuin ennen,
-          mutta ei enää tyhjä.
-
-          MIKSI SE ON HÄIVYTETTY: otsikko ja ingressi ovat kermanvärisiä,
-          ja ketun puku on myös kerma. Täydellä peitolla teksti katoaisi
-          hahmon päälle. Vasemmalle häipyvä maski pitää hahmon tiheimmän
-          kohdan oikeassa laidassa, jossa tekstiä ei ole, ja liukuu
-          olemattomiin ennen kuin se ehtii otsikon alle. Peitto 55 % pitää
-          kontrastin luettavana myös auringossa.
-
-          MIKSI OIKEALLE JA REUNAN YLI: sama paikka kuin työpöydällä, eli
-          sama sivu pienemmässä ruudussa — ei eri taitto. Reunan yli
-          valuva hahmo lukee myös tarkoitukselliselta rajaukselta, kun
-          taas keskelle mahtumaan kutistettu hahmo lukee pieneltä.
-
-          `aria-hidden`: kuva ei kerro mitään, mitä otsikossa ei jo lue.
-        */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-y-0 right-0 z-0 w-[100%] overflow-hidden md:hidden"
-        >
-          <Image
-            src={FOX_SLOTS.lainaHero.src ?? ""}
-            alt=""
-            width={FOX_SLOTS.lainaHero.w}
-            height={FOX_SLOTS.lainaHero.h}
-            priority
-            className="absolute bottom-0 right-[-22%] h-[82%] w-auto max-w-none object-contain opacity-40"
-            style={{
-            }}
-          />
-        </div>
-
         <div className="relative z-[1] mx-auto grid max-w-[1180px] items-center gap-8 px-4 pb-16 pt-12 sm:px-6 md:grid-cols-[1.05fr_0.95fr] md:pb-20 md:pt-16">
           <div>
             <Reveal>
@@ -221,27 +178,19 @@ export default function LoansPage() {
           </div>
 
           {/*
-            Kuva keskitetään palstaan. Koko hahmo tuoleineen on kuvassa
-            eikä siinä ole suoraa leikkausreunaa, joten sitä ei tarvitse
-            ankkuroida aaltoreunaan piiloon.
+            SORTTERIN WIDGET ON HERON OIKEA PALSTA.
 
-            EI `halo-glow`-hehkua. Hehku on tarkoitettu tummapohjaisen
-            kuvan irrottamiseen taustasta, mutta tässä kuvassa hahmon
-            päävärit — kerma puku ja vaaleat kengät — ovat jo selvästi
-            vyötä vaaleampia. Hehku näkyi siksi omana vaaleana laikkuna
-            hahmon takana, ei valona hahmossa. Kontrasti riittää
-            sellaisenaan.
+            Työpöydällä laskuri korvaa Ketun kokonaan: sivun hyödyllisin
+            toiminto näkyy nyt heti eikä vasta heron jälkeen. `theme-light`
+            estää latausluurankoa perimästä oranssin vyön käännettyjä
+            väriarvoja.
 
-            KORKEUS 470, EI 400: kuva on pystymallinen (712×993), joten
-            400 pikselin korkeudella se piirtyisi vain 287 pistettä
-            leveänä eli reilusti palstaa kapeampana. Liian pieni hahmo
-            jättää ympärilleen tyhjää oranssia, ja tyhjä oranssi lukee
-            keskeneräiseksi taitoksi, ei kuvitukseksi.
+            Mobiilissa sama yksittäinen web-komponentti asettuu tekstin
+            jälkeen. Erillistä mobiilikopiota ei tehdä, koska piilotettukin
+            custom element alustaisi toisen Sortter-lomakkeen taustalla.
           */}
-          <Reveal delay={0.15} className="relative mx-auto hidden w-full max-w-[520px] md:block">
-            <div className="relative flex justify-center">
-              <FoxSlot id="lainaHero" height={470} priority />
-            </div>
+          <Reveal delay={0.15} className="theme-light mx-auto -mb-10 -mt-10 w-full max-w-[560px] md:-mb-14 md:-mt-14">
+            <SortterCalculator />
           </Reveal>
         </div>
 
@@ -249,83 +198,6 @@ export default function LoansPage() {
       </section>
 
       <div className="theme-light bg-paper">
-        {/*
-          LASKURI HETI HERON ALLE.
-
-          MIKSI TÄHÄN EIKÄ HERON SISÄÄN: heron oikea palsta on 0,95fr eli
-          noin 520 pikseliä, ja siinä on kettukuva. Laskuri kahdella
-          liu'ulla ja isolla euroluvulla ei mahdu siihen ilman että
-          kumpikin puristuu — ja mobiilissa se työntäisi heron oman napin
-          ulos ensimmäisestä ruudullisesta, mikä on tämän sivun ainoa
-          mittari. Heti heron ALLA laskuri saa koko leveyden eikä vie
-          napilta yhtään pikseliä. Järjestys on sama kuin sähkösivulla:
-          työkalu ennen myyntipuhetta, koska kävijä jää tekemään mutta ei
-          jää lukemaan.
-
-          LASKURIA EI KÄÄRITÄ OMAAN KORTTIIN. Ensimmäinen versio oli
-          `rounded-3xl`-kortti otsikkokaistoineen, ja se näytti virheeltä:
-          widget piirtää itse valkoisen, pyöreän ja varjostetun kortin,
-          joten ruudulla oli kortti kortin sisällä. Nyt kehyksiä on yksi
-          ja se on widgetin oma. Sortterin paneelin saa näyttää Sortterin
-          paneelilta — sivun oma lupaus on juuri se, ettei Kettu vertaile
-          lainoja itse.
-
-          MIKSI EI OLE HOUKUTELTU MUOKKAAMAAN WIDGETIN SISUSTA: se on
-          varjo-DOM:issa, joten ainoa tapa olisi injektoida tyylejä
-          Sortterin omilla luokkanimillä. Ne ovat tiivistehäntäisiä
-          moduulinimiä (`widget-calculator-module--…--QfGbo`) ja koodi
-          tulee unpkg:sta ilman versionumeroa, eli se voi vaihtua
-          tuotannossa ilmoittamatta. Sellainen viritys hajoaisi joskus
-          hiljaa juuri sillä sivulla, joka tuottaa. Värit sen sijaan
-          menevät perille widgetin omista attribuuteista — ks.
-          SortterCalculator.tsx.
-        */}
-        <section className="pt-12 md:pt-14">
-          <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
-            <Reveal>
-              {/*
-                TÄSSÄ EI KÄYTETÄ `SectionHead`-KOMPONENTTIA, VAIKKA JOKA
-                MUU OSIO KÄYTTÄÄ. Syy on se, että widget piirtää itse
-                otsikon "Kilpailuta lainat". Kaksi isoa otsikkoa peräkkäin
-                lukee kahdeksi eri osioksi, joiden väliin ei jäänyt
-                mitään — ja koska widgetin otsikkoa ei voi vaihtaa
-                attribuutilla, meidän on väistettävä. Tämä on siis
-                yläotsikko ja yksi rivi, ei osion ankkuri: widgetin oma
-                otsikko toimii ankkurina.
-
-                RIVI KERTOO MITÄ LASKURI EI OLE. "Suuntaa antava" ja
-                "lopullisen korkosi ratkaisee vasta hakemus" eivät ole
-                varauksia lakimiestä varten vaan tämän sivun koko
-                myyntiargumentti: lainan hintaa ei voi lukea taulukosta,
-                ja juuri siksi kannattaa kilpailuttaa. Kun sen sanoo itse
-                ENNEN lukua, luku ei ole lupaus jota vasten pettyä.
-              */}
-              <div className="text-center">
-                <p className="font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-accentDark">
-                  Arvioi kuukausieräsi ennen hakemusta
-                </p>
-                <p className="mx-auto mt-3 max-w-xl text-[15.5px] leading-relaxed text-ink/70 sm:text-[16.5px]">
-                  Säädä lainasummaa ja laina-aikaa.
-                  Näet heti suuntaa-antavan kuukausierän ennen kuin kilpailutat lainasi.
-                </p>
-              </div>
-            </Reveal>
-
-            {/*
-              NEGATIIVISET MARGINAALIT SIISTIVÄT WIDGETIN OMAN VÄLIN.
-              Sortterin uloin säiliö on `margin: 76px 0`, joten ilman
-              tätä otsikon ja kortin väliin jäisi lähes sata pikseliä
-              tyhjää ja saman verran alle — osio näyttäisi siltä, että
-              siitä puuttuu jotain. Negatiivinen marginaali on tässä
-              oikea työkalu, koska se ei kajoa widgetin sisään vaan
-              siirtää sen kokonaisuutta: se kestää Sortterin päivitykset.
-            */}
-            <Reveal delay={0.08} className="mx-auto -mb-10 -mt-16 max-w-[760px]">
-              <SortterCalculator />
-            </Reveal>
-          </div>
-        </section>
-
         {/*
           ASKELKAISTA. Kolme riviä, ei kolmea kappaletta — tämän osion
           tehtävä on kumota yksi pelko ("onko tämä työlästä") yhdellä

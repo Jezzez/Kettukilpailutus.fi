@@ -25,18 +25,18 @@ export const metadata: Metadata = {
 };
 
 const ENERGY_FAQ: { q: string; a: string }[] = [
-  { q: "Katkeaako sähkö, kun vaihdan sopimusta?", a: "Ei katkea. Sähkö tulee kotiisi samaa verkkoa pitkin kuin ennenkin, ja vaihtuu vain se yhtiö, joka laskuttaa sinua. Vaihto tapahtuu taustalla, etkä huomaa siitä kotona mitään." },
-  { q: "Mitä sopimuksen vaihtaminen maksaa?", a: "Ei mitään. Vaihto on maksuton, ja uusi yhtiö hoitaa vanhan sopimuksen irtisanomisen puolestasi. Yksi poikkeus: jos sinulla on kesken määräaikainen sopimus, sen purkamisesta voi tulla kuluja. Tarkista päättymispäivä laskustasi ennen kuin vaihdat." },
-  { q: "Mitä eroa on pörssisähköllä ja kiinteällä hinnalla?", a: "Pörssisähkössä hinta seuraa sähköpörssiä tunneittain: maksat markkinahinnan ja sen päälle yhtiön marginaalin. Kiinteässä sopimuksessa maksat saman sentin joka tunti koko sopimuskauden. Pörssi on pitkällä aikavälillä ollut keskimäärin halvempi, kiinteä taas ennustettava. Kumpikaan ei ole automaattisesti oikea valinta." },
-  { q: "Miksi laskussa on kaksi osaa: myynti ja siirto?", a: "Myyjän voit kilpailuttaa, ja sitä osaa vertaillaan täällä. Siirron hoitaa aina paikallinen verkkoyhtiö, jota ei voi vaihtaa, ja sen hinta on sama riippumatta siitä, keneltä ostat sähkön. Kilpailuttamalla vaikutat siis laskun toiseen puoliskoon." },
-  { q: "Kuinka usein sähkösopimus kannattaa kilpailuttaa?", a: "Kerran vuodessa ja aina, kun määräaikainen sopimus päättyy. Päättynyt sopimus jatkuu usein listahinnalla, ja listahinta on lähes aina kilpailutettua kalliimpi. Juuri siihen unohtamiseen yhtiöiden hinnoittelu nojaa." },
-  { q: "Voinko vaihtaa, vaikka minulla on maksuhäiriömerkintä?", a: "Useimmat yhtiöt tarkistavat luottotiedot. Merkintä voi johtaa vakuusmaksuun tai hakemuksen hylkäämiseen, mutta käytännöt vaihtelevat yhtiöittäin, joten yhden kieltävä vastaus ei tarkoita kaikkien vastausta." },
+  { q: "Katkeaako sähkö, kun vaihdan sopimusta?", a: "Ei vaihdon takia. Sähkö tulee kotiisi samaa verkkoa pitkin kuin ennenkin. Paikallinen verkkoyhtiösi pysyy samana, ja vain sähkönmyyjä vaihtuu." },
+  { q: "Mitä sopimuksen vaihtaminen maksaa?", a: "Uuden sähkösopimuksen tekeminen on tavallisesti maksutonta. Määräaikaista sopimusta ei kuitenkaan yleensä voi päättää kesken sopimuskauden, joten tarkista nykyisen sopimuksesi päättymispäivä ennen tilausta. Kun vaihto on mahdollinen, uusi myyjä hoitaa vanhan sopimuksen irtisanomisen." },
+  { q: "Mitä eroa on pörssisähköllä ja kiinteällä hinnalla?", a: "Pörssisähkön energiahinta vaihtuu tunneittain, ja myyjä lisää siihen marginaalin sekä mahdollisen perusmaksun. Kiinteässä sopimuksessa energian yksikköhinta pysyy samana sovitun kauden, mutta laskun summa muuttuu kulutuksesi mukana. Pörssisähkössä voit hyötyä edullisista tunneista, kun taas kiinteä hinta suojaa hintapiikeiltä." },
+  { q: "Miksi laskussa on kaksi osaa: myynti ja siirto?", a: "Sähkönmyyjän ja myyntisopimuksen voit kilpailuttaa. Siirrosta vastaa paikallinen verkkoyhtiö, jota et voi vaihtaa, joten siirtomaksu ei riipu valitsemastasi sähkönmyyjästä. Tämä vertailu koskee sähkön myyntiosuutta." },
+  { q: "Kuinka usein sähkösopimus kannattaa kilpailuttaa?", a: "Tarkista vaihtoehdot ainakin määräaikaisen sopimuksen lähestyessä loppuaan ja aina, kun saat hinnanmuutosilmoituksen. Toistaiseksi voimassa olevan sopimuksen voi kilpailuttaa muulloinkin, kun huomioit sopimuksen irtisanomisajan." },
+  { q: "Voinko vaihtaa, vaikka minulla on maksuhäiriömerkintä?", a: "Maksuhäiriömerkintä ei automaattisesti estä sähkösopimuksen tekemistä. Myyjä voi erittäin painavasta syystä vaatia kohtuullisen vakuuden tai ennakkomaksun. Käytännöt vaihtelevat yhtiöittäin, joten tarkista ehdot valitsemaltasi myyjältä." },
 ];
 
 const STEPS = [
-  ["Vastaa neljään kysymykseen", "Asumismuoto, vuosikulutus, se mikä on sinulle tärkeintä ja nykyinen hintasi. Yhteystietoja ei kysytä."],
-  ["Valitse sopimus", "Vertaa euroja, älä senttejä. Halvin on merkitty, ja hintapalkeista näet erot ilman laskemista."],
-  ["Tee sopimus verkossa", "Täytä uuden yhtiön lomake parissa minuutissa. Loput hoituu ilman sinua."],
+  ["Vastaa neljään kysymykseen", "Kerro kotisi, vuosikulutuksesi ja hintatoiveesi. Nykyinen energiahintasi on vapaaehtoinen, eikä yhteystietoja kysytä."],
+  ["Vertaa samalla laskutavalla", "Näet arvioidut kuukausi- ja vuosikustannukset omalla kulutuksellasi. Edullisin vaihtoehto on merkitty selvästi."],
+  ["Viimeistele yhtiön sivulla", "Tarkista vielä sopimuskausi, lopullinen hinta ja alkamispäivä. Sopimus syntyy vasta, kun hyväksyt tilauksen sähköyhtiön sivulla."],
 ];
 
 export default function ElectricityPage() {
@@ -84,12 +84,12 @@ export default function ElectricityPage() {
       */}
       <FoxSays
         className="pt-14 md:pt-16"
-        quote="Sähköyhtiö ei kerro sinulle, mitä sen sopimus maksaa. Se kertoo sentin. Euromäärä syntyy vasta, kun sentti kerrotaan sinun kulutuksellasi."
+        quote="Kettu ei vertaa pelkkää senttihintaa. Se laskee energiahinnan ja perusmaksun yhteen sinun kulutuksellasi, jotta näet sopimusten kustannukset euroina."
         /* Ei "yllä näkyvä euromäärä": kysely on nyt tulosten edessä, joten
            osa lukijoista näkee tämän ennen kuin yhtään lukua on ruudulla.
            Viittaus johonkin, mitä ei ole, saa palvelun näyttämään
            rikkinäiseltä juuri luottamusrepliikin kohdalla. */
-        note="Vertailun euromäärä sisältää energian hinnan, kuukausimaksun ja arvonlisäveron. Siirtomaksu tulee verkkoyhtiöltäsi eikä muutu sopimusta vaihtamalla, joten se ei kuulu vertailuun."
+        note="Vertailuhinta sisältää sähköenergian hinnan, perusmaksun ja arvonlisäveron. Sähkönsiirtoa ei voi kilpailuttaa, joten sitä ei lisätä sopimusten vertailuhintoihin."
       />
 
       {/*
@@ -135,10 +135,10 @@ export default function ElectricityPage() {
               </span>
             </div>
             <h2 className="mx-auto mt-4 max-w-[20ch] text-center font-hero text-[2rem] leading-[1.08] text-cream sm:text-[2.5rem]">
-              Kolme askelta, viisi minuuttia.
+              Kolme askelta. Kettu pitää polun selkeänä.
             </h2>
             <p className="mx-auto mt-3.5 max-w-[52ch] text-center text-[15.5px] leading-relaxed text-ink/85 sm:text-[16.5px]">
-              Uusi yhtiö irtisanoo vanhan sopimuksen, siirtoyhtiö pysyy samana ja sähkö kulkee koko ajan. Sinulle jää lomakkeen täyttö.
+              Vertailu tehdään täällä ilman yhteystietoja. Kun olet valinnut sopimuksen, viimeistelet tilauksen sähköyhtiön sivulla ja uusi myyjä hoitaa vaihdon.
             </p>
           </Reveal>
 
@@ -167,8 +167,8 @@ export default function ElectricityPage() {
                 17-numeroinen tunnus" antaa täydellisen syyn palata asiaan
                 myöhemmin — eikä myöhempää käyntiä tule.
 
-                Tieto ei kadonnut: sama luettelo on heron "Vie noin 5
-                minuuttia" -kohdan takana, jonka lukija avaa itse silloin
+                Tieto ei kadonnut: sama luettelo on heron "Vertailu vie noin
+                minuutin" -kohdan takana, jonka lukija avaa itse silloin
                 kun haluaa tietää mitä vaihto vaatii.
 
                 Peruutusoikeus jää näkyviin, koska se POISTAA riskiä sen
@@ -176,7 +176,7 @@ export default function ElectricityPage() {
               */}
               <p className="flex items-center justify-center gap-2 border-t border-line px-6 py-4 text-center text-[13px] font-medium text-ink/70 sm:px-7">
                 <ShieldCheck size={15} className="shrink-0 text-ink/40" aria-hidden />
-                Etämyynnissä sopimuksella on aina 14 vuorokauden peruutusoikeus.
+                Verkossa tehdyllä sähkösopimuksella on yleensä 14 päivän peruuttamisoikeus.
               </p>
             </div>
           </Reveal>
@@ -246,8 +246,8 @@ export default function ElectricityPage() {
           <Reveal>
             <SectionHead
               eyebrow="Usein kysyttyä"
-              title="Kysymykset, jotka pysäyttävät vaihdon."
-              lead="Nämä kuusi ovat ne, joiden takia sopimus jää useimmin vaihtamatta. Vastaukset ovat lyhyet."
+              title="Mietityttääkö sopimuksen vaihtaminen?"
+              lead="Näistä vastauksista näet, mitä vaihdossa tapahtuu ja mitä kannattaa tarkistaa ennen tilausta."
             />
           </Reveal>
           <Reveal delay={0.1} className="mt-8">
@@ -288,8 +288,8 @@ export default function ElectricityPage() {
 
       <CtaSection
         href="/sahkosopimukset#vertailu"
-        title="Kettu kilpailuttaa. Sinä säästät."
-        text="Vastaa muutamaan kysymykseen ja Kettu laskee todellisen hinnan puolestasi. Näet selkeästi, mikä sähkösopimus säästää eniten rahaa juuri sinun kodissasi."
+        title="Kettu kilpailuttaa. Sinä päätät."
+        text="Vastaa neljään kysymykseen ja näet sopimusten arvioidut kustannukset samalla tavalla laskettuna. Jos nykyinen sopimuksesi on jo edullinen, Kettu kertoo senkin."
         button="Kilpailuta sähkösopimus"
       />
     </>
