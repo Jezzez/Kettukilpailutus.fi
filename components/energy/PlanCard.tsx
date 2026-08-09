@@ -162,6 +162,52 @@ export default function PlanCard({
   const normalMonthly = campaign ? normalAnnualCost(plan, kwh) / 12 : null;
 
   /*
+    ERITTELYRUUDUN HINNAT KAMPANJA EDELLÄ.
+
+    Ruutu näytti aiemmin vain pysyvät hinnat. Cheap Energyn kortissa luki
+    siis "Marginaali 0,78 c/kWh" ja "Perusmaksu 4,90 €/kk", vaikka kuusi
+    ensimmäistä kuukautta maksavat 0,39 c/kWh ilman perusmaksua. Ruutu on
+    kortin ainoa paikka, jossa lukee "tässä on hinta eriteltynä", joten se
+    luetaan hinnastona — ja hinnasto, joka ei näytä sitä hintaa jonka
+    asiakas oikeasti maksaa ensi kuussa, on kortin vahvin epäluottamuksen
+    lähde. Erittely myös ristiriitasi kortin oman kampanjamerkin kanssa.
+
+    Kampanjaluku on nyt lihavoitu rivi ja pysyvä hinta sen alla muodossa
+    "6 kk, sitten 0,78 c/kWh". Järjestys on tarkoituksella tämä eikä
+    toisin päin: ylempi rivi vastaa kysymykseen "mitä maksan nyt", alempi
+    kysymykseen "mitä maksan sen jälkeen". Molemmat ovat päätöksen
+    kannalta pakollisia.
+
+    ÄLÄ piilota "sitten"-riviä tilan säästämiseksi. Ilman sitä kortti
+    lupaisi kampanjahinnan pysyväksi, ja se on täsmälleen se pettymys,
+    jota vastaan normalMonthly yllä on rakennettu — sekä syy, miksi
+    "Ketun valinta" painottaa kampanjan JÄLKEISTÄ hintaa.
+
+    Kampanjan kentät ovat vapaaehtoisia, joten kampanjarivi syntyy vain
+    sinne, missä kampanja oikeasti muuttaa kyseistä lukua: 20 sopimuksella
+    47:stä on kampanja, ja niistä viisi muuttaa marginaalia, loput vain
+    perusmaksua. Sopimus ilman kampanjaa näyttää yhden rivin kuten ennen.
+  */
+  const energiaPysyva =
+    plan.type === "spot"
+      ? `${money(plan.spotMargin ?? 0)} c/kWh + pörssi`
+      : `${money(plan.energyPrice ?? 0)} c/kWh`;
+
+  const energiaKampanja =
+    plan.type === "spot"
+      ? campaign?.spotMargin != null
+        ? `${money(campaign.spotMargin)} c/kWh + pörssi`
+        : null
+      : campaign?.energyPrice != null
+      ? `${money(campaign.energyPrice)} c/kWh`
+      : null;
+
+  const perusmaksuPysyva = `${money(plan.basicFee)} €/kk`;
+
+  const perusmaksuKampanja =
+    campaign?.basicFee != null ? `${money(campaign.basicFee)} €/kk` : null;
+
+  /*
     MOBIILISSA YKSITYISKOHDAT AVATAAN, TYÖPÖYDÄLLÄ NE OVAT AINA AUKI.
 
     Kortti oli mobiilissa 527 pikseliä korkea eli 88 % puhelimen ruudusta,
@@ -599,18 +645,29 @@ export default function PlanCard({
           id={`tiedot-${plan.id}`}
           className={`flex-1 flex-col ${avattu ? "flex" : "hidden sm:flex"}`}
         >
-        <dl className="mt-3.5 space-y-1.5 rounded-xl border border-line bg-black/10 p-3">
-          <div className="flex justify-between text-[12px]">
+        {/* Ks. `energiaKampanja`-kommentti komponentin ylaosassa. */}
+        <dl className="mt-3.5 space-y-2 rounded-xl border border-line bg-black/10 p-3">
+          <div className="flex items-start justify-between gap-3 text-[12px]">
             <dt className="text-ink/60">{plan.type === "spot" ? "Marginaali" : "Energia"}</dt>
-            <dd className="font-data font-bold text-ink">
-              {plan.type === "spot"
-                ? `${money(plan.spotMargin ?? 0)} c/kWh + pörssi`
-                : `${money(plan.energyPrice ?? 0)} c/kWh`}
+            <dd className="text-right font-data font-bold text-ink">
+              {energiaKampanja ?? energiaPysyva}
+              {energiaKampanja && campaign && (
+                <span className="mt-0.5 block text-[11px] font-medium leading-tight text-ink/55">
+                  {campaign.months} kk, sitten {energiaPysyva}
+                </span>
+              )}
             </dd>
           </div>
-          <div className="flex justify-between text-[12px]">
+          <div className="flex items-start justify-between gap-3 text-[12px]">
             <dt className="text-ink/60">Perusmaksu</dt>
-            <dd className="font-data font-bold text-ink">{money(plan.basicFee)} €/kk</dd>
+            <dd className="text-right font-data font-bold text-ink">
+              {perusmaksuKampanja ?? perusmaksuPysyva}
+              {perusmaksuKampanja && campaign && (
+                <span className="mt-0.5 block text-[11px] font-medium leading-tight text-ink/55">
+                  {campaign.months} kk, sitten {perusmaksuPysyva}
+                </span>
+              )}
+            </dd>
           </div>
         </dl>
 

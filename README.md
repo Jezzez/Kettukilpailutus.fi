@@ -66,8 +66,11 @@ on valmis laajennettavaksi.
 `perusmaksu × 12 + energiahinta × kulutus / 100`. Pörssisopimuksilla
 energiahinta on `assumedSpotAverage + spotMargin`; oletuskeskihinta ja sen
 päivämäärä tulevat `data/electricity.json`-tiedostosta ja kerrotaan
-käyttäjälle avoimesti. Asumismuotojen kulutusarviot (2 000 / 5 000 / 8 000 /
-18 000 kWh/v) ovat vakiossa `DWELLINGS`.
+käyttäjälle avoimesti. Asumismuotojen kulutusarviot (1 000 / 3 500 / 7 000 /
+18 000 kWh/v) ovat vakiossa `DWELLINGS`. Ne ovat tarkoituksella haarukoiden
+alalaidassa; perustelu ja julkaistut vertailuluvut on kirjoitettu auki
+`DWELLINGS`in kommenttiin. Siellä on myös syy siihen, miksi näitä lukuja ei
+saa käyttöliittymässä kutsua keskiarvoiksi.
 
 ## Affiliate
 

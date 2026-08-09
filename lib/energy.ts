@@ -248,10 +248,35 @@ export const TYPE_LABEL: Record<ElectricityPlan["type"], string> = {
   open: "Toistaiseksi voimassa",
 };
 
-/** Asumismuotojen kulutusesimerkit (kWh/v) — vakiintuneet suomalaiset arviot. */
+/**
+ * Asumismuotojen kulutusarviot (kWh/v) — kyselyn nappien lähtöarvot.
+ *
+ * Luvut ovat tarkoituksella haarukoiden ALALAIDASSA, eivät keskiarvoja.
+ * Perustelu: luku on esitäyttö, jonka käyttäjä voi kirjoittaa yli. Liian
+ * suuri esitäyttö näyttää kävijälle laskun, joka on isompi kuin hänen
+ * omansa, ja hän lähtee. Liian pienen hän korjaa ylöspäin. Väärä arvaus
+ * alaspäin maksaa siis vähemmän kuin ylöspäin.
+ *
+ * Laskettu koko 47 sopimuksen datalla: halvin sopimus on sama kaikilla
+ * kulutuksilla 1 000–15 000 kWh, joten matalampi esitäyttö EI muuta
+ * suositusta eikä juuri näytettävää säästöä (kerrostalossa 75 € → 66 €
+ * vuodessa). Muutos näkyy käytännössä vain kuukausihinnassa.
+ *
+ * Julkaistut haarukat vertailun vuoksi (Fortum, Vattenfall, Lumme,
+ * Vaasan Sähkö, Selectra): kerrostaloyksiö 1 500–2 500, rivitalo ilman
+ * sähkölämmitystä n. 4 000, omakotitalo ilman sähkölämmitystä n. 6 000,
+ * sähkölämmitteinen 150 m² talo 17 000–20 000.
+ *
+ * Kerrostalon 1 000 on tietoisesti noiden haarukoiden ALLA: se on vähän
+ * kuluttavan yksinasujan luku, ei tyypillisen kerrostaloasunnon. Siksi
+ * käyttöliittymä saa kutsua näitä vain "arvioksi" — luvun viereen ei saa
+ * kirjoittaa väitettä siitä, mikä on tavallista tai keskimääräistä.
+ * Väärä keskiarvoväite olisi kuluttajansuojariski ja veisi sivulta juuri
+ * sen luottamuksen, jonka varassa koko klikki on.
+ */
 export const DWELLINGS = [
-  { key: "kerrostalo", label: "Kerrostalo", kwh: 2000, hint: "n. 2 000 kWh/v" },
-  { key: "rivitalo", label: "Rivitalo", kwh: 5000, hint: "n. 5 000 kWh/v" },
-  { key: "omakotitalo", label: "Omakotitalo", kwh: 8000, hint: "ei sähkölämmitystä, n. 8 000 kWh/v" },
+  { key: "kerrostalo", label: "Kerrostalo", kwh: 1000, hint: "n. 1 000 kWh/v" },
+  { key: "rivitalo", label: "Rivitalo", kwh: 3500, hint: "n. 3 500 kWh/v" },
+  { key: "omakotitalo", label: "Omakotitalo", kwh: 7000, hint: "ei sähkölämmitystä, n. 7 000 kWh/v" },
   { key: "sahkolammitys", label: "Sähkölämmitteinen talo", kwh: 18000, hint: "n. 18 000 kWh/v" },
 ] as const;

@@ -406,6 +406,18 @@ export default function ElectricityExperience({
     : null;
   const cheapestId = filtered.length > 1 ? cheapestPlan!.id : null;
 
+  /** Tulososan otsikossa nimetty sopimus. Sama varasuunnitelma kuin
+   *  `bestVisibleCost`illa: jos suodattimet eivät jätä yhtään sopimusta,
+   *  näytetään koko listan halvin. Otsikko ei saa jäädä tyhjäksi — se on
+   *  ensimmäinen asia, jonka lukija näkee kyselyn jälkeen. */
+  const headlinePlan = useMemo(
+    () =>
+      cheapestPlan ??
+      [...plans].sort((a, b) => annualCost(a, kwh) - annualCost(b, kwh))[0] ??
+      null,
+    [cheapestPlan, plans, kwh]
+  );
+
   /** Ankkuri, jonka ohittaminen näyttää mobiilin tulospalkin. */
   const resultsRef = useRef<HTMLDivElement>(null);
   /** Tulososion yläreuna — tänne vieritetään heti kun kysely on täytetty. */
@@ -946,7 +958,28 @@ export default function ElectricityExperience({
           key={d.key}
           icon={DWELLING_ICONS[d.key as keyof typeof DWELLING_ICONS]}
           title={d.label}
-          hint={`Yleensä noin ${d.kwh.toLocaleString("fi-FI")} kWh vuodessa`}
+          /*
+            EI kWh-LUKUA ENSIMMÄISESSÄ KYSYMYKSESSÄ — TÄMÄ ON TIETOINEN.
+
+            Napeissa luki aiemmin "Yleensä noin 2 000 kWh vuodessa". Se oli
+            kaksi ongelmaa yhdessä rivissä. Ensinnäkin se oli keskiarvoväite,
+            ja DWELLINGS-luvut ovat tarkoituksella haarukoiden alalaidassa —
+            väite oli siis väärä. Toiseksi, ja tärkeämpänä: se antoi
+            lukijalle luvun, josta olla eri mieltä juuri siinä kohdassa,
+            jossa häntä pyydetään tekemään ensimmäinen valinta. "Meidän
+            kaksio ei kuluta 2 000:ta" on täysin oikea reaktio, ja se
+            pysäyttää kyselyn ennen kuin se on alkanut.
+
+            Kysymys 1 kysyy nyt vain sitä mitä se kysyy: minkälaisessa
+            kodissa asut. Sen tietää jokainen epäröimättä. Luku ilmestyy
+            kysymyksessä 2, jossa se on kentässä, jonka voi kirjoittaa yli,
+            ja jossa sen vieressä lukee suoraan että kyseessä on arvio.
+            Sama tieto, oikeassa paikassa — ja siellä eri mieltä oleminen
+            johtaa korjaukseen eikä poistumiseen.
+
+            Sivutuotteena neljä riviä lyhenivät, eli koko valinta mahtuu
+            puhelimen ruudulle kerralla. Ks. BigOptionin korkeuskommentti.
+          */
           selected={dwelling === d.key}
           onClick={() => {
             setDwelling(d.key);
@@ -1904,8 +1937,31 @@ export default function ElectricityExperience({
       {showResults && (
       <section ref={resultsTopRef} className={`theme-light scroll-mt-20 bg-paper ${withHero ? "pt-14" : "pt-10"}`}>
         <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
-          {/* Tulos */}
-          <div className="flex flex-wrap items-center justify-between gap-6 rounded-2xl border border-line bg-white px-5 py-6 shadow-card sm:rounded-[20px] sm:px-8 sm:py-7">
+          {/*
+            TULOSLAATIKKO — NIMETTY SOPIMUS JA NAPPI SAMASSA RUUDUSSA.
+
+            MIKSI TÄSSÄ ON NAPPI. Laatikko nimeää tämän hetken halvimman
+            sopimuksen. Heti sen alla on "Ketun suositus" -paneeli, joka
+            nimeää usein ERI yhtiön — ja siinä on nappi. Ilman nappia sivu
+            siis sanoi: "halvin on X" ja tarjosi painettavaksi vain Y:tä.
+            Epäluuloinen lukija lukee tuon yhdellä tavalla: painike on sillä,
+            joka maksaa palkkion. Se on juuri se epäilys, joka tappaa
+            vertailusivun — ja tämän sivuston koko ansaintalogiikka on se,
+            että lukuihin luotetaan. Jos sopimus nimetään, se on myös
+            voitava ottaa.
+
+            NAPPIA EI OLE `alreadyGood`-tilassa. Silloin ruudulla lukee
+            "älä vaihda", ja ostokehotus sen vieressä kumoaisi sivun
+            tärkeimmän luottamussignaalin.
+
+            MIKSI PINTA VAIHTUI. Laatikko oli `bg-white` eli kortin taso, ja
+            sen sisällä oleva pikkulaatikko oli `pelt-surface` eli tummempi.
+            Syvyysjärjestys meni siis väärin päin: lähempänä käyttäjää oleva
+            pinta oli tummempi kuin sen alusta. Nyt ulompi on `pelt-surface`
+            ja sisempi kortti — paperi → turkki → kortti, niin kuin
+            DESIGN.md sanoo. Uusia värejä ei tullut yhtään.
+          */}
+          <div className="pelt-surface flex flex-wrap items-center justify-between gap-6 rounded-2xl border border-gold/35 px-5 py-6 shadow-card sm:rounded-[20px] sm:px-8 sm:py-7">
             <div>
               {/*
                 OVELA TEKSTILINJA. Tässä luki aiemmin "Askel 2 / 2 · tuloksesi"
@@ -1927,18 +1983,87 @@ export default function ElectricityExperience({
                 </p>
                 <FoxComputing show={computing} />
               </div>
-              <p className="mt-3 font-hero text-[2rem] leading-[1.1] text-ink sm:text-[2.5rem]">
-                Tämän hetken edullisin:{" "}
-                <span className="font-display font-data font-price font-extrabold tracking-tight text-accent">
-                  {/* Sama tarkkuus kuin korteissa — ks. perustelu PlanCard.tsx */}
-                  {cheapestMonthly.toLocaleString("fi-FI", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} €
-                </span>
-                /kk
+              {/*
+                OTSIKKONA YHTIÖ JA LOGO, EI EUROLUKU.
+
+                Kysely kysyy neljä kertaa jotain, ja lukija odottaa
+                vastaukseksi päätöstä: minkä sopimuksen otan. "30,2 €/kk"
+                vastaa kysymykseen paljonko, ei kysymykseen mikä. Nimetty
+                ja tunnistettu yhtiö madaltaa kynnystä painaa "Tee sopimus"
+                — sama perustelu, jolla logot ovat isoina korteissa.
+
+                EUROLUKU EI SILTI KATOA, VAAN SIIRTYY ALLE PIENEEN RIVIIN.
+                Jos käyttäjä ei ole syöttänyt nykyistä hintaansa, oikean
+                reunan laatikossa lukee vain kehotus eikä yhtään lukua.
+                Ilman tätä riviä koko tulososan yläreunassa ei olisi
+                ainuttakaan euroa, ja laskuri näyttäisi siltä, ettei se
+                laskenut mitään — juuri se tunne vie lukijan pois ennen
+                ensimmäistäkään korttia.
+
+                Logo tulee ilman kehystä tai laattaa: tausta on jo vaalea,
+                joten laatikko olisi pelkkä ylimääräinen viiva. Jos yhtiöltä
+                puuttuu logo, näytetään pelkkä nimi — tyhjä paikkamerkki
+                näyttäisi rikkoutuneelta kuvalta.
+              */}
+              <p className="mt-3 font-display text-[12px] font-bold uppercase tracking-[0.14em] text-ink/50">
+                Tämän hetken edullisin
+              </p>
+              <div className="mt-1.5 flex items-center gap-3">
+                {headlinePlan?.logo && (
+                  <Image
+                    src={headlinePlan.logo}
+                    alt=""
+                    width={224}
+                    height={224}
+                    className="h-12 w-12 shrink-0 object-contain sm:h-14 sm:w-14"
+                  />
+                )}
+                <p className="font-hero text-[2rem] leading-[1.05] text-accent sm:text-[2.5rem]">
+                  {headlinePlan?.provider}
+                </p>
+              </div>
+              <p className="mt-1 font-display text-[15px] font-semibold text-ink/75">
+                {headlinePlan?.name}
               </p>
               <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[14px] text-ink/60">
                 <PawTrail count={3} size={9} className="text-accent/55" />
-                Nuuski läpi {plans.length} sopimusta {kwh.toLocaleString("fi-FI")} kWh kulutuksellasi
+                <span>
+                  Nuuski läpi {plans.length} sopimusta {kwh.toLocaleString("fi-FI")} kWh
+                  kulutuksellasi —{" "}
+                  {/* Sama tarkkuus kuin korteissa — ks. perustelu PlanCard.tsx */}
+                  <span className="font-data font-semibold text-ink/80">
+                    {cheapestMonthly.toLocaleString("fi-FI", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} €
+                  </span>{" "}
+                  / kk
+                </span>
               </p>
+
+              {headlinePlan && !alreadyGood && (
+                <>
+                  <div className="mt-5 flex flex-wrap items-center gap-3">
+                    <AffiliateButton
+                      href={headlinePlan.affiliateUrl}
+                      cardId={headlinePlan.id}
+                      placement="energy-loyto"
+                    >
+                      Tee sopimus
+                    </AffiliateButton>
+                    <a
+                      href={`/sahkosopimukset/sopimus/${headlinePlan.slug}`}
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-lineDark/60 px-5 py-3 font-display text-[14.5px] font-bold text-ink transition-colors hover:bg-white"
+                    >
+                      Tutustu sopimukseen <ArrowRight size={15} aria-hidden />
+                    </a>
+                  </div>
+                  {/* Sama lause kuin suosituspaneelissa. Epäselvyys siitä,
+                      mitä klikin takana tapahtuu, on tässä kohdassa yleisin
+                      syy jättää painamatta: osa pelkää tekevänsä sitovan
+                      sopimuksen vertailusivulla. */}
+                  <p className="mt-2.5 text-[13px] text-ink/60">
+                    Sopimus tehdään sähköyhtiön omilla sivuilla.
+                  </p>
+                </>
+              )}
             </div>
             {alreadyGood ? (
               /*
@@ -1949,7 +2074,7 @@ export default function ElectricityExperience({
                 kieltäytymisestä lupauksen sijaan luonteenpiirteen, ja se on
                 se asia, jonka takia käyttäjä palaa ensi vuonna takaisin.
               */
-              <div className="pelt-surface flex w-full max-w-md items-center gap-5 rounded-2xl border border-gold/35 px-6 py-5 shadow-card sm:rounded-[20px]">
+              <div className="flex w-full max-w-md items-center gap-5 rounded-2xl border border-gold/35 bg-white px-6 py-5 shadow-card sm:rounded-[20px]">
                 <FoxSlot id="alaVaihda" height={150} className="hidden shrink-0 sm:block" />
                 <div>
                   <p className="flex items-center gap-2 text-[11.5px] font-semibold uppercase tracking-[0.14em] text-goldInk">
@@ -1964,7 +2089,7 @@ export default function ElectricityExperience({
                 </div>
               </div>
             ) : currentAnnual ? (
-              <div className="pelt-surface w-full rounded-2xl border border-gold/35 px-6 py-5 shadow-card sm:w-auto sm:rounded-[20px] sm:text-right">
+              <div className="w-full rounded-2xl border border-gold/35 bg-white px-6 py-5 shadow-card sm:w-auto sm:rounded-[20px] sm:text-right">
                 <p className="text-[11.5px] font-semibold uppercase tracking-[0.14em] text-goldInk">
                   Säästö nykyiseen sopimukseesi
                 </p>
@@ -1977,7 +2102,7 @@ export default function ElectricityExperience({
               </div>
             ) : (
               /* Ei omaa hintaa vielä — kehotus, ei keksitty säästöluku. */
-              <div className="pelt-surface w-full max-w-[17.5rem] rounded-2xl border border-gold/35 px-4 py-3.5 shadow-card sm:rounded-[18px]">
+              <div className="w-full max-w-[17.5rem] rounded-2xl border border-gold/35 bg-white px-4 py-3.5 shadow-card sm:rounded-[18px]">
                 <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.13em] text-goldInk">
                   <Wallet size={13} aria-hidden /> Säästösi euroina
                 </p>
