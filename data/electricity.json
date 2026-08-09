@@ -1,6 +1,6 @@
 {
   "assumedSpotAverage": 6.2,
-  "priceDate": "2026-08-06",
+  "priceDate": "2026-08-09",
   "isExampleData": false,
   "plans": [
     {
@@ -1414,143 +1414,110 @@
       "provider": "Helen",
       "name": "Pörssisähkö",
       "type": "spot",
-      "basicFee": 3.99,
+      "basicFee": 4.96,
       "energyPrice": null,
-      "spotMargin": 0.42,
-      "green": true,
+      "spotMargin": 0.49,
+      "green": false,
       "fixedTermMonths": null,
-      "rating": 4.5,
-      "reviews": 2140,
-      "affiliateUrl": "https://example.com/aff/helen-porssisahko",
-      "example": true,
+      "rating": null,
+      "reviews": null,
+      "affiliateUrl": "https://www.helen.fi/sahko/sahkosopimus/sahkotarjous",
+      "partner": false,
+      "checkedAt": "2026-08-09",
+      "sourceUrl": "https://www.helen.fi/sahko/sahkosopimus/sahkotarjous",
       "region": "Helsinki",
       "gradient": [
         "#1F1A16",
         "#3A322B"
       ],
       "features": [
-        "Pörssihinta + 0,42 c/kWh marginaali",
-        "100 % uusiutuvaa sähköä",
-        "Perusmaksu 3,99 €/kk",
-        "Ei määräaikaa"
+        "Pörssihinta + 0,49 c/kWh",
+        "Perusmaksu 0 € kuusi ensimmäistä kuukautta",
+        "Ei määräaikaa — irtisanottavissa milloin vain",
+        "Alkuperäksi valittavissa uusiutuva tai hiilivapaa"
       ],
-      "summary": "Helen on Helsingin seudun oma sähköyhtiö, joka myy sähköä koko Suomeen. Pörssisopimuksessa maksat tuntihinnan ja 0,42 sentin marginaalin.",
+      "summary": "Helenin pörssisopimus ilman määräaikaa. Marginaali 0,49 c/kWh ja perusmaksu 4,96 €/kk, kuusi ensimmäistä kuukautta ilman perusmaksua.",
       "pros": [
-        "Marginaali on koko hinnan erottava tekijä — se on tässä näkyvissä",
-        "Voit irtisanoa sopimuksen milloin tahansa",
-        "Halvat yötunnit näkyvät laskussa heti"
+        "Marginaali vertailun edullisimpien joukossa",
+        "Puolen vuoden perusmaksuetu on pitkä",
+        "Suomen suurimpia sähkönmyyjiä — myös Väreen asiakkaat siirtyivät tänne",
+        "Ei sitovaa määräaikaa"
       ],
       "cons": [
-        "Hinta muuttuu joka tunti",
-        "Pakkasviikko nostaa laskua välittömästi"
+        "Perusmaksu nousee 4,96 euroon puolen vuoden jälkeen",
+        "Kettu ei välitä tätä sopimusta, joten teet sen Helenin omilla sivuilla"
       ],
-      "bestFor": "Sinulle, joka voit siirtää pyykit, saunan ja auton latauksen halvoille tunneille. Silloin pieni marginaali kertautuu koko vuoden laskussa.",
+      "bestFor": "Valitse tämä, jos haluat pörssisähköä pienellä marginaalilla isolta kotimaiselta yhtiöltä.",
       "faq": [
         [
           "Mitä marginaali tarkoittaa?",
-          "Maksat sähköstä pörssin tuntihinnan ja sen päälle yhtiön marginaalin, tässä 0,42 c/kWh. Marginaali on se osa hinnasta, jonka yhtiö itse päättää — ja siksi ainoa asia, jolla pörssisopimukset oikeasti eroavat toisistaan."
+          "Maksat sähköstä pörssin hinnan sen hetken mukaan ja päälle yhtiön marginaalin sekä kuukausittaisen perusmaksun. Marginaali ja perusmaksu ovat ne kaksi lukua, joilla pörssisopimukset oikeasti eroavat toisistaan — pörssihinta on kaikilla sama."
         ],
         [
-          "Voinko vaihtaa pois milloin vain?",
-          "Kyllä. Toistaiseksi voimassa oleva sopimus päättyy 14 vuorokauden irtisanomisajalla, ja uusi yhtiö hoitaa irtisanomisen puolestasi."
-        ]
-      ]
-    },
-    {
-      "id": "tampereen-energia-kiintea-24-kk",
-      "slug": "tampereen-energia-kiintea-24-kk",
-      "provider": "Tampereen Energia",
-      "name": "Kiinteä 24 kk",
-      "type": "fixed",
-      "basicFee": 4.9,
-      "energyPrice": 7.79,
-      "spotMargin": null,
-      "green": true,
-      "fixedTermMonths": 24,
-      "rating": 4.3,
-      "reviews": 980,
-      "affiliateUrl": "https://example.com/aff/tampereen-energia-kiintea-24-kk",
-      "example": true,
-      "region": "Tampere",
-      "gradient": [
-        "#2A231E",
-        "#4A3C33"
-      ],
-      "features": [
-        "Kiinteä 7,79 c/kWh koko kauden",
-        "Määräaika 24 kk",
-        "100 % uusiutuvaa sähköä",
-        "Perusmaksu 4,90 €/kk"
-      ],
-      "summary": "Tampereen Energia on Tampereen seudun oma sähköyhtiö. Kiinteässä sopimuksessa maksat saman 7,79 sentin joka tunti 24 kuukauden ajan.",
-      "pros": [
-        "Hinta ei muutu kesken kauden",
-        "Talvikuukaudet eivät yllätä laskussa",
-        "Helppo budjetoida etukäteen"
-      ],
-      "cons": [
-        "Määräaika sitoo 24 kuukaudeksi",
-        "Jos pörssihinta laskee, maksat silti saman"
-      ],
-      "bestFor": "Sinulle, jolle laskun ennustettavuus on tärkeämpää kuin muutaman euron kuukausisäästö. Erityisesti sähkölämmitteiseen taloon.",
-      "faq": [
-        [
-          "Mitä tapahtuu määräajan päätyttyä?",
-          "Sopimus jatkuu yleensä toistaiseksi voimassa olevana listahinnalla, joka on lähes aina kilpailutettua kalliimpi. Merkitse päättymispäivä kalenteriin ja kilpailuta uudelleen."
+          "Mihin vertailun euromäärä perustuu?",
+          "Kulutukseesi ja pörssin oletuskeskihintaan. Todellinen lasku riippuu siitä, milloin sähköä käytät: pörssisopimuksessa yöllä ja tuulisina päivinä kulutettu sähkö on halvempaa kuin pakkasaamun sähkö."
         ],
         [
-          "Voinko irtisanoa kesken määräajan?",
-          "Voit, mutta siitä voi tulla kuluja. Ehdot vaihtelevat yhtiöittäin, joten tarkista purkukulu sopimusehdoista ennen kuin allekirjoitat."
+          "Miksi vertailussa on yhtiöitä, joita Kettu ei välitä?",
+          "Koska vertailu, jossa näkyisivät vain palkkiota maksavat yhtiöt, olisi mainos eikä vertailu. Tämän sopimuksen hinnat on luettu yhtiön omalta sivulta, ja nappi vie sinne — Kettu ei ansaitse tästä sopimuksesta mitään."
         ]
-      ]
+      ],
+      "logo": "/logot/helen.png"
     },
     {
       "id": "turku-energia-porssisahko",
       "slug": "turku-energia-porssisahko",
       "provider": "Turku Energia",
-      "name": "Pörssisähkö",
+      "name": "Louna Pörssi",
       "type": "spot",
-      "basicFee": 3.6,
+      "basicFee": 4.95,
       "energyPrice": null,
-      "spotMargin": 0.35,
-      "green": true,
+      "spotMargin": 0.42,
+      "green": false,
       "fixedTermMonths": null,
-      "rating": 4.4,
-      "reviews": 860,
-      "affiliateUrl": "https://example.com/aff/turku-energia-porssisahko",
-      "example": true,
+      "rating": null,
+      "reviews": null,
+      "affiliateUrl": "https://www.turkuenergia.fi/kotitaloudet/sahko/sahkosopimukset-ja-hinnat/louna-porssi",
+      "partner": false,
+      "checkedAt": "2026-08-09",
+      "sourceUrl": "https://www.turkuenergia.fi/kotitaloudet/sahko/sahkosopimukset-ja-hinnat",
       "region": "Turku",
       "gradient": [
         "#33291F",
         "#5C4A38"
       ],
       "features": [
-        "Pörssihinta + 0,35 c/kWh marginaali",
-        "100 % uusiutuvaa sähköä",
-        "Perusmaksu 3,60 €/kk",
-        "Ei määräaikaa"
+        "Pörssihinta + 0,42 c/kWh",
+        "Perusmaksu 4,95 €/kk",
+        "Ei määräaikaa — irtisanottavissa milloin vain",
+        "Sopimuksen voi tehdä mihin päin Suomea tahansa"
       ],
-      "summary": "Turku Energia on Turun seudun oma sähköyhtiö, joka myy sähköä koko Suomeen. Pörssisopimuksessa maksat tuntihinnan ja 0,35 sentin marginaalin.",
+      "summary": "Turku Energian pörssisopimus ilman määräaikaa. Marginaali 0,42 c/kWh on vertailun pienimpiä, perusmaksu 4,95 €/kk.",
       "pros": [
-        "Marginaali on koko hinnan erottava tekijä — se on tässä näkyvissä",
-        "Voit irtisanoa sopimuksen milloin tahansa",
-        "Halvat yötunnit näkyvät laskussa heti"
+        "Vertailun pienimpiä marginaaleja",
+        "Ei sitovaa määräaikaa",
+        "Saatavilla koko Suomeen, ei vain Turun seudulle"
       ],
       "cons": [
-        "Hinta muuttuu joka tunti",
-        "Pakkasviikko nostaa laskua välittömästi"
+        "Ei perusmaksuetua — perusmaksu juoksee ensimmäisestä kuukaudesta",
+        "Kettu ei välitä tätä sopimusta, joten teet sen Turku Energian omilla sivuilla"
       ],
-      "bestFor": "Sinulle, joka voit siirtää pyykit, saunan ja auton latauksen halvoille tunneille. Silloin pieni marginaali kertautuu koko vuoden laskussa.",
+      "bestFor": "Valitse tämä, jos haet pörssisopimusta pelkän marginaalin perusteella etkä välitä kampanjaeduista.",
       "faq": [
         [
           "Mitä marginaali tarkoittaa?",
-          "Maksat sähköstä pörssin tuntihinnan ja sen päälle yhtiön marginaalin, tässä 0,35 c/kWh. Marginaali on se osa hinnasta, jonka yhtiö itse päättää — ja siksi ainoa asia, jolla pörssisopimukset oikeasti eroavat toisistaan."
+          "Maksat sähköstä pörssin hinnan sen hetken mukaan ja päälle yhtiön marginaalin sekä kuukausittaisen perusmaksun. Marginaali ja perusmaksu ovat ne kaksi lukua, joilla pörssisopimukset oikeasti eroavat toisistaan — pörssihinta on kaikilla sama."
         ],
         [
-          "Voinko vaihtaa pois milloin vain?",
-          "Kyllä. Toistaiseksi voimassa oleva sopimus päättyy 14 vuorokauden irtisanomisajalla, ja uusi yhtiö hoitaa irtisanomisen puolestasi."
+          "Mihin vertailun euromäärä perustuu?",
+          "Kulutukseesi ja pörssin oletuskeskihintaan. Todellinen lasku riippuu siitä, milloin sähköä käytät: pörssisopimuksessa yöllä ja tuulisina päivinä kulutettu sähkö on halvempaa kuin pakkasaamun sähkö."
+        ],
+        [
+          "Miksi vertailussa on yhtiöitä, joita Kettu ei välitä?",
+          "Koska vertailu, jossa näkyisivät vain palkkiota maksavat yhtiöt, olisi mainos eikä vertailu. Tämän sopimuksen hinnat on luettu yhtiön omalta sivulta, ja nappi vie sinne — Kettu ei ansaitse tästä sopimuksesta mitään."
         ]
-      ]
+      ],
+      "logo": "/logot/turku-energia.png"
     },
     {
       "id": "vaasan-sahko-porssisahko",
@@ -1558,95 +1525,289 @@
       "provider": "Vaasan Sähkö",
       "name": "Pörssisähkö",
       "type": "spot",
-      "basicFee": 0.0,
+      "basicFee": 4.9,
       "energyPrice": null,
-      "spotMargin": 0.49,
-      "green": true,
+      "spotMargin": 0.48,
+      "green": false,
       "fixedTermMonths": null,
-      "rating": 4.2,
-      "reviews": 720,
-      "affiliateUrl": "https://example.com/aff/vaasan-sahko-porssisahko",
-      "example": true,
+      "rating": null,
+      "reviews": null,
+      "affiliateUrl": "https://www.vaasansahko.fi/sahkosopimus/porssisahko/",
+      "partner": false,
+      "checkedAt": "2026-08-09",
+      "sourceUrl": "https://www.vaasansahko.fi/sahkosopimus/sahkotarjous/",
       "region": "Vaasa",
       "gradient": [
         "#3E3227",
         "#6B5745"
       ],
       "features": [
-        "Pörssihinta + 0,49 c/kWh marginaali",
-        "100 % uusiutuvaa sähköä",
-        "Ei perusmaksua",
-        "Ei määräaikaa"
+        "Pörssihinta + 0,48 c/kWh",
+        "Perusmaksu 4,90 €/kk",
+        "Ei määräaikaa — irtisanottavissa kahden viikon varoitusajalla",
+        "Kaikki yhtiön myymä sähkö on päästötöntä"
       ],
-      "summary": "Vaasan Sähkö on Vaasan seudun oma sähköyhtiö, joka myy sähköä koko Suomeen. Pörssisopimuksessa maksat tuntihinnan ja 0,49 sentin marginaalin.",
+      "summary": "Vaasan Sähkön pörssisopimus ilman määräaikaa. Marginaali 0,48 c/kWh ja perusmaksu 4,90 €/kk, joka on vertailun pienimpiä.",
       "pros": [
-        "Marginaali on koko hinnan erottava tekijä — se on tässä näkyvissä",
-        "Voit irtisanoa sopimuksen milloin tahansa",
-        "Halvat yötunnit näkyvät laskussa heti"
+        "Sekä marginaali että perusmaksu ovat vertailun edullisimpien joukossa",
+        "Ei sitovaa määräaikaa",
+        "Saatavilla koko Manner-Suomeen"
       ],
       "cons": [
-        "Hinta muuttuu joka tunti",
-        "Pakkasviikko nostaa laskua välittömästi"
+        "Ei perusmaksuetua alkuun",
+        "Kettu ei välitä tätä sopimusta, joten teet sen Vaasan Sähkön omilla sivuilla"
       ],
-      "bestFor": "Sinulle, joka voit siirtää pyykit, saunan ja auton latauksen halvoille tunneille. Silloin pieni marginaali kertautuu koko vuoden laskussa.",
+      "bestFor": "Valitse tämä, jos haluat pörssisopimuksen, jossa myös perusmaksu on pieni.",
       "faq": [
         [
           "Mitä marginaali tarkoittaa?",
-          "Maksat sähköstä pörssin tuntihinnan ja sen päälle yhtiön marginaalin, tässä 0,49 c/kWh. Marginaali on se osa hinnasta, jonka yhtiö itse päättää — ja siksi ainoa asia, jolla pörssisopimukset oikeasti eroavat toisistaan."
+          "Maksat sähköstä pörssin hinnan sen hetken mukaan ja päälle yhtiön marginaalin sekä kuukausittaisen perusmaksun. Marginaali ja perusmaksu ovat ne kaksi lukua, joilla pörssisopimukset oikeasti eroavat toisistaan — pörssihinta on kaikilla sama."
         ],
         [
-          "Voinko vaihtaa pois milloin vain?",
-          "Kyllä. Toistaiseksi voimassa oleva sopimus päättyy 14 vuorokauden irtisanomisajalla, ja uusi yhtiö hoitaa irtisanomisen puolestasi."
+          "Mihin vertailun euromäärä perustuu?",
+          "Kulutukseesi ja pörssin oletuskeskihintaan. Todellinen lasku riippuu siitä, milloin sähköä käytät: pörssisopimuksessa yöllä ja tuulisina päivinä kulutettu sähkö on halvempaa kuin pakkasaamun sähkö."
+        ],
+        [
+          "Miksi vertailussa on yhtiöitä, joita Kettu ei välitä?",
+          "Koska vertailu, jossa näkyisivät vain palkkiota maksavat yhtiöt, olisi mainos eikä vertailu. Tämän sopimuksen hinnat on luettu yhtiön omalta sivulta, ja nappi vie sinne — Kettu ei ansaitse tästä sopimuksesta mitään."
         ]
-      ]
+      ],
+      "logo": "/logot/vaasan-sahko.png"
     },
     {
-      "id": "lumme-energia-kiintea-12-kk",
-      "slug": "lumme-energia-kiintea-12-kk",
-      "provider": "Lumme Energia",
-      "name": "Kiinteä 12 kk",
-      "type": "fixed",
-      "basicFee": 4.5,
-      "energyPrice": 7.65,
-      "spotMargin": null,
+      "id": "oomi-aktiivinen",
+      "slug": "oomi-aktiivinen",
+      "provider": "Oomi",
+      "name": "Aktiivinen",
+      "type": "spot",
+      "basicFee": 4.96,
+      "energyPrice": null,
+      "spotMargin": 0.6,
       "green": false,
-      "fixedTermMonths": 12,
-      "rating": 4.1,
-      "reviews": 540,
-      "affiliateUrl": "https://example.com/aff/lumme-energia-kiintea-12-kk",
-      "example": true,
-      "region": "Mikkeli",
+      "fixedTermMonths": null,
+      "rating": null,
+      "reviews": null,
+      "affiliateUrl": "https://go.adt253.net/t/t?a=1867103627&as=2098832052&t=2&tk=1",
+      "partner": true,
+      "checkedAt": "2026-08-09",
+      "sourceUrl": "https://oomi.fi/sahko/sahkotarjoukset/",
+      "region": "Oulu",
       "gradient": [
-        "#4A3C2E",
-        "#7C6552"
+        "#33291F",
+        "#5C4A38"
       ],
       "features": [
-        "Kiinteä 7,65 c/kWh koko kauden",
-        "Määräaika 12 kk",
-        "Sähkön alkuperää ei ole eritelty",
-        "Perusmaksu 4,50 €/kk"
+        "Pörssihinta + 0,60 c/kWh",
+        "Perusmaksu 0 € viisi ensimmäistä kuukautta",
+        "Ei määräaikaa — irtisanottavissa milloin vain",
+        "Varttihinnoittelu: hinta seuraa 15 minuutin jaksoissa"
       ],
-      "summary": "Lumme Energia on Mikkelin seudun oma sähköyhtiö. Kiinteässä sopimuksessa maksat saman 7,65 sentin joka tunti 12 kuukauden ajan.",
+      "summary": "Oomin pörssisopimus ilman määräaikaa. Marginaali 0,60 c/kWh ja perusmaksu 4,96 €/kk, mutta viisi ensimmäistä kuukautta ilman perusmaksua.",
       "pros": [
-        "Hinta ei muutu kesken kauden",
-        "Talvikuukaudet eivät yllätä laskussa",
-        "Helppo budjetoida etukäteen"
+        "Suomen suurin sähkönmyyjä — yli 800 000 asiakasta",
+        "Vertailun pisimpiin kuuluva perusmaksuetu: viisi kuukautta",
+        "Ei sitovaa määräaikaa",
+        "Sama yhtiö myy myös kiinteän sopimuksen, jos mieli muuttuu"
       ],
       "cons": [
-        "Määräaika sitoo 12 kuukaudeksi",
-        "Jos pörssihinta laskee, maksat silti saman"
+        "Marginaali ei ole vertailun pienin",
+        "Perusmaksu nousee 4,96 euroon viiden kuukauden jälkeen"
       ],
-      "bestFor": "Sinulle, jolle laskun ennustettavuus on tärkeämpää kuin muutaman euron kuukausisäästö. Erityisesti sähkölämmitteiseen taloon.",
+      "bestFor": "Valitse tämä, jos haluat pörssisähköä Suomen suurimmalta myyjältä etkä halua sitoutua määräajaksi.",
       "faq": [
         [
-          "Mitä tapahtuu määräajan päätyttyä?",
-          "Sopimus jatkuu yleensä toistaiseksi voimassa olevana listahinnalla, joka on lähes aina kilpailutettua kalliimpi. Merkitse päättymispäivä kalenteriin ja kilpailuta uudelleen."
+          "Mitä marginaali tarkoittaa?",
+          "Maksat sähköstä pörssin hinnan sen hetken mukaan ja päälle yhtiön marginaalin sekä kuukausittaisen perusmaksun. Marginaali ja perusmaksu ovat ne kaksi lukua, joilla pörssisopimukset oikeasti eroavat toisistaan — pörssihinta on kaikilla sama."
         ],
         [
-          "Voinko irtisanoa kesken määräajan?",
-          "Voit, mutta siitä voi tulla kuluja. Ehdot vaihtelevat yhtiöittäin, joten tarkista purkukulu sopimusehdoista ennen kuin allekirjoitat."
+          "Mihin vertailun euromäärä perustuu?",
+          "Kulutukseesi ja pörssin oletuskeskihintaan. Todellinen lasku riippuu siitä, milloin sähköä käytät: pörssisopimuksessa yöllä ja tuulisina päivinä kulutettu sähkö on halvempaa kuin pakkasaamun sähkö."
         ]
-      ]
+      ],
+      "campaign": {
+        "label": "Perusmaksu 0 € · 5 kk",
+        "months": 5,
+        "basicFee": 0
+      },
+      "logo": "/logot/oomi.png"
+    },
+    {
+      "id": "helen-perussahko-24-kk",
+      "slug": "helen-perussahko-24-kk",
+      "provider": "Helen",
+      "name": "Määräaikainen Perussähkö 24 kk",
+      "type": "fixed",
+      "basicFee": 5.99,
+      "energyPrice": 10.19,
+      "spotMargin": null,
+      "green": false,
+      "fixedTermMonths": 24,
+      "rating": null,
+      "reviews": null,
+      "affiliateUrl": "https://www.helen.fi/sahko/sahkosopimus/sahkotarjous",
+      "partner": false,
+      "checkedAt": "2026-08-09",
+      "sourceUrl": "https://www.helen.fi/sahko/sahkosopimus/sahkotarjous",
+      "region": "Helsinki",
+      "gradient": [
+        "#2A231E",
+        "#4A3C33"
+      ],
+      "features": [
+        "Kiinteä 10,19 c/kWh koko 24 kuukauden ajan",
+        "Perusmaksu 0 € kuusi ensimmäistä kuukautta",
+        "Perusmaksu sen jälkeen 5,99 €/kk",
+        "Alkuperä muutettavissa uusiutuvaan tai hiilivapaaseen"
+      ],
+      "summary": "Helenin kahden vuoden kiinteä sopimus. Energian hinta 10,19 c/kWh ja perusmaksu poissa kuudelta ensimmäiseltä kuukaudelta.",
+      "pros": [
+        "Hinta lukossa kaksi vuotta",
+        "Puolen vuoden perusmaksuetu",
+        "Iso ja vakavarainen yhtiö"
+      ],
+      "cons": [
+        "Kahden vuoden sitoutuminen",
+        "Kiinteä hinta häviää pörssille, jos pörssihinta pysyy matalana",
+        "Kettu ei välitä tätä sopimusta, joten teet sen Helenin omilla sivuilla"
+      ],
+      "bestFor": "Valitse tämä, jos haluat tietää sähkön hinnan kahdeksi vuodeksi etukäteen.",
+      "faq": [
+        [
+          "Mitä kiinteä hinta tarkoittaa?",
+          "Energian hinta pysyy samana koko sopimuskauden riippumatta siitä, mitä pörssissä tapahtuu. Maksat siitä yleensä hieman enemmän kuin pörssin keskihinta — kyseessä on vakuutus hintapiikkejä vastaan."
+        ],
+        [
+          "Voinko irtisanoa määräaikaisen sopimuksen kesken?",
+          "Määräaikainen sopimus sitoo molempia osapuolia sovitun ajan. Ennenaikaisesta päättämisestä voi seurata korvaus, joten tarkista ehdot yhtiön omilta sivuilta ennen tilausta."
+        ],
+        [
+          "Miksi vertailussa on yhtiöitä, joita Kettu ei välitä?",
+          "Koska vertailu, jossa näkyisivät vain palkkiota maksavat yhtiöt, olisi mainos eikä vertailu. Tämän sopimuksen hinnat on luettu yhtiön omalta sivulta, ja nappi vie sinne — Kettu ei ansaitse tästä sopimuksesta mitään."
+        ]
+      ],
+      "campaign": {
+        "label": "Perusmaksu 0 € · 6 kk",
+        "months": 6,
+        "basicFee": 0
+      },
+      "logo": "/logot/helen.png"
+    },
+    {
+      "id": "turku-energia-louna-lahi-6-kk",
+      "slug": "turku-energia-louna-lahi-6-kk",
+      "provider": "Turku Energia",
+      "name": "Louna Lähi 6 kk",
+      "type": "fixed",
+      "basicFee": 4.9,
+      "energyPrice": 12.86,
+      "spotMargin": null,
+      "green": true,
+      "fixedTermMonths": 6,
+      "rating": null,
+      "reviews": null,
+      "affiliateUrl": "https://www.turkuenergia.fi/kotitaloudet/sahko/sahkosopimukset-ja-hinnat/louna-lahi",
+      "partner": false,
+      "checkedAt": "2026-08-09",
+      "sourceUrl": "https://www.turkuenergia.fi/kotitaloudet/sahko/sahkosopimukset-ja-hinnat/louna-lahi",
+      "region": "Turku",
+      "gradient": [
+        "#3E3227",
+        "#6B5745"
+      ],
+      "features": [
+        "Kiinteä 12,86 c/kWh kuuden kuukauden ajan",
+        "Perusmaksu 4,90 €/kk",
+        "100 % uusiutuvaa: tuuli, vesi ja biomassa",
+        "Lyhyt määräaika — sitoo vain puoli vuotta"
+      ],
+      "summary": "Turku Energian puolen vuoden kiinteä sopimus. Hinta on vertailun korkeimpia, mutta sitoutuminen on lyhyt ja sähkö on 100 % uusiutuvaa.",
+      "pros": [
+        "Vain kuuden kuukauden sitoutuminen",
+        "100 % uusiutuvaa energiaa",
+        "Hinta ei liiku sopimuskaudella"
+      ],
+      "cons": [
+        "Energian hinta on selvästi vertailun kalleimpia",
+        "Puolen vuoden kiinteä hinta on kallis vakuutus lyhyestä ajasta",
+        "Kettu ei välitä tätä sopimusta, joten teet sen Turku Energian omilla sivuilla"
+      ],
+      "bestFor": "Valitse tämä vain, jos tarvitset kiinteän hinnan lyhyeksi ajaksi etkä halua sitoutua vuosiksi.",
+      "faq": [
+        [
+          "Mitä kiinteä hinta tarkoittaa?",
+          "Energian hinta pysyy samana koko sopimuskauden riippumatta siitä, mitä pörssissä tapahtuu. Maksat siitä yleensä hieman enemmän kuin pörssin keskihinta — kyseessä on vakuutus hintapiikkejä vastaan."
+        ],
+        [
+          "Voinko irtisanoa määräaikaisen sopimuksen kesken?",
+          "Määräaikainen sopimus sitoo molempia osapuolia sovitun ajan. Ennenaikaisesta päättämisestä voi seurata korvaus, joten tarkista ehdot yhtiön omilta sivuilta ennen tilausta."
+        ],
+        [
+          "Miksi vertailussa on yhtiöitä, joita Kettu ei välitä?",
+          "Koska vertailu, jossa näkyisivät vain palkkiota maksavat yhtiöt, olisi mainos eikä vertailu. Tämän sopimuksen hinnat on luettu yhtiön omalta sivulta, ja nappi vie sinne — Kettu ei ansaitse tästä sopimuksesta mitään."
+        ]
+      ],
+      "logo": "/logot/turku-energia.png"
+    },
+    {
+      "id": "vaasan-sahko-kiintea-24-kk",
+      "slug": "vaasan-sahko-kiintea-24-kk",
+      "provider": "Vaasan Sähkö",
+      "name": "Kiinteä 24 kk",
+      "type": "fixed",
+      "basicFee": 5.9,
+      "energyPrice": 9.99,
+      "spotMargin": null,
+      "green": false,
+      "fixedTermMonths": 24,
+      "rating": null,
+      "reviews": null,
+      "affiliateUrl": "https://www.vaasansahko.fi/sahkosopimus/kiintea/",
+      "partner": false,
+      "checkedAt": "2026-08-09",
+      "sourceUrl": "https://www.vaasansahko.fi/sahkosopimus/sahkotarjous/",
+      "region": "Vaasa",
+      "gradient": [
+        "#1F1A16",
+        "#3A322B"
+      ],
+      "features": [
+        "Kiinteä 9,99 c/kWh koko 24 kuukauden ajan",
+        "Perusmaksu 0 € ensimmäisen vuoden ajan",
+        "Perusmaksu sen jälkeen 5,90 €/kk",
+        "Päästötöntä sähköä: tuuli- ja ydinvoima"
+      ],
+      "summary": "Vaasan Sähkön kahden vuoden kiinteä sopimus. Energian hinta 9,99 c/kWh ja perusmaksu poissa kokonaan ensimmäiseltä vuodelta — vertailun pisin perusmaksuetu.",
+      "pros": [
+        "Vuoden perusmaksuetu on vertailun pisin",
+        "Hinta lukossa kaksi vuotta",
+        "Päästötöntä sähköä ilman lisämaksua"
+      ],
+      "cons": [
+        "Kahden vuoden sitoutuminen",
+        "Kiinteä hinta häviää pörssille, jos pörssihinta pysyy matalana",
+        "Kettu ei välitä tätä sopimusta, joten teet sen Vaasan Sähkön omilla sivuilla"
+      ],
+      "bestFor": "Valitse tämä, jos haluat kiinteän hinnan kahdeksi vuodeksi ja arvostat sitä, että ensimmäinen vuosi on ilman perusmaksua.",
+      "faq": [
+        [
+          "Mitä kiinteä hinta tarkoittaa?",
+          "Energian hinta pysyy samana koko sopimuskauden riippumatta siitä, mitä pörssissä tapahtuu. Maksat siitä yleensä hieman enemmän kuin pörssin keskihinta — kyseessä on vakuutus hintapiikkejä vastaan."
+        ],
+        [
+          "Voinko irtisanoa määräaikaisen sopimuksen kesken?",
+          "Määräaikainen sopimus sitoo molempia osapuolia sovitun ajan. Ennenaikaisesta päättämisestä voi seurata korvaus, joten tarkista ehdot yhtiön omilta sivuilta ennen tilausta."
+        ],
+        [
+          "Miksi vertailussa on yhtiöitä, joita Kettu ei välitä?",
+          "Koska vertailu, jossa näkyisivät vain palkkiota maksavat yhtiöt, olisi mainos eikä vertailu. Tämän sopimuksen hinnat on luettu yhtiön omalta sivulta, ja nappi vie sinne — Kettu ei ansaitse tästä sopimuksesta mitään."
+        ]
+      ],
+      "campaign": {
+        "label": "Perusmaksu 0 € · 12 kk",
+        "months": 12,
+        "basicFee": 0
+      },
+      "logo": "/logot/vaasan-sahko.png"
     },
     {
       "id": "pohjois-karjalan-sahko-porssisahko",
