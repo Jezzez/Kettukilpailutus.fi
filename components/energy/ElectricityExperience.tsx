@@ -1870,12 +1870,13 @@ export default function ElectricityExperience({
                     <Lock size={13} aria-hidden /> Sopimukset avautuvat vastausten jälkeen
                   </p>
                   <p className="mt-3 font-hero text-[1.7rem] leading-[1.12] text-ink sm:text-[2rem]">
-                    Kettu ei näytä hintataulukkoa. Se näyttää sinun hintasi.
+                    Kettu etsii sinulle halvimman sähkösopimuksen.
                   </p>
                   <p className="mt-3 text-[14.5px] leading-relaxed text-ink/75">
-                    Neljä kysymystä, noin minuutti. Sen jälkeen jokainen ruudulla
-                    näkyvä euromäärä on laskettu sinun kulutuksellasi. Yhteystietoja
-                    ei kysytä missään vaiheessa.
+                    Käymme läpi Suomen suurimpien yhtiöitten sähkösopimukset ja
+                    laskemme hinnan juuri sinun kulutuksellasi. Näet heti, mikä
+                    sopimus on tämän hetken halvin. Yhteystietoja ei kysytä
+                    missään vaiheessa.
                   </p>
                   <p className="mt-4 font-data text-[13px] font-semibold text-goldInk">
                     {plans.length} sopimusta odottaa vertailua
@@ -2319,7 +2320,29 @@ export default function ElectricityExperience({
           </div>
 
           <LayoutGroup>
-            <motion.div layout={!reduce} className="mt-4 grid gap-4 pt-2 sm:grid-cols-2 lg:grid-cols-3">
+            {/*
+              `grid-cols-1` ON PAKOLLINEN, EI TURHA TOISTO.
+
+              Ilman sitä ruudukolla ei ole mobiilissa yhtään määriteltyä
+              saraketta, jolloin selain tekee implisiittisen sarakkeen
+              leveydellä `auto`. `auto` venyy leveimmän kortin
+              min-content-mittaan — ja kortin ylärivissä on `truncate`-
+              tekstejä, jotka ovat `white-space: nowrap`. Katkeamaton
+              teksti kertoo min-contentiksi koko lauseen pituuden, joten
+              sarake kasvoi 415 pikseliin 354 pikselin tilassa ja koko
+              sivu valui 44 pikseliä yli ruudun: otsikot leikkautuivat
+              reunasta ja sivua sai vierittää sivusuunnassa.
+
+              `grid-cols-1` on Tailwindissa `repeat(1, minmax(0, 1fr))`.
+              Se antaa nollan minimileveyden, jolloin sarake ei koskaan
+              kasva säiliötään suuremmaksi ja `truncate` pääsee tekemään
+              työnsä niin kuin oli tarkoitus.
+
+              `sm:`- ja `lg:`-versiot eivät korjaa tätä, koska ne alkavat
+              vasta 640 pikselistä. Vika näkyi siis vain puhelimessa —
+              eli juuri siellä, missä suurin osa kävijöistä on.
+            */}
+            <motion.div layout={!reduce} className="mt-4 grid grid-cols-1 gap-4 pt-2 sm:grid-cols-2 lg:grid-cols-3">
               <AnimatePresence mode="popLayout">
                 {(naytaKaikki ? jarjestetyt : jarjestetyt.slice(0, NAYTA_ALUKSI)).map((plan, i) => {
                   const cost = annualCost(plan, kwh);
