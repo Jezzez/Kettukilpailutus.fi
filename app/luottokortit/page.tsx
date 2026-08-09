@@ -13,7 +13,7 @@ import CtaSection from "@/components/CtaSection";
 import Reveal from "@/components/Reveal";
 import FoxSays from "@/components/FoxSays";
 import SectionHead from "@/components/SectionHead";
-import { getCards, getFaq, SITE } from "@/lib/data";
+import { getCards, getFaq, OG_IMAGE, SITE } from "@/lib/data";
 import { FEATURES } from "@/lib/features";
 
 /*
@@ -38,6 +38,9 @@ export const metadata: Metadata = !FEATURES.cards
     description:
       "Vertaa Suomen suosituimmat luottokortit: edut, kulut ja korot puolueettomasti rinnakkain.",
     url: "/luottokortit",
+    // Pakko toistaa: sivun oma openGraph-lohko korvaa juuritason lohkon
+    // kokonaan, jolloin kuva katoaisi. Ks. OG_IMAGE lib/data.ts.
+    images: [OG_IMAGE],
   },
     };
 

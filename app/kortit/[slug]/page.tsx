@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Check, ChevronRight, X, Star } from "lucide-react";
-import { getCard, getCards, SITE } from "@/lib/data";
+import { getCard, getCards, OG_IMAGE, SITE } from "@/lib/data";
 import { FEATURES } from "@/lib/features";
 import AffiliateButton from "@/components/AffiliateButton";
 import { CardMark } from "@/components/CardTile";
@@ -34,8 +34,16 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
     title,
     description,
     alternates: { canonical: `/kortit/${card.slug}` },
-    openGraph: { title, description, url: `${SITE.url}/kortit/${card.slug}`, type: "article" },
-    twitter: { card: "summary", title, description },
+    // `images` on pakko toistaa: sivun oma openGraph-lohko korvaa
+    // juuritason lohkon kokonaan. Ks. OG_IMAGE lib/data.ts.
+    openGraph: {
+      title,
+      description,
+      url: `${SITE.url}/kortit/${card.slug}`,
+      type: "article",
+      images: [OG_IMAGE],
+    },
+    twitter: { card: "summary_large_image", title, description, images: [OG_IMAGE] },
   };
 }
 

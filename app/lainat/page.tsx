@@ -11,7 +11,7 @@ import FoxSlot from "@/components/fox/FoxSlot";
 import TailSweep from "@/components/fox/TailSweep";
 import LoanStickyCta from "@/components/loans/LoanStickyCta";
 import SortterCalculator from "@/components/loans/SortterCalculator";
-import { SITE } from "@/lib/data";
+import { OG_IMAGE, SITE } from "@/lib/data";
 import { FEATURES } from "@/lib/features";
 import { LOAN_FAQ, LOAN_PARTNER, LOAN_STEPS } from "@/lib/loans";
 
@@ -61,6 +61,9 @@ export const metadata: Metadata = {
     description:
       "Lainan hintaa ei voi lukea taulukosta, koska se on aina hakijakohtainen. Näin saat oikeat tarjoukset rinnakkain.",
     url: "/lainat",
+    // Pakko toistaa: sivun oma openGraph-lohko korvaa juuritason lohkon
+    // kokonaan, jolloin kuva katoaisi. Ks. OG_IMAGE lib/data.ts.
+    images: [OG_IMAGE],
   },
 };
 

@@ -9,7 +9,7 @@ import SectionHead from "@/components/SectionHead";
 import CtaSection from "@/components/CtaSection";
 import TailSweep from "@/components/fox/TailSweep";
 import { getPlans, getEnergyTopics } from "@/lib/energy";
-import { SITE } from "@/lib/data";
+import { OG_IMAGE, SITE } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Kilpailuta sähkösopimus – vertaa hinnat omalla kulutuksellasi",
@@ -21,6 +21,9 @@ export const metadata: Metadata = {
     description:
       "Kerro kulutuksesi, niin Kettu laskee jokaisen sopimuksen todellisen vuosihinnan ja näyttää säästösi euroina.",
     url: "/sahkosopimukset",
+    // Pakko toistaa: sivun oma openGraph-lohko korvaa juuritason lohkon
+    // kokonaan, jolloin kuva katoaisi. Ks. OG_IMAGE lib/data.ts.
+    images: [OG_IMAGE],
   },
 };
 

@@ -77,7 +77,30 @@ export const SITE = {
    */
   operator: {
     legalName: "Mucho Vendo Oy",
-    businessId: "3602151-6", 
+    businessId: "3602151-6",
     email: "info@kettukilpailutus.fi",
   },
 };
+
+/**
+ * JAETUN LINKIN ESIKATSELUKUVA — yksi osoite, jota kaikki sivut käyttävät.
+ *
+ * MIKSI VAKIO EIKÄ MERKKIJONO JOKA SIVULLA: Nextissä sivun oma
+ * `openGraph`-lohko KORVAA juuritason lohkon kokonaan, ei täydennä sitä.
+ * Kun `app/sahkosopimukset/page.tsx` määritteli oman otsikkonsa ja
+ * kuvauksensa, se pyyhki samalla kuvan pois — ja juuri se sivu on se, joka
+ * lähetetään kaverille. Siksi jokaisen oman `openGraph`-lohkon on
+ * toistettava `images: [OG_IMAGE]`, ja siksi osoite on täällä yhdessä
+ * paikassa: jos sitä ei ole, unohtuminen ei näy koodissa mitenkään.
+ *
+ * ÄLÄ KIERRÄTÄ TIEDOSTONIMEÄ. Somepalvelut ja CDN välimuistittavat kuvan
+ * osoitteen perusteella, joten uusi kortti vanhalla nimellä ei näy
+ * jaetuissa linkeissä. Uusi kortti = uusi tiedostonimi = uusi vakion arvo.
+ *
+ * MIKSI JPEG EIKÄ PNG: kortti on kauttaaltaan liukuväriä, ja PNG tallentaa
+ * liukuvärin pikseli kerrallaan — sama kuva painoi PNG:nä 396 kt ja JPEG:nä
+ * 84 kt. Esikatselukuva on ainoa asia, jonka vastaanottaja näkee ennen
+ * klikkausta, ja hitaasti latautuva ruutu ehtii jäädä tyhjäksi juuri siinä
+ * hetkessä kun linkki vilahtaa chatissa.
+ */
+export const OG_IMAGE = "/og-kettu-logokortti.jpg";

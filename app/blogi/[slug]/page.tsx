@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronRight, Clock } from "lucide-react";
-import { getPost, getPosts, SITE } from "@/lib/data";
+import { getPost, getPosts, OG_IMAGE, SITE } from "@/lib/data";
 import CtaSection from "@/components/CtaSection";
 import FoxPaw from "@/components/FoxPaw";
 import { FEATURES } from "@/lib/features";
@@ -24,6 +24,9 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
       type: "article",
       publishedTime: post.date,
       url: `${SITE.url}/blogi/${post.slug}`,
+      // Pakko toistaa: sivun oma openGraph-lohko korvaa juuritason lohkon
+      // kokonaan, jolloin kuva katoaisi. Ks. OG_IMAGE lib/data.ts.
+      images: [OG_IMAGE],
     },
   };
 }

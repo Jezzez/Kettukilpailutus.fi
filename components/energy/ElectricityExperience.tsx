@@ -1195,7 +1195,7 @@ export default function ElectricityExperience({
   const STEPS_Q = [
     {
       n: 1,
-      title: "Valitse kotisi tyyppi",
+      title: "Valitse asuntosi tyyppi",
       hint: "Tästä Kettu päättelee kulutuksen. Arvio riittää, tarkennat sen seuraavaksi.",
     },
     {
@@ -1211,7 +1211,7 @@ export default function ElectricityExperience({
     {
       n: 4,
       title: "Mitä maksat sähköstä nyt?",
-      hint: "Kaksi lukua laskustasi. Ilman niitä Kettu näyttää hinnat mutta ei säästöäsi — sitä ei arvata.",
+      hint: "Ilman näitä Kettu näyttää hinnat mutta ei säästöäsi.",
     },
   ] as const;
 

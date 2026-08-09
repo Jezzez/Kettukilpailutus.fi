@@ -4,7 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { SITE } from "@/lib/data";
+import { OG_IMAGE, SITE } from "@/lib/data";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
@@ -24,17 +24,59 @@ export const metadata: Metadata = {
   },
   description: SITE.description,
   alternates: { canonical: "/" },
+  /*
+    JAETUN LINKIN ESIKATSELUKUVA.
+
+    Tässä ei ollut aiemmin kuvaa lainkaan. Silloin Snapchat, WhatsApp ja
+    Facebook eivät jätä esikatselua tyhjäksi vaan poimivat mitä löytävät —
+    käytännössä selaimen välilehti-ikonin. Siksi jaetussa linkissä näkyi
+    pelkkä pieni tunnus.
+
+    MIKSI TÄMÄ ON TUOTON KANNALTA ISO ASIA: sähkövertailu leviää siellä,
+    missä hinnoista puhutaan — perhechatissa ja kaverille lähetettynä
+    linkkinä. Kuvaton linkki näyttää keskeneräiseltä, ja
+    kilpailutuspalvelussa epäilys on suoraan pois klikkauksista. Oikea
+    1200 × 630 -kortti, jossa on Kettu, nimi ja lupaus, on se ensivaikutelma,
+    jonka vastaanottaja näkee ennen kuin on käynyt sivulla kertaakaan.
+
+    MIKSI EI `app/opengraph-image.png` (Nextin oma nimikäytäntö): se toimii
+    kyllä, mutta on näkymätön koodissa, eikä dev-palvelin edes huomaa sitä
+    ilman uudelleenkäynnistystä. Tämä tiedosto on se paikka, josta kuvan
+    olemassaolo pitää pystyä toteamaan. Polku on suhteellinen, koska
+    `metadataBase` yllä muuttaa sen absoluuttiseksi — some-botit vaativat
+    absoluuttisen osoitteen.
+
+    KUVAN NIMEÄ EI SAA KIERRÄTTÄÄ. Jos kortti vaihtuu, anna tiedostolle
+    uusi nimi: sekä CDN että somepalvelut välimuistittavat vanhan kuvan,
+    ja saman nimen alle vaihdettu uusi kortti ei näy jaetuissa linkeissä.
+
+    OSOITE TULEE `OG_IMAGE`-VAKIOSTA, EI TÄSTÄ. Polku oli aiemmin
+    kirjoitettuna tähän kahdesti (og ja twitter) ja lisäksi viidellä
+    alasivulla. Kun tiedostonimi vaihtuu — ja sen ON pakko vaihtua joka
+    kerta, ks. yllä — käsin ylläpidetty seitsemän paikan lista päivittyy
+    varmasti puolittain, ja puoliksi päivittynyt esikatselukuva on
+    tasan yhtä rikki kuin päivittämätön.
+  */
   openGraph: {
     type: "website",
     locale: "fi_FI",
     siteName: SITE.name,
     title: SITE.name + " – Kilpailuta ja säästä",
     description: SITE.description,
+    images: [
+      {
+        url: OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: SITE.name + " – Ketuttaako maksaa liikaa? Anna Ketun kilpailuttaa puolestasi.",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: SITE.name + " – kilpailuta sopimuksesi minuutissa",
     description: SITE.description,
+    images: [OG_IMAGE],
   },
   robots: { index: true, follow: true },
 };
