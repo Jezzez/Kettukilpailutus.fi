@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import AffiliateButton from "@/components/AffiliateButton";
 import Faq from "@/components/Faq";
+import FoxPaw from "@/components/FoxPaw";
 import Reveal from "@/components/Reveal";
 import SectionHead from "@/components/SectionHead";
 import FoxSlot from "@/components/fox/FoxSlot";
@@ -103,101 +105,101 @@ export default function LoansPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
-      {/*
-        HERO ON KOKO SIVUN TÄRKEIN RUUTU.
-
-        Rakenne on karsittu kolmeen asiaan: otsikko, yksi rivi selitystä
-        ja nappi. Aiemmin tässä oli lisäksi viiden rivin ingressi ja
-        erillinen luottamuskortti, jotka työnsivät napin mobiilissa
-        ruudun alalaitaan. Nyt nappi mahtuu ensimmäiseen ruudulliseen
-        myös puhelimessa — se on tämän sivun ainoa mittari.
-
-        Ansaintakertomus ei kadonnut vaan siirtyi napin alle yhdeksi
-        riviksi ja UKK:n viimeiseksi kysymykseksi. Se kuuluu sanoa itse,
-        mutta se ei ansaitse omaa korttiaan heron sisältä.
-      */}
-      <section className="theme-ember ember-surface relative overflow-hidden">
-        <div className="relative z-[1] mx-auto grid max-w-[1180px] items-center gap-8 px-4 pb-16 pt-12 sm:px-6 md:grid-cols-[1.05fr_0.95fr] md:pb-20 md:pt-16">
-          <div>
-            <Reveal>
-              <span className="font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-goldInk">
-                Lainavertailu
-              </span>
-
-              <h1 className="mt-4 font-hero text-[2.7rem] leading-[1.03] text-cream sm:text-[3.6rem]">
-                Kilpailuta lainat
-                <br />
-                <em className="text-goldInk">Yhdellä</em> hakemuksella.
-              </h1>
-
-              {/*
-                YKSI RIVI, JA SE KERTOO ETTEI KETTU VERTAILE ITSE.
-                Jos kävijä luulee saavansa vertailun tällä sivulla ja
-                päätyykin toisen palvelun lomakkeelle, hän kokee
-                tulleensa harhautetuksi ja poistuu ennen hakemusta —
-                eli juuri ennen sitä kohtaa, josta palkkio syntyy.
-              */}
-              <p className="mt-5 max-w-lg text-[17px] leading-relaxed text-ink/90">
-                Kettu ohjaa sinut Suomen suosituimpiin kuuluvaan lainanvertailupalveluun. Yksi hakemus riittää sillä tarjoukset tulevat useilta pankeilta ja lainanantajilta yhdellä kertaa.
-              </p>
-            </Reveal>
-
-            <Reveal delay={0.1}>
-              {/*
-                `theme-light`-KÄÄRE ON PAKOLLINEN. AffiliateButtonin
-                `inverse`-asu on `bg-white` + `text-accentDark`, ja
-                ember-teemassa NE MOLEMMAT kääntyvät: pohja olisi
-                oranssi ja teksti kermaa, eli nappi katoaisi vyöhön.
-              */}
-              <div className="theme-light mt-8" data-loan-cta>
-                <AffiliateButton
-                  href={LOAN_PARTNER.url}
-                  cardId={LOAN_PARTNER.id}
-                  placement="lainat-hero"
-                  variant="inverse"
-                  className={BIG_BTN}
-                >
-                  Hae lainatarjoukset
-                  <ArrowRight size={19} aria-hidden />
-                </AffiliateButton>
-              </div>
-
-              <ul className="mt-5 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-x-6">
-                {HERO_CHECKS.map((c) => (
-                  <li key={c} className="flex items-center gap-2 text-[14.5px] font-medium text-ink/85">
-                    <Check size={15} strokeWidth={3} className="text-goldInk" aria-hidden />
-                    {c}
-                  </li>
-                ))}
-              </ul>
-
-              <p className="mt-4 text-[13px] leading-relaxed text-ink/70">
-                Hakemus tehdään turvallisesti Sortterin palvelussa.
-              </p>
-            </Reveal>
-          </div>
-
-          {/*
-            SORTTERIN WIDGET ON HERON OIKEA PALSTA.
-
-            Työpöydällä laskuri korvaa Ketun kokonaan: sivun hyödyllisin
-            toiminto näkyy nyt heti eikä vasta heron jälkeen. `theme-light`
-            estää latausluurankoa perimästä oranssin vyön käännettyjä
-            väriarvoja.
-
-            Mobiilissa sama yksittäinen web-komponentti asettuu tekstin
-            jälkeen. Erillistä mobiilikopiota ei tehdä, koska piilotettukin
-            custom element alustaisi toisen Sortter-lomakkeen taustalla.
-          */}
-          <Reveal delay={0.15} className="theme-light mx-auto -mb-10 -mt-10 w-full max-w-[560px] md:-mb-14 md:-mt-14">
-            <SortterCalculator />
-          </Reveal>
+      <section className="theme-ember ember-surface relative overflow-hidden pb-28 pt-9 md:pb-28 md:pt-12">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-0 w-full overflow-hidden md:hidden"
+        >
+          <Image
+            src="/kettu-tuolissa.webp"
+            alt=""
+            width={712}
+            height={993}
+            priority
+            className="absolute bottom-0 left-0 h-[92%] w-auto max-w-full object-contain opacity-40"
+            style={{
+              WebkitMaskImage:
+                "linear-gradient(to left, #000 84%, transparent 100%)",
+              maskImage:
+                "linear-gradient(to left, #000 84%, transparent 100%)",
+            }}
+          />
         </div>
 
+        <div className="relative z-[1] mx-auto max-w-[1180px] px-4 sm:px-6">
+          <div className="grid items-center gap-6 md:grid-cols-[1.08fr_0.92fr] md:gap-8">
+            <div>
+              <Reveal>
+                <span className="font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-goldInk">
+                  Lainavertailu
+                </span>
 
+                <h1 className="mt-4 max-w-[10ch] font-hero text-[2.7rem] leading-[1.03] text-cream sm:text-[3.6rem]">
+                  Kilpailuta lainat
+                  <br />
+                  <em className="text-goldInk">Yhdellä</em> hakemuksella.
+                </h1>
+
+                <p className="mt-5 max-w-lg text-[16px] leading-relaxed text-ink/90 sm:text-[17px]">
+                  Kettu ohjaa sinut Suomen suosituimpiin kuuluvaan lainanvertailupalveluun. Yksi hakemus riittää sillä tarjoukset tulevat useilta pankeilta ja lainanantajilta yhdellä kertaa.
+                </p>
+              </Reveal>
+
+              <Reveal delay={0.1}>
+                <div className="theme-light mt-8" data-loan-cta>
+                  <AffiliateButton
+                    href={LOAN_PARTNER.url}
+                    cardId={LOAN_PARTNER.id}
+                    placement="lainat-hero"
+                    variant="inverse"
+                    className={BIG_BTN}
+                  >
+                    Hae lainatarjoukset
+                    <ArrowRight size={19} aria-hidden />
+                  </AffiliateButton>
+                </div>
+
+                <ul className="mt-5 flex max-w-lg flex-wrap gap-2">
+                  {HERO_CHECKS.map((c) => (
+                    <li
+                      key={c}
+                      className="flex items-center gap-2 rounded-full border border-line/60 px-3 py-1.5 text-[13.5px] font-semibold text-ink/85"
+                    >
+                      <FoxPaw size={12} className="text-goldInk" />
+                      {c}
+                    </li>
+                  ))}
+                </ul>
+
+                <p className="mt-4 text-[13px] leading-relaxed text-ink/70">
+                  Hakemus tehdään turvallisesti Sortterin palvelussa.
+                </p>
+              </Reveal>
+            </div>
+
+            <Reveal delay={0.12} className="mx-auto hidden md:block">
+              <Image
+                src="/kettu-tuolissa.webp"
+                alt="Kettu, Kettukilpailutuksen maskotti"
+                width={712}
+                height={993}
+                priority
+                className="relative h-[430px] w-auto select-none drop-shadow-[0_26px_44px_rgba(80,28,2,0.5)] lg:h-[470px]"
+              />
+            </Reveal>
+          </div>
+        </div>
+
+        <div className="theme-light">
+          <TailSweep fill="rgb(var(--c-paper))" height={64} />
+        </div>
       </section>
 
-      <div className="theme-light bg-paper">
+      <div className="theme-light bg-paper pt-px">
+        <div className="relative z-20 mx-auto -mt-40 max-w-[900px] px-4 sm:px-6 md:-mt-44">
+          <SortterCalculator />
+        </div>
+
         {/*
           ASKELKAISTA. Kolme riviä, ei kolmea kappaletta — tämän osion
           tehtävä on kumota yksi pelko ("onko tämä työlästä") yhdellä

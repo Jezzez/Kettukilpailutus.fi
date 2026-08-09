@@ -248,9 +248,9 @@ export default function PlanCard({
         {/* Kermanauha, ei kirkkaanoranssi: oranssi nauha oranssilla
             kortilla olisi kaksi lähes samaa sävyä päällekkäin. */}
         {cheapest && (
-          <p className="flex min-w-0 items-center gap-1.5 font-display text-[11px] font-bold uppercase tracking-[0.14em] text-[#A83E0A]">
+          <p className="flex min-w-0 items-center gap-1.5 font-display text-[10px] font-bold uppercase tracking-[0.08em] text-[#A83E0A] sm:text-[11px] sm:tracking-[0.14em]">
             <Zap size={12} className="shrink-0" aria-hidden />
-            <span className="truncate">{campaign ? "Edullisin" : "Edullisin kulutuksellasi"}</span>
+            <span className="truncate">Edullisin tällä hetkellä</span>
           </p>
         )}
         {foxPick && (
@@ -293,7 +293,7 @@ export default function PlanCard({
                 kaikkia muita.
               */}
               <p className="mt-1 truncate font-data text-[10.5px] font-bold leading-none text-[#5C3A08]">
-                Halvin myös kampanjan jälkeen
+                Tällä hetkellä edullisin myös kampanjan jälkeen
               </p>
             </div>
           </div>
@@ -514,8 +514,8 @@ export default function PlanCard({
           <div
             className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-black/20"
             role="img"
-            aria-label={`Hinta suhteessa listan halvimpaan: mitä pidempi palkki, sitä halvempi sopimus. Tämä ${barWidth} prosenttia täydestä.`}
-            title="Mitä pidempi palkki, sitä halvempi sopimus"
+            aria-label={`Hinta suhteessa tämän hetken edullisimpaan: mitä pidempi palkki, sitä edullisempi sopimus. Tämä ${barWidth} prosenttia täydestä.`}
+            title="Mitä pidempi palkki, sitä edullisempi sopimus tällä hetkellä"
           >
             <div
               className="h-full rounded-full bg-cream transition-all duration-500"

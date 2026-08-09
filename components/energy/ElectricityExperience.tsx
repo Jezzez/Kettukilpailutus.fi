@@ -58,13 +58,10 @@ const HERO_CLAIMS = [
   },
 ] as const;
 
-const LOADING_TIPS = [
-  "Vuonna 1879 Edisonin työryhmä esitteli käytännöllisen hehkulampun. Ratkaisu syntyi monen keksijän aiemman työn pohjalta.",
-  "Sähkönmyyjän voi vaihtaa ilman sähkökatkoa: paikallinen verkkoyhtiösi pysyy samana.",
-] as const;
+const LOADING_TIP =
+  "Vuonna 1879 Edisonin työryhmä esitteli käytännöllisen hehkulampun. Ratkaisu syntyi monen keksijän aiemman työn pohjalta.";
 
-const RESULT_LOADING_MS = 12000;
-const LOADING_TIP_MS = RESULT_LOADING_MS / LOADING_TIPS.length;
+const RESULT_LOADING_MS = 7000;
 
 /**
  * Sähkön koko kokemus.
@@ -201,12 +198,10 @@ export default function ElectricityExperience({
   */
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const resultTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const tipTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const foundTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   useEffect(() => () => {
     if (advanceTimer.current) clearTimeout(advanceTimer.current);
     if (resultTimer.current) clearTimeout(resultTimer.current);
-    if (tipTimer.current) clearInterval(tipTimer.current);
     if (foundTimer.current) clearInterval(foundTimer.current);
   }, []);
 
@@ -230,7 +225,6 @@ export default function ElectricityExperience({
   const quizMounted = useRef(false);
   const [submitted, setSubmitted] = useState(false);
   const [loadingResults, setLoadingResults] = useState(false);
-  const [loadingTip, setLoadingTip] = useState(0);
   const [loadingFound, setLoadingFound] = useState(0);
   const showResults = !gated || submitted;
 
@@ -626,7 +620,7 @@ export default function ElectricityExperience({
   const recommendedReasons = recommendedPlan
     ? [
         recommendedIsCheapest
-          ? "Halvin arvioitu vuosihinta"
+          ? "Tämän hetken edullisin vuosihinta"
           : "Paras hinta myös kampanjan jälkeen",
         recommendedPlan.fixedTermMonths
           ? `Hinta lukossa ${recommendedPlan.fixedTermMonths} kk`
@@ -1235,12 +1229,8 @@ export default function ElectricityExperience({
       (greenOnly ? plan.green : true)
     ).length;
 
-    setLoadingTip(0);
     setLoadingFound(0);
     setLoadingResults(true);
-    tipTimer.current = setInterval(() => {
-      setLoadingTip((current) => Math.min(current + 1, LOADING_TIPS.length - 1));
-    }, LOADING_TIP_MS);
 
     const loadingStartedAt = Date.now();
     foundTimer.current = setInterval(() => {
@@ -1250,9 +1240,7 @@ export default function ElectricityExperience({
     }, 100);
 
     resultTimer.current = setTimeout(() => {
-      if (tipTimer.current) clearInterval(tipTimer.current);
       if (foundTimer.current) clearInterval(foundTimer.current);
-      tipTimer.current = null;
       foundTimer.current = null;
       setLoadingResults(false);
       setSubmitted(true);
@@ -1485,9 +1473,6 @@ export default function ElectricityExperience({
           <h3 className="mt-3 hidden font-hero text-[2.1rem] leading-[1.1] text-ink md:block">
             Hetki — lasken sinulle parhaat vaihtoehdot.
           </h3>
-          <p className="mt-2 hidden text-[14px] text-ink/65 md:block">
-            Käyn läpi {plans.length} sopimusta kulutuksellasi {kwh.toLocaleString("fi-FI")} kWh.
-          </p>
 
           <div className="mx-auto mt-3 flex w-fit items-center gap-3 rounded-xl border border-gold/30 bg-gold/[0.08] px-4 py-2.5 md:mx-0 md:mt-4">
             <span className="font-display font-data text-[1.8rem] font-extrabold leading-none text-accent">
@@ -1505,19 +1490,10 @@ export default function ElectricityExperience({
           <div className="relative mt-3 rounded-2xl border border-line bg-white px-4 py-4 shadow-card sm:px-5 md:mt-5">
             <span className="absolute -top-2 left-1/2 h-4 w-4 -translate-x-1/2 rotate-45 border-l border-t border-line bg-white md:hidden" aria-hidden />
             <span className="absolute -left-2 top-5 hidden h-4 w-4 rotate-45 border-b border-l border-line bg-white md:block" aria-hidden />
-            <AnimatePresence mode="wait">
-              <motion.p
-                key={loadingTip}
-                initial={reduce ? false : { opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={reduce ? undefined : { opacity: 0, y: -6 }}
-                transition={{ duration: 0.2 }}
-                className="relative text-center text-[14px] leading-relaxed text-ink/80 md:text-left"
-              >
-                <span className="font-display font-bold text-accentDark">Ketun vinkki: </span>
-                {LOADING_TIPS[loadingTip]}
-              </motion.p>
-            </AnimatePresence>
+            <p className="relative text-center text-[14px] leading-relaxed text-ink/80 md:text-left">
+              <span className="font-display font-bold text-accentDark">Ketun vinkki: </span>
+              {LOADING_TIP}
+            </p>
           </div>
 
           <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-line md:mt-5" aria-hidden>
@@ -1951,7 +1927,7 @@ export default function ElectricityExperience({
                 <FoxComputing show={computing} />
               </div>
               <p className="mt-3 font-hero text-[2rem] leading-[1.1] text-ink sm:text-[2.5rem]">
-                Kettu löysi{" "}
+                Tämän hetken edullisin:{" "}
                 <span className="font-display font-data font-price font-extrabold tracking-tight text-accent">
                   {/* Sama tarkkuus kuin korteissa — ks. perustelu PlanCard.tsx */}
                   {cheapestMonthly.toLocaleString("fi-FI", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} €
@@ -2335,7 +2311,7 @@ export default function ElectricityExperience({
                    kosketetaan, ja käyttäjä jää zoomatulle sivulle. */
                 className="rounded-xl border border-line bg-white px-3 py-2 font-display text-[16px] font-semibold text-ink transition-colors hover:border-lineDark focus:border-accent focus:outline-none"
               >
-                <option value="cost">Edullisin vuosihinta</option>
+                <option value="cost">Tämän hetken edullisin vuosihinta</option>
                 <option value="basic">Pienin perusmaksu</option>
                 <option value="campaign">Suurin kampanjaetu</option>
               </select>
@@ -2359,13 +2335,13 @@ export default function ElectricityExperience({
                     ? {
                         kind: "cheapest",
                         note: isFox
-                          ? "Myös Ketun valinta: halvin sekä ensimmäisenä vuonna että kampanjan jälkeen."
+                          ? "Myös Ketun valinta: tällä hetkellä edullisin sekä ensimmäisenä vuonna että kampanjan jälkeen."
                           : undefined,
                       }
                     : isFox
                       ? {
                           kind: "fox",
-                          note: "Ei halvin ensimmäisenä vuonna, mutta paras kokonaisuus kun kampanjan jälkeinen hinta lasketaan mukaan.",
+                          note: "Ei tämän hetken edullisin ensimmäisenä vuonna, mutta paras kokonaisuus kun kampanjan jälkeinen hinta lasketaan mukaan.",
                         }
                       : null;
                   /* Vahvuuslause vain merkittömille korteille: merkin rinnalla
@@ -2377,10 +2353,10 @@ export default function ElectricityExperience({
                     ? undefined
                     : (vahvuudet.get(plan.id) ??
                       (eroKk >= 0.05
-                        ? `+${eroKk.toLocaleString("fi-FI", {
+                          ? `+${eroKk.toLocaleString("fi-FI", {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
-                          })} € / kk halvimpaan`
+                          })} € / kk tämän hetken edullisimpaan`
                         : /* Alle viisi senttiä kuussa on pyöristysvirheen kokoinen
                              ero — alle 60 senttiä vuodessa. "+0,02 € / kk" olisi
                              tosi mutta typerä: se saisi kortin näyttämään
@@ -2391,7 +2367,7 @@ export default function ElectricityExperience({
                              yhden desimaalin tarkkuudella sama €/kk. Jos teksti
                              sanoisi jotain muuta, se olisi ristiriidassa kortin
                              oman hintaluvun kanssa. */
-                          "Sama hinta kuin halvin"));
+                          "Sama hinta kuin tämän hetken edullisin"));
                   return (
                     <motion.div
                       key={plan.id}
