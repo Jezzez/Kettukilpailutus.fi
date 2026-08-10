@@ -48,17 +48,17 @@ const HERO_CLAIMS = [
   {
     icon: Plug,
     text: "Sähkö ei katkea",
-    why: "Sähkö tulee kotiisi samaa verkkoa pitkin kuin ennenkin. Siirtoyhtiösi pysyy samana, ja vaihtuu vain se yhtiö, joka laskuttaa sinua myydystä sähköstä. Katkoa ei synny missään vaiheessa.",
+    why: "Sähkö tulee kotiisi samaa verkkoa pitkin kuin ennenkin. Siirtoyhtiösi pysyy samana, ja vaihtuu vain se yhtiö, joka laskuttaa sinua myydystä sähköstä.",
   },
   {
     icon: RefreshCw,
     text: "Vanha sopimus irtisanotaan puolestasi",
-    why: "Uusi yhtiö hoitaa irtisanomisen, joten vanhalle ei tarvitse soittaa. Yksi poikkeus: jos sinulla on kesken määräaikainen sopimus, sen purkamisesta voi tulla kuluja. Tarkista päättymispäivä laskustasi ennen kuin vaihdat.",
+    why: "Uusi yhtiö hoitaa irtisanomisen, joten vanhalle ei tarvitse soittaa.",
   },
   {
     icon: Timer,
     text: "Vie noin 5 minuuttia",
-    why: "Tarvitset sähkölaskusi 17-numeroisen käyttöpaikkatunnuksen ja pankkitunnukset tunnistautumiseen. Sopimus syntyy sähköisesti, ja etämyynnissä sinulla on aina 14 vuorokauden peruutusoikeus.",
+    why: "Sopimus syntyy sähköisesti, ja etämyynnissä sinulla on aina 14 vuorokauden peruutusoikeus.",
   },
 ] as const;
 
