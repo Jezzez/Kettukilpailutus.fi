@@ -581,8 +581,18 @@ export default function PlanCard({
             on pahempi kuin pieni luku.
           */}
           {/* Ero nykyiseen ENNEN hintaa: se on ainoa luku, jota ei voi
-              päätellä muualta kortista, ja se on syy lukea loput. */}
-          {diffMonthly !== null && (
+              päätellä muualta kortista, ja se on syy lukea loput.
+
+              LÄTKÄ NÄKYY VAIN KUN EROA ON. Alle puolen euron kohdalla
+              tässä luki aiemmin "Käytännössä sama hinta kuin nyt". Se ei
+              kertonut mitään, mitä kortin omat luvut eivät jo kertoneet,
+              ja se vei parhaan paikan kortin yläreunasta — sen paikan,
+              jossa muissa korteissa lukee säästö. Rivi ei myöskään anna
+              mitään tehtävää: se ei kehota vaihtamaan eikä varoita
+              vaihtamasta. Tyhjä tila lukee nopeammin kuin sisällötön
+              lause, ja säästölätkät erottuvat kun niitä ei ympäröi
+              joukko yhtä painavan näköisiä "ei mitään" -lätkiä. */}
+          {diffMonthly !== null && Math.abs(diffMonthly) > 0.5 && (
             <p
               className={`mb-2 inline-flex items-center gap-1.5 rounded-lg border px-2 py-1 text-[12px] ${
                 diffMonthly > 0.5
@@ -619,9 +629,7 @@ export default function PlanCard({
                     / kk kalliimpi kuin nykyinen{campaign ? " jo kampanjahinnalla" : ""}
                   </span>
                 </>
-              ) : (
-                <span>Käytännössä sama hinta kuin nyt</span>
-              )}
+              ) : null}
             </p>
           )}
 

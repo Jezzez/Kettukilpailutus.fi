@@ -1,9 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Schibsted_Grotesk } from "next/font/google";
+import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import CookieConsent from "@/components/CookieConsent";
+import { GA_CONSENT_STORAGE_KEY, GA_MEASUREMENT_ID } from "@/lib/analytics";
 import { OG_IMAGE, SITE } from "@/lib/data";
 import "./globals.css";
 
@@ -143,6 +146,26 @@ const orgJsonLd = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fi" className={`${inter.variable} ${display.variable}`}>
+      <head>
+        <Script id="google-consent-default" strategy="beforeInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = function gtag(){window.dataLayer.push(arguments);};
+            var analyticsStorage = 'denied';
+            try {
+              if (window.localStorage.getItem('${GA_CONSENT_STORAGE_KEY}') === 'granted') {
+                analyticsStorage = 'granted';
+              }
+            } catch (error) {}
+            window.gtag('consent', 'default', {
+              analytics_storage: analyticsStorage,
+              ad_storage: 'denied',
+              ad_user_data: 'denied',
+              ad_personalization: 'denied'
+            });
+          `}
+        </Script>
+      </head>
       <body>
         <script
           type="application/ld+json"
@@ -157,6 +180,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Header />
         <main id="sisalto">{children}</main>
         <Footer />
+        <CookieConsent />
         {/*
           VERCEL WEB ANALYTICS.
 
@@ -177,6 +201,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           komponentti ei lähetä mitään.
         */}
         <Analytics />
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.gtag('js', new Date());
+            window.gtag('config', '${GA_MEASUREMENT_ID}');
+          `}
+        </Script>
       </body>
     </html>
   );
