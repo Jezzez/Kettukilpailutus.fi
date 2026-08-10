@@ -4,6 +4,31 @@ export const GA_CONSENT_STORAGE_KEY = "kettu-google-analytics-consent";
 
 export type GoogleAnalyticsConsent = "granted" | "denied";
 
+export type AnalyticsEventParams = Record<
+  string,
+  string | number | boolean | null | undefined
+>;
+
+type AnalyticsWindow = Window & {
+  gtag?: (...args: unknown[]) => void;
+};
+
+/**
+ * Lähettää nimettömän tapahtuman sivustolla jo käytössä olevaan GA4-tagiin.
+ * Palvelinrenderöinnissä tai ennen gtagin latautumista funktio ei tee mitään.
+ */
+export function trackEvent(
+  eventName: string,
+  params: AnalyticsEventParams = {}
+): void {
+  if (typeof window === "undefined") return;
+
+  const gtag = (window as AnalyticsWindow).gtag;
+  if (typeof gtag !== "function") return;
+
+  gtag("event", eventName, params);
+}
+
 /**
  * Selaintapahtuma, jolla evästeikkuna avataan uudelleen.
  *

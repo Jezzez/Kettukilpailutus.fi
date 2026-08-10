@@ -151,7 +151,12 @@ export default function PlanPage({ params }: { params: { slug: string } }) {
               <p className="mt-4 max-w-xl text-[16px] leading-relaxed text-ink/80">{plan.summary}</p>
             </div>
             <div className="hidden sm:block">
-              <AffiliateButton href={plan.affiliateUrl} cardId={plan.id} placement="plan-hero">
+              <AffiliateButton
+                href={plan.affiliateUrl}
+                cardId={plan.id}
+                placement="plan-hero"
+                analytics={{ category: "electricity", provider: plan.provider, plan: plan.name }}
+              >
                 {cta}
               </AffiliateButton>
             </div>
@@ -332,7 +337,12 @@ export default function PlanPage({ params }: { params: { slug: string } }) {
                 Tilaus vie noin 5 minuuttia — uusi yhtiö hoitaa loput, eikä sähkö katkea.
               </p>
             </div>
-            <AffiliateButton href={plan.affiliateUrl} cardId={plan.id} placement="plan-footer">
+            <AffiliateButton
+              href={plan.affiliateUrl}
+              cardId={plan.id}
+              placement="plan-footer"
+              analytics={{ category: "electricity", provider: plan.provider, plan: plan.name }}
+            >
               {cta}
             </AffiliateButton>
           </div>
@@ -353,7 +363,12 @@ export default function PlanPage({ params }: { params: { slug: string } }) {
           <p className="text-[11px] uppercase tracking-wide text-ink/60">Perusmaksu</p>
           <p className="font-display text-lg font-bold text-ink">{plan.basicFee.toLocaleString("fi-FI")} €/kk</p>
         </div>
-        <AffiliateButton href={plan.affiliateUrl} cardId={plan.id} placement="plan-sticky">
+        <AffiliateButton
+          href={plan.affiliateUrl}
+          cardId={plan.id}
+          placement="plan-sticky"
+          analytics={{ category: "electricity", provider: plan.provider, plan: plan.name }}
+        >
           {cta}
         </AffiliateButton>
       </div>

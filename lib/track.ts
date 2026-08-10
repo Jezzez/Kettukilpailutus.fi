@@ -1,18 +1,29 @@
 "use client";
 
+import { trackEvent } from "@/lib/analytics";
+
+export type AffiliateAnalytics = {
+  category?: string;
+  provider?: string;
+  plan?: string;
+};
+
 /**
  * Affiliate-klikkausten seuranta.
- * Lähettää tapahtuman sekä analytiikkaan (gtag/dataLayer, jos asennettu)
+ * Lähettää tapahtuman sekä GA4:ään (jos tagi on asennettu)
  * että omaan /api/track-päätepisteeseen palvelinpuolen lokitusta varten.
  */
-export function trackAffiliateClick(cardId: string, placement: string) {
+export function trackAffiliateClick(
+  cardId: string,
+  placement: string,
+  analytics: AffiliateAnalytics = {}
+) {
   try {
-    const w = window as unknown as {
-      gtag?: (...args: unknown[]) => void;
-      dataLayer?: unknown[];
-    };
-    w.gtag?.("event", "affiliate_click", { card_id: cardId, placement });
-    w.dataLayer?.push({ event: "affiliate_click", card_id: cardId, placement });
+    trackEvent("affiliate_click", {
+      card_id: cardId,
+      placement,
+      ...analytics,
+    });
 
     const body = JSON.stringify({ cardId, placement, ts: Date.now() });
     if (navigator.sendBeacon) {

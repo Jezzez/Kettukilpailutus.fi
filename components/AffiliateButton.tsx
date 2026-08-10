@@ -1,6 +1,9 @@
 "use client";
 
-import { trackAffiliateClick } from "@/lib/track";
+import {
+  trackAffiliateClick,
+  type AffiliateAnalytics,
+} from "@/lib/track";
 
 /**
  * Kaikki "Siirry hakemaan" -painikkeet kulkevat tämän komponentin kautta:
@@ -14,6 +17,7 @@ export default function AffiliateButton({
   variant = "primary",
   children = "Katso kortti",
   className = "",
+  analytics,
 }: {
   href: string;
   cardId: string;
@@ -21,6 +25,7 @@ export default function AffiliateButton({
   variant?: "primary" | "small" | "inverse";
   children?: React.ReactNode;
   className?: string;
+  analytics?: AffiliateAnalytics;
 }) {
   /*
     `inverse` on oranssin laatikon päällä oleva vaalea nappi.
@@ -48,7 +53,7 @@ export default function AffiliateButton({
       target="_blank"
       rel="nofollow sponsored noopener"
       className={`${base} ${className}`}
-      onClick={() => trackAffiliateClick(cardId, placement)}
+      onClick={() => trackAffiliateClick(cardId, placement, analytics)}
     >
       {children}
     </a>

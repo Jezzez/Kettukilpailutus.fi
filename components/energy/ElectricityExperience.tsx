@@ -8,6 +8,7 @@ import {
   LoaderCircle, Lock, Pencil, Plug, RefreshCw, ShieldCheck, Timer, TrendingDown, Wallet, X,
 } from "lucide-react";
 import type { ElectricityPlan } from "@/lib/energy";
+import { trackEvent } from "@/lib/analytics";
 import {
   annualCost,
   ASSUMED_SPOT_AVG,
@@ -230,6 +231,21 @@ export default function ElectricityExperience({
   const [loadingResults, setLoadingResults] = useState(false);
   const [loadingFound, setLoadingFound] = useState(0);
   const showResults = !gated || submitted;
+  const quizStartedRef = useRef(false);
+  const quizCompletedRef = useRef(false);
+  const offersViewedRef = useRef(false);
+
+  const markQuizStarted = useCallback(() => {
+    if (!gated || quizStartedRef.current) return;
+    quizStartedRef.current = true;
+    trackEvent("quiz_start", { category: "electricity" });
+  }, [gated]);
+
+  const markQuizCompleted = useCallback(() => {
+    if (!gated || quizCompletedRef.current) return;
+    quizCompletedRef.current = true;
+    trackEvent("quiz_complete", { category: "electricity" });
+  }, [gated]);
 
   const [kwh, setKwh] = useState(initialKwh);
   /** Tosi heti kun kulutus on kirjoitettu käsin — ks. `kwhBlockEl`. */
@@ -516,6 +532,40 @@ export default function ElectricityExperience({
     if (!submitted) return;
     resultsTopRef.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
   }, [submitted, reduce]);
+
+  useEffect(() => {
+    if (!showResults || offersViewedRef.current) return;
+
+    const resultsElement = resultsTopRef.current;
+    if (!resultsElement) return;
+
+    const recordOffersViewed = () => {
+      if (offersViewedRef.current) return;
+      offersViewedRef.current = true;
+      trackEvent("offers_viewed", {
+        category: "electricity",
+        offer_count: filtered.length,
+      });
+    };
+
+    if (typeof IntersectionObserver === "undefined") {
+      recordOffersViewed();
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          recordOffersViewed();
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.05 }
+    );
+
+    observer.observe(resultsElement);
+    return () => observer.disconnect();
+  }, [showResults, filtered.length]);
 
   /*
     "Kettu laskee" -tila. Laukeaa aina kun jokin laskennan lähtöarvo
@@ -1029,6 +1079,7 @@ export default function ElectricityExperience({
           */
           selected={dwelling === d.key}
           onClick={() => {
+            markQuizStarted();
             setDwelling(d.key);
             setKwh(d.kwh);
             setKwhTouched(false);
@@ -1294,6 +1345,7 @@ export default function ElectricityExperience({
 
   const submitQuiz = () => {
     if (loadingResults) return;
+    markQuizStarted();
     /* Jos kyselyssä syötettiin nykyinen hinta, kenttä jää auki myös
        tuloksissa. Muuten säästöluku näkyisi ruudulla ilman että sen
        lähtöarvo olisi missään näkyvissä — eli tarkistamattomana. */
@@ -1330,6 +1382,7 @@ export default function ElectricityExperience({
       foundTimer.current = null;
       setLoadingResults(false);
       setSubmitted(true);
+      markQuizCompleted();
     }, RESULT_LOADING_MS);
   };
 
@@ -1666,11 +1719,11 @@ export default function ElectricityExperience({
                   Kursivoitu "laskemalla" on sivun ainoa koristeellinen ele.
                 */}
                 <h1 className="mt-4 max-w-[19ch] font-hero text-[2.1rem] leading-[1.05] text-cream sm:text-[3.1rem] sm:leading-[1.03] md:text-[3.5rem]">
-                  Halvin sähkösopimus löytyy{" "}
+                  Anna ketun{" "}
+                  <br className="sm:hidden" />
                   {/* Korostus on lämmintä kultaa, ei toista oranssia:
                       oranssilla pohjalla oranssi korostus ei erotu. */}
-                  <em className="text-goldInk">laskemalla</em>, ei
-                  arvaamalla.
+                  <em className="text-goldInk">kilpailuttaa</em> puolestasi
                 </h1>
 
                 <p className="mt-5 max-w-[48ch] text-[15.5px] leading-relaxed text-ink/85 sm:text-[16.5px]">
@@ -1765,6 +1818,7 @@ export default function ElectricityExperience({
                 <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
                   <a
                     href="#vertailu"
+                    onClick={markQuizStarted}
                     className="btn-ember inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 font-display text-[15.5px] font-bold text-onEmber md:hidden"
                   >
                     Aloita kysely – neljä kysymystä
@@ -2247,6 +2301,11 @@ export default function ElectricityExperience({
                         href={recommendedPlan.affiliateUrl}
                         cardId={recommendedPlan.id}
                         placement="energy-suositus"
+                        analytics={{
+                          category: "electricity",
+                          provider: recommendedPlan.provider,
+                          plan: recommendedPlan.name,
+                        }}
                         variant="inverse"
                       >
                         Tee sopimus

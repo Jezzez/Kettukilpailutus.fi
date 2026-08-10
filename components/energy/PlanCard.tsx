@@ -866,6 +866,11 @@ export default function PlanCard({
             href={plan.affiliateUrl}
             cardId={plan.id}
             placement="energy-grid"
+            analytics={{
+              category: "electricity",
+              provider: plan.provider,
+              plan: plan.name,
+            }}
             variant="inverse"
             className="w-full"
           >

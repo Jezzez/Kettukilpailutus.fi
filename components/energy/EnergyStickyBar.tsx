@@ -151,6 +151,11 @@ export default function EnergyStickyBar({
             href={plan.affiliateUrl}
             cardId={plan.id}
             placement="energy-stickybar"
+            analytics={{
+              category: "electricity",
+              provider: plan.provider,
+              plan: plan.name,
+            }}
             variant="inverse"
             className="px-5 py-2.5 text-[14px]"
             /* Palkissa lukee sama teksti kuin kortin napissa. Eri sanamuoto
