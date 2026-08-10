@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from "framer-motion";
 import {
@@ -11,6 +11,7 @@ import type { ElectricityPlan } from "@/lib/energy";
 import {
   annualCost,
   ASSUMED_SPOT_AVG,
+  campaignMonthlyCost,
   campaignSaving,
   DWELLINGS,
   IS_EXAMPLE_DATA,
@@ -355,6 +356,59 @@ export default function ElectricityExperience({
     return b * 12 + (curEnergy.price * kwh) / 100;
   }, [curEnergy, curBasic, kwh]);
 
+  /*
+    VERTAILUPERUSTE ON HINTA, JONKA ASIAKAS MAKSAA ENSI KUUSSA.
+
+    Aiemmin kaikki — järjestys, "Ketun valinta", hintapalkit ja "älä
+    vaihda" -päätös — laskettiin ensimmäisen vuoden kokonaishinnasta,
+    jossa kampanjakuukaudet ja normaalihinta olivat samassa keskiarvossa.
+    Se johti tilanteeseen, jossa asiakas maksoi 0,49 c/kWh marginaalia,
+    me pystyimme tarjoamaan 0,39 — ja laskuri vastasi "älä vaihda".
+    Kävijä, joka saa kieltävän vastauksen vaikka halvempi sopimus on
+    tarjolla, ei paina kilpailutusnappia eikä palaa.
+
+    Kaikki vertailu tehdään nyt tästä yhdestä luvusta, jotta lista,
+    merkki, palkki ja suositus eivät voi olla eri mieltä keskenään.
+    Kampanjan kesto ja sen jälkeinen hinta ovat jokaisessa kortissa
+    näkyvissä — se on tämän valinnan vastapaino, ei koriste.
+  */
+  const vertailuhinta = useCallback(
+    (p: ElectricityPlan) => campaignMonthlyCost(p, kwh) * 12,
+    [kwh]
+  );
+
+  /*
+    KETUN VALINTA — KAKSI SÄÄNTÖÄ, TÄSSÄ JÄRJESTYKSESSÄ.
+
+    1. EHDOKKAAKSI PÄÄSEE VAIN SOPIMUS, JOKA VOITTAA ASIAKKAAN HINNAN
+       JUURI NYT. Jos kävijä maksaa 0 € perusmaksua ja 0,49 c/kWh
+       marginaalia, Kettu ei saa ehdottaa mitään, mikä on tänään
+       kalliimpaa — vaikka se olisi vuoden päästä halvempi. Kävijä
+       vertaa suositusta siihen lukuun, jonka hän juuri itse kirjoitti,
+       ja jos suositus häviää sille, koko sivu menettää uskottavuutensa
+       yhdessä sekunnissa. Silloin ei paineta kilpailutusnappia.
+
+    2. EHDOKKAISTA VALITAAN PARAS ENSIMMÄINEN VUOSI. Vasta tämä sääntö
+       erottaa oikean tarjouksen houkuttimesta. Aalto Energia Luotsi on
+       täsmällinen esimerkki: 15,8 € / kk neljä kuukautta, sen jälkeen
+       26,6 € / kk. Se on listan halvin juuri nyt ja saa olla siellä,
+       mutta ensimmäisenä vuonna se maksaa 276 € kun Cheap Energy maksaa
+       228 €. Tassu menee Cheap Energylle, Aalto jää kakkoseksi.
+
+    Näin kumpikin kysymys saa oman vastauksensa eikä kumpikaan valehtele:
+    listan järjestys kertoo mikä on halvin tänään, tassu kertoo mikä
+    näistä kannattaa ottaa. Painokertoimia ei ole — molemmat säännöt voi
+    tarkistaa korttien omista luvuista, ja se on tämän sivun ainoa
+    kilpailuetu.
+
+    Jos kävijä ei ole kertonut omaa hintaansa, sääntö 1 ei voi rajata
+    mitään, ja tassu menee parhaaseen ensimmäiseen vuoteen.
+  */
+  const kokonaisuus = useCallback(
+    (p: ElectricityPlan) => annualCost(p, kwh),
+    [kwh]
+  );
+
   const filtered = useMemo(
     () =>
       plans
@@ -367,15 +421,18 @@ export default function ElectricityExperience({
             /* Tasatilanteessa (esim. kaksi kampanjatonta) halvin ensin,
                jotta lista ei näytä satunnaiselta. */
             if (d !== 0) return d;
-            return annualCost(a, kwh) - annualCost(b, kwh);
+            return vertailuhinta(a) - vertailuhinta(b);
           }
-          return annualCost(a, kwh) - annualCost(b, kwh);
+          return vertailuhinta(a) - vertailuhinta(b);
         }),
-    [plans, type, greenOnly, kwh, sort]
+    [plans, type, greenOnly, kwh, sort, vertailuhinta]
   );
 
-  const cheapestCost = useMemo(() => Math.min(...plans.map((p) => annualCost(p, kwh))), [plans, kwh]);
-  const maxShown = Math.max(...filtered.map((p) => annualCost(p, kwh)), 1);
+  const cheapestCost = useMemo(
+    () => Math.min(...plans.map((p) => vertailuhinta(p))),
+    [plans, vertailuhinta]
+  );
+  const maxShown = Math.max(...filtered.map((p) => vertailuhinta(p)), 1);
 
   /** Halvin näkyvissä oleva sopimus — sekä Ketun suositus, korttien
    *  "Edullisin"-merkki että mobiilin tulospalkki osoittavat tähän.
@@ -388,10 +445,51 @@ export default function ElectricityExperience({
    *  palvelivat vain tulososan otsikkolaatikkoa ("Ketun löytö sinun
    *  luvuillasi"), joka on poistettu — ks. perustelu suosituspaneelin
    *  yläpuolelta. */
-  const cheapestPlan = filtered.length > 0
-    ? [...filtered].sort((a, b) => annualCost(a, kwh) - annualCost(b, kwh))[0]
-    : null;
+  const cheapestPlan = useMemo(() => {
+    if (filtered.length === 0) return null;
+
+    /* Sääntö 1 — ehdokkaaksi pääsee vain sopimus, joka voittaa asiakkaan
+       nykyisen hinnan JO NYT. Vertailu tehdään samalla mittarilla, jonka
+       kävijä näkee kortissa (kampanjahinta), koska muuten suositus
+       lupaisi säästöä, jota ei ensimmäisessä laskussa näy. */
+    const ehdokkaat =
+      currentAnnual === null
+        ? filtered
+        : filtered.filter((p) => vertailuhinta(p) < currentAnnual);
+
+    /* Sääntö 2 — ehdokkaista paras ensimmäinen vuosi. Tämä on se kohta,
+       jossa lyhyt tykkikampanja ja kallis normaalihinta jää kakkoseksi. */
+    if (ehdokkaat.length > 0) {
+      return [...ehdokkaat].sort((a, b) => kokonaisuus(a) - kokonaisuus(b))[0];
+    }
+
+    /* Yksikään tämän tyypin sopimus ei voita asiakkaan hintaa. Yleensä
+       tällöin näytetään "älä vaihda" eikä suositusta lainkaan, mutta
+       `alreadyGood` katsoo koko aineistoa ja tämä lista on tyypillä
+       rajattu — joten fallbackina halvin, ei paras kokonaisuus. Kalliimman
+       kokonaisuuden nostaminen tässä tilanteessa olisi pelkkä tappio. */
+    return [...filtered].sort((a, b) => vertailuhinta(a) - vertailuhinta(b))[0];
+  }, [filtered, currentAnnual, vertailuhinta, kokonaisuus]);
+
   const cheapestId = filtered.length > 1 ? cheapestPlan!.id : null;
+
+  /*
+    KETUN VALINTA NOSTETAAN LISTAN YKKÖSEKSI.
+
+    Ilman nostoa tassu istuisi kolmannessa kortissa, ja kaksi kalliimman
+    kokonaisuuden korttia olisi sen yläpuolella. Kävijä lukee ylimmän
+    kortin suosituksena riippumatta siitä, mitä siinä lukee — ensimmäinen
+    paikka ON suositus. Silloin sivu suosittelisi kahta eri sopimusta
+    yhtä aikaa, ja se ristiriita menettää klikin.
+
+    Nosto tehdään vain hintajärjestyksessä. Jos kävijä on itse valinnut
+    "Pienin perusmaksu" tai "Suurin kampanjaetu", hän on pyytänyt tietyn
+    järjestyksen eikä Ketun mielipidettä — silloin listaan ei kosketa.
+  */
+  const naytettavat = useMemo(() => {
+    if (sort !== "cost" || !cheapestPlan) return filtered;
+    return [cheapestPlan, ...filtered.filter((p) => p.id !== cheapestPlan.id)];
+  }, [filtered, cheapestPlan, sort]);
 
   /** Ankkuri, jonka ohittaminen näyttää mobiilin tulospalkin. */
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -558,11 +656,15 @@ export default function ElectricityExperience({
   */
   const recommendedReasons = recommendedPlan
     ? [
-        /* Suositus ON halvin, joten ensimmäinen rivi voi sanoa sen
-           suoraan. Ehdollinen "paras hinta myös kampanjan jälkeen"
-           -vaihtoehto poistettiin: se oli jäänne painotetusta
-           valinnasta, eikä sellaista väitettä enää lasketa mistään. */
-        "Tämän hetken edullisin vuosihinta",
+        /* Perustelun on kuvattava TÄSMÄLLEEN se laskutoimitus, joka
+           valinnan teki. Jos asiakas on antanut oman hintansa, valinta
+           tehtiin rajatusta joukosta (vain hänet jo nyt voittavat), eikä
+           tämä siis välttämättä ole koko listan halvin ensimmäinen vuosi.
+           Sen sanominen ääneen on halvempaa kuin se, että lukija laskee
+           korteista perässä ja huomaa väitteen ontuvan. */
+        currentAnnual === null
+          ? "Halvin ensimmäinen vuosi kokonaisuutena"
+          : "Halvin ensimmäinen vuosi niistä, jotka voittavat hintasi heti",
         recommendedPlan.fixedTermMonths
           ? `Hinta lukossa ${recommendedPlan.fixedTermMonths} kk`
           : "Ei määräaikaisuutta",
@@ -583,6 +685,7 @@ export default function ElectricityExperience({
 
   /** Rehellisyys ennen konversiota: jos asiakkaan oma sopimus voittaa, se sanotaan. */
   const alreadyGood = currentAnnual !== null && currentAnnual <= cheapestCost;
+
   /**
    * Säästö lasketaan VAIN asiakkaan omaan sopimukseen. Vertailu listan
    * kalleimpaan on vertailusivujen vanha temppu: se tuottaa ison oranssin
@@ -590,7 +693,7 @@ export default function ElectricityExperience({
    * liikaa. Ennen kuin oma hinta on annettu, säästölukua ei näytetä
    * lainkaan — tyhjä kohta on rehellisempi kuin keksitty vertailukohta.
    */
-  const recommendedAnnual = recommendedPlan ? annualCost(recommendedPlan, kwh) : 0;
+  const recommendedAnnual = recommendedPlan ? vertailuhinta(recommendedPlan) : 0;
   const savingVsCurrent =
     currentAnnual === null ? 0 : Math.max(0, currentAnnual - recommendedAnnual);
   /*
@@ -1908,8 +2011,13 @@ export default function ElectricityExperience({
                 <p className="flex items-center gap-2 text-[11.5px] font-semibold uppercase tracking-[0.14em] text-goldInk">
                   <ShieldCheck size={14} aria-hidden /> Ketun rehellinen vastaus
                 </p>
+                {/* Väite on tarkka: laatikko näkyy vain kun asiakkaan oma
+                    hinta voittaa jokaisen sopimuksen KAMPANJAHINNANKIN, eli
+                    myös parhaan tarjouksen ensimmäisen kuukauden. Se on nyt
+                    vahvempi lupaus kuin ennen, ja siksi se saa sanoa näin. */}
                 <p className="mt-2 font-display text-[16px] font-bold leading-snug text-ink">
-                  Nykyinen sopimuksesi on jo edullisempi kuin yksikään vertailun sopimus.
+                  Nykyinen sopimuksesi on halvempi kuin yksikään vertailun sopimus —
+                  myös niiden kampanjahinnat.
                 </p>
                 <p className="mt-1.5 text-[13px] leading-relaxed text-ink/70">
                   Älä vaihda nyt. Tarkista tilanne uudelleen, kun sopimuksesi lähestyy loppuaan.
@@ -2009,10 +2117,12 @@ export default function ElectricityExperience({
                   <div className="mt-5 flex flex-wrap items-center gap-x-7 gap-y-3">
                     <div>
                       <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-goldInk">
-                        Arvio sinulle
+                        {recommendedPlan.campaign
+                          ? `Ensimmäiset ${recommendedPlan.campaign.months} kk`
+                          : "Arvio sinulle"}
                       </p>
                       <p className="mt-0.5 font-display font-data font-price text-[2rem] font-extrabold leading-none tracking-tight text-cream">
-                        {(annualCost(recommendedPlan, kwh) / 12).toLocaleString("fi-FI", {
+                        {campaignMonthlyCost(recommendedPlan, kwh).toLocaleString("fi-FI", {
                           minimumFractionDigits: 1,
                           maximumFractionDigits: 1,
                         })}{" "}
@@ -2021,14 +2131,21 @@ export default function ElectricityExperience({
                       </p>
                     </div>
                     <div>
+                      {/* Sama pari kuin korteissa: iso luku on kampanjahinta,
+                          ja heti sen vieressä lukee, mihin se muuttuu. Ilman
+                          tätä paneeli lupaisi kampanjahinnan pysyväksi. */}
                       <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-goldInk">
-                        Vuodessa
+                        {recommendedPlan.campaign ? "Kampanjan jälkeen" : "Vuodessa"}
                       </p>
                       <p className="mt-0.5 font-display font-data text-[1.35rem] font-bold leading-none text-cream">
-                        {annualCost(recommendedPlan, kwh).toLocaleString("fi-FI", {
-                          maximumFractionDigits: 0,
-                        })}{" "}
-                        €
+                        {recommendedPlan.campaign
+                          ? `${(normalAnnualCost(recommendedPlan, kwh) / 12).toLocaleString("fi-FI", {
+                              minimumFractionDigits: 1,
+                              maximumFractionDigits: 1,
+                            })} € / kk`
+                          : `${annualCost(recommendedPlan, kwh).toLocaleString("fi-FI", {
+                              maximumFractionDigits: 0,
+                            })} €`}
                       </p>
                     </div>
                     {/*
@@ -2063,11 +2180,23 @@ export default function ElectricityExperience({
                           exit={reduce ? undefined : { opacity: 0, y: -10 }}
                           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                         >
+                          {/* Säästö sanotaan KUUKAUDESSA, ei vuodessa.
+                              Vertailuperuste on kampanjan aikainen hinta,
+                              joten "X € / v" olisi vuosisäästö, jota ei ole
+                              olemassa: kampanja loppuu kesken vuoden. Väärä
+                              vuosiluku olisi kuluttajansuojariski, ja se on
+                              myös se luku, jonka asiakas tarkistaa laskusta
+                              ensimmäisenä. */}
                           <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-goldInk">
-                            Säästö nykyiseesi
+                            {recommendedPlan.campaign ? "Säästö kampanjan aikana" : "Säästö nykyiseesi"}
                           </p>
                           <p className="mt-0.5 font-display font-data text-[1.35rem] font-bold leading-none text-cream">
-                            {savingCounted.toLocaleString("fi-FI", { maximumFractionDigits: 0 })} € / v
+                            {recommendedPlan.campaign
+                              ? `${(savingCounted / 12).toLocaleString("fi-FI", {
+                                  minimumFractionDigits: 1,
+                                  maximumFractionDigits: 1,
+                                })} € / kk`
+                              : `${savingCounted.toLocaleString("fi-FI", { maximumFractionDigits: 0 })} € / v`}
                           </p>
                         </motion.div>
                       ) : null}
@@ -2262,7 +2391,7 @@ export default function ElectricityExperience({
                    kosketetaan, ja käyttäjä jää zoomatulle sivulle. */
                 className="rounded-xl border border-line bg-white px-3 py-2 font-display text-[16px] font-semibold text-ink transition-colors hover:border-lineDark focus:border-accent focus:outline-none"
               >
-                <option value="cost">Tämän hetken edullisin vuosihinta</option>
+                <option value="cost">Halvin kuukausihinta nyt</option>
                 <option value="basic">Pienin perusmaksu</option>
                 <option value="campaign">Suurin kampanjaetu</option>
               </select>
@@ -2294,8 +2423,8 @@ export default function ElectricityExperience({
             */}
             <motion.div layout={!reduce} className="mt-4 grid grid-cols-1 gap-4 pt-2 sm:grid-cols-2 lg:grid-cols-3">
               <AnimatePresence mode="popLayout">
-                {(naytaKaikki ? filtered : filtered.slice(0, NAYTA_ALUKSI)).map((plan, i) => {
-                  const cost = annualCost(plan, kwh);
+                {(naytaKaikki ? naytettavat : naytettavat.slice(0, NAYTA_ALUKSI)).map((plan, i) => {
+                  const cost = vertailuhinta(plan);
                   const isCheapest = plan.id === cheapestId;
                   const numero = i + 1;
                   /*
@@ -2353,7 +2482,18 @@ export default function ElectricityExperience({
                         plan={plan}
                         kwh={kwh}
                         badge={sort === "cost" ? badge : null}
-                        compareDiff={currentAnnual === null ? null : currentAnnual - cost}
+                        /* Ero lasketaan SAMALLA perusteella kuin kortin iso
+                           luku, eli kampanjan aikaisesta hinnasta. Jos ero
+                           laskettaisiin ensimmäisen vuoden keskiarvosta,
+                           samassa kortissa lukisi "16,0 € / kk" ja "2 € / kk
+                           kalliimpi kuin nykyinen" — kaksi lukua, jotka eivät
+                           voi molemmat olla totta. Ristiriita kortin sisällä
+                           on nopein tapa menettää lukijan luottamus. */
+                        compareDiff={
+                          currentAnnual === null
+                            ? null
+                            : currentAnnual - campaignMonthlyCost(plan, kwh) * 12
+                        }
                         minCost={cheapestCost}
                         maxCost={maxShown}
                         rank={numero}

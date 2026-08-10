@@ -304,6 +304,38 @@ export function campaignSaving(plan: ElectricityPlan, kwhPerYear: number): numbe
   return normalAnnualCost(plan, kwhPerYear) - annualCost(plan, kwhPerYear);
 }
 
+/**
+ * Kuukausihinta kampanjan aikana (€/kk).
+ *
+ * Tama on kortin ISO luku. Se kertoo mita asiakas maksaa juuri nyt, jos han
+ * tekee sopimuksen tanaan — ei ensimmaisen vuoden keskiarvoa. Perustelu:
+ * keskiarvo nayttaa kalliimmalta kuin lasku, joka oikeasti kolahtaa postiin,
+ * ja osa kavijoista paatteli siita ettei parempaa sopimusta ole saatavilla.
+ * Menetetty klikki on menetetty palkkio.
+ *
+ * Tama on myos koko vertailun JARJESTYSPERUSTE: lista, "Ketun valinta",
+ * hintapalkit ja "ala vaihda" -paatos lasketaan kaikki tasta luvusta.
+ * Jesse paatti nain, ja peruste on selva: jos asiakas saa meilta 0,39
+ * marginaalin ja maksaa nyt 0,49, han saa halvemman sopimuksen — ja
+ * laskuri, joka vastaa siihen "ala vaihda", menettaa klikin ja palkkion.
+ *
+ * Vastapaino on kortin sisalla, ei kaavassa: ison luvun vieressa lukee
+ * kampanjan kesto ja sen alla "Kampanjan jalkeen X € / kk". Se on syy,
+ * miksi noita rivaja ei saa poistaa tilan saastamiseksi.
+ *
+ * Jos kampanjaa ei ole, palautetaan normaali kuukausihinta.
+ */
+export function campaignMonthlyCost(
+  plan: ElectricityPlan,
+  kwhPerYear: number
+): number {
+  const c = plan.campaign;
+  if (!c) return normalAnnualCost(plan, kwhPerYear) / 12;
+
+  const fee = c.basicFee ?? plan.basicFee;
+  return fee + (campaignPrice(plan) * (kwhPerYear / 12)) / 100;
+}
+
 export const TYPE_LABEL: Record<ElectricityPlan["type"], string> = {
   spot: "Pörssisähkö",
   fixed: "Kiinteä hinta",

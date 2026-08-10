@@ -5,7 +5,13 @@ import Link from "next/link";
 import { useState } from "react";
 import { ChevronDown, Leaf, Star, Tag, TrendingDown, TrendingUp } from "lucide-react";
 import type { ElectricityPlan } from "@/lib/energy";
-import { annualCost, normalAnnualCost, ownChargesAnnual, TYPE_LABEL } from "@/lib/energy";
+import {
+  annualCost,
+  campaignMonthlyCost,
+  normalAnnualCost,
+  ownChargesAnnual,
+  TYPE_LABEL,
+} from "@/lib/energy";
 import AffiliateButton from "../AffiliateButton";
 import FoxPaw from "../FoxPaw";
 
@@ -86,7 +92,29 @@ export default function PlanCard({
   strength?: string;
 }) {
   const yearly = annualCost(plan, kwh);
-  const monthly = yearly / 12;
+
+  /*
+    ISO LUKU ON KAMPANJAN AIKAINEN KUUKAUSIHINTA, EI VUODEN KESKIARVO.
+
+    Luku oli aiemmin ensimmäisen vuoden keskiarvo, eli kampanjakuukaudet
+    ja niiden jälkeinen normaalihinta samassa euromäärässä. Se teki
+    kampanjakorteista kalliimman näköisiä kuin mikä on se lasku, joka
+    asiakkaalle oikeasti tulee ensi kuussa — ja osa kävijöistä päätteli
+    siitä, ettei parempaa sopimusta ole tarjolla, vaikka oli. Menetetty
+    klikki on menetetty palkkio, ja tässä se menetettiin luvulla, jota
+    kukaan ei koskaan maksa sellaisenaan.
+
+    Nyt luku vastaa kysymykseen "mitä maksan, jos teen sopimuksen
+    tänään". Vuosiluku ja kampanjan jälkeinen hinta ovat edelleen
+    näkyvissä alempana — ilman niitä tämä olisi houkuttelulukua, ei
+    hintaa.
+
+    HUOM: listan järjestys käyttää tätä lukua, mutta "Ketun valinta"
+    -merkki EI. Merkki katsoo ensimmäisen vuoden kokonaishintaa niiden
+    sopimusten joukossa, jotka voittavat asiakkaan nykyisen hinnan jo
+    nyt — ks. `kokonaisuus`-kommentti ElectricityExperience.tsx:ssä.
+  */
+  const monthly = campaignMonthlyCost(plan, kwh);
 
   /*
     HINTAPALKKI KÄÄNNETTIIN: PITKÄ PALKKI = HALPA.
@@ -104,7 +132,7 @@ export default function PlanCard({
     sekunnissa. Sitä varten palkki on olemassa: silmä vertaa pituuksia
     nopeammin kuin kuutta euromäärää.
   */
-  const barWidth = Math.max(8, Math.round((minCost / yearly) * 100));
+  const barWidth = Math.max(8, Math.round((minCost / (monthly * 12)) * 100));
 
   /*
     ERO NYKYISEEN NÄKYY JOKAISESSA KORTISSA — MYÖS SILLOIN KUN SE ON HUONO.
@@ -165,10 +193,10 @@ export default function PlanCard({
   const campaign = plan.campaign ?? null;
 
   /* Kampanjan jälkeinen kuukausihinta. Iso euroluku kortissa on
-     ENSIMMÄISEN VUODEN keskiarvo kampanja mukaan luettuna, eli se on
-     kampanjakorteissa pienempi kuin pysyvä hinta. Ilman tätä lukua
-     kortti lupaisi hinnan, joka nousee ilman varoitusta — ja juuri se
-     on se pettymys, joka menettää asiakkaan ja tuo valituksen. */
+     KAMPANJAN AIKAINEN hinta, eli kampanjakorteissa pienempi kuin
+     pysyvä hinta. Ilman tätä lukua kortti lupaisi hinnan, joka nousee
+     ilman varoitusta — ja juuri se on se pettymys, joka menettää
+     asiakkaan ja tuo valituksen. */
   const normalMonthly = campaign ? normalAnnualCost(plan, kwh) / 12 : null;
 
   /*
@@ -369,8 +397,14 @@ export default function PlanCard({
                 perustelu merkin alla lukee virheenä, ja virheeltä
                 näyttävä merkki on huonompi kuin ei merkkiä lainkaan.
               */}
+              {/* Perustelu vaihtui, kun merkin mittari vaihtui. Merkki ei
+                  tarkoita halvinta kuukausihintaa — sen paikan voi ostaa
+                  kolmen kuukauden houkuttimella — vaan halvinta ensimmäistä
+                  vuotta. Merkin alarivin PITÄÄ sanoa sama asia kuin mittari,
+                  muuten kortti väittää jotain, mitä sen omat luvut eivät tue.
+                  Rivi on lyhyt, koska se katkeaa kampanjamerkin vieressä. */}
               <p className="mt-1 truncate font-data text-[10.5px] font-bold leading-none text-[#5C3A08]">
-                Edullisin kulutuksellasi
+                Paras ensimmäinen vuosi
               </p>
             </div>
           </div>
@@ -539,6 +573,12 @@ export default function PlanCard({
             Sama tarkkuus on heron kärkiluvussa ja tulospalkissa —
             kolmen eri pyöristyksen näyttäminen olisi sama ongelma
             uudessa muodossa.
+
+            Samasta syystä myös alla oleva ero-lätkä näyttää desimaalin.
+            Se pyöristi aiemmin kokonaisluvuksi, jolloin suosituspaneeli
+            sanoi "0,6 € / kk" ja saman sopimuksen kortti sanoi "1 € / kk"
+            yhdellä ja samalla ruudulla. Kaksi eri lukua samasta asiasta
+            on pahempi kuin pieni luku.
           */}
           {/* Ero nykyiseen ENNEN hintaa: se on ainoa luku, jota ei voi
               päätellä muualta kortista, ja se on syy lukea loput. */}
@@ -556,9 +596,13 @@ export default function PlanCard({
                   <span>
                     Säästät{" "}
                     <strong className="font-data font-bold">
-                      {diffMonthly.toLocaleString("fi-FI", { maximumFractionDigits: 0 })} €
+                      {diffMonthly.toLocaleString("fi-FI", {
+                        minimumFractionDigits: 1,
+                        maximumFractionDigits: 1,
+                      })}{" "}
+                      €
                     </strong>{" "}
-                    / kk nykyiseen verrattuna
+                    / kk {campaign ? "kampanjan aikana" : "nykyiseen verrattuna"}
                   </span>
                 </>
               ) : diffMonthly < -0.5 ? (
@@ -566,9 +610,13 @@ export default function PlanCard({
                   <TrendingUp size={13} className="shrink-0" aria-hidden />
                   <span>
                     <strong className="font-data font-bold">
-                      {Math.abs(diffMonthly).toLocaleString("fi-FI", { maximumFractionDigits: 0 })} €
+                      {Math.abs(diffMonthly).toLocaleString("fi-FI", {
+                        minimumFractionDigits: 1,
+                        maximumFractionDigits: 1,
+                      })}{" "}
+                      €
                     </strong>{" "}
-                    / kk kalliimpi kuin nykyinen
+                    / kk kalliimpi kuin nykyinen{campaign ? " jo kampanjahinnalla" : ""}
                   </span>
                 </>
               ) : (
@@ -582,6 +630,17 @@ export default function PlanCard({
               {monthly.toLocaleString("fi-FI", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} €
             </span>
             <span className="font-display text-[13px] font-semibold text-ink/60">/ kk</span>
+            {/* Aikaraja on ISON LUVUN VIERESSÄ, ei alaviitteenä.
+
+                Iso luku on kampanjahinta, joka päättyy. Jos kesto lukisi
+                vasta kortin alalaidassa, luku ehtisi lukeutua pysyväksi
+                hinnaksi ennen kuin lukija näkee ehdon — ja ehto, joka
+                luetaan vasta laskusta, on peruutus eikä palkkio. */}
+            {campaign ? (
+              <span className="font-display text-[12px] font-semibold text-ink/50">
+                ensimmäiset {campaign.months} kk
+              </span>
+            ) : null}
           </div>
 
           <div
@@ -610,9 +669,10 @@ export default function PlanCard({
           {/*
             KAMPANJAN JÄLKEINEN HINTA SANOTAAN HETI ISON LUVUN ALLA.
 
-            Iso euroluku on ensimmäisen vuoden keskiarvo, jossa kampanja
-            on mukana. Kampanjakortissa se on siis pienempi kuin hinta,
-            jonka asiakas maksaa vuoden kuluttua. Jos kortti näyttäisi
+            Iso euroluku on kampanjan aikainen hinta. Kampanjakortissa se
+            on siis pienempi kuin hinta, jonka asiakas maksaa kampanjan
+            päätyttyä — ja tämä rivi on ainoa paikka, jossa pysyvä
+            kuukausihinta sanotaan euroina. Jos kortti näyttäisi
             pelkän kampanjaluvun, se voittaisi vertailun tarjouksella ja
             asiakas huomaisi eron vasta laskusta — se on yksi peruutus,
             yksi menetetty palkkio ja yksi asiakas, joka ei palaa. Kolmen
