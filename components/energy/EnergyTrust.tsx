@@ -41,7 +41,7 @@ const POINTS = [
       juuri se osio, jossa lupaus tarkistetaan. Väärä kaava tässä
       laatikossa kumoaisi koko osion tarkoituksen.
     */
-    text: "Merkki nostaa esiin sopimuksen, joka on paras kokonaisuus kahdella mittarilla: ensimmäisen vuoden hinta kampanjoineen painaa 50 % ja kampanjan jälkeinen pysyvä hinta 50 %. Näin lyhyt tarjous ei yksin nosta sopimusta kärkeen. Halvin ensimmäinen vuosi on aina merkitty erikseen.",
+    text: "Merkki nostaa esiin sopimuksen, jonka vuosihinta on sinun kulutuksellasi pienin. Kaava on koko merkin sisältö: ei painotuksia, ei arvioita, ei kumppanietuja. Sen voi tarkistaa listan ensimmäisestä kortista.",
   },
   {
     icon: Coins,

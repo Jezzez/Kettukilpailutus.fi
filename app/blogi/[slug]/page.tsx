@@ -117,10 +117,60 @@ export default function PostPage({ params }: { params: { slug: string } }) {
         <span className="rounded-full bg-mist px-2.5 py-0.5 text-xs font-semibold">{post.category}</span>
       </p>
 
+      {/*
+        VÄLIOTSIKOT: RIVI, JOKA ALKAA MERKEILLÄ "## ".
+
+        Artikkelin body on JSON-tiedostossa merkkijonotaulukko, ja jokainen
+        alkio piirtyi ennen kappaleeksi. Se rajasi jutut lyhyiksi: 1 500
+        sanaa yhtenä pystysuorana tekstinauhana ei ole luettavissa, joten
+        artikkelit oli pakko pitää 400 sanassa.
+
+        MIKSI TÄMÄ ON SEO-KYSYMYS EIKÄ TYYLIKYSYMYS: Google poimii
+        hakutuloksen nostot ja "muut kysyivät myös" -vastaukset
+        väliotsikon ja sitä seuraavan kappaleen parista. Ilman h2-tasoa
+        sivulla on täsmälleen yksi otsikko, eikä hakukoneella ole mitään,
+        mitä nostaa. Väliotsikko on siis se paikka, johon hakusana
+        kirjoitetaan siinä muodossa, jossa lukija sen kirjoittaa
+        hakukenttään.
+
+        MIKSI TUOTON KANNALTA: oppaat ovat sivuston halvin kävijälähde.
+        Jokainen luettu artikkeli päättyy oranssiin kehotevyöhön, joka
+        vie vertailuun — eli hakuliikenne muuttuu klikeiksi vain, jos
+        artikkeli ylipäätään löytyy ja tulee luetuksi loppuun.
+
+        MIKSI MERKKIJONOPREFIKSI EIKÄ UUSI KENTTÄ TYYPPIIN: `body` on
+        `string[]` kolmessatoista olemassa olevassa artikkelissa. Uusi
+        rakenne olisi vaatinut kaikkien muuntamisen, ja muunnos, joka ei
+        ole pakollinen, tuottaa vain tilaisuuksia rikkoa vanhaa. Vanha
+        artikkeli, jossa ei ole yhtään "## "-riviä, piirtyy täsmälleen
+        kuten ennenkin.
+
+        ID TULEE OTSIKOSTA, jotta osioon voi linkittää suoraan
+        (`/blogi/juttu#sahkovero`). Se on myös se ankkuri, jonka Google
+        näyttää hakutuloksen alla omana rivinään.
+      */}
       <div className="mt-10 space-y-6">
-        {post.body.map((para, i) => (
-          <p key={i} className="text-[17px] leading-[1.75] text-ink/85">{para}</p>
-        ))}
+        {post.body.map((para, i) =>
+          para.startsWith("## ") ? (
+            <h2
+              key={i}
+              id={para
+                .slice(3)
+                .toLowerCase()
+                .replace(/[äå]/g, "a")
+                .replace(/ö/g, "o")
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-|-$/g, "")}
+              className="!mt-12 scroll-mt-24 font-display text-[1.45rem] font-bold leading-tight text-ink sm:text-[1.6rem]"
+            >
+              {para.slice(3)}
+            </h2>
+          ) : (
+            <p key={i} className="text-[17px] leading-[1.75] text-ink/85">
+              <Prose text={para} />
+            </p>
+          )
+        )}
       </div>
 
     </article>
@@ -205,6 +255,58 @@ export default function PostPage({ params }: { params: { slug: string } }) {
         ))}
       </div>
     </section>
+    </>
+  );
+}
+
+/**
+ * Kappaleen sisäiset linkit merkinnällä `[teksti](/polku)`.
+ *
+ * MIKSI TÄMÄ ON TUOTTOKYSYMYS: hakukoneesta tuleva lukija laskeutuu
+ * artikkeliin, ei etusivulle. Ilman linkkejä leipätekstissä hänen ainoa
+ * tiensä vertailuun on artikkelin lopussa oleva oranssi vyö — eli hänen
+ * on luettava 1 300 sanaa loppuun asti. Linkki oikeassa kohdassa
+ * lausetta ottaa klikin siltä lukijalta, joka löysi vastauksensa jo
+ * kolmannesta väliotsikosta ja olisi muuten poistunut.
+ *
+ * SEO: sisäinen linkitys kertoo Googlelle, mitkä sivut ovat sivuston
+ * tärkeimpiä. Kymmenen opasta, joista jokainen linkittää vertailuun ja
+ * pariin toiseen oppaaseen, nostaa nimenomaan vertailusivua — ei
+ * artikkeleita. Ankkuriteksti on siksi kuvaileva ("sähkösopimusten
+ * vertailu"), ei "klikkaa tästä".
+ *
+ * MIKSI OMA MINITULKKI EIKÄ MARKDOWN-KIRJASTO: koko tarve on yksi
+ * merkintä. Kirjasto toisi mukanaan HTML:n läpipäästön ja sen myötä
+ * riskin siitä, että data-tiedostoon kirjoitettu merkki päätyy sivulle
+ * elementtinä. Tässä tulkissa mikään muu kuin linkki ei ole mahdollinen.
+ *
+ * Ulkoiset osoitteet (`http`) piirtyvät tavallisena ankkurina ja saavat
+ * `nofollow`in: lähdeviitteet ovat lukijaa varten, eikä sivuston
+ * linkkiarvoa ole syytä vuotaa niihin.
+ */
+function Prose({ text }: { text: string }) {
+  const parts = text.split(/(\[[^\]]+\]\([^)]+\))/g);
+  return (
+    <>
+      {parts.map((part, i) => {
+        const m = /^\[([^\]]+)\]\(([^)]+)\)$/.exec(part);
+        if (!m) return part;
+        const [, label, href] = m;
+        const cls =
+          "font-semibold text-accentDark underline decoration-accent/40 underline-offset-2 transition-colors hover:decoration-accent";
+        if (href.startsWith("http")) {
+          return (
+            <a key={i} href={href} target="_blank" rel="noopener nofollow" className={cls}>
+              {label}
+            </a>
+          );
+        }
+        return (
+          <Link key={i} href={href} className={cls}>
+            {label}
+          </Link>
+        );
+      })}
     </>
   );
 }

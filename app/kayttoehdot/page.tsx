@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 const SECTIONS: [string, string][] = [
   ["Palvelun luonne", "Kettukilpailutus on riippumaton vertailupalvelu. Emme myönnä luottoja emmekä toimi luotonvälittäjänä — ohjaamme käyttäjän pankin omaan hakuprosessiin."],
   ["Tietojen oikeellisuus", "Pyrimme pitämään korttien tiedot ajan tasalla, mutta ehdot voivat muuttua nopeasti. Tarkista aina lopulliset ehdot pankin sivuilta ennen hakemista. Vertailu ei ole sijoitus- tai luottoneuvontaa."],
-  ["Vertailun järjestys", "Sopimukset järjestetään hinnalla, joka lasketaan ilmoittamallasi kulutuksella ja sisältää kampanjaedun ensimmäiseltä vuodelta. Ketun valinta -merkki painottaa puoliksi ensimmäisen vuoden hintaa ja puoliksi kampanjan jälkeistä hintaa. Kyseessä on laskennallinen apuväline, ei suositus tehdä sopimusta."],
+  ["Vertailun järjestys", "Sopimukset järjestetään hinnalla, joka lasketaan ilmoittamallasi kulutuksella ja sisältää kampanjaedun ensimmäiseltä vuodelta. Ketun valinta -merkin saa se sopimus, jonka vuosihinta on tällä laskennalla pienin. Kyseessä on laskennallinen apuväline, ei suositus tehdä sopimusta."],
   ["Kumppanuudet", "Voimme saada korvauksen, kun siirryt kumppanin palveluun linkkiemme kautta. Korvaus ei vaikuta vertailun sisältöön tai järjestykseen."],
   ["Vastuunrajoitus", "Emme vastaa kolmansien osapuolten palveluista, niiden saatavuudesta tai päätöksistä, jotka teet vertailun perusteella. Luotto tulee aina mitoittaa omaan maksukykyyn."],
 ];

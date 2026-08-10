@@ -30,15 +30,17 @@ import FoxPaw from "../FoxPaw";
  * 340 €") ei käytetä, joten palkissa on aina se luku, joka on oikeasti
  * laskettu — suositellun sopimuksen kuukausihinta hänen kulutuksellaan.
  *
- * MIKSI PALKISSA ON KETUN VALINTA EIKÄ HALVIN: palkki on sivun ainoa nappi,
- * joka on peukalon ulottuvilla koko vertailun ajan, joten sen on vietävä
- * samaan sopimukseen kuin listan yläpuolella oleva suositus. Kaksi eri
- * vastausta samaan kysymykseen samalla sivulla ei ole valinnanvaraa vaan
- * epäjohdonmukaisuus. Otsikko sanoo sen suoraan: "Ketun valinta", ei
- * "edullisin" — sillä silloin, kun valinta ei ole halvin, väärä otsikko
- * olisi suoraan valheellinen ja kävijä huomaisi sen listaa selatessaan.
- * Ketun valinta on halvin aina kun aineisto on liian pieni valinnan
- * laskemiseen, joten otsikko ei koskaan lupaa liikaa.
+ * MIKSI OTSIKKO ON "KETUN VALINTA": palkki on sivun ainoa nappi, joka on
+ * peukalon ulottuvilla koko vertailun ajan, joten sen on vietävä samaan
+ * sopimukseen kuin listan yläpuolella oleva suositus ja kortin kultainen
+ * merkki. Kaksi eri vastausta samaan kysymykseen samalla sivulla ei ole
+ * valinnanvaraa vaan epäjohdonmukaisuus.
+ *
+ * Ketun valinta on nyt aina halvin vuosihinta, joten otsikko voisi yhtä
+ * hyvin lukea "edullisin". Se pysyy silti tässä muodossa, koska se on se
+ * nimi, jonka kävijä on juuri nähnyt kortissa ja suosituspaneelissa —
+ * kolmas eri sanamuoto samasta sopimuksesta saisi palkin näyttämään
+ * neljänneltä vaihtoehdolta.
  *
  * MIKSI PALKKI ON ORANSSI EIKÄ VAALEA: palkki oli aiemmin läpikuultavan
  * valkoinen, ja vaalealla sivulla se luki selaimen omalta työkalupalkilta —

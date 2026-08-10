@@ -3,13 +3,31 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { ChevronDown, Leaf, Star, Tag, TrendingDown, TrendingUp, Zap } from "lucide-react";
+import { ChevronDown, Leaf, Star, Tag, TrendingDown, TrendingUp } from "lucide-react";
 import type { ElectricityPlan } from "@/lib/energy";
 import { annualCost, normalAnnualCost, ownChargesAnnual, TYPE_LABEL } from "@/lib/energy";
 import AffiliateButton from "../AffiliateButton";
 import FoxPaw from "../FoxPaw";
 
-export type PlanBadge = { kind: "cheapest" | "fox"; note?: string } | null;
+/**
+ * KORTIN MERKKI — VAIN YKSI LAJI.
+ *
+ * Tässä oli aiemmin kaksi merkkiä: kermanvalkoinen "Edullisin tällä
+ * hetkellä" ja kultainen "Ketun valinta", ja ne saattoivat osua eri
+ * kortteihin, koska Ketun valinta laskettiin painotuksella (hinta +
+ * kampanjan jälkeinen hinta). Painotus poistettiin: Ketun suositus on
+ * nyt aina halvin vuosihinta kävijän omalla kulutuksella.
+ *
+ * Kun molemmat merkit tarkoittavat samaa korttia, kaksi merkkiä on
+ * yksi liikaa — ja kahdesta merkistä syntyy kysymys "mitä eroa
+ * näillä on?", johon vertailusivulla ei kannata kuluttaa lukijan
+ * huomiota juuri ennen ostonappia. Jäljelle jää kultainen sinetti.
+ *
+ * `note` poistettiin samalla: se sanoi "tällä hetkellä edullisin sekä
+ * ensimmäisenä vuonna että kampanjan jälkeen", mikä oli vanhan
+ * painotuksen väite eikä enää totta halvimmasta sopimuksesta.
+ */
+export type PlanBadge = { kind: "fox" } | null;
 
 /**
  * Hintarivien luvut aina kahdella desimaalilla.
@@ -42,7 +60,6 @@ export default function PlanCard({
   minCost,
   maxCost,
   rank,
-  pinned = false,
   strength,
 }: {
   plan: ElectricityPlan;
@@ -60,12 +77,6 @@ export default function PlanCard({
   maxCost: number;
   /** Sijaluku valitussa järjestyksessä. Ks. perustelu logokaistan kommentissa. */
   rank?: number;
-  /**
-   * Kortti on nostettu paikalleen Ketun suosituksena, ei hintajärjestyksen
-   * perusteella. Silloin siinä näkyy tassu eikä sijalukua — numero väittäisi
-   * järjestystä, jota kortin omat hinnat eivät tue.
-   */
-  pinned?: boolean;
   /**
    * Yhden lauseen vahvuus merkittömälle kortille, esim. "Pienin perusmaksu"
    * tai "+0,70 € / kk halvimpaan". Laskettu vertailtavasta joukosta
@@ -117,10 +128,10 @@ export default function PlanCard({
     Aiemmin vain halvin kortti oli oranssi ja loput vaaleita. Kun koko
     ruudukko on oranssi, pohjaväri ei enää erota mitään, joten kortin
     rooli on siirrettävä johonkin muuhun. Se on nyt kortin ylin nauha:
-    kerma = edullisin, kulta = Ketun valinta, ei nauhaa = tavallinen.
-    Kaksi nauhaa kahdellakymmenellänejällä kortilla erottuu oranssista
-    yhtä hyvin kuin yksi oranssi kortti erottui vaaleista — ja lisäksi
-    nauhassa lukee SYY, jota pelkkä väri ei kertonut.
+    kulta = Ketun valinta, ei nauhaa = tavallinen. Yksi kultanauha
+    kahdenkymmenenneljän oranssin kortin joukossa erottuu yhtä hyvin
+    kuin yksi oranssi kortti erottui vaaleista — ja lisäksi nauhassa
+    lukee SYY, jota pelkkä väri ei kertonut.
 
     OSTONAPPI: oranssi nappi oranssilla kortilla katoaisi pohjaansa,
     joten jokaisen kortin nappi on nyt kermanvalkoinen (`inverse` +
@@ -135,7 +146,6 @@ export default function PlanCard({
     kohta — yhtiön logo, kettukuva, ostonappi — on käärittävä
     `theme-light`-luokkaan.
   */
-  const cheapest = badge?.kind === "cheapest";
   const foxPick = badge?.kind === "fox";
 
   /*
@@ -180,8 +190,7 @@ export default function PlanCard({
 
     ÄLÄ piilota "sitten"-riviä tilan säästämiseksi. Ilman sitä kortti
     lupaisi kampanjahinnan pysyväksi, ja se on täsmälleen se pettymys,
-    jota vastaan normalMonthly yllä on rakennettu — sekä syy, miksi
-    "Ketun valinta" painottaa kampanjan JÄLKEISTÄ hintaa.
+    jota vastaan normalMonthly yllä on rakennettu.
 
     Kampanjan kentät ovat vapaaehtoisia, joten kampanjarivi syntyy vain
     sinne, missä kampanja oikeasti muuttaa kyseistä lukua: 20 sopimuksella
@@ -281,11 +290,7 @@ export default function PlanCard({
       className={`lift theme-ember ember-surface group relative flex h-full flex-col overflow-hidden rounded-2xl border shadow-cardHover ${
         rank === 1 ? "ring-2 ring-cream/45" : ""
       } ${
-        cheapest
-          ? "border-cream/70 hover:border-cream"
-          : foxPick
-            ? "border-gold hover:border-gold"
-            : "border-line hover:border-cream/55"
+        foxPick ? "border-gold hover:border-gold" : "border-line hover:border-cream/55"
       }`}
     >
       {/*
@@ -301,30 +306,16 @@ export default function PlanCard({
 
         YKSI PALKKI, KAKSI TIETOA: MERKKI VASEMMALLA, KAMPANJA OIKEALLA.
 
-        Palkkeja oli aiemmin yksi kolmesta vaihtoehdosta (kerma, kulta,
-        tyhjä). Kampanjamerkki ei mahtunut niiden rinnalle omaksi
-        neljänneksi palkiksi rikkomatta 44 pikselin sääntöä, joten palkki
-        on nyt yksi rivi, jonka vasen puoli kertoo Ketun merkin ja oikea
-        kumppanin tarjouksen. Korkeus pysyy samana kaikissa neljässä
-        yhdistelmässä.
-
-        Kun kortissa on sekä merkki että kampanja, vasen teksti lyhenee
-        ("Edullisin"), koska katkaistu merkki lukee virheenä. Kampanja ei
-        lyhene: se on se lause, jonka takia kortti klikataan.
+        Kampanjamerkki ei mahtunut merkkinauhan rinnalle omaksi toiseksi
+        palkiksi rikkomatta 44 pikselin sääntöä, joten palkki on yksi
+        rivi, jonka vasen puoli kertoo Ketun merkin ja oikea kumppanin
+        tarjouksen. Korkeus pysyy samana kaikissa yhdistelmissä.
       */}
       <div
         className={`flex h-10 items-center gap-2 px-3.5 sm:px-4 ${
-          cheapest ? "bg-cream" : foxPick ? "bg-gold" : "border-b border-white/10 bg-black/10"
+          foxPick ? "bg-gold" : "border-b border-white/10 bg-black/10"
         }`}
       >
-        {/* Kermanauha, ei kirkkaanoranssi: oranssi nauha oranssilla
-            kortilla olisi kaksi lähes samaa sävyä päällekkäin. */}
-        {cheapest && (
-          <p className="flex min-w-0 items-center gap-1.5 font-display text-[10px] font-bold uppercase tracking-[0.08em] text-[#A83E0A] sm:text-[11px] sm:tracking-[0.14em]">
-            <Zap size={12} className="shrink-0" aria-hidden />
-            <span className="truncate">Edullisin tällä hetkellä</span>
-          </p>
-        )}
         {foxPick && (
           <div className="flex min-w-0 items-center gap-2.5">
             {/*
@@ -358,19 +349,33 @@ export default function PlanCard({
                 Vertailusivun yleisin epäily on "onko tämä nosto ostettu?", ja
                 siihen pitää vastata siinä sekunnissa kun epäily syntyy.
 
-                Tässä lukee lopputulos, ei kaava. Painotus (ensimmäinen vuosi
-                50 %, kampanjan jälkeinen hinta 50 %) on auki sivun
-                läpinäkyvyysosiossa — se on se paikka, josta epäilevä lukija
-                sen etsii, ja kahden luvun lukeminen kortin merkistä hidasti
-                kaikkia muita.
+                RIVI SANOO NYT TÄSMÄLLEEN SEN, MITÄ KOODI LASKEE. Aiemmin
+                tässä luki "tällä hetkellä edullisin myös kampanjan
+                jälkeen" — se oli vanhan painotetun valinnan väite, ja kun
+                merkki siirtyi halvimpaan vuosihintaan, väite lakkasi
+                olemasta totta. Väärä perustelu merkin alla on pahempi kuin
+                perustelun puuttuminen: se on tarkistettavissa kortin omista
+                luvuista, ja kiinni jäänyt vertailusivu menettää klikin
+                lisäksi paluukäynnin.
+
+                Nyt rivi kertoo saman asian kuin listan järjestys ja
+                hintapalkki, eli lukija voi todeta sen itse kolmesta
+                paikasta. Se on tämän merkin koko uskottavuus.
+
+                RIVI ON LYHYT, KOSKA SEN ON MAHDUTTAVA KAMPANJAMERKIN
+                VIEREEN. Pidempi muoto ("Edullisin vuosihinta
+                kulutuksellasi") katkesi kolmella pisteellä juuri niissä
+                korteissa, joissa on kampanja — eli useimmiten. Katkaistu
+                perustelu merkin alla lukee virheenä, ja virheeltä
+                näyttävä merkki on huonompi kuin ei merkkiä lainkaan.
               */}
               <p className="mt-1 truncate font-data text-[10.5px] font-bold leading-none text-[#5C3A08]">
-                Tällä hetkellä edullisin myös kampanjan jälkeen
+                Edullisin kulutuksellasi
               </p>
             </div>
           </div>
         )}
-        {!cheapest && !foxPick && strength && (
+        {!foxPick && strength && (
           /*
             MERKITTÖMÄN KORTIN VAHVUUSLAUSE — HILJAINEN, EI KOLMAS MERKKI.
 
@@ -406,7 +411,7 @@ export default function PlanCard({
           */
           <span
             className={`ml-auto flex shrink-0 items-center gap-1 rounded-md px-2 py-1 font-display text-[10.5px] font-bold leading-none ${
-              cheapest || foxPick ? "bg-[#4A2E06] text-cream" : "bg-cream text-[#A83E0A]"
+              foxPick ? "bg-[#4A2E06] text-cream" : "bg-cream text-[#A83E0A]"
             }`}
             title={campaign.limit ? `Tarjous: ${campaign.limit}` : "Kumppanin oma tarjous"}
           >
@@ -448,18 +453,17 @@ export default function PlanCard({
         samaan pystylinjaan.
       */}
       <div className="relative flex items-center justify-center border-b border-cream/15 bg-black/10 px-12 py-4">
-        {(rank !== undefined || pinned) && (
+        {rank !== undefined && (
           /*
             KOLME KÄRKISIJAA EROTTUVAT — VALOARVOLLA, EI MITALEILLA.
 
-            KETUN VALINNALLA ON TASSU, EI NUMEROA. Kortti on kiinnitetty
-            toiseksi Ketun suosituksena eikä hintajärjestyksen perusteella.
-            Jos siinä lukisi "2", numero väittäisi sitä listan toiseksi
-            halvimmaksi — ja koska hinnat ovat kortissa näkyvissä, lukija
-            huomaisi väitteen vääräksi yhdessä sekunnissa. Yksi kiinni jäänyt
-            numero vie uskottavuuden kaikilta muiltakin luvuilta, ja juuri
-            lukujen uskominen on tämän sivuston koko ansaintalogiikka.
-            Tassu kertoo saman rehellisesti: tämä on Ketun nosto.
+            KETUN VALINNALLA ON NYT NUMERO 1, EI TASSUA. Aiemmin kortti
+            saattoi olla nostettu listan kärkeen painotetun valinnan
+            perusteella, jolloin siinä ei voinut lukea sijalukua: numero
+            olisi väittänyt järjestystä, jota kortin omat hinnat eivät
+            tue. Kun suositus on aina halvin, lista on puhtaassa
+            hintajärjestyksessä ja merkkikortti on aidosti ykkönen —
+            numero ja merkki kertovat saman asian eivätkä riitele.
 
             Palkintopallin idea on oikea: kolmen kärki pitää lukea
             palkintosijoina eikä juoksevana numerointina. Mitaliemojit
@@ -477,20 +481,17 @@ export default function PlanCard({
           */
           <span
             className={`absolute left-3 top-1/2 grid -translate-y-1/2 place-items-center rounded-lg font-data font-extrabold tabular-nums ${
-              pinned
-                ? "h-7 w-7 bg-gold text-[#4A2E06]"
-                : rank === 1
-                  ? "h-7 w-7 bg-cream text-[13px] text-[#A83E0A] shadow-[0_1px_3px_rgba(74,26,2,0.35)]"
-                  : rank === 2
-                    ? "h-6 w-6 border border-cream/60 bg-black/15 text-[12px] text-cream"
-                    : rank === 3
-                      ? "h-6 w-6 border border-cream/35 bg-black/15 text-[12px] text-cream/85"
-                      : "h-6 w-6 border border-cream/15 bg-black/15 text-[12px] text-cream/60"
+              rank === 1
+                ? "h-7 w-7 bg-cream text-[13px] text-[#A83E0A] shadow-[0_1px_3px_rgba(74,26,2,0.35)]"
+                : rank === 2
+                  ? "h-6 w-6 border border-cream/60 bg-black/15 text-[12px] text-cream"
+                  : rank === 3
+                    ? "h-6 w-6 border border-cream/35 bg-black/15 text-[12px] text-cream/85"
+                    : "h-6 w-6 border border-cream/15 bg-black/15 text-[12px] text-cream/60"
             }`}
-            title={pinned ? "Ketun valinta" : undefined}
             aria-hidden
           >
-            {pinned ? <FoxPaw size={15} /> : rank}
+            {rank}
           </span>
         )}
         <ProviderLogo provider={plan.provider} logo={plan.logo} />
@@ -642,27 +643,6 @@ export default function PlanCard({
             </p>
           )}
         </div>
-
-        {/*
-          MERKIN PERUSTELU TULEE HINNAN JÄLKEEN, EI ENNEN SITÄ.
-
-          Teksti oli aiemmin hintaluvun yläpuolella. Koska vain yhdessä
-          kortissa kuudesta on perustelu, se työnsi juuri sen kortin
-          hinnan noin kaksi riviä alemmas kuin naapureiden. Vertailu
-          tehdään silmällä vaakasuoraan: kun kuusi jättinumeroa ovat
-          samalla linjalla, hintaerot näkee pysähtymättä, ja poikkeava
-          kortti luetaan eri kohdasta eli hitaammin. Hinta on kortin
-          tärkein tieto, joten se lukitaan paikalleen ja perustelu
-          siirtyy sen alle omaksi lainaukseksi.
-
-          Reunaviiva vasemmalla erottaa perustelun laskennasta: se on
-          Ketun mielipide, ei euromäärä.
-        */}
-        {badge?.note && (
-          <p className="mt-3 border-l-2 border-gold/60 pl-3 text-[12px] leading-snug text-ink/70">
-            {badge.note}
-          </p>
-        )}
 
         {/* Avattava osa alkaa. `flex-1` on tässä kääreessä, jotta ostonappi
             painuu kortin alareunaan myös suljettuna — muuten suljetut kortit
