@@ -175,6 +175,32 @@ export default function PostPage({ params }: { params: { slug: string } }) {
 
     </article>
 
+    <section aria-label="Lue myös" className="mx-auto max-w-[1180px] px-4 py-16 sm:px-6">
+      <h2 className="font-display text-[22px] font-semibold text-ink">Lue myös</h2>
+      <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {related.map((p) => (
+          /* Nosto tulee yhteisestä `.lift`-luokasta — sama liike kuin
+             kaikilla muillakin korteilla sivustolla. */
+          <Link
+            key={p.slug}
+            href={`/blogi/${p.slug}`}
+            className="lift group flex h-full flex-col rounded-2xl border border-line bg-white p-6 shadow-card hover:border-accent/35"
+          >
+            <span className="font-display text-[11px] font-bold uppercase tracking-[0.14em] text-accentDark">
+              {p.category}
+            </span>
+            <h3 className="mt-2 font-display text-[17px] font-semibold leading-snug text-ink group-hover:text-accentDark">
+              {p.title}
+            </h3>
+            <p className="mt-2 flex-1 text-[14px] leading-relaxed text-ink/70">{p.excerpt}</p>
+            <span className="mt-4 inline-flex items-center gap-1.5 text-[13px] text-ink/60">
+              <Clock size={13} aria-hidden /> {p.readMinutes} min lukuaika
+            </span>
+          </Link>
+        ))}
+      </div>
+    </section>
+
     {/*
       ARTIKKELI PÄÄTTYY ORANSSIIN VYÖHÖN, EI ALLEVIIVATTUUN LINKKIIN.
 
@@ -230,31 +256,6 @@ export default function PostPage({ params }: { params: { slug: string } }) {
     />
     )}
 
-    <section aria-label="Lue myös" className="mx-auto max-w-[1180px] px-4 py-16 sm:px-6">
-      <h2 className="font-display text-[22px] font-semibold text-ink">Lue myös</h2>
-      <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {related.map((p) => (
-          /* Nosto tulee yhteisestä `.lift`-luokasta — sama liike kuin
-             kaikilla muillakin korteilla sivustolla. */
-          <Link
-            key={p.slug}
-            href={`/blogi/${p.slug}`}
-            className="lift group flex h-full flex-col rounded-2xl border border-line bg-white p-6 shadow-card hover:border-accent/35"
-          >
-            <span className="font-display text-[11px] font-bold uppercase tracking-[0.14em] text-accentDark">
-              {p.category}
-            </span>
-            <h3 className="mt-2 font-display text-[17px] font-semibold leading-snug text-ink group-hover:text-accentDark">
-              {p.title}
-            </h3>
-            <p className="mt-2 flex-1 text-[14px] leading-relaxed text-ink/70">{p.excerpt}</p>
-            <span className="mt-4 inline-flex items-center gap-1.5 text-[13px] text-ink/60">
-              <Clock size={13} aria-hidden /> {p.readMinutes} min lukuaika
-            </span>
-          </Link>
-        ))}
-      </div>
-    </section>
     </>
   );
 }
