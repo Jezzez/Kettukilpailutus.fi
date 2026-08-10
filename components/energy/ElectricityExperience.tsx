@@ -2250,8 +2250,23 @@ export default function ElectricityExperience({
             </motion.div>
           )}
 
-          {/* Suosittelija: kiinni oletuksena, auki yhdellä klikillä */}
-          {!showAdvisor ? (
+          {/*
+            SUOSITTELIJA NÄKYY VAIN SILLE, JOKA EI OLE VIELÄ VASTANNUT.
+
+            Tässä oli aiemmin myös "Vaihda hintatoivettasi" -versio samasta
+            palkista niille, jotka olivat jo vastanneet kyselyn neljänteen
+            kysymykseen. Se poistettiin: vastanneelle palkki ei tarjonnut
+            mitään uutta, koska saman rajauksen voi vaihtaa yhdellä klikillä
+            heti alapuolen suodatinriviltä (Kaikki / Pörssisähkö / Kiinteä
+            hinta). Kaksi tapaa tehdä sama asia peräkkäin ei lisää
+            hallinnan tunnetta vaan siirtää tuloslistaa alemmas — ja jokainen
+            ruudullinen tuloslistan ja "Tee sopimus" -napin välissä maksaa
+            klikkejä.
+
+            Palkkia EI saa poistaa kokonaan: vastaamattomalle se on ainoa
+            sisäänkäynti pörssi/kiinteä-suositukseen (CLAUDE.md, CRO-kohta 5).
+          */}
+          {!showAdvisor && !advice ? (
             <button
               onClick={() => setShowAdvisor(true)}
               className="mt-4 flex w-full items-center gap-4 rounded-3xl border border-line bg-white p-4 text-left transition-all hover:border-accent/40 hover:shadow-cardHover active:scale-[0.995] sm:p-5"
@@ -2265,20 +2280,15 @@ export default function ElectricityExperience({
               />
               <span className="flex-1">
                 <span className="block font-display text-[15px] font-bold text-ink">
-                  {advice ? "Vaihda hintatoivettasi" : "Epäröitkö, kumpi sopii: pörssisähkö vai kiinteä?"}
+                  Epäröitkö, kumpi sopii: pörssisähkö vai kiinteä?
                 </span>
-                {/* Kyselyyn vastannut on jo kertonut toiveensa. Jos tässä
-                    lukisi silti "vastaa yhteen kysymykseen", palvelu
-                    näyttäisi unohtaneen juuri annetun vastauksen. */}
                 <span className="mt-0.5 block text-[13px] text-ink/70">
-                  {advice
-                    ? "Lista on rajattu vastauksesi mukaan. Avaa, jos haluat muuttaa sitä."
-                    : "Vastaa yhteen kysymykseen, niin Kettu suosittelee ja rajaa listan."}
+                  Vastaa yhteen kysymykseen, niin Kettu suosittelee ja rajaa listan.
                 </span>
               </span>
               <span className="shrink-0 font-display text-[13.5px] font-bold text-accentDark">Avaa</span>
             </button>
-          ) : (
+          ) : showAdvisor ? (
           <div className="mt-4 rounded-3xl border border-line bg-white p-5 sm:p-6">
             <div className="flex items-start justify-between gap-3">
               <p className="font-display text-[15px] font-bold text-ink">
@@ -2330,7 +2340,7 @@ export default function ElectricityExperience({
               )}
             </AnimatePresence>
           </div>
-          )}
+          ) : null}
 
           {/* Suodattimet */}
           <div className="mt-6 flex flex-wrap items-center gap-2">

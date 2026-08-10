@@ -4,7 +4,6 @@ import { ArrowRight, ShieldCheck } from "lucide-react";
 import ElectricityExperience from "@/components/energy/ElectricityExperience";
 import Faq from "@/components/Faq";
 import Reveal from "@/components/Reveal";
-import FoxSays from "@/components/FoxSays";
 import SectionHead from "@/components/SectionHead";
 import CtaSection from "@/components/CtaSection";
 import TailSweep from "@/components/fox/TailSweep";
@@ -78,22 +77,23 @@ export default function ElectricityPage() {
       <div className="theme-light bg-paper">
 
       {/*
-        Kettu puhuu heti tuloslistan jälkeen. Juuri siinä kohdassa lukija on
-        nähnyt hinnat ja epäröi: "onko halvin oikeasti halvin?" Repliikki
-        vastaa siihen ja korjaa samalla sähkövertailun yleisimmän
-        väärinkäsityksen (siirtomaksu ei muutu sopimusta vaihtamalla).
-        Ilman tätä osa kävijöistä jättää klikkaamatta, koska luulee luvun
-        olevan puolikas totuus.
+        TÄSSÄ OLI "KETTU SANOO" -REPLIIKKI. POISTETTU TARKOITUKSELLA.
+
+        Laatikko istui tuloslistan ja "kolme askelta" -vyön välissä, eli
+        täsmälleen siinä kohdassa, jossa hinnat nähnyt lukija on lähimpänä
+        klikkausta. Se ei vienyt eteenpäin vaan pysäytti: maskotti selitti
+        asiaa, jota lukija ei ollut kysynyt, ja lisäsi yhden ruudullisen
+        vieritettävää ennen seuraavaa askelta. Vertailusivun tehtävä siinä
+        kohtaa on päästää kävijä eteenpäin, ei puhua hänelle.
+
+        Repliikin ainoa asiasisältö — siirtomaksu ei muutu sopimusta
+        vaihtamalla — on tallella kahdessa paikassa: sivun UKK:ssa
+        ("Miksi laskussa on kaksi osaa") ja vertailun läpinäkyvyysosiossa.
+        Tietoa ei siis menetetty, vain toisto poistettiin.
+
+        Komponentti `components/FoxSays.tsx` jää paikalleen: sitä käyttää
+        yhä /luottokortit, joka on toistaiseksi piilossa.
       */}
-      <FoxSays
-        className="pt-14 md:pt-16"
-        quote="Sähköyhtiö ei kerro sinulle, mitä sen sopimus maksaa. Se kertoo sentin. Euromäärä syntyy vasta, kun sentti kerrotaan sinun kulutuksellasi."
-        /* Ei "yllä näkyvä euromäärä": kysely on nyt tulosten edessä, joten
-           osa lukijoista näkee tämän ennen kuin yhtään lukua on ruudulla.
-           Viittaus johonkin, mitä ei ole, saa palvelun näyttämään
-           rikkinäiseltä juuri luottamusrepliikin kohdalla. */
-        note="Vertailun euromäärä sisältää energian hinnan, kuukausimaksun ja arvonlisäveron. Siirtomaksu tulee verkkoyhtiöltäsi eikä muutu sopimusta vaihtamalla, joten se ei kuulu vertailuun."
-      />
 
       {/*
         Aiemmin tässä oli KAKSI laatikkoa peräkkäin: "kolme askelta" ja

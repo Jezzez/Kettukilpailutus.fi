@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SITE } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Tietosuojaseloste",
@@ -6,13 +7,38 @@ export const metadata: Metadata = {
   alternates: { canonical: "/tietosuoja" },
 };
 
+/*
+  REKISTERINPITÄJÄ LUETAAN SITE.operatorISTA, EI KIRJOITETA TÄHÄN KÄSIN.
+
+  Tiedot näkyvät jo alatunnisteessa (`components/Footer.tsx`,
+  `OperatorDetails`). Jos ne kirjoitettaisiin tähän toiseen kertaan, ne
+  ehtisivät joskus erota toisistaan — ja kaksi eri yritysnimeä samalla
+  sivustolla on juuri se havainto, jonka jälkeen kävijä ei paina
+  "Tee sopimus" -nappia. Yksi lähde, kaksi näyttöpaikkaa.
+
+  Tässä luki aiemmin myös sähköpostiosoite `kettu@kettukilpailutus.fi`,
+  jota ei ole olemassa: alatunnisteessa on `info@`. Tietosuojaselosteessa
+  ilmoitettu osoite on se, johon rekisteröidyn pyyntö lain mukaan
+  lähetetään, joten väärä osoite ei ole kirjoitusvirhe vaan puuttuva
+  yhteyskanava.
+*/
 const SECTIONS: [string, string][] = [
-  ["Rekisterinpitäjä", "Kettukilpailutus (kettukilpailutus.fi). Yhteydenotot: kettu@kettukilpailutus.fi."],
+  [
+    "Rekisterinpitäjä",
+    `${SITE.operator.legalName} (Y-tunnus ${SITE.operator.businessId}), joka ylläpitää sivustoa ${SITE.name}. Yhteydenotot: ${SITE.operator.email}.`,
+  ],
   ["Mitä tietoja keräämme", "Sivusto ei vaadi rekisteröitymistä eikä kerää nimeä, henkilötunnusta tai yhteystietoja. Keräämme käyttöanalytiikkaa sivujen katseluista ja vertailulinkkien klikkauksista palvelun kehittämiseksi."],
   ["Evästeet ja analytiikka", "Vercel Web Analytics tuottaa evästeetöntä, koottua kävijätilastoa. Google Analytics 4 käyttää analytiikkaevästeitä vain, jos hyväksyt ne evästeasetuksissa. Ilman hyväksyntää Google Analytics toimii rajoitetussa evästeettömässä tilassa. Mainonnan tallennus ja personointi on estetty."],
-  ["Affiliate-linkit", "Kun siirryt pankin sivulle linkkiemme kautta, kumppani voi asettaa oman evästeensä komission kohdistamiseksi. Tämä tapahtuu kumppanin sivustolla ja sen omien ehtojen mukaisesti."],
+  /* "Pankin sivulle" oli jäänne korttivertailun ajalta. Sivusto vertailee
+     nyt sähkösopimuksia, eikä lakisivu saa puhua palvelusta, jota siellä
+     ei ole — se on ensimmäinen paikka, josta epäilevä lukija tarkistaa
+     onko sivusto oikeasti se, joka se väittää olevansa. */
+  ["Affiliate-linkit", "Kun siirryt palveluntarjoajan sivulle linkkiemme kautta, kumppani voi asettaa oman evästeensä komission kohdistamiseksi. Tämä tapahtuu kumppanin sivustolla ja sen omien ehtojen mukaisesti."],
   ["Tietojen käsittelijät", "Emme myy käyttäjätietoja. Sivuston käyttöanalytiikkaa käsittelevät palveluntarjoajinamme Vercel ja Google niiden omien tietosuojaehtojen mukaisesti."],
-  ["Oikeutesi", "Sinulla on oikeus saada tieto sinua koskevista tiedoista sekä pyytää niiden oikaisua tai poistoa. Ota yhteyttä sähköpostitse."],
+  [
+    "Oikeutesi",
+    `Sinulla on oikeus saada tieto sinua koskevista tiedoista sekä pyytää niiden oikaisua tai poistoa. Voit myös milloin tahansa peruuttaa antamasi evästesuostumuksen alatunnisteen Evästeasetukset-linkistä. Ota yhteyttä osoitteeseen ${SITE.operator.email}.`,
+  ],
 ];
 
 export default function PrivacyPage() {
@@ -28,10 +54,6 @@ export default function PrivacyPage() {
           </section>
         ))}
       </div>
-      <p className="mt-10 rounded-xl bg-mist p-4 text-xs leading-relaxed text-ink/70">
-        Huomio julkaisijalle: tämä on selosteen pohja. Tarkista sisältö ja täydennä
-        yrityksen viralliset tiedot (Y-tunnus, osoite) ennen sivuston julkaisua.
-      </p>
     </div>
   );
 }
