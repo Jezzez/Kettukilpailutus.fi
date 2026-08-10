@@ -1944,9 +1944,10 @@ export default function ElectricityExperience({
             joku hoitaa homman puolestasi — kurkistava kettu ei kertonut
             kumpaakaan.
 
-            Mobiilissa hahmo on tekstin alla ja matalampi, jottei se vie
-            koko ruutua ennen kuin lukija on lukenut miksi hänen kannattaa
-            vastata.
+            Mobiilissa hahmo on tekstin YLÄPUOLELLA ja matalampi (340 px).
+            Perustelut ovat FoxSlotin kohdalla alempana — lyhyesti: vain
+            ylhäällä kuvan yläleikkaus osuu paneelin reunaan, ja vain
+            silloin lamppu roikkuu jostakin.
           */}
           <div className="relative mx-auto max-w-[1180px] px-4 sm:px-6">
             <div className="pelt-surface overflow-hidden rounded-3xl border border-gold/30 px-6 pt-10 sm:px-10">
@@ -1975,11 +1976,36 @@ export default function ElectricityExperience({
                   näyttökoon mukaan. Korkeus 470 on valittu niin, että
                   hahmo täyttää paneelin ylhäältä alas kun `-mt-10` on
                   kumonnut yläpehmusteen.
+
+                  MOBIILISSA KUVA ON TEKSTIN YLÄPUOLELLA (`order-first`).
+
+                  Kuva on rajattu niin, että sen ylin kaistale on pelkkää
+                  riippujohtoa: se on TARKOITUS leikata paneelin yläreunaan,
+                  jolloin lamppu näyttää roikkuvan katosta paneelin
+                  yläpuolelta. Kun kuva oli mobiilissa tekstin ALLA, tuo
+                  leikkaus osui keskelle paneelia — johto alkoi tyhjästä
+                  ilmasta ja koko ele hajosi: hahmo kurkotti kohti lamppua,
+                  joka ei roikkunut mistään. Ylhäällä sama 40 pikselin
+                  ylitys (`-mt-10` kumoaa paneelin `pt-10`:n) osuu taas
+                  reunaan, ja kuva lukee samoin kuin työpöydällä.
+
+                  ALAREUNA HÄIVYTETÄÄN maskilla, koska kuva on leikattu
+                  reidestä. Työpöydällä tuo leikkaus piiloutuu paneelin
+                  alareunaan, mutta mobiilissa kuvan alle tulee teksti,
+                  jolloin suora vaakaviiva reiden kohdalla näyttäisi
+                  rajatulta valokuvalta. Pehmeä häivytys lukee valon
+                  jatkumona eikä virheenä. `-webkit-mask-image` on pakko
+                  toistaa: Safari ei tunne pelkkää `mask-image`-muotoa, ja
+                  Safari on tällä sivustolla se selain, jolla mobiilikävijä
+                  todennäköisimmin saapuu.
+
+                  Työpöydällä (`lg:`) molemmat kumotaan: siellä alkuperäinen
+                  asettelu toimii jo, eikä ehjää kuvaa kannata häivyttää.
                 */}
                 <FoxSlot
                   id="laskuri"
                   height={470}
-                  className="pointer-events-none -mt-6 shrink-0 !h-[340px] drop-shadow-[0_10px_24px_rgba(90,45,10,0.14)] lg:-mt-10 lg:!h-[470px]"
+                  className="pointer-events-none order-first -mt-10 shrink-0 !h-[340px] drop-shadow-[0_10px_24px_rgba(90,45,10,0.14)] [-webkit-mask-image:linear-gradient(to_bottom,#000_78%,transparent_100%)] [mask-image:linear-gradient(to_bottom,#000_78%,transparent_100%)] lg:order-none lg:!h-[470px] lg:[-webkit-mask-image:none] lg:[mask-image:none]"
                 />
               </div>
             </div>

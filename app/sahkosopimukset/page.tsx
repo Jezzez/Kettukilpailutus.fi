@@ -126,7 +126,7 @@ export default function ElectricityPage() {
       >
         <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-16 rotate-180">
           <div className="theme-light">
-            <TailSweep fill="rgb(var(--c-paper))" height={64} />
+            <TailSweep fill="rgb(var(--c-paper))" height={44} />
           </div>
         </div>
 
@@ -234,7 +234,7 @@ export default function ElectricityPage() {
           Sama ansa kuin vyön yläreunan hännänvedossa.
         */}
         <div className="theme-light">
-          <TailSweep fill="rgb(var(--c-paper))" height={64} />
+          <TailSweep fill="rgb(var(--c-paper))" height={44} />
         </div>
       </section>
 
