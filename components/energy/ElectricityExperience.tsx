@@ -2427,9 +2427,27 @@ export default function ElectricityExperience({
           </div>
           ) : null}
 
-          {/* Suodattimet */}
-          <div className="mt-6 flex flex-wrap items-center gap-2">
-            <div className="scrollbar-none -mx-1 flex flex-1 gap-1.5 overflow-x-auto px-1">
+          {/*
+            SUODATTIMET — YKSI VIERITETTÄVÄ RIVI, EI RIVIÄ + ERILLISTÄ NAPPIA.
+
+            Aiemmin sopimustyypit olivat vieritettävässä listassa ja
+            "Vain uusiutuva" oli sen ulkopuolella omana nappinaan oikeassa
+            reunassa. Kapealla ruudulla `flex-wrap` pudotti sen omalle
+            rivilleen, jolloin se näytti kuuluvan johonkin muuhun kuin
+            suodattimiin — ja koska se oli listan ulkopuolella, se myös vei
+            leveyttä pois vieritettävältä riviltä juuri siellä missä tilaa
+            on vähiten. Nyt kaikki viisi suodatinta ovat samassa
+            vieritettävässä rivissä.
+
+            Ohut pystyviiva ennen uusiutuva-nappia säilyttää sen tiedon,
+            jonka erillinen sijainti aiemmin kertoi: neljä ensimmäistä ovat
+            toisensa poissulkevia sopimustyyppejä, viides on niiden päälle
+            kytkettävä lisärajaus. Ilman viivaa käyttäjä olettaisi, että
+            "Vain uusiutuva" korvaa valitun tyypin — ja ihmettelisi, miksi
+            lista tyhjenee.
+          */}
+          <div className="mt-6">
+            <div className="scrollbar-none -mx-1 flex items-center gap-1.5 overflow-x-auto px-1">
               {TYPE_TABS.map((t) => {
                 const on = type === t.key;
                 return (
@@ -2453,16 +2471,40 @@ export default function ElectricityExperience({
                   </button>
                 );
               })}
+
+              <span aria-hidden className="mx-0.5 h-6 w-px shrink-0 self-center bg-line" />
+
+              <button
+                onClick={() => setGreenOnly(!greenOnly)}
+                aria-pressed={greenOnly}
+                className={`inline-flex shrink-0 items-center gap-1.5 rounded-xl border px-4 py-2.5 font-display text-[13.5px] font-semibold transition-all active:scale-[0.97] ${
+                  greenOnly ? "border-accent bg-accentSoft text-accentDark" : "border-line bg-white text-ink/70 hover:border-lineDark"
+                }`}
+              >
+                {/*
+                  SIVUSTON AINOA VIHREÄ — ja se on tässä tarkoituksella
+                  rajattu yhteen 14 pikselin ikoniin.
+
+                  Väripaletti on kaksi väriä (oranssi + kulta), ja sitä ei
+                  ole syytä laajentaa. Uusiutuva sähkö on kuitenkin ainoa
+                  kohta sivustolla, jossa väri on itse tieto eikä koriste:
+                  vihreä lehti luetaan "uusiutuvaksi" ennen kuin tekstiä on
+                  edes luettu, ja tämä nappi on rivin viimeinen — juuri se,
+                  joka jää mobiilissa vierityksen taakse. Vihreä on ainoa
+                  keino saada se löydetyksi ilman että se kilpailee "Tee
+                  sopimus" -napin oranssin kanssa.
+
+                  Sävy on tarkoituksella murrettu ja lämpimään taittava
+                  (#3E7D52), ei kirkas ekovihreä: kirkas vihreä hiekan
+                  päällä näyttää siltä kuin se olisi tullut toisesta
+                  ohjelmasta. Arvo on kirjoitettu tähän suoraan eikä
+                  tailwind.configiin nimenä — nimetty token leviäisi
+                  seuraavassa komponentissa, yksittäinen luokka ei leviä
+                  minnekään.
+                */}
+                <Leaf size={14} aria-hidden className="text-[#3E7D52]" /> Vain uusiutuva
+              </button>
             </div>
-            <button
-              onClick={() => setGreenOnly(!greenOnly)}
-              aria-pressed={greenOnly}
-              className={`inline-flex shrink-0 items-center gap-1.5 rounded-xl border px-4 py-2.5 font-display text-[13.5px] font-semibold transition-all active:scale-[0.97] ${
-                greenOnly ? "border-accent bg-accentSoft text-accentDark" : "border-line bg-white text-ink/70 hover:border-lineDark"
-              }`}
-            >
-              <Leaf size={14} aria-hidden /> Vain uusiutuva
-            </button>
           </div>
 
           {/*
