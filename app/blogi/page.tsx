@@ -4,13 +4,32 @@ import { ArrowDown, BookOpen } from "lucide-react";
 import BlogList from "@/components/BlogList";
 import Reveal from "@/components/Reveal";
 import TailSweep from "@/components/fox/TailSweep";
-import { getPosts } from "@/lib/data";
+import { getPosts, OG_IMAGE } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Ketun oppaat – Fiksummat päätökset alkavat tiedosta.",
   description:
     "Ketun oppaat: selkeitä, myyntipuheettomia artikkeleita luottokorteista, koroista, matkustamisesta ja rahan säästämisestä.",
   alternates: { canonical: "/blogi" },
+  /*
+    OMA OG-LOHKO, VAIKKA `title` JA `description` OVAT JO YLLÄ.
+
+    Next.js ei johda openGraphia sivun `title`-kentästä. Ilman tätä lohkoa
+    sivu perii juuritason openGraphin sellaisenaan, eli jaettu linkki
+    oppaisiin näyttäisi WhatsAppissa etusivun otsikon ja kuvauksen.
+    Vastaanottaja klikkaisi odottaen etusivua ja saisi artikkelilistan —
+    ja väärä lupaus linkin esikatselussa on juuri se kohta, jossa jakaminen
+    lakkaa tuomasta kävijöitä.
+  */
+  openGraph: {
+    title: "Ketun oppaat – Fiksummat päätökset alkavat tiedosta.",
+    description:
+      "Selkeitä, myyntipuheettomia oppaita sähköstä, koroista ja rahan säästämisestä.",
+    url: "/blogi",
+    // Pakko toistaa: sivun oma openGraph-lohko korvaa juuritason lohkon
+    // kokonaan, jolloin kuva katoaisi. Ks. OG_IMAGE lib/data.ts.
+    images: [OG_IMAGE],
+  },
 };
 
 export default function BlogPage() {

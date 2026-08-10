@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { COOKIE_SETTINGS_EVENT } from "@/lib/analytics";
 import { getCards, SITE } from "@/lib/data";
 import { getPlans, getEnergyTopics } from "@/lib/energy";
 import FoxMark from "./FoxMark";
@@ -147,6 +148,28 @@ export default function Footer() {
                 </Link>
               </li>
             ))}
+            {/*
+              EVÄSTEASETUKSET ON TÄÄLLÄ, EI KELLUVANA NAPPINA.
+
+              Aiemmin sivun vasemmassa alakulmassa roikkui pieni
+              "Evästeet"-nappi senkin jälkeen, kun kävijä oli jo vastannut.
+              Se muistutti evästeistä juuri siinä hetkessä, jossa kävijän
+              pitäisi katsoa hintoja, eikä sitä painanut kukaan.
+
+              Linkkiä ei silti saa poistaa: suostumuksen peruuttamisen on
+              oltava yhtä helppoa kuin sen antamisen (GDPR 7 art. 3).
+              Alatunniste on oikea paikka — sieltä sitä osataan etsiä, ja
+              se on poissa lukemisen tieltä.
+            */}
+            <li>
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new Event(COOKIE_SETTINGS_EVENT))}
+                className="text-left text-sm text-ink/70 transition-colors hover:text-accentDark"
+              >
+                Evästeasetukset
+              </button>
+            </li>
           </ul>
         </nav>
       </div>

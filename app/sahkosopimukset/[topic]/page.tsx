@@ -7,7 +7,7 @@ import Faq from "@/components/Faq";
 import Reveal from "@/components/Reveal";
 import CtaSection from "@/components/CtaSection";
 import { getEnergyTopic, getEnergyTopics, getPlans } from "@/lib/energy";
-import { SITE } from "@/lib/data";
+import { OG_IMAGE, SITE } from "@/lib/data";
 
 export function generateStaticParams() {
   return getEnergyTopics().map((t) => ({ topic: t.slug }));
@@ -22,6 +22,22 @@ export function generateMetadata({ params }: { params: { topic: string } }): Met
     title: topic.title,
     description: topic.intro,
     alternates: { canonical: `/sahkosopimukset/${topic.slug}` },
+    /*
+      Next.js ei johda openGraphia `title`-kentästä, vaan perii juuritason
+      lohkon sellaisenaan. Ilman tätä jokainen näistä neljästä sivusta
+      näyttäisi jaettuna etusivun otsikon. Juuri näille sivuille se sattuu
+      pahiten: ne ovat sivuston hakukonesisääntulot, eli niitä myös jaetaan
+      eniten eteenpäin, ja aiheeseen osunut linkki menettää koko arvonsa jos
+      esikatselu lupaa jotain muuta.
+    */
+    openGraph: {
+      title: topic.title,
+      description: topic.intro,
+      url: `/sahkosopimukset/${topic.slug}`,
+      // Pakko toistaa: sivun oma openGraph-lohko korvaa juuritason lohkon
+      // kokonaan, jolloin kuva katoaisi. Ks. OG_IMAGE lib/data.ts.
+      images: [OG_IMAGE],
+    },
   };
 }
 

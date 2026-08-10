@@ -92,6 +92,27 @@ export interface ElectricityPlan {
    * se tarkoittaa, että lippu käännetään liian aikaisin.
    */
   example?: boolean;
+  /**
+   * Piilota sopimus sivustolta, vaikka sen luvut olisivat tarkistettuja.
+   *
+   * MIKSI TÄMÄ ON ERI LIPPU KUIN `example`: `example` tarkoittaa "luku on
+   * keksitty". Jos piilottaisi liiketoiminnallisin perustein saman lipun
+   * takana, aineistoa lukisi myöhemmin väärin — tarkistettu hinta
+   * näyttäisi tarkistamattomalta, ja juuri se tieto ratkaisee, onko rivi
+   * julkaisukelpoinen. Kaksi eri syytä ansaitsevat kaksi eri kenttää.
+   *
+   * MIHIN TÄTÄ KÄYTETÄÄN: sopimuksiin, jotka eivät tuota. Ilman
+   * kumppanuutta klikki maksaa mainoksena mutta ei palauta euroakaan,
+   * ja mainosliikenteessä se on suoraa tappiota. Rivi jää JSONiin, koska
+   * kumppanuus voi syntyä myöhemmin ja silloin paluu on yhden kentän
+   * poisto — ei uudelleen kerätty hinta-aineisto.
+   *
+   * HUOM: tämä ei ole tapa piilottaa kalliita sopimuksia. Vertailu, josta
+   * on siivottu pois vaihtoehdot, jotka voittaisivat kumppanit, lakkaa
+   * olemasta vertailu — ja sen huomaa kuka tahansa, joka tarkistaa yhden
+   * hinnan muualta. Se on tällä sivustolla kallein mahdollinen virhe.
+   */
+  hidden?: boolean;
   /** Yhtiön kotipaikka. Tarkistettu tieto myös silloin, kun hinta ei ole. */
   region?: string;
   gradient: [string, string];
@@ -142,19 +163,30 @@ export const SPOT_AVG_SOURCE: string = electricityJson.spotAverageSource;
 export const PRICE_DATE: string = electricityJson.priceDate;
 
 /**
- * Kertoo, ovatko luvut vielä esimerkkidataa.
+ * Kertoo, näkyykö sivulla yhtään lukua, jota ei ole tarkistettu.
  *
  * MIKSI TÄTÄ EI LUETA PELKÄSTÄÄN YLÄTASON LIPUSTA: se olisi yksi rivi, jonka
  * kääntämällä koko esimerkkihuomautus katoaa sivulta — myös silloin, kun
- * kahdenkymmenen sopimuksen hinnat ovat yhä keksittyjä. Juuri se virhe on
- * tässä projektissa kallein mahdollinen: julkaistu vertailu, joka näyttää
- * tarkistetulta mutta ei ole. Siksi huomautus on päällä niin kauan kuin
- * yhdessäkin sopimuksessa on `example: true`, eikä sitä voi sammuttaa
- * muuten kuin tarkistamalla luvut yksi sopimus kerrallaan.
+ * osa hinnoista on yhä tarkistamatta. Juuri se virhe on tässä projektissa
+ * kallein mahdollinen: julkaistu vertailu, joka näyttää tarkistetulta mutta
+ * ei ole.
+ *
+ * MIKSI EHTO ON `!p.checkedAt` EIKÄ `p.example === true`. Tässä luki
+ * aiemmin jälkimmäinen, ja se oli hyödytön: `getPlans()` on juuri
+ * suodattanut `example`-rivit pois, joten lauseke oli aina epätosi eikä
+ * voinut laueta koskaan. Turvaverkko, joka ei voi laueta, on pahempi kuin
+ * ei turvaverkkoa lainkaan, koska sen olemassaolo saa lopettamaan
+ * tarkistamisen.
+ *
+ * `checkedAt` sen sijaan puuttuu täsmälleen silloin, kun rivi on päässyt
+ * näkyviin ilman että kukaan on lukenut hintaa yhtiön omalta sivulta —
+ * eli juuri siinä tilanteessa, jota vastaan huomautus on olemassa.
+ * `example`-ehto jää mukaan dokumentoimaan aikomuksen siltä varalta, että
+ * suodatin joskus muuttuu.
  */
 export const IS_EXAMPLE_DATA: boolean =
   electricityJson.isExampleData === true ||
-  getPlans().some((p) => p.example === true);
+  getPlans().some((p) => p.example === true || !p.checkedAt);
 
 /** Kaikki rivit, myos julkaisemattomat. Vain talon sisaiseen kayttoon. */
 function allPlans(): ElectricityPlan[] {
@@ -174,7 +206,7 @@ function allPlans(): ElectricityPlan[] {
  * kerrallaan; naytolle ne paasevat vasta kun `example` poistuu.
  */
 export function getPlans(): ElectricityPlan[] {
-  return allPlans().filter((p) => p.example !== true);
+  return allPlans().filter((p) => p.example !== true && p.hidden !== true);
 }
 
 export function getPlan(slug: string): ElectricityPlan | undefined {

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import FoxPaw from "./FoxPaw";
 import {
+  COOKIE_SETTINGS_EVENT,
   GA_CONSENT_STORAGE_KEY,
   type GoogleAnalyticsConsent,
 } from "@/lib/analytics";
@@ -49,7 +50,6 @@ export default function CookieConsent() {
   const reduceMotion = useReducedMotion();
   const [ready, setReady] = useState(false);
   const [open, setOpen] = useState(false);
-  const [choice, setChoice] = useState<GoogleAnalyticsConsent | null>(null);
 
   useEffect(() => {
     let storedChoice: GoogleAnalyticsConsent | null = null;
@@ -62,13 +62,28 @@ export default function CookieConsent() {
     }
 
     if (storedChoice) {
-      setChoice(storedChoice);
       updateGoogleConsent(storedChoice);
     } else {
       setOpen(true);
     }
 
     setReady(true);
+
+    /*
+      KELLUVA "EVÄSTEET"-NAPPI POISTETTIIN, MUTTA VALINNAN PITÄÄ SILTI
+      OLLA PERUUTETTAVISSA.
+
+      Nappi roikkui jokaisella sivulla vasemmassa alakulmassa senkin
+      jälkeen, kun kävijä oli jo vastannut — eli se muistutti evästeistä
+      juuri sinä hetkenä, jona kävijän pitäisi katsoa hintoja. Sen tilalle
+      tuli alatunnisteen "Evästeasetukset"-linkki, joka lähettää tämän
+      tapahtuman. Tietosuoja-asetuksen peruuttamisen on oltava yhtä helppoa
+      kuin antamisen (GDPR 7 art. 3), joten linkkiä ei saa poistaa
+      alatunnisteesta ilman korvaavaa tapaa avata tämä ikkuna.
+    */
+    const reopen = () => setOpen(true);
+    window.addEventListener(COOKIE_SETTINGS_EVENT, reopen);
+    return () => window.removeEventListener(COOKIE_SETTINGS_EVENT, reopen);
   }, []);
 
   const saveChoice = (nextChoice: GoogleAnalyticsConsent) => {
@@ -79,74 +94,91 @@ export default function CookieConsent() {
     }
 
     updateGoogleConsent(nextChoice);
-    setChoice(nextChoice);
     setOpen(false);
   };
 
+  /*
+    LIIKE ON HITAAMPI JA PEHMEÄMPI KUIN SIVUN MUISSA ELEISSÄ.
+
+    Kortin nosto (`.lift`) kestää 140 ms, koska se on vastaus hiiren
+    liikkeeseen ja saa tuntua välittömältä. Tämä paneeli sen sijaan ilmestyy
+    itsestään, kutsumatta, keskelle sitä hetkeä jolloin kävijä on juuri
+    alkanut lukea. Nopea sisääntulo luetaan silloin ponnahdusikkunaksi ja
+    torjutaan refleksinä. Puoli sekuntia pehmeällä hidastuksella ehtii
+    rekisteröityä osaksi sivua eikä sen päälle heitettynä esteenä — ja
+    valintaikkuna, jota ei torjuta refleksinä, saa myös oikean vastauksen.
+  */
   const transition = reduceMotion
     ? { duration: 0 }
-    : { duration: 0.28, ease: [0.22, 1, 0.36, 1] as const };
+    : { duration: 0.52, ease: [0.16, 1, 0.3, 1] as const };
 
   return (
     <>
       <AnimatePresence>
         {ready && open && (
           <motion.div
-            className="pointer-events-none fixed inset-x-0 bottom-0 z-[80] px-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:bottom-3 sm:px-5 sm:pb-0"
-            initial={{ opacity: 0, y: reduceMotion ? 0 : 24 }}
+            className="pointer-events-none fixed inset-x-0 bottom-0 z-[80] px-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:bottom-4 sm:px-5 sm:pb-0"
+            initial={{ opacity: 0, y: reduceMotion ? 0 : 28 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: reduceMotion ? 0 : 18 }}
+            exit={{ opacity: 0, y: reduceMotion ? 0 : 20 }}
             transition={transition}
           >
+            {/*
+              TÄMÄ ON EVÄSTEILMOITUS, EI SIVUSTON ESITTELY.
+
+              Aiemmin tässä oli otsikko, kolmen kohdan "ei nimeä · ei
+              yhteystietoja" -rivi ja selitys siitä, mitä analytiikalla
+              tehdään. Se söi puhelimessa kolmanneksen ruudusta juuri
+              siinä kohtaa, jossa kävijän pitäisi nähdä hinnat — eli se
+              maksoi mainosrahalla ostettuja kävijöitä. Lisäksi pitkä
+              perustelu kääntyy itseään vastaan: mitä enemmän ikkuna
+              selittää, sitä enemmän siitä tulee myyntipuhe ja sitä
+              vahvemmin se torjutaan.
+
+              Nyt: yksi rivi tekstiä, kaksi nappia, linkki tietosuojaan.
+              Tekniikan nimeä ei mainita — se kuuluu tietosuojasivulle,
+              jonne lukija hakeutuu itse jos haluaa tietää.
+
+              `glass-light` on sama materiaali kuin headerissa, eli sama
+              "kelluu sisällön päällä" -merkintä. Tuttu pinta lukee saman
+              talon osaksi eikä ulkopuoliseksi työkaluksi.
+            */}
             <section
               role="dialog"
-              aria-labelledby="cookie-consent-title"
-              aria-describedby="cookie-consent-description"
-              className="theme-light pointer-events-auto mx-auto max-w-[760px] rounded-3xl border border-line bg-white/95 p-4 shadow-[0_22px_70px_-24px_rgba(74,26,2,0.48)] backdrop-blur-xl sm:p-5"
+              aria-label="Evästeet"
+              className="theme-light glass-light pointer-events-auto mx-auto flex max-w-[560px] flex-col gap-3 overflow-hidden rounded-2xl border border-accent/15 p-3.5 shadow-[0_18px_50px_-24px_rgba(74,26,2,0.4)] sm:flex-row sm:items-center sm:gap-3.5 sm:py-3 sm:pl-4 sm:pr-3"
             >
-              <div className="flex items-start gap-3.5 sm:gap-4">
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-accentSoft text-accentDark sm:h-11 sm:w-11">
-                  <FoxPaw size={20} />
-                </span>
+              <span className="hidden h-8 w-8 shrink-0 place-items-center rounded-xl bg-accentSoft text-accentDark ring-1 ring-inset ring-accent/20 sm:grid">
+                <FoxPaw size={16} />
+              </span>
 
-                <div className="min-w-0 flex-1">
-                  <h2
-                    id="cookie-consent-title"
-                    className="font-display text-[17px] font-bold leading-snug text-ink sm:text-[18px]"
-                  >
-                    Saako Kettu käyttää analytiikkaa?
-                  </h2>
-                  <p
-                    id="cookie-consent-description"
-                    className="mt-1.5 text-[13px] leading-relaxed text-ink/70 sm:text-[13.5px]"
-                  >
-                    Google Analytics auttaa kehittämään vertailua. Hyväksymällä
-                    sallit analytiikkaevästeet. Hylkääminen ei vaikuta sivuston
-                    toimintaan tai affiliate-linkkeihin. {" "}
-                    <Link
-                      href="/tietosuoja"
-                      className="font-semibold text-accentDark underline decoration-accent/35 underline-offset-2 hover:decoration-accent"
-                    >
-                      Lue lisää
-                    </Link>
-                  </p>
-                </div>
-              </div>
+              <p className="min-w-0 flex-1 text-[12.5px] leading-snug text-ink/70">
+                Käytämme evästeitä kävijämäärän mittaamiseen.{" "}
+                <Link
+                  href="/tietosuoja"
+                  /* `whitespace-nowrap`: ilman tätä rivinvaihto osui linkin
+                     keskelle ja sana jäi roikkumaan yksin viimeiselle
+                     riville. Linkki näyttää yhdeltä kohteelta. */
+                  className="whitespace-nowrap font-semibold text-accentDark underline decoration-accent/35 underline-offset-2 transition-colors hover:decoration-accent"
+                >
+                  Tietosuoja
+                </Link>
+              </p>
 
-              <div className="mt-4 grid grid-cols-2 gap-2.5 sm:ml-[60px] sm:flex sm:justify-end">
+              <div className="flex shrink-0 gap-2">
                 <button
                   type="button"
                   onClick={() => saveChoice("denied")}
-                  className="min-h-12 rounded-xl border border-line bg-white px-4 py-3 font-display text-[14px] font-bold text-ink transition-colors hover:border-accent/40 hover:bg-mist active:scale-[0.98] sm:min-w-[140px]"
+                  className="flex-1 rounded-lg border border-line bg-white/70 px-3.5 py-2 font-display text-[12.5px] font-bold text-ink/75 transition-colors hover:border-accent/35 hover:bg-white hover:text-ink active:scale-[0.98] sm:flex-none"
                 >
-                  Hylkää
+                  Vain välttämättömät
                 </button>
                 <button
                   type="button"
                   onClick={() => saveChoice("granted")}
-                  className="btn-ember min-h-12 rounded-xl px-4 py-3 font-display text-[14px] font-bold text-onEmber transition-all active:scale-[0.98] sm:min-w-[190px]"
+                  className="btn-ember flex-1 rounded-lg px-4 py-2 font-display text-[12.5px] font-bold text-onEmber transition-all active:scale-[0.98] sm:flex-none"
                 >
-                  Hyväksy analytiikka
+                  Hyväksy
                 </button>
               </div>
             </section>
@@ -154,23 +186,6 @@ export default function CookieConsent() {
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
-        {ready && !open && choice && (
-          <motion.button
-            type="button"
-            onClick={() => setOpen(true)}
-            aria-label="Muuta evästeasetuksia"
-            className="theme-light fixed bottom-24 left-3 z-[60] inline-flex items-center gap-2 rounded-full border border-line bg-white/95 px-3 py-2 font-display text-[12px] font-semibold text-ink/75 shadow-card backdrop-blur transition-colors hover:border-accent/40 hover:text-accentDark md:bottom-4 md:left-4"
-            initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.94 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: reduceMotion ? 1 : 0.94 }}
-            transition={transition}
-          >
-            <FoxPaw size={13} className="text-accentDark" />
-            Evästeet
-          </motion.button>
-        )}
-      </AnimatePresence>
     </>
   );
 }

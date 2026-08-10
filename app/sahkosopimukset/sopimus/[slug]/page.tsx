@@ -13,7 +13,7 @@ import {
   TYPE_LABEL,
   ASSUMED_SPOT_AVG,
 } from "@/lib/energy";
-import { SITE } from "@/lib/data";
+import { OG_IMAGE, SITE } from "@/lib/data";
 
 export function generateStaticParams() {
   return getPlans().map((p) => ({ slug: p.slug }));
@@ -27,6 +27,21 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
     title: `${plan.provider} ${plan.name} – hinta, ehdot ja kustannusarvio`,
     description: `${plan.provider} ${plan.name}: ${plan.summary} Katso hinta omalla kulutuksellasi ja vertaa muihin sopimuksiin.`,
     alternates: { canonical: `/sahkosopimukset/sopimus/${plan.slug}` },
+    /*
+      Next.js ei johda openGraphia `title`-kentästä. Ilman tätä lohkoa
+      kaikki sopimussivut näyttäisivät jaettuna saman etusivun esikatselun,
+      eli kaverille lähetetty "katso tätä sopimusta" -linkki ei kertoisi
+      mistä sopimuksesta on kyse. Yhtiön nimi esikatselussa on lisäksi se,
+      mikä saa linkin näyttämään vertailulta eikä mainokselta.
+    */
+    openGraph: {
+      title: `${plan.provider} ${plan.name} – hinta, ehdot ja kustannusarvio`,
+      description: `${plan.provider} ${plan.name}: ${plan.summary}`,
+      url: `/sahkosopimukset/sopimus/${plan.slug}`,
+      // Pakko toistaa: sivun oma openGraph-lohko korvaa juuritason lohkon
+      // kokonaan, jolloin kuva katoaisi. Ks. OG_IMAGE lib/data.ts.
+      images: [OG_IMAGE],
+    },
   };
 }
 
