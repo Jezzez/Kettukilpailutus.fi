@@ -876,7 +876,10 @@ export default function ElectricityExperience({
                 <Wallet size={15} className="text-ink/40" aria-hidden />
                 Nykyinen sopimuksesi
                 {alwaysOpen && (
-                  <span className="rounded-full border border-line bg-mist px-2 py-0.5 text-[11px] font-semibold text-ink/55">
+                  /* Sama merkki kuin kyselyn vaiheessa 4, joten sama väri.
+                     Kaksi eri näköistä "vapaaehtoinen"-merkkiä samalla
+                     sivulla luetaan kahdeksi eri asiaksi. */
+                  <span className="rounded-full border border-accent/25 bg-accentSoft px-2 py-0.5 text-[11px] font-semibold text-accentDark">
                     vapaaehtoinen
                   </span>
                 )}
@@ -1107,7 +1110,13 @@ export default function ElectricityExperience({
         <p className="flex flex-wrap items-center gap-2 font-display text-[14px] font-bold text-ink">
           <Wallet size={16} className="text-ink/40" aria-hidden />
           Nykyinen sopimuksesi
-          <span className="rounded-full border border-line bg-white px-2 py-0.5 text-[11px] font-semibold text-ink/55">
+          {/* Merkki oli harmaa (bg-white + text-ink/55) ja hukkui otsikkoon
+              juuri siinä kohdassa, jossa sen pitäisi vaikuttaa: kaksi tyhjää
+              kenttää viimeisenä askeleena näyttää pakolliselta ja pysäyttää
+              kyselyn. Jos "vapaaehtoinen" ei erotu, se ei tee työtään.
+              Väri on sivun oma aksentti — accentSoft/accentDark on sama
+              yhdistelmä kuin headerin valikkonapissa, ei uusi sävy. */}
+          <span className="rounded-full border border-accent/25 bg-accentSoft px-2 py-0.5 text-[11px] font-semibold text-accentDark">
             vapaaehtoinen
           </span>
         </p>

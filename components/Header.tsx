@@ -56,10 +56,44 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname() ?? "/";
 
-  // Header tiivistyy vieritettäessä — pieni ele, joka saa navigaation
-  // tuntumaan sovellukselta eikä staattiselta palkilta.
+  /*
+    Header tiivistyy vieritettäessä — pieni ele, joka saa navigaation
+    tuntumaan sovellukselta eikä staattiselta palkilta.
+
+    KAKSI KYNNYSTÄ, EI YHTÄ. Tämä ei ole tyylikysymys vaan korjaus.
+
+    Header on `sticky`, eli se on dokumentin normaalissa virrassa. Kun sen
+    korkeus muuttuu 74 → 62, kaikki sen alapuolinen sisältö nousee 12 px,
+    ja Chromen scroll anchoring korjaa `scrollY`:n takaisin saman verran
+    pitääkseen sisällön visuaalisesti paikallaan.
+
+    Yhdellä kynnyksellä (aiemmin `scrollY > 12`) tuo korjaus heitti
+    vierityksen kynnyksen yli joka kerta, ja header jäi värisemään:
+
+      13 → kutistuu → anchoring vie ~1:een → 1 < 12 → laajenee
+         → anchoring vie ~13:een → kutistuu → ...
+
+    Silmukka oli mahdollinen, koska kynnys oli 12 px:n korkeusmuutoksen
+    sisällä. Nyt kynnysten väli on 40 px eli yli kolminkertainen muutokseen
+    nähden, joten yksikään anchoring-korjaus ei voi enää heittää tilaa
+    takaisin: 65 → kutistuu → ~53, ja 53 > 24 eli tila pysyy. Vastaavasti
+    23 → laajenee → ~35, ja 35 < 64 eli tila pysyy.
+
+    Kynnys siirtyi samalla pois sivun yläreunasta. Se on tarkoituksellista:
+    korkeuden muutos nykii koko sivua 12 px, ja juuri yläreunassa se nykäisy
+    osuisi heron laskuriin — sivun ainoaan kohtaan, jonka pitää tuntua
+    vakaalta ennen kuin kävijä uskaltaa syöttää omat lukunsa.
+  */
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
+    const KUTISTU_YLI = 64;
+    const LAAJENNA_ALLE = 24;
+    const onScroll = () =>
+      setScrolled((nyt) => {
+        const y = window.scrollY;
+        if (y > KUTISTU_YLI) return true;
+        if (y < LAAJENNA_ALLE) return false;
+        return nyt;
+      });
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);

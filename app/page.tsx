@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { permanentRedirect } from "next/navigation";
 import { ArrowRight, CreditCard, Globe, Landmark, ShieldCheck, Zap, BadgeCheck, Scale, Lock } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import SectionHead from "@/components/SectionHead";
@@ -62,6 +63,8 @@ const CATEGORIES = [
 ] as const;
 
 export default function HubPage() {
+  permanentRedirect("/sahkosopimukset");
+
   const orgJsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
