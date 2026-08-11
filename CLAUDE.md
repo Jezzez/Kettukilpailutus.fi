@@ -71,7 +71,7 @@ JSON-tiedostoissa, joten sivut generoituvat staattisesti.
 /lainat                      ohjaus Sortterille (ei omaa vertailua)
 /luottokortit                korttivertailu — PIILOSSA, ks. lib/features.ts
 /kortit/[slug]               8 korttisivua — PIILOSSA
-/blogi, /blogi/[slug]        13 artikkelia
+/blogi, /blogi/[slug]        14 artikkelia (kaikki sähköaiheisia)
 /tietoa, /tietosuoja, /kayttoehdot
 /admin                       sisällönhallinta (ks. varoitus alla)
 tulossa: /vakuutukset /internet
@@ -143,6 +143,47 @@ Täydet tokenit, apuluokat ja perustelut: `DESIGN.md`.
    poistettiin askelosiosta: se muutti viiden minuutin asian kotitehtäväksi
    juuri ennen kilpailutusnappia. Sama tieto on heron "Vie noin 5 minuuttia"
    -kohdan takana, jonka lukija avaa halutessaan.
+
+## Blogiohjeistus — koskee jokaista `data/posts.json`-artikkelia
+
+Jessen pysyvä ohje, joka koskee sekä olemassa olevien tekstien parantamista
+että kaikkia uusia artikkeleita. Tavoite: teksti on niin hyödyllinen ja
+omaperäinen, että se ansaitsisi hyvän Google-sijoituksen ilman että se
+tuntuu SEO:ta varten kirjoitetulta.
+
+**Sisältö**
+
+- Vastaa hakuintenttiin mahdollisimman suoraan. H1/H2/H3-rakenne
+  rakennetaan intentin, ei avainsanojen mukaan.
+- Säilytä hyvä olemassa oleva sisältö, kirjoita vain heikot kohdat uusiksi.
+  Vanhaa tekstiä ei heitetä pois vain siksi, että sitä ei itse kirjoittanut.
+- Konkreettisia esimerkkejä ja **Kettukilpailutuksen omaa vertailudataa**
+  (`data/electricity.json`) aina kun sitä on saatavilla. Oma laskettu
+  euromäärä on se, mitä kilpailijoiden oppaissa ei ole.
+- Tarkista jokainen hinta, laki, tilasto ja faktaväite ajantasaisesta
+  luotettavasta lähteestä ja merkitse lähde näkyviin.
+- **Älä keksi dataa tai lähteitä.** Sama sääntö kuin sopimushinnoissa:
+  tämän sivuston koko ansaintamalli on se, että lukuihin luotetaan.
+- Sisäiset linkit vain sinne, missä ne aidosti auttavat: vertailuun,
+  laskuriin tai toiseen oppaaseen. CTA vain kohtaan, jossa lukija oikeasti
+  on valmis toimimaan, ei jokaisen väliotsikon perään.
+
+**Kieli**
+
+- Luonnollista, asiantuntevaa suomea. Ei geneeristä AI- tai SEO-tekstiä.
+- **Ei ajatusviivoja (`—`, `–`, `--`) tekstin sisällä.** Ne huutavat
+  konekirjoitusta. Käytä pistettä, pilkkua tai kaksoispistettä.
+  (Koodikommenteissa ja tässä tiedostossa ne ovat sallittuja, kielto koskee
+  julkaistavaa artikkelitekstiä.)
+- Ei toistoa, täytelauseita, kliseitä eikä perusteettomia väitteitä.
+- Älä pidennä tekstiä turhaan. Pituus tulee asiasta, ei tavoitteesta.
+
+**Muoto**
+
+- URL-osoitteita (`slug`) ei muuteta ilman hyvää syytä: vanha osoite on jo
+  Googlen indeksissä ja vaihto nollaa sen.
+- `body` on taulukko kappaleita. Väliotsikko on kappale, joka alkaa `## `
+  tai `### `. Linkit ovat markdown-muodossa.
 
 ## Datan tila — mikä on oikeaa ja mikä ei
 

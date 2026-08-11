@@ -38,26 +38,25 @@ export default function PostPage({ params }: { params: { slug: string } }) {
   /*
     ARTIKKELIN LOPPUKEHOTE SEURAA ARTIKKELIN AIHETTA.
 
-    Aiemmin jokainen artikkeli päättyi samaan linkkiin sähkövertailuun —
-    myös ne kolmetoista, jotka kertovat luottokorteista. Se on suoraan
-    pois tuotosta: lukija, joka on juuri lukenut opiskelijan
+    Kehote ei saa olla sama kaikille: lukija, joka on juuri lukenut
     luottokortista, ei klikkaa sähkösopimuksia. Aihe ja kehote on
     kohdattava, tai klikki jää tekemättä.
 
-    Sähköartikkelit vievät sähkövertailuun, kaikki muut kortteihin.
-    Sähkö on päävertikaali, joten se on nimetty erikseen ja loput
-    menevät toiseen — jos kategorioita tulee lisää, tämä pitää katsoa
-    uudelleen eikä laajentaa arvauksella.
+    Yhdeksän korttiaiheista artikkelia poistettiin elokuussa 2026, koska
+    korttidata on yhä keksittyä eikä korttivertailua ole olemassa: opas,
+    joka johtaa vertailuun jota ei ole, on lukijalle umpikuja ja
+    hakukoneelle ohut sivu. Kaikki jäljellä olevat artikkelit ovat
+    kategoriassa "Sähkö", joten `isEnergy` on toistaiseksi aina tosi.
+    Ehtoa ei silti poisteta: se on paikka, johon korttiartikkelit
+    palaavat, jos ja kun korttivertailu avataan oikealla datalla.
   */
   const isEnergy = post.category === "Sähkö";
   /*
-    Korttiaiheinen artikkeli piilotetun osion aikana: 13 artikkelista 9
-    käsittelee luottokortteja, ja niiden loppukehote osoitti aiemmin
-    korttivertailuun. Nyt se osoite palauttaa 404, joten kehote on
-    korvattava. Sähkökehote tilalle olisi houkutteleva mutta väärä:
-    luottokorttiartikkelin lukija ei ole sähkönostoaikeissa, ja aiheeseen
-    liittymätön kehote on juuri se ele, joka saa vertailusivun
-    näyttämään liidifarmilta.
+    Varasuunnitelma sen varalta, että ei-sähköinen artikkeli palaa
+    ennen kuin sen vertikaali on auki: silloin loppukehote osoittaisi
+    osoitteeseen, joka palauttaa 404. Aiheeseen liittymätön kehote
+    tilalle olisi houkutteleva mutta väärä, ja juuri se ele saa
+    vertailusivun näyttämään liidifarmilta.
   */
   const cardsHidden = !isEnergy && !FEATURES.cards;
 

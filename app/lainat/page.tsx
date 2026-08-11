@@ -114,12 +114,12 @@ export default function LoansPage() {
           className="pointer-events-none absolute inset-0 z-0 w-full overflow-hidden md:hidden"
         >
           <Image
-            src="/kettu-tuolissa.webp"
+            src="/rahakettu-v2.png"
             alt=""
-            width={712}
-            height={993}
+            width={1024}
+            height={1536}
             priority
-            className="absolute bottom-0 left-15 h-[100%] w-auto max-w-full -scale-x-100 object-contain opacity-40"
+            className="absolute bottom-0 right-[-30%] h-[100%] w-auto max-w-none -translate-x-1/2 object-contain opacity-40"
             style={{
               WebkitMaskImage:
                 "linear-gradient(to left, #000 84%, transparent 100%)",
@@ -182,12 +182,12 @@ export default function LoansPage() {
 
             <Reveal delay={0.12} className="mx-auto hidden md:block">
               <Image
-                src="/kettu-tuolissa.webp"
-                alt="Kettu, Kettukilpailutuksen maskotti"
-                width={712}
-                height={993}
+                src="/rahakettu-v2.png"
+                alt="Kettu esittelemässä lainavertailua"
+                width={1024}
+                height={1536}
                 priority
-                className="relative h-[430px] w-auto select-none drop-shadow-[0_26px_44px_rgba(80,28,2,0.5)] lg:h-[470px]"
+                className="relative h-[500px] w-auto select-none drop-shadow-[0_26px_44px_rgba(80,28,2,0.5)] lg:h-[540px]"
               />
             </Reveal>
           </div>

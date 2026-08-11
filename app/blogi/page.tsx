@@ -64,10 +64,10 @@ export default function BlogPage() {
   className="pointer-events-none absolute inset-0 z-0 overflow-hidden md:hidden"
 >
   <Image
-    src="/kettu-blogi.png"
+    src="/kettukirjatuoli.png"
     alt=""
-    width={1536}
-    height={1024}
+    width={1024}
+    height={1536}
     priority
     className="absolute bottom-[-2%] right-[-14%] h-[100%] w-auto max-w-none object-contain opacity-40"
     style={{
@@ -114,20 +114,17 @@ export default function BlogPage() {
           */}
           <Reveal delay={0.15} className="relative mx-auto hidden h-[520px] w-full max-w-[560px] md:block">
             {/*
-              Lähdekuvan vasen puolisko on läpinäkyvä. Siksi koko kuvan
-              tavallinen keskitys siirtäisi itse hahmon palstan oikeaan
-              reunaan ja saisi sen näyttämään muiden herojen Kettua
-              pienemmältä. Kuva asemoidaan oman sisältönsä mukaan: hahmo
-              keskelle ja 540 px korkeaksi, samaan mittakaavaan muiden
-              työpöytäherojen kanssa.
+              Uusi lähdekuva on pystysuuntainen ja hahmo täyttää koko
+              kuvan. Se keskitetään suoraan palstaan ja pidetään samassa
+              540 px korkeudessa kuin aiempi hero-Kettu.
             */}
             <Image
-              src="/kettu-blogi.png"
-              alt="Kettu lukemassa kirjaa"
-              width={1536}
-              height={1024}
+              src="/kettukirjatuoli.png"
+              alt="Kettu lukemassa kirjaa nojatuolissa"
+              width={1024}
+              height={1536}
               priority
-              className="absolute bottom-0 left-1/2 h-[540px] w-auto max-w-none -translate-x-[72%] object-contain drop-shadow-[0_24px_42px_rgba(80,28,2,0.38)]"
+              className="absolute bottom-0 left-1/2 h-[540px] w-auto max-w-none -translate-x-1/2 object-contain drop-shadow-[0_24px_42px_rgba(80,28,2,0.38)]"
             />
           </Reveal>
         </div>

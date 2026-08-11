@@ -1704,7 +1704,7 @@ export default function ElectricityExperience({
   />
 </div>
           <div className="relative z-[1] mx-auto max-w-[1180px] px-5 sm:px-6">
-            <div className="grid items-center gap-6 md:grid-cols-[1.08fr_0.92fr] md:gap-8">
+            <div className="grid items-center gap-6 md:grid-cols-[1.04fr_0.96fr] md:gap-8 lg:grid-cols-2">
               <div>
                 <div className="flex items-center gap-3">
                   <span className="font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-accentDark">
@@ -1723,7 +1723,9 @@ export default function ElectricityExperience({
                   <br className="sm:hidden" />
                   {/* Korostus on lämmintä kultaa, ei toista oranssia:
                       oranssilla pohjalla oranssi korostus ei erotu. */}
-                  <em className="text-goldInk">kilpailuttaa</em> puolestasi
+                  <span className="whitespace-nowrap">
+                    <em className="text-goldInk">Kilpailuttaa</em> puolestasi.
+                  </span>
                 </h1>
 
                 <p className="mt-5 max-w-[48ch] text-[15.5px] leading-relaxed text-ink/85 sm:text-[16.5px]">
@@ -1854,26 +1856,24 @@ export default function ElectricityExperience({
                 — hupaisa kettu, ammattimainen data. Mobiilissa Kettu on jo
                 ingressin vieressä, joten tässä on vain hintalaatikko.
 
-                MIKSI EI ABSOLUUTTISTA ASETTELUA: hintalaatikko oli aiemmin
-                `absolute` Ketun päällä ja leikkasi maskotin rinnasta poikki.
-                Puoliksi laatikon taakse jäävä maskotti näyttää rikkinäiseltä,
-                ei kerrokselliselta — ja rikkinäinen hero on suoraan pois
-                klikeistä. Nyt palsta on tavallinen flex-rivi: elementit eivät
-                voi mennä päällekkäin millään näytön leveydellä.
+                Uusi kuva on tehty nojaavaa asentoa varten. Kettu on vasemmalla,
+                hintalaatikko oikealla ja niiden reunat limittyvät vain käden
+                kohdalta. Taulukon alareuna kulkee Ketun kanssa samassa linjassa,
+                jolloin kyynärpää lepää luontevasti kortin vasemman yläreunan
+                päällä eikä peitä hintaa.
               */}
-              <div className="mx-auto flex w-full max-w-[420px] flex-col md:max-w-none md:flex-row md:items-end md:justify-end md:gap-4">
-                <SpotPriceLive className="order-2 mt-6 hidden md:order-1 md:mb-1 md:mt-0 md:block md:w-[19rem] md:shrink-0" />
+              <div className="mx-auto flex w-full max-w-[420px] flex-col md:max-w-none md:flex-row md:items-end md:justify-end md:gap-0">
+                <SpotPriceLive className="order-2 z-10 mt-6 hidden md:-ml-3 md:mb-1 md:mt-0 md:block md:w-[14rem] md:shrink-0 lg:-ml-7 lg:mb-0 lg:min-h-[20rem] lg:w-[18rem]" />
 
                 <motion.div
                   initial={reduce ? false : { opacity: 0, y: 24, scale: 0.97 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ type: "spring", stiffness: 120, damping: 18 }}
-                  className="order-1 hidden shrink-0 md:order-2 md:flex"
+                  className="order-1 z-20 hidden shrink-0 md:flex lg:relative lg:left-12"
                 >
                   {/*
-                    Poosi on seisova kettu, ei luottokorttia pitelevä: tällä
-                    sivulla maskotti ei voi pidellä korttia, se kertoisi
-                    väärästä vertikaalista.
+                    Poosi on sähköön sidottu: hehkulamppu kertoo vertikaalin
+                    ja oikea käsi nojaa suoraan vieressä olevaan spot-hintaan.
 
                     EI HEHKUA TYÖPÖYTÄNÄKYMÄSSÄ. Tässä oli `halo-glow`,
                     kermanvaalea kehä maskotin takana. Perustelu oli, että
@@ -1892,12 +1892,12 @@ export default function ElectricityExperience({
                     lukisi likana.
                   */}
                   <Image
-                    src="/kettu-seisoo.webp"
-                    alt="Kettu, Kettukilpailutuksen maskotti"
-                    width={432}
-                    height={1325}
+                    src="/sahkohero.png"
+                    alt="Kettu pitelemässä hehkulamppua ja nojaamassa pörssisähkön hintataulukkoon"
+                    width={1024}
+                    height={1536}
                     priority
-                    className="relative h-[430px] w-auto drop-shadow-[0_26px_44px_rgba(80,28,2,0.5)] lg:h-[470px]"
+                    className="relative h-[360px] w-auto drop-shadow-[0_26px_44px_rgba(80,28,2,0.5)] lg:h-[480px]"
                   />
                 </motion.div>
               </div>

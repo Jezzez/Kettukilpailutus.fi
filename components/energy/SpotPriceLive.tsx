@@ -140,7 +140,7 @@ export default function SpotPriceLive({ className = "" }: { className?: string }
 
         <p
           className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-display text-[11.5px] font-bold ${
-            belowAvg ? "bg-ok/12 text-ok" : "bg-mist text-ink/70"
+            belowAvg ? "bg-ok/12 text-ink/90" : "bg-mist text-ink/70"
           }`}
         >
           {belowAvg ? <TrendingDown size={13} aria-hidden /> : <TrendingUp size={13} aria-hidden />}
