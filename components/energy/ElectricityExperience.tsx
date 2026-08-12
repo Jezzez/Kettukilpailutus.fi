@@ -1718,13 +1718,15 @@ export default function ElectricityExperience({
                   oranssi nappi — ja katse menee sinne, mistä palkkio tulee.
                   Kursivoitu "laskemalla" on sivun ainoa koristeellinen ele.
                 */}
-                <h1 className="mt-4 max-w-[19ch] font-hero text-[2.1rem] leading-[1.05] text-cream sm:text-[3.1rem] sm:leading-[1.03] md:text-[3.5rem]">
+                <h1 className="mt-4 max-w-[19ch] font-hero text-[2.7rem] leading-[1.05] text-cream sm:text-[3.1rem] sm:leading-[1.03] md:text-[3.5rem]">
                   Anna ketun{" "}
                   <br className="sm:hidden" />
                   {/* Korostus on lämmintä kultaa, ei toista oranssia:
                       oranssilla pohjalla oranssi korostus ei erotu. */}
-                  <span className="whitespace-nowrap">
-                    <em className="text-goldInk">Kilpailuttaa</em> puolestasi.
+                  <span className="sm:whitespace-nowrap">
+                    <em className="text-goldInk">Kilpailuttaa</em>
+                    <br className="sm:hidden" />{" "}
+                    puolestasi.
                   </span>
                 </h1>
 
