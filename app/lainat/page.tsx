@@ -137,12 +137,31 @@ export default function LoansPage() {
                   Lainavertailu
                 </span>
 
-                <h1 className="mt-4 font-hero text-[clamp(2.05rem,9.5vw,2.7rem)] leading-[1.03] text-cream sm:text-[3.6rem]">
-                  <span className="whitespace-nowrap">Kilpailuta lainat</span>
+                {/*
+                  ÄLÄ LAITA TÄHÄN `whitespace-nowrap`. Se oli tässä hetken ja
+                  se rikkoi otsikon jokaisella puhelimella.
+
+                  Syy on mitattu, ei arvattu. Rivi "Yhdellä hakemuksella."
+                  on tällä kirjasimella noin 9,9 kertaa fonttikoon levyinen.
+                  Kokona `9.5vw` se vaatii 320 px:n näytöllä 320 px, 390
+                  px:n näytöllä 367 px ja 430 px:n näytöllä 409 px, kun
+                  käytettävissä on `px-4`-marginaalien jälkeen vain 288,
+                  358 ja 398 px. Rivi oli siis liian leveä ihan joka
+                  kohdassa, ja koska hero-osiolla on `overflow-hidden`,
+                  ylimenevä osa ei tuottanut vaakavieritystä vaan
+                  leikkautui pois. Kävijä näki katkaistun otsikon.
+
+                  NYT KAKSI SUOJAA PÄÄLLEKKÄIN. Koko on laskettu tuon
+                  pisimmän rivin mukaan (`8.4vw`, alaraja 1,7rem), jolloin
+                  marginaalia jää 16–37 px joka leveydellä. Ja koska rivit
+                  saavat taas rivittyä, pahin mahdollinen virhe on ruma
+                  kolmirivinen otsikko eikä leikattu teksti. `<br />` pitää
+                  halutun kahden rivin jaon silloin kun se mahtuu.
+                */}
+                <h1 className="mt-4 font-hero text-[clamp(1.7rem,8.4vw,2.7rem)] leading-[1.05] text-cream sm:text-[3.6rem]">
+                  Kilpailuta lainat
                   <br />
-                  <span className="whitespace-nowrap">
-                    <em className="text-goldInk">Yhdellä</em> hakemuksella.
-                  </span>
+                  <em className="text-goldInk">Yhdellä</em> hakemuksella.
                 </h1>
 
                 <p className="mt-5 max-w-lg text-[16px] leading-relaxed text-ink/90 sm:text-[17px]">
