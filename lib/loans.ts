@@ -33,16 +33,49 @@ import type { FaqItem } from "./types";
  */
 
 /**
- * Kumppani. Linkki on Adtractionista; julkaisijatunnus `as=2098832052`
- * on Jessen tili. Jos tunnus muuttuu, palkkio menee väärään paikkaan.
+ * CO-BRANDED HAKEMUSSIVU — TÄMÄN SIVUN AINOA KOHDE.
+ *
+ * Sortter on rakentanut meille oman hakemussivun. Se on Sortterin
+ * lomake ja Sortterin vastuu, mutta yläpalkissa on Kettukilpailutuksen
+ * logo ja oikealla lukee "Palvelun tarjoaa Sortter". Kävijä ei siis
+ * putoa tuntemattomalle sivustolle kesken siirtymän — se on juuri se
+ * kohta, jossa ohjaussivut menettävät eniten kävijöitä.
+ *
+ * SEURANTA ON SISÄÄNRAKENNETTU OSOITTEESEEN, EI PARAMETREIHIN.
+ * Tarkistettu sivun lähdekoodista: Jessen `affiliateId`
+ * (958405be-…) ja `offerId` (4f317b7d-…) ovat sivulla valmiina.
+ * Osoitteeseen ei siis tarvitse eikä saa lisätä tunnisteita — riittää
+ * että kävijä päätyy tähän aliverkkotunnukseen.
+ *
+ * MIKSI ADTRACTION-LINKKI POISTETTIIN. Vanha nappi meni osoitteeseen
+ * `go.adt291.com/t/t?a=1658832312&as=2098832052…` eli Adtractionin
+ * ohjelmaan. Kaksi rinnakkaista ohjelmaa samalle kumppanille on
+ * huonompi kuin yksi kumpaakaan tapaa kohtaan: sama kävijä voisi
+ * painaa ensin nappia (Adtraction) ja sitten laskurin nappia
+ * (co-branded), jolloin kahdesta jäljestä sovitaan jälkikäteen. Nyt
+ * kaikki neljä siirtymää tältä sivulta menevät samaan paikkaan.
+ *
+ * ⚠ ENNEN JULKAISUA: varmista Sortterilta, että tämän ohjelman
+ * palkkio on vähintään yhtä hyvä kuin Adtractionin ohjelman
+ * (`a=1658832312`). Jos ei ole, palataan Adtractioniin nappien osalta
+ * — mutta laskurin `b2cUrl` jää tähän, koska se ei ole koskaan
+ * kulkenut Adtractionin kautta lainkaan.
+ *
+ * HUOM KENOVIIVA LOPUSSA. Widget rakentaa osoitteen muodossa
+ * `${b2cUrl}?amount=…` eli liittää kysymysmerkin itse. Osoitteessa ei
+ * siksi saa olla omaa kyselymerkkijonoa, ja päättävä `/` pitää olla
+ * paikallaan.
  */
+export const SORTTER_APPLICATION_URL = "https://kettukilpailutus.hakemus-sortter.fi/";
+
+/** Kumppani. Kaikki tämän sivun napit vievät co-branded hakemussivulle. */
 export const LOAN_PARTNER = {
   id: "sortter",
   name: "Sortter",
   /** Yksi lause, jonka jokainen sana on tarkistettavissa Sortterin sivulta. */
   summary:
     "suomalainen lainanvälittäjä, joka lähettää yhden hakemuksen usealle pankille kerralla",
-  url: "https://go.adt291.com/t/t?a=1658832312&as=2098832052&t=2&tk=1",
+  url: SORTTER_APPLICATION_URL,
 } as const;
 
 /**
@@ -65,15 +98,21 @@ export const LOAN_PARTNER = {
  * tuo teksti EI ole minkään attribuutin takana, vaan se piirtyy aina.
  * Jos Sortter joskus poistaa sen, widget on otettava pois sivulta.
  *
- * ⚠ AVOIN KYSYMYS — PALKKION KULKU. Tämän sivun muut napit menevät
- * Adtractionin kautta (`LOAN_PARTNER.url`), ja Adtraction kirjaa
- * palkkion vain, jos kävijä kulkee tuon uudelleenohjauksen läpi.
- * Widgetin oma nappi EI kulje siitä: se rakentaa osoitteen muodossa
- * `b2cUrl?amount=…&period=…&utm…` eli suoraan sortter.fi:hin. Palkkio
- * syntyy siis vain, jos Sortterin jälleenmyyjäohjelma maksaa tämän
- * `utm`-tunnisteen perusteella. Se on varmistettava Sortterilta ennen
- * kuin tämä julkaistaan — muuten widget syö juuri sen klikin, joka
- * tähän asti on tuottanut.
+ * PALKKION KULKU — AIEMPI AVOIN KYSYMYS ON RATKAISTU. Widgetin oma
+ * nappi ei kulkenut Adtractionin kautta lainkaan: se rakentaa
+ * osoitteen muodossa `b2cUrl?amount=…&period=…&utm…`, ja `b2cUrl`:n
+ * oletus oli Sortterin oma `sortter.fi/lainahakemus/`, jossa ei ole
+ * mitään tunnistetta meistä. Laskurin klikki oli siis ilmainen
+ * Sortterille. Nyt `b2cUrl` osoittaa co-branded sivulle, jossa
+ * `affiliateId` ja `offerId` ovat valmiina — sama klikki tuottaa.
+ *
+ * KAKSI ASKELTA MUUTTUI YHDEKSI. Co-branded sivun ensimmäinen vaihe
+ * on "Valitse lainasumma", eli täsmälleen sama kysymys kuin tässä
+ * laskurissa. Kun summa ja aika tulevat osoitteessa mukana, sivu
+ * merkitsee vaiheen 1 tehdyksi ja avaa suoraan vaiheen 2. Tarkistettu
+ * selaimessa arvoilla 31 000 € / 9 vuotta: sivu näytti ne ja hyppäsi
+ * vaiheeseen 2. Ilman tätä laskuri olisi ollut kävijälle turha
+ * välikysymys, joka kysytään heti uudestaan.
  */
 export const LOAN_WIDGET = {
   /**
@@ -85,6 +124,14 @@ export const LOAN_WIDGET = {
   src: "https://www.unpkg.com/@sortter/sortter-resellers-web-component/dist/sortter-reseller-form.js.umd.js",
 
   /**
+   * Mihin laskurin nappi vie. Ilman tätä widget käyttää omaa
+   * oletustaan `https://sortter.fi/lainahakemus/`, joka ei tunnista
+   * meitä lähettäjäksi. Sama osoite kuin `LOAN_PARTNER.url`, jotta
+   * sivulla on yksi kohde eikä kahta.
+   */
+  b2cUrl: SORTTER_APPLICATION_URL,
+
+  /**
    * Liukujen aloitusarvot: 25 000 € ja 6 vuotta. Ne eivät ole väite
    * mistään — ne ovat vain se kohta, josta kävijä alkaa raahata. Sortter
    * ehdotti näitä, ja ne osuvat lainojen yhdistämisen kokoluokkaan, joka
@@ -94,10 +141,10 @@ export const LOAN_WIDGET = {
   periodYears: 6,
 
   /**
-   * Sortterin seurantatunniste. `utm_source` oli Sortterin esimerkissä
-   * `your-site` eli paikkamerkki — jos se jäisi paikalleen, liikennettä
-   * ei voisi tunnistaa meidän tuomaksi. `utm_medium=slider` on Sortterin
-   * oma arvo, eikä sitä muuteta: he voivat raportoida sen perusteella.
+   * Erottelutunniste, EI palkkion peruste. Palkkio kulkee co-branded
+   * osoitteen kautta; tämä kertoo Sortterin raportissa vain sen, että
+   * kävijä tuli laskurista eikä sivun napista. `utm_medium=slider` on
+   * Sortterin oma arvo, eikä sitä muuteta.
    */
   utm: "utm_source=kettukilpailutus.fi&utm_medium=slider",
 } as const;

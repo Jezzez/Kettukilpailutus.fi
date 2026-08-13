@@ -38,6 +38,8 @@ import { LOAN_WIDGET } from "@/lib/loans";
 interface SortterFormProps {
   /** "personal" | "corporate" | "both". Yrityslainoja emme markkinoi. */
   type?: string;
+  /** Minne nappi vie. Ilman tätä widget käyttää sortter.fi:n oletusta. */
+  b2cUrl?: string;
   /** Seurantaparametrit, jotka liitetään Sortterin osoitteeseen. */
   utm?: string;
   b2cLoanAmount?: string;
@@ -148,6 +150,20 @@ export default function SortterCalculator() {
       */}
       <sortter-reseller-form
         type="personal"
+        /*
+          KOHDE ON PAKKO ASETTAA. Widgetin oletus on
+          `https://sortter.fi/lainahakemus/`, jolla ei ole mitään
+          yhteyttä meidän tiliimme — laskurin klikki olisi siis
+          ilmainen Sortterille. Tämä osoittaa co-branded sivulle,
+          jonka koodissa Jessen `affiliateId` ja `offerId` ovat
+          valmiina.
+
+          Widget liittää perään `?amount=…&period=…`, joten co-branded
+          sivu avautuu summa ja aika valmiina ja ohittaa oman
+          ensimmäisen vaiheensa. Osoitteessa ei siksi saa olla omaa
+          kyselymerkkijonoa: widget kirjoittaa kysymysmerkin itse.
+        */
+        b2cUrl={LOAN_WIDGET.b2cUrl}
         utm={LOAN_WIDGET.utm}
         b2cLoanAmount={String(LOAN_WIDGET.amount)}
         b2cLoanPeriod={String(LOAN_WIDGET.periodYears)}
