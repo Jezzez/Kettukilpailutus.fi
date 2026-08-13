@@ -137,10 +137,12 @@ export default function LoansPage() {
                   Lainavertailu
                 </span>
 
-                <h1 className="mt-4 max-w-[10ch] font-hero text-[2.7rem] leading-[1.03] text-cream sm:text-[3.6rem]">
-                  Kilpailuta lainat
+                <h1 className="mt-4 font-hero text-[clamp(2.05rem,9.5vw,2.7rem)] leading-[1.03] text-cream sm:text-[3.6rem]">
+                  <span className="whitespace-nowrap">Kilpailuta lainat</span>
                   <br />
-                  <em className="text-goldInk">Yhdellä</em> hakemuksella.
+                  <span className="whitespace-nowrap">
+                    <em className="text-goldInk">Yhdellä</em> hakemuksella.
+                  </span>
                 </h1>
 
                 <p className="mt-5 max-w-lg text-[16px] leading-relaxed text-ink/90 sm:text-[17px]">

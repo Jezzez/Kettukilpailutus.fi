@@ -22,7 +22,14 @@ export const metadata: Metadata = {
   lähetetään, joten väärä osoite ei ole kirjoitusvirhe vaan puuttuva
   yhteyskanava.
 */
-const SECTIONS: [string, string][] = [
+/*
+  TEKSTIN TYYPPI ON ReactNode, EI string — ks. sama muutos käyttöehdoissa.
+  Sortterin ehto on, että heidän selosteeseensa ja ehtoihinsa on linkit
+  meidän vastaavilta sivuiltamme, eikä linkkiä voi kirjoittaa merkkijonoon.
+*/
+const LINK = "font-semibold text-accentDark underline underline-offset-4";
+
+const SECTIONS: [string, React.ReactNode][] = [
   [
     "Rekisterinpitäjä",
     `${SITE.operator.legalName} (Y-tunnus ${SITE.operator.businessId}), joka ylläpitää sivustoa ${SITE.name}. Yhteydenotot: ${SITE.operator.email}.`,
@@ -34,6 +41,40 @@ const SECTIONS: [string, string][] = [
      ei ole — se on ensimmäinen paikka, josta epäilevä lukija tarkistaa
      onko sivusto oikeasti se, joka se väittää olevansa. */
   ["Affiliate-linkit", "Kun siirryt palveluntarjoajan sivulle linkkiemme kautta, kumppani voi asettaa oman evästeensä komission kohdistamiseksi. Tämä tapahtuu kumppanin sivustolla ja sen omien ehtojen mukaisesti."],
+  /*
+    MIKSI TÄMÄ ON OMANA KOHTANAAN JA NIMENOMAAN TÄSSÄ JÄRJESTYKSESSÄ.
+
+    Yllä lukee, ettemme kerää nimeä tai yhteystietoja. Lainojen
+    hakemussivulla niitä kuitenkin kysytään, ja sivulla on meidän
+    logomme. Ilman tätä kohtaa selosteemme ja kävijän kokemus olisivat
+    näennäisesti ristiriidassa, ja tietosuojaseloste on juuri se sivu,
+    jolta epäilevä kävijä käy tarkistamassa onko sivusto rehellinen.
+
+    Toinen puoli on tarkkuus: emme välitä hakemuksen tietoja, koska
+    kävijä syöttää ne suoraan Sortterille. Me lähetämme mukana vain
+    lainasumman ja takaisinmaksuajan, jotka ovat kävijän itsensä
+    valitsemia lukuja eivätkä yksilöi ketään. Se sanotaan tässä, jottei
+    "esitäytetty hakemus" jää tarkoittamaan jotain suurempaa.
+  */
+  [
+    "Lainahakemus ja Sortter",
+    <>
+      Emme kerää emmekä välitä lainahakemuksen tietoja. Kun siirryt lainojen
+      kilpailutukseen, annat tiedot suoraan kumppanillemme Sortterille, joka toimii
+      palvelun tarjoajana ja niiden tietojen käsittelijänä. Hakemussivulla on
+      Kettukilpailutuksen tunnukset, mutta palvelun tarjoaa Sortter. Sivustomme välittää
+      mukana ainoastaan laskurissa valitsemasi lainasumman ja takaisinmaksuajan, jotka
+      eivät ole henkilötietoja. Sortterin omat ehdot:{" "}
+      <a href="https://sortter.fi/tietosuojaseloste/" target="_blank" rel="noopener" className={LINK}>
+        tietosuojaseloste
+      </a>{" "}
+      ja{" "}
+      <a href="https://sortter.fi/kayttoehdot/" target="_blank" rel="noopener" className={LINK}>
+        käyttöehdot
+      </a>
+      .
+    </>,
+  ],
   ["Tietojen käsittelijät", "Emme myy käyttäjätietoja. Sivuston käyttöanalytiikkaa käsittelevät palveluntarjoajinamme Vercel ja Google niiden omien tietosuojaehtojen mukaisesti."],
   [
     "Oikeutesi",

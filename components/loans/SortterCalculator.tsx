@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Script from "next/script";
 import { LOAN_WIDGET } from "@/lib/loans";
 
@@ -54,6 +54,11 @@ interface SortterFormProps {
   buttonColor?: string;
   fontFamily?: string;
   style?: React.CSSProperties;
+  ref?: React.Ref<SortterFormElement>;
+}
+
+interface SortterFormElement extends HTMLElement {
+  updateComplete?: Promise<unknown>;
 }
 
 declare global {
@@ -91,11 +96,37 @@ export default function SortterCalculator() {
     UMD-nide voi latautua ennen kuin elementti on rekisteröity.
   */
   const [ready, setReady] = useState(false);
+  const formRef = useRef<SortterFormElement>(null);
 
   useEffect(() => {
     let alive = true;
-    customElements.whenDefined("sortter-reseller-form").then(() => {
-      if (alive) setReady(true);
+    customElements.whenDefined("sortter-reseller-form").then(async () => {
+      const form = formRef.current;
+      await form?.updateComplete;
+      if (!alive) return;
+
+      const shadowRoot = form?.shadowRoot;
+      if (shadowRoot && !shadowRoot.querySelector("style[data-kettu-sortter-logo]")) {
+        const style = document.createElement("style");
+        style.dataset.kettuSortterLogo = "";
+        style.textContent = `
+          .widget-calculator-module--footer {
+            justify-content: center !important;
+            align-items: center !important;
+          }
+
+          .widget-calculator-module--footer > div:first-child:empty {
+            display: none !important;
+          }
+
+          .widget-calculator-module--footer > div:last-child {
+            margin-inline: auto !important;
+          }
+        `;
+        shadowRoot.append(style);
+      }
+
+      setReady(true);
     });
     return () => {
       alive = false;
@@ -149,6 +180,7 @@ export default function SortterCalculator() {
         täyttäisi korttia.
       */}
       <sortter-reseller-form
+        ref={formRef}
         type="personal"
         /*
           KOHDE ON PAKKO ASETTAA. Widgetin oletus on
