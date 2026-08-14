@@ -337,23 +337,21 @@ export function campaignSaving(plan: ElectricityPlan, kwhPerYear: number): numbe
 }
 
 /**
- * Kuukausihinta kampanjan aikana (€/kk).
+ * Kuukausihinta kampanjan aikana (€/kk). Eli mita asiakas maksaa ensi
+ * kuussa, jos han tekee sopimuksen tanaan.
  *
- * Tama on kortin ISO luku. Se kertoo mita asiakas maksaa juuri nyt, jos han
- * tekee sopimuksen tanaan — ei ensimmaisen vuoden keskiarvoa. Perustelu:
- * keskiarvo nayttaa kalliimmalta kuin lasku, joka oikeasti kolahtaa postiin,
- * ja osa kavijoista paatteli siita ettei parempaa sopimusta ole saatavilla.
- * Menetetty klikki on menetetty palkkio.
+ * EI OLE VERTAILUN JARJESTYSPERUSTE. Oli aiemmin, ja se osoittautui
+ * virheeksi: neljan kuukauden houkutin paihitti vuoden kestavan alennuksen,
+ * ja Aalto Luotsi nousi listan ykkoseksi hinnalla 31,6 €/kk vaikka maksaa
+ * ensimmaisena vuonna 504 € ja sen jalkeen 47,2 €/kk. Halvin sopimus oli
+ * samalla listalla kahdeksantena. Jarjestys, "Ketun valinta", hintapalkit
+ * ja "ala vaihda" -paatos lasketaan nyt kaikki `annualCost`ista, eli
+ * ensimmaisen vuoden kokonaishinnasta kampanja mukaan luettuna.
  *
- * Tama on myos koko vertailun JARJESTYSPERUSTE: lista, "Ketun valinta",
- * hintapalkit ja "ala vaihda" -paatos lasketaan kaikki tasta luvusta.
- * Jesse paatti nain, ja peruste on selva: jos asiakas saa meilta 0,39
- * marginaalin ja maksaa nyt 0,49, han saa halvemman sopimuksen — ja
- * laskuri, joka vastaa siihen "ala vaihda", menettaa klikin ja palkkion.
- *
- * Vastapaino on kortin sisalla, ei kaavassa: ison luvun vieressa lukee
- * kampanjan kesto ja sen alla "Kampanjan jalkeen X € / kk". Se on syy,
- * miksi noita rivaja ei saa poistaa tilan saastamiseksi.
+ * Tata lukua tarvitaan yha kortin riviin "Ensimmaiset 4 kk 31,6 €, sitten
+ * 47,2 € / kk", joka on ison luvun alla. Ilman sita kortti vaikenisi
+ * aidosta kampanjaedusta ja pitka kampanja nayttaisi samalta kuin ei
+ * kampanjaa lainkaan. Sita rivia ei saa poistaa tilan saastamiseksi.
  *
  * Jos kampanjaa ei ole, palautetaan normaali kuukausihinta.
  */

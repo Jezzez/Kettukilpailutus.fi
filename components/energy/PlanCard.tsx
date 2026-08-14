@@ -94,27 +94,28 @@ export default function PlanCard({
   const yearly = annualCost(plan, kwh);
 
   /*
-    ISO LUKU ON KAMPANJAN AIKAINEN KUUKAUSIHINTA, EI VUODEN KESKIARVO.
+    ISO LUKU ON ENSIMMÄISEN VUODEN KUUKAUSIKESKIARVO.
 
-    Luku oli aiemmin ensimmäisen vuoden keskiarvo, eli kampanjakuukaudet
-    ja niiden jälkeinen normaalihinta samassa euromäärässä. Se teki
-    kampanjakorteista kalliimman näköisiä kuin mikä on se lasku, joka
-    asiakkaalle oikeasti tulee ensi kuussa — ja osa kävijöistä päätteli
-    siitä, ettei parempaa sopimusta ole tarjolla, vaikka oli. Menetetty
-    klikki on menetetty palkkio, ja tässä se menetettiin luvulla, jota
-    kukaan ei koskaan maksa sellaisenaan.
+    Tässä oli välillä kampanjan aikainen hinta. Perustelu oli, että
+    keskiarvo näyttää kalliimmalta kuin ensi kuun lasku ja maksaa siksi
+    klikkejä. Se osoittautui kalliimmaksi kuin ongelma, jota se ratkaisi:
+    koska koko lista järjestettiin samalla luvulla, neljän kuukauden
+    houkutin päihitti vuoden kestävän alennuksen, ja Aalto Luotsi nousi
+    ykköseksi hinnalla 31,6 €/kk vaikka maksaa ensimmäisenä vuonna 504 €
+    ja sen jälkeen 47,2 €/kk. Halvin sopimus oli samalla listalla
+    kahdeksantena.
 
-    Nyt luku vastaa kysymykseen "mitä maksan, jos teen sopimuksen
-    tänään". Vuosiluku ja kampanjan jälkeinen hinta ovat edelleen
-    näkyvissä alempana — ilman niitä tämä olisi houkuttelulukua, ei
-    hintaa.
+    Nyt luku vastaa kysymykseen "paljonko tämä maksaa minulle
+    kuukaudessa, jos pidän sen vuoden" — ja se on sama luku, jolla lista
+    järjestetään, jolla "Ketun valinta" valitaan, jolla palkki piirretään
+    ja jolla ero nykyiseen lasketaan. Yksi luku, ei neljää.
 
-    HUOM: listan järjestys käyttää tätä lukua, mutta "Ketun valinta"
-    -merkki EI. Merkki katsoo ensimmäisen vuoden kokonaishintaa niiden
-    sopimusten joukossa, jotka voittavat asiakkaan nykyisen hinnan jo
-    nyt — ks. `kokonaisuus`-kommentti ElectricityExperience.tsx:ssä.
+    KAMPANJAA EI PIILOTETA KESKIARVOON. Ison luvun alla on rivi, jossa
+    lukee kampanjan aikainen hinta ja se, mihin se nousee. Ilman tuota
+    riviä tämä luku söisi kampanjaedun näkyvistä, ja silloin pitkä
+    kampanja näyttäisi samalta kuin ei kampanjaa lainkaan.
   */
-  const monthly = campaignMonthlyCost(plan, kwh);
+  const monthly = yearly / 12;
 
   /*
     HINTAPALKKI KÄÄNNETTIIN: PITKÄ PALKKI = HALPA.
@@ -192,11 +193,15 @@ export default function PlanCard({
   */
   const campaign = plan.campaign ?? null;
 
-  /* Kampanjan jälkeinen kuukausihinta. Iso euroluku kortissa on
-     KAMPANJAN AIKAINEN hinta, eli kampanjakorteissa pienempi kuin
-     pysyvä hinta. Ilman tätä lukua kortti lupaisi hinnan, joka nousee
-     ilman varoitusta — ja juuri se on se pettymys, joka menettää
-     asiakkaan ja tuo valituksen. */
+  /* Kampanjan MOLEMMAT päät. Iso euroluku kortissa on ensimmäisen vuoden
+     kuukausikeskiarvo, eli se on kummankin näiden välissä eikä yhtä kuin
+     kumpikaan. Siksi molemmat on sanottava erikseen ison luvun alla:
+     ylempi vastaa kysymykseen "mitä maksan ensi kuussa", alempi
+     kysymykseen "mitä maksan sen jälkeen". Jos pysyvä hinta puuttuisi,
+     kortti lupaisi hinnan joka nousee ilman varoitusta; jos
+     kampanjahinta puuttuisi, kortti piilottaisi aidon edun ja
+     kampanjasopimus näyttäisi kalliimmalta kuin se ensi kuussa on. */
+  const kampanjaMonthly = campaign ? campaignMonthlyCost(plan, kwh) : null;
   const normalMonthly = campaign ? normalAnnualCost(plan, kwh) / 12 : null;
 
   /*
@@ -612,7 +617,7 @@ export default function PlanCard({
                       })}{" "}
                       €
                     </strong>{" "}
-                    / kk {campaign ? "kampanjan aikana" : "nykyiseen verrattuna"}
+                    / kk {campaign ? "keskimäärin 1. vuonna" : "nykyiseen verrattuna"}
                   </span>
                 </>
               ) : diffMonthly < -0.5 ? (
@@ -626,7 +631,7 @@ export default function PlanCard({
                       })}{" "}
                       €
                     </strong>{" "}
-                    / kk kalliimpi kuin nykyinen{campaign ? " jo kampanjahinnalla" : ""}
+                    / kk kalliimpi kuin nykyinen{campaign ? " kampanja mukaan lukien" : ""}
                   </span>
                 </>
               ) : null}
@@ -638,15 +643,17 @@ export default function PlanCard({
               {monthly.toLocaleString("fi-FI", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} €
             </span>
             <span className="font-display text-[13px] font-semibold text-ink/60">/ kk</span>
-            {/* Aikaraja on ISON LUVUN VIERESSÄ, ei alaviitteenä.
+            {/* Ison luvun peruste sanotaan ISON LUVUN VIERESSÄ, ei alaviitteenä.
 
-                Iso luku on kampanjahinta, joka päättyy. Jos kesto lukisi
-                vasta kortin alalaidassa, luku ehtisi lukeutua pysyväksi
-                hinnaksi ennen kuin lukija näkee ehdon — ja ehto, joka
-                luetaan vasta laskusta, on peruutus eikä palkkio. */}
+                Kampanjakortissa luku on ensimmäisen vuoden kuukausikeskiarvo,
+                ei kampanjahinta eikä pysyvä hinta. Kumpaakaan niistä se ei
+                ole, joten se on nimettävä heti: nimeämätön luku luetaan
+                pysyväksi hinnaksi, ja hinta joka paljastuu vasta laskusta on
+                peruutus eikä palkkio. Tarkat päät (kampanjahinta ja se, mihin
+                se nousee) ovat rivillä ison luvun alla. */}
             {campaign ? (
               <span className="font-display text-[12px] font-semibold text-ink/50">
-                ensimmäiset {campaign.months} kk
+                keskimäärin 1. vuonna
               </span>
             ) : null}
           </div>
@@ -654,8 +661,8 @@ export default function PlanCard({
           <div
             className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-black/20"
             role="img"
-            aria-label={`Hinta suhteessa tämän hetken edullisimpaan: mitä pidempi palkki, sitä edullisempi sopimus. Tämä ${barWidth} prosenttia täydestä.`}
-            title="Mitä pidempi palkki, sitä edullisempi sopimus tällä hetkellä"
+            aria-label={`Ensimmäisen vuoden hinta suhteessa vertailun edullisimpaan: mitä pidempi palkki, sitä edullisempi sopimus. Tämä ${barWidth} prosenttia täydestä.`}
+            title="Mitä pidempi palkki, sitä edullisempi sopimus ensimmäisenä vuonna"
           >
             <div
               className="h-full rounded-full bg-cream transition-all duration-500"
@@ -675,25 +682,38 @@ export default function PlanCard({
           </p>
 
           {/*
-            KAMPANJAN JÄLKEINEN HINTA SANOTAAN HETI ISON LUVUN ALLA.
+            KAMPANJAN MOLEMMAT PÄÄT SANOTAAN HETI ISON LUVUN ALLA.
 
-            Iso euroluku on kampanjan aikainen hinta. Kampanjakortissa se
-            on siis pienempi kuin hinta, jonka asiakas maksaa kampanjan
-            päätyttyä — ja tämä rivi on ainoa paikka, jossa pysyvä
-            kuukausihinta sanotaan euroina. Jos kortti näyttäisi
-            pelkän kampanjaluvun, se voittaisi vertailun tarjouksella ja
-            asiakas huomaisi eron vasta laskusta — se on yksi peruutus,
-            yksi menetetty palkkio ja yksi asiakas, joka ei palaa. Kolmen
-            kuukauden tarjous ei saa ostaa ykköspaikkaa hiljaisuudella.
+            Iso euroluku on ensimmäisen vuoden keskiarvo, joka ei ole
+            kumpikaan näistä kahdesta luvusta. Se on tarkoituksella
+            vertailukelpoinen luku, mutta yksikään asiakas ei koskaan maksa
+            juuri sitä summaa yhtenäkään kuukautena — joten tämä rivi on se,
+            joka kertoo mitä laskussa oikeasti lukee ensi kuussa ja mitä
+            kampanjan jälkeen.
+
+            Molemmat ovat pakollisia, kumpikin omasta syystään. Ilman pysyvää
+            hintaa kortti lupaisi hinnan joka nousee ilman varoitusta: yksi
+            peruutus, yksi menetetty palkkio ja yksi asiakas joka ei palaa.
+            Ilman kampanjahintaa kortti taas vaikenisi aidosta edusta, ja
+            kampanjasopimus näyttäisi ensi kuun kannalta kalliimmalta kuin se
+            on — se on sama virhe toisin päin, ja maksaa klikin.
 
             Rajoitus ("vain uusille asiakkaille") on samalla rivillä:
             se on ainoa asia, joka voi tehdä koko tarjouksesta lukijalle
             mahdottoman, ja sen lukeminen vasta kumppanin sivulta on
             hukkaan mennyt klikki molemmille osapuolille.
           */}
-          {campaign && normalMonthly !== null && (
+          {campaign && kampanjaMonthly !== null && normalMonthly !== null && (
             <p className="mt-1 text-[12px] text-ink/60">
-              Kampanjan jälkeen{" "}
+              Ensimmäiset {campaign.months} kk{" "}
+              <span className="font-data font-bold text-ink/80">
+                {kampanjaMonthly.toLocaleString("fi-FI", {
+                  minimumFractionDigits: 1,
+                  maximumFractionDigits: 1,
+                })}{" "}
+                €
+              </span>
+              , sitten{" "}
               <span className="font-data font-bold text-ink/80">
                 {normalMonthly.toLocaleString("fi-FI", {
                   minimumFractionDigits: 1,
