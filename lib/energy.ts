@@ -340,18 +340,22 @@ export function campaignSaving(plan: ElectricityPlan, kwhPerYear: number): numbe
  * Kuukausihinta kampanjan aikana (€/kk). Eli mita asiakas maksaa ensi
  * kuussa, jos han tekee sopimuksen tanaan.
  *
- * EI OLE VERTAILUN JARJESTYSPERUSTE. Oli aiemmin, ja se osoittautui
- * virheeksi: neljan kuukauden houkutin paihitti vuoden kestavan alennuksen,
- * ja Aalto Luotsi nousi listan ykkoseksi hinnalla 31,6 €/kk vaikka maksaa
- * ensimmaisena vuonna 504 € ja sen jalkeen 47,2 €/kk. Halvin sopimus oli
- * samalla listalla kahdeksantena. Jarjestys, "Ketun valinta", hintapalkit
- * ja "ala vaihda" -paatos lasketaan nyt kaikki `annualCost`ista, eli
- * ensimmaisen vuoden kokonaishinnasta kampanja mukaan luettuna.
+ * TAMA ON SAHKOSIVUN VERTAILUPERUSTE. Kaikki kavijalle nakyvat
+ * kuukausihinnat, "Ketun valinta", saastoluku, hintapalkit ja "ala
+ * vaihda" -paatos lasketaan tasta.
  *
- * Tata lukua tarvitaan yha kortin riviin "Ensimmaiset 4 kk 31,6 €, sitten
- * 47,2 € / kk", joka on ison luvun alla. Ilman sita kortti vaikenisi
- * aidosta kampanjaedusta ja pitka kampanja nayttaisi samalta kuin ei
- * kampanjaa lainkaan. Sita rivia ei saa poistaa tilan saastamiseksi.
+ * MIKSI: kavija kirjoittaa laskustaan perusmaksun ja marginaalin, jotka
+ * ovat voimassa NYT. Jos vastaamme siihen `annualCost`illa, vertaamme
+ * kahta eri aikaikkunaa. Tapaus, joka pakotti muutoksen: kavija maksaa
+ * 0 €/kk + 0,89 c/kWh, Cheap Energy antaa juuri nyt 0,39 c/kWh ilman
+ * perusmaksua, ja sivu silti ilmoitti ettei halvempaa ole, koska Cheapin
+ * vuosikeskiarvoon sisaltyi kampanjan jalkeinen hinta.
+ *
+ * LISTAN JARJESTYS ON SILTI `annualCost`. Pelkalla kampanjahinnalla
+ * jarjestettyna neljan kuukauden houkutin nousee vuoden kestavan
+ * alennuksen ohi: Aalto Luotsi oli ykkonen hinnalla 31,6 €/kk vaikka
+ * maksaa ensimmaisena vuonna 504 € ja sen jalkeen 47,2 €/kk. Kortti
+ * kertoo molemmat luvut, joten lukija nakee eron itse.
  *
  * Jos kampanjaa ei ole, palautetaan normaali kuukausihinta.
  */

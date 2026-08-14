@@ -22,7 +22,7 @@ import FoxPaw from "../FoxPaw";
  * hetkellä" ja kultainen "Ketun valinta", ja ne saattoivat osua eri
  * kortteihin, koska Ketun valinta laskettiin painotuksella (hinta +
  * kampanjan jälkeinen hinta). Painotus poistettiin: Ketun suositus on
- * nyt aina halvin vuosihinta kävijän omalla kulutuksella.
+ * nyt aina halvin ensi kuun hinta kävijän omalla kulutuksella.
  *
  * Kun molemmat merkit tarkoittavat samaa korttia, kaksi merkkiä on
  * yksi liikaa — ja kahdesta merkistä syntyy kysymys "mitä eroa
@@ -31,7 +31,7 @@ import FoxPaw from "../FoxPaw";
  *
  * `note` poistettiin samalla: se sanoi "tällä hetkellä edullisin sekä
  * ensimmäisenä vuonna että kampanjan jälkeen", mikä oli vanhan
- * painotuksen väite eikä enää totta halvimmasta sopimuksesta.
+ * painotuksen väite eikä enää totta.
  */
 export type PlanBadge = { kind: "fox" } | null;
 
@@ -94,28 +94,29 @@ export default function PlanCard({
   const yearly = annualCost(plan, kwh);
 
   /*
-    ISO LUKU ON ENSIMMÄISEN VUODEN KUUKAUSIKESKIARVO.
+    ISO LUKU ON ENSI KUUN HINTA. JÄRJESTYS ON ENSIMMÄINEN VUOSI.
 
-    Tässä oli välillä kampanjan aikainen hinta. Perustelu oli, että
-    keskiarvo näyttää kalliimmalta kuin ensi kuun lasku ja maksaa siksi
-    klikkejä. Se osoittautui kalliimmaksi kuin ongelma, jota se ratkaisi:
-    koska koko lista järjestettiin samalla luvulla, neljän kuukauden
-    houkutin päihitti vuoden kestävän alennuksen, ja Aalto Luotsi nousi
+    Nämä ovat tarkoituksella eri luvut, ja ero on koko kortin idea.
+
+    Iso luku on se, mitä laskussa lukee ensi kuussa. Kukaan ei koskaan
+    maksa keskiarvoa yhtenäkään kuukautena, eikä keskiarvoa voi verrata
+    omaan laskuun — ja oma lasku on ainoa vertailukohta, joka lukijalla
+    on. Nimeämätön keskiarvo isolla fontilla luetaan silti ensi kuun
+    hinnaksi, joten se on sekä väärä luku että väärin luettu.
+
+    Järjestys, palkki, "Ketun valinta" ja ero nykyiseen lasketaan silti
+    ensimmäisen vuoden kokonaishinnasta. Muuten neljän kuukauden houkutin
+    päihittää vuoden kestävän alennuksen: Aalto Luotsi nousi kerran
     ykköseksi hinnalla 31,6 €/kk vaikka maksaa ensimmäisenä vuonna 504 €
-    ja sen jälkeen 47,2 €/kk. Halvin sopimus oli samalla listalla
-    kahdeksantena.
+    ja sen jälkeen 47,2 €/kk, ja halvin sopimus oli kahdeksantena.
 
-    Nyt luku vastaa kysymykseen "paljonko tämä maksaa minulle
-    kuukaudessa, jos pidän sen vuoden" — ja se on sama luku, jolla lista
-    järjestetään, jolla "Ketun valinta" valitaan, jolla palkki piirretään
-    ja jolla ero nykyiseen lasketaan. Yksi luku, ei neljää.
-
-    KAMPANJAA EI PIILOTETA KESKIARVOON. Ison luvun alla on rivi, jossa
-    lukee kampanjan aikainen hinta ja se, mihin se nousee. Ilman tuota
-    riviä tämä luku söisi kampanjaedun näkyvistä, ja silloin pitkä
-    kampanja näyttäisi samalta kuin ei kampanjaa lainkaan.
+    SEURAUS, JOKA ON HYVÄKSYTTY TIETOISESTI: lista ei ole ison luvun
+    mukaisessa järjestyksessä. Kampanjakortti voi näyttää halvemmalta
+    kuin yläpuolinen ja olla silti alempana. Juuri sen näkeminen on
+    lukijalle se hyödyllinen havainto, ja kortti selittää sen itse
+    kahdella rivillä: "sitten X €/kk" ja "Y € vuodessa".
   */
-  const monthly = yearly / 12;
+  const monthly = campaignMonthlyCost(plan, kwh);
 
   /*
     HINTAPALKKI KÄÄNNETTIIN: PITKÄ PALKKI = HALPA.
@@ -127,11 +128,12 @@ export default function PlanCard({
     kuin ei kaaviota lainkaan, koska se johtaa harhaan sekunnin ajan.
 
     Nyt palkki on halvimman hinnan suhde tämän kortin hintaan: halvin
-    saa täyden palkin, kaksi kertaa kalliimpi puolikkaan. Kun lista on
-    hintajärjestyksessä, palkit lyhenevät alaspäin mentäessä — silloin
-    palkkia ei tarvitse selittää, se opettaa itsensä kahdessa
-    sekunnissa. Sitä varten palkki on olemassa: silmä vertaa pituuksia
-    nopeammin kuin kuutta euromäärää.
+    saa täyden palkin, kaksi kertaa kalliimpi puolikkaan. Palkki mittaa
+    ENSI KUUN hintaa, eli samaa lukua kuin kortin iso numero. Sitä varten
+    palkki on olemassa: silmä vertaa pituuksia nopeammin kuin kuutta
+    euromäärää. Koska lista järjestetään vuosihinnalla, palkit eivät
+    lyhene tasaisesti alaspäin, ja se on tarkoitus: palkki kertoo mitä
+    maksat nyt, järjestys mitä maksat vuodessa.
   */
   const barWidth = Math.max(8, Math.round((minCost / (monthly * 12)) * 100));
 
@@ -193,15 +195,9 @@ export default function PlanCard({
   */
   const campaign = plan.campaign ?? null;
 
-  /* Kampanjan MOLEMMAT päät. Iso euroluku kortissa on ensimmäisen vuoden
-     kuukausikeskiarvo, eli se on kummankin näiden välissä eikä yhtä kuin
-     kumpikaan. Siksi molemmat on sanottava erikseen ison luvun alla:
-     ylempi vastaa kysymykseen "mitä maksan ensi kuussa", alempi
-     kysymykseen "mitä maksan sen jälkeen". Jos pysyvä hinta puuttuisi,
-     kortti lupaisi hinnan joka nousee ilman varoitusta; jos
-     kampanjahinta puuttuisi, kortti piilottaisi aidon edun ja
-     kampanjasopimus näyttäisi kalliimmalta kuin se ensi kuussa on. */
-  const kampanjaMonthly = campaign ? campaignMonthlyCost(plan, kwh) : null;
+  /* Kampanjan jälkeinen pysyvä kuukausihinta. Iso euroluku kortissa on
+     kampanjahinta, joka loppuu, joten tämä on sen pariluku: ilman sitä
+     kortti lupaisi hinnan, joka nousee ilman varoitusta. */
   const normalMonthly = campaign ? normalAnnualCost(plan, kwh) / 12 : null;
 
   /*
@@ -382,34 +378,24 @@ export default function PlanCard({
                 Vertailusivun yleisin epäily on "onko tämä nosto ostettu?", ja
                 siihen pitää vastata siinä sekunnissa kun epäily syntyy.
 
-                RIVI SANOO NYT TÄSMÄLLEEN SEN, MITÄ KOODI LASKEE. Aiemmin
-                tässä luki "tällä hetkellä edullisin myös kampanjan
-                jälkeen" — se oli vanhan painotetun valinnan väite, ja kun
-                merkki siirtyi halvimpaan vuosihintaan, väite lakkasi
-                olemasta totta. Väärä perustelu merkin alla on pahempi kuin
-                perustelun puuttuminen: se on tarkistettavissa kortin omista
-                luvuista, ja kiinni jäänyt vertailusivu menettää klikin
-                lisäksi paluukäynnin.
+                RIVI SANOO TÄSMÄLLEEN SEN, MITÄ KOODI LASKEE. Merkki menee
+                sopimukseen, jonka ensimmäinen vuosi on halvin niistä, jotka
+                voittavat kävijän nykyisen hinnan jo ensi kuussa. Kortin
+                rivillä "… € 1. vuosi" on juuri se luku, joten lukija voi
+                todeta väitteen korttien omista luvuista. Väärä perustelu
+                merkin alla on pahempi kuin perustelun puuttuminen: kiinni
+                jäänyt vertailusivu menettää klikin lisäksi paluukäynnin.
 
-                Nyt rivi kertoo saman asian kuin listan järjestys ja
-                hintapalkki, eli lukija voi todeta sen itse kolmesta
-                paikasta. Se on tämän merkin koko uskottavuus.
+                HUOM: kortin iso numero on ensi kuun hinta, joten merkki ei
+                osu aina pienimpään isoon numeroon. Se on tietoinen valinta,
+                ks. `monthly`-kommentti.
 
                 RIVI ON LYHYT, KOSKA SEN ON MAHDUTTAVA KAMPANJAMERKIN
-                VIEREEN. Pidempi muoto ("Edullisin vuosihinta
-                kulutuksellasi") katkesi kolmella pisteellä juuri niissä
-                korteissa, joissa on kampanja — eli useimmiten. Katkaistu
-                perustelu merkin alla lukee virheenä, ja virheeltä
-                näyttävä merkki on huonompi kuin ei merkkiä lainkaan.
+                VIEREEN. Pidempi muoto katkesi kolmella pisteellä juuri
+                niissä korteissa, joissa on kampanja, eli useimmiten.
               */}
-              {/* Perustelu vaihtui, kun merkin mittari vaihtui. Merkki ei
-                  tarkoita halvinta kuukausihintaa — sen paikan voi ostaa
-                  kolmen kuukauden houkuttimella — vaan halvinta ensimmäistä
-                  vuotta. Merkin alarivin PITÄÄ sanoa sama asia kuin mittari,
-                  muuten kortti väittää jotain, mitä sen omat luvut eivät tue.
-                  Rivi on lyhyt, koska se katkeaa kampanjamerkin vieressä. */}
               <p className="mt-1 truncate font-data text-[10.5px] font-bold leading-none text-[#5C3A08]">
-                Paras ensimmäinen vuosi
+                Paras 1. vuosi
               </p>
             </div>
           </div>
@@ -617,7 +603,7 @@ export default function PlanCard({
                       })}{" "}
                       €
                     </strong>{" "}
-                    / kk {campaign ? "keskimäärin 1. vuonna" : "nykyiseen verrattuna"}
+                    / kk nykyiseen verrattuna
                   </span>
                 </>
               ) : diffMonthly < -0.5 ? (
@@ -631,7 +617,7 @@ export default function PlanCard({
                       })}{" "}
                       €
                     </strong>{" "}
-                    / kk kalliimpi kuin nykyinen{campaign ? " kampanja mukaan lukien" : ""}
+                    / kk kalliimpi kuin nykyinen
                   </span>
                 </>
               ) : null}
@@ -643,17 +629,12 @@ export default function PlanCard({
               {monthly.toLocaleString("fi-FI", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} €
             </span>
             <span className="font-display text-[13px] font-semibold text-ink/60">/ kk</span>
-            {/* Ison luvun peruste sanotaan ISON LUVUN VIERESSÄ, ei alaviitteenä.
-
-                Kampanjakortissa luku on ensimmäisen vuoden kuukausikeskiarvo,
-                ei kampanjahinta eikä pysyvä hinta. Kumpaakaan niistä se ei
-                ole, joten se on nimettävä heti: nimeämätön luku luetaan
-                pysyväksi hinnaksi, ja hinta joka paljastuu vasta laskusta on
-                peruutus eikä palkkio. Tarkat päät (kampanjahinta ja se, mihin
-                se nousee) ovat rivillä ison luvun alla. */}
+            {/* Ison luvun kesto sanotaan ISON LUVUN VIERESSÄ, ei alaviitteenä.
+                Nimeämätön kampanjahinta luetaan pysyväksi hinnaksi, ja hinta
+                joka paljastuu vasta laskusta on peruutus eikä palkkio. */}
             {campaign ? (
               <span className="font-display text-[12px] font-semibold text-ink/50">
-                keskimäärin 1. vuonna
+                ensimmäiset {campaign.months} kk
               </span>
             ) : null}
           </div>
@@ -661,8 +642,8 @@ export default function PlanCard({
           <div
             className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-black/20"
             role="img"
-            aria-label={`Ensimmäisen vuoden hinta suhteessa vertailun edullisimpaan: mitä pidempi palkki, sitä edullisempi sopimus. Tämä ${barWidth} prosenttia täydestä.`}
-            title="Mitä pidempi palkki, sitä edullisempi sopimus ensimmäisenä vuonna"
+            aria-label={`Ensi kuun hinta suhteessa vertailun edullisimpaan: mitä pidempi palkki, sitä edullisempi sopimus. Tämä ${barWidth} prosenttia täydestä.`}
+            title="Mitä pidempi palkki, sitä edullisempi sopimus ensi kuussa"
           >
             <div
               className="h-full rounded-full bg-cream transition-all duration-500"
@@ -670,50 +651,33 @@ export default function PlanCard({
             />
           </div>
 
-          {/* Vuosihinta JA sen alkuperä samalla rivillä. Pelkkä
-              "168 € vuodessa" luetaan yleisenä listahintana; ilman
-              lukua taas katoaa se summa, jolla sopimuksia oikeasti
-              vertaillaan. Rivi sanoo molemmat eikä vie ylimääräistä
-              korkeutta. */}
+          {/* Ensimmäisen vuoden kokonaishinta. Tämä on listan
+              järjestysperuste, joten se on myös ainoa selitys sille, miksi
+              kortti voi olla eri kohdassa kuin sen iso luku antaisi olettaa.
+              Älä poista. */}
           <p className="mt-2 text-[12px] text-ink/60">
-            {yearly.toLocaleString("fi-FI", { maximumFractionDigits: 0 })} € vuodessa
+            {yearly.toLocaleString("fi-FI", { maximumFractionDigits: 0 })} € 1. vuosi
             <span className="mx-1.5 text-cream/40" aria-hidden>·</span>
-            {campaign ? "ensimmäinen vuosi kampanjoineen" : "laskettu kulutuksellasi"}
+            {campaign ? "kampanja mukana" : "laskettu kulutuksellasi"}
           </p>
 
           {/*
-            KAMPANJAN MOLEMMAT PÄÄT SANOTAAN HETI ISON LUVUN ALLA.
+            MIHIN ISO LUKU NOUSEE, HETI ISON LUVUN ALLA.
 
-            Iso euroluku on ensimmäisen vuoden keskiarvo, joka ei ole
-            kumpikaan näistä kahdesta luvusta. Se on tarkoituksella
-            vertailukelpoinen luku, mutta yksikään asiakas ei koskaan maksa
-            juuri sitä summaa yhtenäkään kuukautena — joten tämä rivi on se,
-            joka kertoo mitä laskussa oikeasti lukee ensi kuussa ja mitä
-            kampanjan jälkeen.
-
-            Molemmat ovat pakollisia, kumpikin omasta syystään. Ilman pysyvää
-            hintaa kortti lupaisi hinnan joka nousee ilman varoitusta: yksi
+            Iso luku on kampanjahinta, eli se loppuu. Ilman tätä riviä
+            kortti lupaisi hinnan, joka nousee ilman varoitusta: yksi
             peruutus, yksi menetetty palkkio ja yksi asiakas joka ei palaa.
-            Ilman kampanjahintaa kortti taas vaikenisi aidosta edusta, ja
-            kampanjasopimus näyttäisi ensi kuun kannalta kalliimmalta kuin se
-            on — se on sama virhe toisin päin, ja maksaa klikin.
+            Tämä rivi on myös ainoa selitys sille, miksi kortti voi olla
+            listassa alempana kuin kalliimman näköinen kortti.
 
-            Rajoitus ("vain uusille asiakkaille") on samalla rivillä:
-            se on ainoa asia, joka voi tehdä koko tarjouksesta lukijalle
+            Rajoitus ("vain uusille asiakkaille") on samalla rivillä: se on
+            ainoa asia, joka voi tehdä koko tarjouksesta lukijalle
             mahdottoman, ja sen lukeminen vasta kumppanin sivulta on
             hukkaan mennyt klikki molemmille osapuolille.
           */}
-          {campaign && kampanjaMonthly !== null && normalMonthly !== null && (
+          {campaign && normalMonthly !== null && (
             <p className="mt-1 text-[12px] text-ink/60">
-              Ensimmäiset {campaign.months} kk{" "}
-              <span className="font-data font-bold text-ink/80">
-                {kampanjaMonthly.toLocaleString("fi-FI", {
-                  minimumFractionDigits: 1,
-                  maximumFractionDigits: 1,
-                })}{" "}
-                €
-              </span>
-              , sitten{" "}
+              Sitten{" "}
               <span className="font-data font-bold text-ink/80">
                 {normalMonthly.toLocaleString("fi-FI", {
                   minimumFractionDigits: 1,
