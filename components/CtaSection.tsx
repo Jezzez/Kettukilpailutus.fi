@@ -14,11 +14,31 @@ export default function CtaSection({
   title = "Löydä sinulle paras luottokortti tänään",
   text = "Vastaa kolmeen kysymykseen – Kettu järjestää kortit puolestasi.",
   button = "Aloita ilmainen vertailu",
+  /*
+    TOINEN NAPPI ON VALINNAINEN JA TARKOITETTU VAIN ETUSIVULLE.
+
+    Vertikaalisivuilla loppukehotuksessa saa olla täsmälleen yksi kohde:
+    sähkösivun lukija on jo valinnut sähkön, ja toinen nappi tarjoaisi
+    hänelle ulospääsyn juuri siinä kohdassa, jossa hänen pitäisi painaa
+    ainoaa tuottavaa linkkiä.
+
+    Etusivulla tilanne on päinvastainen. Sinne tullaan brändihaulla
+    valitsematta mitään, ja jos sivun viimeinen kehotus puhuu pelkästä
+    sähköstä, lainoja etsivä kävijä lukee koko palvelun sähköpalveluksi
+    ja poistuu. Siksi molemmat kohteet ovat tässä nimeltä mainittuina.
+
+    `undefined`-oletus tarkoittaa, ettei yksikään olemassa oleva
+    kutsupaikka muutu.
+  */
+  secondaryHref,
+  secondaryButton,
 }: {
   href?: string;
   title?: string;
   text?: string;
   button?: string;
+  secondaryHref?: string;
+  secondaryButton?: string;
 }) {
   return (
     /*
@@ -63,21 +83,47 @@ export default function CtaSection({
             <p className="mx-auto mt-4 max-w-md text-[16px] leading-relaxed text-ink/85 md:mx-0">
               {text}
             </p>
-            <Link
-              href={href}
-              /*
-                Tekstin väri on KIINTEÄ arvo eikä `text-accentDark`.
-                `accentDark` on teemamuuttuja, ja `.theme-ember` kääntää
-                sen vaaleaksi kermaksi — oikein oranssia pohjaa vasten,
-                mutta tämä nappi on kermanvalkoinen, joten teksti katosi
-                napin sisään kokonaan. Sama sävy kuin `.ember-surface`-
-                pohjassa, eli ei uutta väriä palettiin.
-              */
-              className="group mt-8 inline-flex items-center gap-2.5 rounded-xl bg-cream px-8 py-4 font-display text-[15.5px] font-bold text-[#A83E0A] shadow-lift transition-all hover:bg-[#FFFFFF] active:scale-[0.98]"
-            >
-              {button}
-              <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" aria-hidden />
-            </Link>
+            {/*
+              Napit ovat samat kuin heron napit: kerma = ensisijainen,
+              läpikuultava kerma + reuna = toissijainen. Kun sivun
+              ensimmäinen ja viimeinen kehotus näyttävät samalta, lukija
+              tunnistaa alalaidassa saman valinnan jonka ohitti ylhäällä.
+
+              Puhelimessa napit ovat täysleveitä ja allekkain, koska
+              kaksi vierekkäistä nappia kapealla ruudulla kutistuu niin,
+              ettei kumpikaan näytä painikkeelta.
+            */}
+            {/* `justify-center md:justify-start` seuraa emon tekstin
+                tasausta (`text-center ... md:text-left`). Ilman sitä
+                640–768 px:n välissä otsikko olisi keskellä ja napit
+                vasemmassa reunassa. */}
+            <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:flex-wrap md:justify-start">
+              <Link
+                href={href}
+                /*
+                  Tekstin väri on KIINTEÄ arvo eikä `text-accentDark`.
+                  `accentDark` on teemamuuttuja, ja `.theme-ember` kääntää
+                  sen vaaleaksi kermaksi — oikein oranssia pohjaa vasten,
+                  mutta tämä nappi on kermanvalkoinen, joten teksti katosi
+                  napin sisään kokonaan. Sama sävy kuin `.ember-surface`-
+                  pohjassa, eli ei uutta väriä palettiin.
+                */
+                className="group inline-flex w-full items-center justify-center gap-2.5 rounded-xl bg-cream px-8 py-[18px] font-display text-[16px] font-bold text-[#A83E0A] shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_2px_5px_rgba(74,26,2,0.28),0_16px_34px_-12px_rgba(74,26,2,0.6)] transition-all hover:-translate-y-0.5 hover:bg-[#FFFFFF] active:translate-y-0 active:scale-[0.98] sm:w-auto"
+              >
+                {button}
+                <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" aria-hidden />
+              </Link>
+
+              {secondaryHref && secondaryButton && (
+                <Link
+                  href={secondaryHref}
+                  className="group inline-flex w-full items-center justify-center gap-2.5 rounded-xl border border-cream/70 bg-cream/[0.14] px-8 py-[18px] font-display text-[16px] font-bold text-cream shadow-[inset_0_1px_0_rgba(255,244,235,0.28),0_10px_26px_-14px_rgba(74,26,2,0.7)] transition-all hover:-translate-y-0.5 hover:border-cream hover:bg-cream/25 active:translate-y-0 active:scale-[0.98] sm:w-auto"
+                >
+                  {secondaryButton}
+                  <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" aria-hidden />
+                </Link>
+              )}
+            </div>
           </div>
 
           {/*

@@ -14,10 +14,16 @@ import { ENERGY_COMPARE, ENERGY_PATH, isEnergyPath } from "@/lib/nav";
   AKTIIVISUUS ON FUNKTIO, EI ETULIITE.
 
   Ennen jokaisella rivillä oli `match`-merkkijono, jota verrattiin
-  `startsWith`illä. Se ei enää toimi sähkölle: vertailu on etusivulla,
-  ja "/" on jokaisen polun alku — sähkölinkki olisi ollut korostettuna
-  ihan joka sivulla. Predikaatti antaa jokaiselle riville oman ehdon
-  ilman että muut rivit muuttuvat.
+  `startsWith`illä. Se hajosi sinä aikana, kun vertailu asui etusivulla:
+  "/" on jokaisen polun alku, joten sähkölinkki oli korostettuna ihan
+  joka sivulla. Predikaatti antaa jokaiselle riville oman ehdon ilman
+  että muut rivit muuttuvat.
+
+  Vertailu on nyt taas omassa osoitteessaan, eli `startsWith` toimisi
+  jälleen — mutta rakennetta ei palauteta. Osoite on ehtinyt vaihtua
+  kahdesti, ja predikaatti on se, mikä teki jälkimmäisestä vaihdosta
+  yhden rivin muutoksen `lib/nav.ts`:ssä eikä kymmenen tiedoston
+  läpikäyntiä.
 */
 type NavItem = { href: string; label: string; active: (pathname: string) => boolean };
 

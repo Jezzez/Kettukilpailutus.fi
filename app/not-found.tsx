@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Zap } from "lucide-react";
 import Kettu from "@/components/mascot/Kettu";
 import TailSweep from "@/components/fox/TailSweep";
+import { ENERGY_COMPARE } from "@/lib/nav";
 
 /**
  * 404 ON PALUUSIVU, EI VIRHEILMOITUS.
@@ -40,8 +41,12 @@ export default function NotFound() {
           {/* Kiinteä `#A83E0A`: `accentDark` kääntyy ember-teemassa kermaksi
               ja teksti katoaisi kermanvalkoisen napin sisään. */}
           <div className="mt-8 flex flex-wrap gap-3">
+            {/* Kaksi nappia, kaksi eri osoitetta. Kun vertailu asui juuressa,
+                molemmat osoittivat `/`:hen ja jälkimmäinen oli käytännössä
+                turha. Nyt ensisijainen vie suoraan laskuriin ja toissijainen
+                hubille sille, joka ei tullut sähkön takia. */}
             <Link
-              href="/"
+              href={ENERGY_COMPARE}
               className="group inline-flex items-center gap-2.5 rounded-xl bg-cream px-7 py-4 font-display text-[15.5px] font-bold text-[#A83E0A] shadow-lift transition-all hover:bg-[#FFFFFF] active:scale-[0.98]"
             >
               <Zap size={18} aria-hidden /> Kilpailuta sähkö

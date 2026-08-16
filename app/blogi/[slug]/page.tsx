@@ -6,6 +6,7 @@ import { getPost, getPosts, OG_IMAGE, SITE } from "@/lib/data";
 import CtaSection from "@/components/CtaSection";
 import FoxPaw from "@/components/FoxPaw";
 import { FEATURES } from "@/lib/features";
+import { ENERGY_COMPARE } from "@/lib/nav";
 
 export function generateStaticParams() {
   return getPosts().map((p) => ({ slug: p.slug }));
@@ -240,7 +241,7 @@ export default function PostPage({ params }: { params: { slug: string } }) {
       </section>
     ) : (
     <CtaSection
-      href={isEnergy ? "/#vertailu" : "/luottokortit#vertailu"}
+      href={isEnergy ? ENERGY_COMPARE : "/luottokortit#vertailu"}
       title={
         isEnergy
           ? "Katso nyt, paljonko sinä maksat liikaa sähköstä"

@@ -1,51 +1,59 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ShieldCheck } from "lucide-react";
-import ElectricityExperience from "@/components/energy/ElectricityExperience";
-import Faq from "@/components/Faq";
+import { ArrowRight, CalendarClock, GraduationCap, Home, TrendingUp, Zap } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import FoxPaw from "@/components/FoxPaw";
 import Reveal from "@/components/Reveal";
 import SectionHead from "@/components/SectionHead";
-import CtaSection from "@/components/CtaSection";
 import ServiceGrid from "@/components/ServiceGrid";
+import CtaSection from "@/components/CtaSection";
 import TailSweep from "@/components/fox/TailSweep";
-import { annualCost, getPlans, getEnergyTopics } from "@/lib/energy";
+import { getEnergyTopics, getPlans } from "@/lib/energy";
 import { OG_IMAGE, SITE } from "@/lib/data";
+import { FEATURES } from "@/lib/features";
+import { ENERGY_COMPARE } from "@/lib/nav";
 
 /*
-  ETUSIVU ON SÄHKÖVERTAILU, EI KATEGORIAVALITSIN.
+  ETUSIVU ON HUB, EI VERTAILUSIVU.
 
-  Tässä oli aiemmin hub: viisi kategoriaruutua, joista kaksi oli auki.
-  Se ohjautui `permanentRedirect`illä sähkösivulle, eli osoite
-  kettukilpailutus.fi vei aina yhden ylimääräisen latauksen päähän
-  siitä sisällöstä, jota kävijä tuli hakemaan.
+  Sähkövertailu asui täällä 17.8.2026 asti. Se siirrettiin osoitteeseen
+  `/sahkosopimukset`, koska sen alla on jo 26 sopimussivua ja 4 aihesivua,
+  joiden emosivu oli siihen asti pelkkä uudelleenohjaus.
 
-  MIKSI MUUTETTIIN: sivuston ainoa tuottava vertikaali on sähkö. Etusivu
-  on aina se osoite, jolle linkit ja maininnat kertyvät, ja hakukoneen
-  silmissä se oli tyhjä uudelleenohjaus. Nyt vahvin osoite kantaa
-  vahvinta sisältöä, ja kävijä on laskurin äärellä ensimmäisellä
-  latauksella. `/sahkosopimukset` ohjautuu tänne 301:llä, joten vanha
-  osoite ei katoa vaan siirtää painonsa tähän (ks. next.config.mjs).
+  MITÄ TÄMÄN SIVUN PITÄÄ TEHDÄ: brändihaku ("kettukilpailutus") osuu aina
+  siihen sivuun, joka on osoitteessa `/`. Tänne tulee siis ihminen, joka
+  tietää nimen mutta ei välttämättä sitä, mitä palvelu tekee. Sivun ainoa
+  tehtävä on vastata siihen yhdellä silmäyksellä ja päästää kävijä eteenpäin
+  kahdella klikillä: sähköön tai lainoihin.
 
-  Kun toinen vertikaali (vakuutukset, internet) aukeaa oikeasti, hub
-  kannattaa palauttaa — mutta silloin sille tehdään oma osoite, eikä
-  sähkövertailua siirretä pois etusivulta.
+  MIKSI SIVU ON LYHYT: jokainen osio tällä sivulla on este ansainnan
+  edessä. Tuotto syntyy vasta `/sahkosopimukset`-sivun laskurissa ja
+  `/lainat`-sivun hakemuksessa, ei täällä. Hub, joka yrittää olla myös
+  vertailusivu, vain hidastaa matkaa sinne. Jos tänne lisätään sisältöä,
+  perustelun on oltava se, että se vie useamman kävijän noihin kahteen
+  osoitteeseen — ei se, että sivu näyttää tyhjältä.
+
+  ÄLÄ SIIRRÄ VERTAILUA TAKAISIN TÄNNE. Osoite on nyt vaihtunut kahdesti, ja
+  jokainen vaihto nollaa hakukoneen kertyneen luottamuksen `/sahkosopimukset`
+  -osoitteeseen. Kolmas kerta maksaisi enemmän kuin kaksi ensimmäistä
+  yhteensä.
 */
 
 export const metadata: Metadata = {
   /*
-    `absolute` ohittaa layoutin "%s | Kettukilpailutus.fi" -mallin.
-    Ilman sitä otsikko olisi 84 merkkiä ja Google katkaisisi sen kesken
-    lupauksen. Brändiä ei tarvitse toistaa: hakukone lisää sivuston nimen
-    etusivun tulokseen itse (Organization-merkintä alla).
+    `absolute` ohittaa layoutin "%s | Kettukilpailutus.fi" -mallin. Sivun
+    otsikko on brändihaun ensimmäinen rivi, ja siinä pitää olla sekä nimi
+    että se mitä palvelu tekee — nimi yksin ei kerro hakijalle mitään.
   */
-  title: { absolute: "Kilpailuta sähkösopimus – vertaa hinnat omalla kulutuksellasi" },
+  title: { absolute: "Kettukilpailutus.fi – kilpailuta sähkö ja lainat yhdessä paikassa" },
   description:
-    "Vertaa sähkösopimukset omalla kulutuksellasi: pörssisähkö, kiinteät ja toistaiseksi voimassa olevat. Näet heti arvioidun vuosihinnan ja säästön. Ilmainen ja puolueeton.",
+    "Kettukilpailutus vertailee arjen toistuvat laskut: sähkösopimukset omalla kulutuksellasi ja lainatarjoukset yhdellä hakemuksella. Ilmainen eikä sido mihinkään.",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Kilpailuta sähkösopimus – vertaa hinnat omalla kulutuksellasi",
+    title: "Kettukilpailutus.fi – kilpailuta sähkö ja lainat yhdessä paikassa",
     description:
-      "Kerro kulutuksesi, niin Kettu laskee jokaisen sopimuksen todellisen vuosihinnan ja näyttää säästösi euroina.",
+      "Ketuttaako maksaa liikaa? Anna Ketun kilpailuttaa puolestasi. Sähkösopimukset euroina, lainatarjoukset yhdellä hakemuksella.",
     url: "/",
     // Pakko toistaa: sivun oma openGraph-lohko korvaa juuritason lohkon
     // kokonaan, jolloin kuva katoaisi. Ks. OG_IMAGE lib/data.ts.
@@ -53,29 +61,67 @@ export const metadata: Metadata = {
   },
 };
 
-const ENERGY_FAQ: { q: string; a: string }[] = [
-  { q: "Katkeaako sähkö, kun vaihdan sopimusta?", a: "Ei vaihdon takia. Sähkö tulee kotiisi samaa verkkoa pitkin kuin ennenkin. Paikallinen verkkoyhtiösi pysyy samana, ja vain sähkönmyyjä vaihtuu." },
-  { q: "Mitä sopimuksen vaihtaminen maksaa?", a: "Uuden sähkösopimuksen tekeminen on tavallisesti maksutonta. Määräaikaista sopimusta ei kuitenkaan yleensä voi päättää kesken sopimuskauden, joten tarkista nykyisen sopimuksesi päättymispäivä ennen tilausta. Kun vaihto on mahdollinen, uusi myyjä hoitaa vanhan sopimuksen irtisanomisen." },
-  { q: "Mitä eroa on pörssisähköllä ja kiinteällä hinnalla?", a: "Pörssisähkön energiahinta vaihtuu tunneittain, ja myyjä lisää siihen marginaalin sekä mahdollisen perusmaksun. Kiinteässä sopimuksessa energian yksikköhinta pysyy samana sovitun kauden, mutta laskun summa muuttuu kulutuksesi mukana. Pörssisähkössä voit hyötyä edullisista tunneista, kun taas kiinteä hinta suojaa hintapiikeiltä." },
-  { q: "Miksi laskussa on kaksi osaa: myynti ja siirto?", a: "Sähkönmyyjän ja myyntisopimuksen voit kilpailuttaa. Siirrosta vastaa paikallinen verkkoyhtiö, jota et voi vaihtaa, joten siirtomaksu ei riipu valitsemastasi sähkönmyyjästä. Tämä vertailu koskee sähkön myyntiosuutta." },
-  { q: "Kuinka usein sähkösopimus kannattaa kilpailuttaa?", a: "Tarkista vaihtoehdot ainakin määräaikaisen sopimuksen lähestyessä loppuaan ja aina, kun saat hinnanmuutosilmoituksen. Toistaiseksi voimassa olevan sopimuksen voi kilpailuttaa muulloinkin, kun huomioit sopimuksen irtisanomisajan." },
-  { q: "Voinko vaihtaa, vaikka minulla on maksuhäiriömerkintä?", a: "Maksuhäiriömerkintä ei automaattisesti estä sähkösopimuksen tekemistä. Myyjä voi erittäin painavasta syystä vaatia kohtuullisen vakuuden tai ennakkomaksun. Käytännöt vaihtelevat yhtiöittäin, joten tarkista ehdot valitsemaltasi myyjältä." },
-];
+/*
+  HERON LUOTTAMUSRIVI. Kolme kohtaa, ei enempää: rivi luetaan yhdellä
+  silmäyksellä vain jos se mahtuu kahdelle riville puhelimessa. Jokainen
+  kohta on tosi ja tarkistettavissa — keksitty lupaus tällä sivulla
+  maksaisi juuri sen luottamuksen, jonka varassa koko ansaintamalli on.
 
-const STEPS = [
-  ["Vastaa neljään kysymykseen", "Asumismuoto, vuosikulutus, se mikä on sinulle tärkeintä ja nykyinen hintasi. Yhteystietoja ei kysytä."],
-  ["Valitse sopimus", "Vertaa euroja, älä senttejä. Tämän hetken edullisin on merkitty, ja hintapalkeista näet erot ilman laskemista."],
-  ["Tee sopimus verkossa", "Täytä uuden yhtiön lomake parissa minuutissa. Loput hoituu ilman sinua."],
-];
+  KAIKKI KOLME KERTOVAT SAMASTA ASIASTA: siitä ettei tämä maksa sinulle
+  mitään, ei aikaa, ei rahaa eikä rauhaa. Se on heron koko lupaus, ja
+  luottamusrivin tehtävä on toistaa se konkreettisina niin että lukija
+  uskoo sen ennen kuin painaa nappia.
+*/
+const HERO_CHECKS = ["Noin 5 minuuttia", "Ei yhteystietoja", "Täysin ilmainen"];
+
+/*
+  AIHERUUTUJEN IKONIT JA RIVIT — AVAIMENA AIHESIVUN `slug`.
+
+  MIKSI SLUG EIKÄ JÄRJESTYSNUMERO: aiheiden järjestys `energy-topics.json`
+  -tiedostossa voi vaihtua, ja indeksiin sidottu lista antaisi silloin
+  omakotitalolle opiskelijan ikonin kenenkään huomaamatta. Slug on ainoa
+  kenttä, joka ei muutu ilman että osoite muuttuu.
+
+  RIVIT ON KIRJOITETTU TÄHÄN, EI LUETTU `intro`-KENTÄSTÄ. Aihesivun ingressi
+  on kirjoitettu sivun ensimmäiseksi kappaleeksi: se on kolme riviä pitkä ja
+  sisältää ajatusviivoja. Ruutuun tarvitaan yksi rivi, joka kertoo kenelle
+  sivu on. Jos tähän tulee uusi aihe ilman omaa riviä, koodi näyttää
+  varalta ingressin — ruutu on silloin ruma mutta ei rikki.
+
+  JOKAINEN LUKU ON AIHESIVULTA, EI KEKSITTY. 15 000–25 000 kWh ja
+  1 500–2 500 kWh ovat samat luvut, jotka lukevat kohdesivujen ingresseissä.
+  Jos ne muuttuvat siellä, ne on muutettava myös tässä.
+*/
+const TOPIC_ICON: Record<string, LucideIcon> = {
+  porssisahko: TrendingUp,
+  "maaraaikainen-sahkosopimus": CalendarClock,
+  "omakotitalon-sahkosopimus": Home,
+  "opiskelijan-sahkosopimus": GraduationCap,
+};
+
+const TOPIC_BLURB: Record<string, string> = {
+  porssisahko:
+    "Hinta seuraa pörssiä. Vertailussa ratkaisee kaksi lukua: marginaali ja perusmaksu.",
+  "maaraaikainen-sahkosopimus":
+    "Kiinteä hinta 12 tai 24 kuukaudeksi. Sähkölasku pysyy ennustettavana myös talvella.",
+  "omakotitalon-sahkosopimus":
+    "Sähkölämmittäjällä kuluu 15 000–25 000 kWh vuodessa. Sentin ero maksaa satoja euroja.",
+  "opiskelijan-sahkosopimus":
+    "Yksiössä kuluu 1 500–2 500 kWh vuodessa. Silloin perusmaksu on laskun suurin erä.",
+};
 
 export default function HomePage() {
   const plans = getPlans();
   const topics = getEnergyTopics();
 
   /*
-    Organization on etusivun merkintä, ei alasivun. Se tuli mukana hubista
-    ja jää tänne, koska tämä on nyt se osoite, jonka hakukone lukee
-    sivuston "kotina".
+    ORGANIZATION-MERKINTÄ ASUU TÄÄLLÄ, EI ALASIVULLA.
+
+    Merkintä kuvaa koko sivustoa ja sen `url` osoittaa juureen, joten se
+    kuuluu juuren sivulle. Se oli aiemmin sähkövertailun sivulla, koska
+    vertailu oli etusivu; siirron jälkeen se olisi siellä ristiriita.
+    Merkintää EI saa olla kahdessa paikassa: kaksi Organization-lohkoa
+    samalla sivustolla on ristiriitainen signaali eikä kaksinkertainen.
   */
   const orgJsonLd = {
     "@context": "https://schema.org",
@@ -98,314 +144,406 @@ export default function HomePage() {
       lukemaan, ei vain tunnistamaan.
     */
     logo: `${SITE.url}/isokettulogo.png`,
-    description: "Suomalainen kilpailutuspalvelu: sähkösopimukset ja muut arjen sopimukset puolueettomasti vertailtuna.",
-  };
-
-  /*
-    TÄSSÄ OLI TOINEN FAQPage-MERKINTÄ. POISTETTU.
-
-    `components/Faq.tsx` tuottaa saman merkinnän samoista kysymyksistä,
-    joten sivu julisti kaksi FAQPage-lohkoa. Google ei valitse niistä
-    parempaa vaan voi jättää molemmat huomiotta, eli tuplaus vei pois
-    juuri sen näkyvyyden, jota varten merkintä tehtiin. Kysymykset
-    annetaan `<Faq>`-komponentille alempana, ja merkintä syntyy siellä.
-
-    Myös BreadcrumbList poistettiin: etusivu on murupolun juuri, eikä
-    yhden askeleen polku kerro hakukoneelle mitään.
-  */
-
-  /*
-    ITEMLIST: MITÄ TÄLLÄ SIVULLA VERRATAAN JA MISSÄ JÄRJESTYKSESSÄ.
-
-    Merkintä kertoo hakukoneelle, että sivu on vertailulista eikä
-    artikkeli, ja nimeää jokaisen sopimuksen sekä sen oman sivun.
-    Tuoton kannalta hyöty on epäsuora mutta oikea: sopimussivut ovat ne,
-    jotka voivat sijoittua yhtiönimihauilla ("oomi sähkösopimus"), ja
-    tämä lista kertoo Googlelle että ne kuuluvat yhteen kokonaisuuteen
-    tämän sivun alla.
-
-    JÄRJESTYS ON SAMA KUIN RUUDULLA: ensimmäinen vuosi halvimmasta
-    kalleimpaan oletuskulutuksella 1 500 kWh. Merkintä, jonka järjestys
-    poikkeaa näkyvästä listasta, on ristiriita sivun oman sisällön
-    kanssa, ja sellainen luetaan manipulaatioyritykseksi.
-
-    HINTOJA EI MERKITÄ, EIKÄ `Offer`-TYYPPIÄ KÄYTETÄ. Se olisi houkutus,
-    koska hintarikastettu hakutulos erottuu. Mutta meidän euromäärämme ei
-    ole hinta vaan laskelma: se riippuu kävijän kulutuksesta ja
-    oletetusta pörssikeskiarvosta, eikä yksikään yhtiö veloita sitä
-    summaa keneltäkään. Koneluettavaksi hinnaksi merkittynä se olisi
-    keksitty luku Googlen suuhun. Sama sääntö kuin sopimusdatassa:
-    tarkistamatonta lukua ei julkaista.
-  */
-  const itemListJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "Sähkösopimusten vertailu",
-    numberOfItems: plans.length,
-    itemListOrder: "https://schema.org/ItemListOrderAscending",
-    itemListElement: [...plans]
-      .sort((a, b) => annualCost(a, 1500) - annualCost(b, 1500))
-      .map((p, i) => ({
-        "@type": "ListItem",
-        position: i + 1,
-        name: `${p.provider} ${p.name}`,
-        url: `${SITE.url}/sahkosopimukset/sopimus/${p.slug}`,
-      })),
+    description:
+      "Suomalainen kilpailutuspalvelu: sähkösopimukset ja lainat puolueettomasti vertailtuna.",
   };
 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }} />
 
       {/*
-        ETUSIVU ON PORTIN TAKANA: sopimuksia ei näytetä ennen kuin kysely
-        on täytetty. Tämä on Jessen päätös 16.8.2026 eikä siitä
-        neuvotella. Prop `resultsVisibleFromStart`, joka päästi listan
-        HTML:ään heti, poistettiin kokonaan.
+        HERO ON ORANSSI VYÖ, KUTEN LAINASIVULLA JA 404:SSÄ.
 
-        SEURAUS, JOKA PITÄÄ MUISTAA: tämän sivun HTML:ssä ei ole
-        sopimusten nimiä eikä hintoja. Hakukonesisältö tulee aihesivuilta
-        ja 26 sopimussivulta, jotka näyttävät saman datan ilman kyselyä.
-        Jos joskus harkitset portin lisäämistä niillekin, tarkista ensin
-        mitä sivustolle jää indeksoitavaksi — vastaus on tällä hetkellä
-        "ei mitään vertailusisältöä".
+        Sivuston rytmi on vaalea pohja ja täysleveät oranssit vyöt. Etusivun
+        ensivaikutelma on se paikka, jossa brändin on näytettävä eniten
+        itseltään, joten vyö alkaa heti ylhäältä ilman vaaleaa esikaistaa.
 
-        `initialKwh={1500}` on kerrostaloasunnon oletus. Se ei näy
-        kävijälle ennen vastauksia, mutta se on ItemList-järjestyksen ja
-        kyselyn lähtöarvon peruste.
+        KUVA JA TEKSTI KERTOVAT SAMAN ASIAN. Rantatuolikettu ei ole
+        koriste vaan sivun väite: sinä otat rennosti, Kettu tekee työn.
+        Jos otsikko puhuisi säästämisestä ja kuva lomasta, ne kilpailisivat
+        keskenään eikä kumpikaan menisi perille. Siksi otsikko, ingressi ja
+        luottamusrivi on kirjoitettu vaivattomuudesta, ei euroista —
+        eurot ovat laskurin asia, ja laskuri on yhden klikin päässä.
       */}
-      <ElectricityExperience plans={plans} initialKwh={1500} />
+      <section className="theme-ember ember-surface relative overflow-hidden pb-28 pt-9 md:pb-24 md:pt-14">
+        {/*
+          MOBIILISSA KUVA ON TAUSTA, KUTEN LAINASIVULLA.
 
-      {/*
-        Kaikki heron alapuolinen sisältö on vaalealla pinnalla. Tuloslista ja
-        sitä seuraavat epäröintiä poistavat osiot ovat lukemista, ei brändiä.
-      */}
-      <div className="theme-light bg-paper">
+          Puhelimessa hahmo ei ole oma palstansa vaan himmennetty ja
+          häivytetty tausta tekstin takana. Se on sivuston yhtenäinen tapa,
+          ja syy on tuotossa: täysikokoisena kuva vie pystysuunnassa saman
+          tilan kuin otsikko ja molemmat napit yhteensä, eli se työntäisi
+          ainoat tuottavat linkit taitteen alle. Taustana se antaa saman
+          tunnelman ilman että vie riviäkään.
 
-      {/*
-        TÄMÄ OSIO ON ORANSSI VYÖ, EI VAALEA PALSTA.
+          MITOITUS ON ERI KUIN LAINASIVULLA, KOSKA KUVA ON ERI MUOTOA.
+          `rahakettu` on pystykuva ja mitoitetaan korkeudella; tämä on
+          vaakakuva (1432 × 1016), joten korkeusmitoitus levittäisi sen
+          moninkertaiseksi ruudun leveyteen nähden. Leveys on siis se, mitä
+          ohjataan, ja kuva ankkuroidaan alareunaan.
 
-        MIKSI JUURI TÄSSÄ: sivun pisin vaalea jakso oli tuloslistan ja
-        luottamusvyön välissä. Kävijä on juuri nähnyt hintansa ja
-        epäröi yhtä asiaa — "onko vaihtaminen työlästä". Tämän osion
-        koko tehtävä on kumota se pelko, ja se onnistuu vain jos osio
-        nähdään. Kun koko kaista vaihtaa värin, selaus pysähtyy ennen
-        kuin riviäkään on luettu.
+          HÄIVYTYS ON YLÖSPÄIN, EI VASEMMALLE KUTEN LAINASIVULLA. Sekin
+          seuraa kuvan muodosta: pystykuva mahtuu tekstin viereen, joten
+          lainasivulla riittää häivyttää sen vasen reuna. Vaakakuva täyttää
+          koko leveyden, joten se on väistämättä tekstin ALLA, ja ainoa
+          suunta, johon se voi väistyä, on ylös. Kuva on siis kirkkaimmillaan
+          alareunassa ja liukenee oranssiin ennen kuin osuu otsikkoon.
 
-        Vyön oma kermanappi on osion päätepiste. Se on tarkoituksella
-        ainoa nappi tässä vyössä: koko osio kumoaa yhden pelon, ja
-        vastaus siihen on paluu laskuriin.
-
-        Valkoinen kortti kääritään `theme-light`-luokkaan: ilman sitä
-        `bg-white` on ember-teemassa ORANSSI, ja kortti katoaisi
-        pohjaansa. Sama ansa koskee `text-accentDark`-luokkaa, joten
-        yläotsikko käyttää `text-goldInk`-sävyä kuten muutkin vyöt.
-      */}
-      <section
-        id="nain-toimii"
-        className="theme-ember ember-surface relative scroll-mt-24 overflow-hidden py-20 md:py-24"
-      >
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-16 rotate-180">
-          <div className="theme-light">
-            <TailSweep fill="rgb(var(--c-paper))" height={44} />
-          </div>
+          Käytännössä tekstirivit ja ingressi ovat puhtaalla oranssilla,
+          napit ja luottamusrivi kuvan haaleimman kohdan päällä. Se on
+          tarkistettu tältä leveydeltä: jos kuvaa nostaa tai häivytystä
+          lyhentää, kermanvalkoinen otsikko menee ketun vaalean puvun päälle
+          ja kontrasti putoaa luettavuuden rajalle.
+        */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-0 overflow-hidden md:hidden"
+        >
+          <Image
+            src="/kettu-rantatuoli.webp"
+            alt=""
+            width={1432}
+            height={1016}
+            priority
+            sizes="130vw"
+            className="absolute bottom-0 left-[-13%] w-[130%] max-w-none opacity-40"
+            style={{
+              WebkitMaskImage: "linear-gradient(to top, #000 55%, transparent 100%)",
+              maskImage: "linear-gradient(to top, #000 55%, transparent 100%)",
+            }}
+          />
         </div>
 
         <div className="relative z-[1] mx-auto max-w-[1180px] px-4 sm:px-6">
-          <Reveal>
-            <div className="flex items-center justify-center gap-3">
-              <span className="font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-goldInk">
-                Näin vaihto etenee
-              </span>
-            </div>
-            <h2 className="mx-auto mt-4 max-w-[20ch] text-center font-hero text-[2rem] leading-[1.08] text-cream sm:text-[2.5rem]">
-              Kolme askelta, viisi minuuttia.
-            </h2>
-            <p className="mx-auto mt-3.5 max-w-[52ch] text-center text-[15.5px] leading-relaxed text-ink/85 sm:text-[16.5px]">
-              Uusi yhtiö irtisanoo vanhan sopimuksen, siirtoyhtiö pysyy samana ja sähkö kulkee koko ajan. Sinulle jää lomakkeen täyttö.
-            </p>
-          </Reveal>
+          <div className="grid items-center gap-6 md:grid-cols-[1.04fr_0.96fr] md:gap-8">
+            <div>
+              <Reveal>
+                <span className="font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-goldInk">
+                  Suomalainen kilpailutuspalvelu
+                </span>
 
-          <Reveal delay={0.08}>
-            <div className="theme-light mt-9 overflow-hidden rounded-3xl border border-line bg-white shadow-lift">
-              <div className="grid gap-px bg-line md:grid-cols-3">
-                {STEPS.map(([title, text], i) => (
-                  <div key={title} className="lift relative h-full overflow-hidden bg-white p-6 text-center sm:p-7">
-                    <span className="relative font-data text-[12px] font-bold uppercase tracking-[0.16em] text-accentDark">
-                      Askel 0{i + 1}
-                    </span>
-                    <h3 className="relative mt-2.5 font-display text-[18px] font-bold text-ink">{title}</h3>
-                    <p className="relative mt-2 text-[14px] leading-relaxed text-ink/70">{text}</p>
-                  </div>
-                ))}
-              </div>
+                {/*
+                  OTSIKKO ON LUPAUS VAIVATTOMUUDESTA, EI SÄÄSTÖSTÄ.
+
+                  Säästölupaus ("säästä satoja euroja") on se, minkä
+                  kohdeyleisö on nähnyt sadassa mainoksessa, ja se luetaan
+                  liioitteluksi ennen kuin sitä on ehditty tarkistaa.
+                  Vaivattomuus on väite, jonka sivu pystyy heti
+                  todistamaan: laskuri ei kysy yhteystietoja, ja se näkyy
+                  yhdellä klikillä. Todistettava lupaus vie nappiin asti,
+                  liioiteltu ei.
+
+                  Koko slogania ei käytetä otsikkona: se on kaksi virkettä
+                  ja kolmirivinen jokaisella puhelimella. Kysymysmuoto
+                  ("Ketuttaako maksaa liikaa?") on sivun loppukehotuksessa,
+                  jossa sille on tilaa.
+
+                  TOISELLA RIVILLÄ ON SUBSTANTIIVIT, EIKÄ SE OLE KORISTE.
+                  H1 on sivun vahvin yksittäinen signaali hakukoneelle, ja
+                  pelkkä "Ota iisisti. Kettu kilpailuttaa." ei kerro
+                  koneelle mitä kilpailutetaan. Sanat "sähkön ja lainat"
+                  ovat siinä siksi, että ne ovat ne kaksi asiaa, joita
+                  palvelu oikeasti tekee.
+
+                  MITÄ TÄHÄN EI SAA LAITTAA: hakusanaotsikkoa tyyliin
+                  "Sähkön kilpailutus 2026". Se kilpailisi suoraan
+                  `/sahkosopimukset`-sivun kanssa samasta hausta, ja kun
+                  kaksi oman sivuston sivua tavoittelee samaa hakua,
+                  Google valitsee niistä toisen eikä yleensä sitä, jolla
+                  ansaitaan. Hubin tehtävä haussa on brändinimi; sähköhaut
+                  kuuluvat vertailusivulle ja aihesivuille.
+
+                  `clamp` on sama suoja kuin lainasivulla: hero-osiolla on
+                  `overflow-hidden`, joten liian leveä rivi ei rivity vaan
+                  leikkautuu pois. Kiinteä `vw`-koko ilman ylä- ja
+                  alarajaa katkaisi otsikon 320 px:n näytöllä.
+                */}
+                <h1 className="mt-4 font-hero text-[clamp(1.9rem,8.4vw,2.7rem)] leading-[1.06] text-cream sm:text-[3rem]">
+                  Ota iisisti.
+                  <br />
+                  Kettu <em className="text-goldInk">kilpailuttaa</em> sähkön ja lainat.
+                </h1>
+
+                {/*
+                  INGRESSI ON SIVUN ENTITEETTILAUSE.
+
+                  Tämä kappale on ensimmäinen leipäteksti sivun HTML:ssä, eli
+                  se on se virke, josta hakukone päättelee mikä palvelu tämä
+                  on. Siksi siinä sanotaan brändinimi ja molemmat vertikaalit
+                  omilla nimillään: "sähkösopimukset" ja "lainatarjoukset",
+                  ei "arjen laskut" tai muuta kiertoilmausta. Kiertoilmaus
+                  kuulostaa paremmalta ja kertoo koneelle vähemmän.
+
+                  Loppu on silti vaivattomuuslupaus, koska se on se, mikä
+                  saa ihmisen painamaan nappia. Molemmat mahtuvat samaan
+                  kappaleeseen; kumpaakaan ei tarvitse uhrata.
+                */}
+                <p className="mt-5 max-w-md text-[16px] leading-relaxed text-ink/90 sm:text-[17.5px]">
+                  Kettukilpailutus vertailee sähkösopimukset omalla kulutuksellasi ja hakee lainatarjoukset yhdellä hakemuksella. Ei soittoja, ei papereita, ei yhteystietoja.
+                </p>
+              </Reveal>
 
               {/*
-                TÄSSÄ OLI "Ota nämä esiin ennen kuin aloitat" -tarkistuslista
-                (käyttöpaikkatunnus, osoite, pankkitunnukset). Se poistettiin.
+                KAKSI NAPPIA, SELVÄ ETUSIJA.
 
-                Lista oli hyödyllinen mutta väärässä paikassa: se seisoi
-                napin päällä ja teki viisi minuuttia kestävästä asiasta
-                kotitehtävän. Juuri siinä kohdassa, jossa lukija on vasta
-                vakuuttunut helppoudesta, "hae ensin laskusi ja etsi
-                17-numeroinen tunnus" antaa täydellisen syyn palata asiaan
-                myöhemmin — eikä myöhempää käyntiä tule.
+                Sähkö on kermanvalkoinen eli vyön ainoa vaalea piste, lainat
+                ovat ääriviivanappi. Se ei ole makuasia: sähkö on ainoa
+                vertikaali, jossa Kettu tekee vertailun itse ja jossa on 20
+                toimivaa affiliate-linkkiä. Lainat ohjaavat kumppanille
+                yhdellä linkillä. Kaksi samanarvoista nappia pakottaisi
+                kävijän valitsemaan, ja valinta hidastaa jokaista — myös
+                sitä, joka olisi joka tapauksessa mennyt sähköön.
 
-                Tieto ei kadonnut: sama luettelo on heron "Vie noin 5
-                minuuttia" -kohdan takana, jonka lukija avaa itse silloin
-                kun haluaa tietää mitä vaihto vaatii.
+                MOLEMPIEN ON NÄYTETTÄVÄ PAINETTAVALTA. Sekundäärinappi oli
+                aiemmin 45 %:n läpinäkyvä hiusviiva oranssilla, ja sellainen
+                luetaan koristeeksi eikä painikkeeksi: napin ainoa merkki
+                oli reuna, joka melkein katosi taustaansa. Nyt kummallakin
+                on kolme painikkeen tunnusmerkkiä: oma pinta, ylävalo ja
+                varjo, joka nostaa napin irti vyöstä. Etusija säilyy silti
+                selvänä, koska kerma on täysi väri ja lainanapin pinta
+                läpikuultava.
 
-                Peruutusoikeus jää näkyviin, koska se POISTAA riskiä sen
-                sijaan että lisäisi työtä.
+                Napit ovat puhelimessa täysleveitä (`w-full sm:w-auto`),
+                kuten lainasivun päänappi. Suurin osa liikenteestä on
+                mobiilissa, ja täysleveä nappi on sekä isompi osumapinta
+                että ainoa muoto, joka luetaan painikkeeksi ilman epäröintiä.
+
+                Lainanappi näkyy vain kytkimen ollessa päällä. Ilman
+                tarkistusta sivu tarjoaisi 404:n heti ensimmäisellä
+                klikillä, jos vertikaali joskus suljetaan.
               */}
-              <p className="flex items-center justify-center gap-2 border-t border-line px-6 py-4 text-center text-[13px] font-medium text-ink/70 sm:px-7">
-                <ShieldCheck size={15} className="shrink-0 text-ink/40" aria-hidden />
-                Etämyynnissä sopimuksella on aina 14 vuorokauden peruutusoikeus.
-              </p>
+              <Reveal delay={0.1}>
+                <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                  <Link
+                    href={ENERGY_COMPARE}
+                    /* Kiinteä `#A83E0A`: `text-accentDark` kääntyy
+                       ember-teemassa kermaksi ja teksti katoaisi
+                       kermanvalkoisen napin sisään. Sama koskee hoveria,
+                       joten se on kiinteä valkoinen eikä `hover:bg-white`.
+
+                       `shadow-[...]` on tässä käsin kirjoitettu eikä
+                       `shadow-lift`: ember-teeman `--sh-lift` on pelkkä
+                       leveä pehmeä varjo, ja kermanapin pitää saada myös
+                       ylävalo (`inset 0 1px 0`) sekä tiukempi lähivarjo.
+                       Ne kaksi tekevät pinnasta kohollaan olevan. */
+                    className="group inline-flex w-full items-center justify-center gap-2.5 rounded-xl bg-cream px-9 py-[18px] font-display text-[16.5px] font-bold text-[#A83E0A] shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_2px_5px_rgba(74,26,2,0.28),0_16px_34px_-12px_rgba(74,26,2,0.6)] transition-all hover:-translate-y-0.5 hover:bg-[#FFFFFF] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_3px_7px_rgba(74,26,2,0.3),0_22px_44px_-12px_rgba(74,26,2,0.65)] active:translate-y-0 active:scale-[0.98] sm:w-auto"
+                  >
+                    <Zap size={19} aria-hidden />
+                    Kilpailuta sähkösopimukset
+                    <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" aria-hidden />
+                  </Link>
+
+                  {FEATURES.loans && (
+                    <Link
+                      href="/lainat"
+                      /* Läpikuultava kermapinta + kunnon reuna. Pinta on se,
+                         mikä erottaa napin taustastaan; pelkkä reuna ei
+                         riitä, kun taustalla on kuviollinen vyö. */
+                      className="group inline-flex w-full items-center justify-center gap-2.5 rounded-xl border border-cream/70 bg-cream/[0.14] px-9 py-[18px] font-display text-[16.5px] font-bold text-cream shadow-[inset_0_1px_0_rgba(255,244,235,0.28),0_10px_26px_-14px_rgba(74,26,2,0.7)] transition-all hover:-translate-y-0.5 hover:border-cream hover:bg-cream/25 active:translate-y-0 active:scale-[0.98] sm:w-auto"
+                    >
+                      Kilpailuta lainatarjoukset
+                      <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" aria-hidden />
+                    </Link>
+                  )}
+                </div>
+
+                <ul className="mt-5 flex max-w-lg flex-wrap gap-2">
+                  {HERO_CHECKS.map((c) => (
+                    <li
+                      key={c}
+                      className="flex items-center gap-2 rounded-full border border-line/60 px-3 py-1.5 text-[13.5px] font-semibold text-ink/85"
+                    >
+                      <FoxPaw size={12} className="text-goldInk" />
+                      {c}
+                    </li>
+                  ))}
+                </ul>
+              </Reveal>
             </div>
-          </Reveal>
 
-          {/*
-            PALUUNAPPI KYSELYYN.
+            {/*
+              RANTATUOLIKETTU TYÖPÖYDÄLLÄ — OMANA PALSTANAAN.
 
-            Tämä osio selittää vaihdon kulun, eli se on juuri se kohta,
-            jossa epäröivä lukija vakuuttuu. Ilman nappia hänen pitäisi
-            vierittää takaisin ylös löytääkseen laskurin — ja osa ei
-            vieritä vaan poistuu. Nappi vie suoraan sinne, missä
-            affiliate-klikki syntyy.
+              `hidden md:block`, koska sama kuva piirretään puhelimessa
+              taustana osion yläreunassa. Ilman piilotusta kuva olisi
+              mobiilissa kahdesti: kerran taustana ja kerran palstana.
 
-            Kerma oranssilla, kiinteä `#A83E0A` tekstille: `accentDark`
-            kääntyisi ember-teemassa kermaksi eli näkymättömäksi.
+              MITAT: 1432 × 1016, eli VAAKAKUVA (1,41:1). Se on koko
+              kuvastossa poikkeus — `kettu-tuolissa` on 0,72:1 ja
+              `kettu-seisoo` 0,33:1 — ja siksi tätä ei mitoiteta
+              korkeudella niin kuin muita hahmoja. Korkeudella mitoitettuna
+              tämä kuva levittäytyy lähes kaksi kertaa leveämmäksi kuin
+              mihin heron kuvapalsta riittää. Mitoitus on siis leveydellä
+              (`w-full`), ja korkeus seuraa perässä.
 
-            HOVER ON KIINTEÄ VALKOINEN, EI `hover:bg-white`. Ember-vyöllä
-            `bg-white` osoittaa oranssiin, joten kermanappi olisi
-            välähtänyt oranssiksi juuri painalluksen hetkellä — nappi
-            olisi kadonnut taustaansa sillä sekunnilla, kun sitä
-            painetaan. Sama virhe on muissakin kermanapeissa.
+              KUVASSA ON VALMIS PEHMEÄ HEHKU (alfa nousee 0:sta reunoilla
+              254:ään keskellä), joten `halo-glow`-luokkaa EI lisätä.
+              Kaksi hehkua päällekkäin tekee hahmon ympärille selvän
+              vaalean renkaan, eli juuri sen leikkausreunan, jonka hehkun
+              on tarkoitus piilottaa.
 
-            Nappi on keskitetty: askelkortti yläpuolella on täysleveä,
-            joten vasempaan reunaan jäävä nappi näyttää unohtuneelta.
-            Keskellä se on osion päätepiste.
-          */}
-          <Reveal delay={0.16}>
-            <div className="mt-9 flex flex-col items-center gap-3 text-center">
-              <Link
-                href="#vertailu"
-                className="group inline-flex items-center gap-2.5 rounded-xl bg-cream px-8 py-4 font-display text-[15.5px] font-bold text-[#A83E0A] shadow-lift transition-all hover:bg-[#FFFFFF] active:scale-[0.98]"
-              >
-                Kilpailuta sopimuksesi
-                <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" aria-hidden />
-              </Link>
-              <span className="text-[13.5px] text-ink/85">
-                Neljä kysymystä. Ei maksua, ei yhteystietoja.
-              </span>
-            </div>
-          </Reveal>
+              `priority`, koska tämä on sivun suurin kuva ruudun yläosassa.
+              Ilman sitä hero näyttää ensimmäisen sekunnin puolivalmiilta —
+              ja ensivaikutelma on tämän sivun koko tehtävä.
+
+              `sizes` kertoo, että tätä versiota tarvitaan vain 768 pikselistä
+              ylöspäin ja silloinkin noin 560 pikselin levyisenä. Mobiilin
+              taustakuva on oma elementtinsä omalla `sizes`-arvollaan.
+            */}
+            <Reveal delay={0.12} className="hidden md:block">
+              <Image
+                src="/kettu-rantatuoli.webp"
+                alt="Kettu ottaa rennosti rantatuolissa drinkki kädessä"
+                width={1432}
+                height={1016}
+                priority
+                sizes="(min-width: 768px) 560px, 1px"
+                className="h-auto w-full select-none drop-shadow-[0_26px_44px_rgba(80,28,2,0.42)]"
+                draggable={false}
+              />
+            </Reveal>
+          </div>
         </div>
+
+        {/* `theme-light`-kääre on pakollinen: ilman sitä `--c-paper`
+            luetaan ember-teemasta, jossa se on oranssi, eikä kaari osuisi
+            alla olevaan paperiin lainkaan. */}
+        <div className="theme-light">
+          <TailSweep fill="rgb(var(--c-paper))" height={64} />
+        </div>
+      </section>
+
+      <div className="theme-light bg-paper">
+        {/*
+          PALVELUVALIKOIMA ON TÄMÄN SIVUN YDIN.
+
+          Se vastaa juuri siihen kysymykseen, jota varten brändihakija
+          tuli: mitä Kettu kilpailuttaa. Ruutujen tila tulee
+          `lib/features.ts`-kytkimistä, joten uusi vertikaali ilmestyy
+          tähän itsestään.
+
+          Osio on sivun yläosassa eikä lopussa. Sähkösivulla se oli
+          lopussa, koska siellä se oli ainoa linkki ulos sähkösuppilosta.
+          Täällä tilanne on päinvastainen: kävijä ei ole vielä valinnut
+          mitään, ja ruudukko ON se valinta.
+        */}
+        <ServiceGrid planCount={plans.length} />
 
         {/*
-          Hännänveto palasi tähän, kun läpinäkyvyysosio poistettiin.
-          Aiemmin alareuna oli tarkoituksella terävä, koska alapuolella
-          oli persikkavyö; nyt alla on tasainen paperi, ja suora raja
-          oranssista paperiin katkaisisi sivun kahtia juuri napin alta.
+          AIHESIVUT — TÄSSÄ OLI AIEMMIN "KOLME ASKELTA".
 
-          `theme-light`-kääre on PAKOLLINEN. Ilman sitä `--c-paper`
-          luetaan ember-teemasta, jossa se on oranssi — kaari piirtyi
-          vaaleanoranssina eikä osunut alla olevaan paperiin lainkaan.
-          Sama ansa kuin vyön yläreunan hännänvedossa.
+          MIKSI ASKELEET POISTETTIIN: ne kuvasivat prosessia, jota lukija ei
+          ollut vielä aloittanut, eivätkä ne vieneet mihinkään. Osio ilman
+          yhtäkään linkkiä on hubilla kuollut tila: se pidentää matkaa
+          alaspäin eikä siirrä ketään eteenpäin. Sama tieto ("ei
+          yhteystietoja, muutama minuutti") on jo heron luottamusrivissä,
+          jonka lukija näkee ennen kuin ehtii vierittää.
+
+          MIKSI JUURI TÄMÄ TILALLE — KAKSI SYYTÄ.
+
+          1. KÄVIJÄLLE: brändihaun kautta tullut ei tiedä mitä valita, mutta
+             hän tietää millaisessa asunnossa asuu ja onko pörssi vai kiinteä
+             mielessä. Neljä ruutua antaa hänen valita sen sijaan että hän
+             joutuisi lukemaan yleisen esittelyn.
+
+          2. HAKUKONEELLE: nämä neljä sivua ovat niitä, jotka voivat oikeasti
+             nousta sähköhauissa, ja ennen tätä ne eivät saaneet yhtään
+             linkkiä sivuston vahvimmalta sivulta. Alatunniste tarjoaa ne
+             vain silloin kun ollaan jo sähköpolulla, eli ei koskaan täällä.
+             Linkin teksti on sivun oma H1, koska ankkuriteksti ja kohteen
+             otsikko yhdessä kertovat hakukoneelle mistä sivu kertoo.
+
+             Tämä ei kilpaile `/sahkosopimukset`-sivun kanssa: hub linkittää
+             aihesivuille, se ei yritä sijoittua niiden hauilla itse.
+
+          RUUDUT LUETAAN DATASTA, EI KIRJOITETA KÄSIN. Kun `energy-topics.json`
+          saa viidennen aiheen, se ilmestyy tähän itsestään. Lisää samalla
+          sille lyhyt rivi `TOPIC_BLURB`-listaan; ilman sitä ruutu näyttää
+          aihesivun oman ingressin, joka on tähän liian pitkä.
         */}
-        <div className="theme-light">
-          <TailSweep fill="rgb(var(--c-paper))" height={44} />
-        </div>
-      </section>
+        <section className="pb-16 md:pb-20">
+          <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
+            <Reveal>
+              <SectionHead
+                eyebrow="Sähkösopimukset tilanteen mukaan"
+                title="Aloita omasta tilanteestasi."
+                lead="Kulutus ja sopimustyyppi ratkaisevat, mikä sähkösopimus on sinulle halvin. Valitse lähin tilanne, niin vertailu on valmiiksi rajattu."
+              />
+            </Reveal>
 
-      {/*
-        UKK — vastaa epäröintiin ennen kuin oppaat vievät pois sivulta.
-        Ei `border-t`: tämän osion yläpuolella on hännänveto, ja suora
-        hiusviiva heti kaaren alla pyyhkisi kaaren pois — silmä lukisi
-        vain sen viivan.
-      */}
-      <section id="ukk" className="scroll-mt-24 py-16 md:py-20">
-        <div className="mx-auto max-w-3xl px-4 sm:px-6">
-          <Reveal>
-            <SectionHead
-              eyebrow="Usein kysyttyä"
-              title="Mietityttääkö sopimuksen vaihtaminen?"
-              lead="Näistä vastauksista näet, mitä vaihdossa tapahtuu ja mitä kannattaa tarkistaa ennen tilausta."
-            />
-          </Reveal>
-          <Reveal delay={0.1} className="mt-8">
-            <Faq items={ENERGY_FAQ} />
-          </Reveal>
-        </div>
-      </section>
-
-      {/*
-        PALVELUVALIKOIMA TULEE HETI UKK:N JÄLKEEN.
-
-        MIKSI VASTA TÄSSÄ EIKÄ YLEMPÄNÄ: tämä on etusivun ainoa osio,
-        joka linkittää pois sähkösuppilosta. Heti heron alla se
-        kilpailisi laskurin kanssa ja jokainen sen klikki olisi pois
-        affiliate-napista. Tässä kohtaa lukija on jo ohittanut laskurin,
-        askeleet ja UKK:n, eli hän ei ole tänään vaihtamassa
-        sähkösopimusta. Vaihtoehto tälle osiolle on poistuminen, ei
-        klikki, joten mikään ei mene hukkaan.
-
-        MIKSI ETUSIVULLA EIKÄ OSOITTEESSA /palvelut: brändihaulla Google
-        näyttää sen sivun, joka on osoitteessa `/`. Alasivu ei nouse
-        etusivun ohi sivuston omalla nimellä, joten erillinen hub olisi
-        jäänyt näkymättömiin juuri siinä haussa, jota varten se olisi
-        tehty.
-
-        `planCount` tulee samasta lähteestä kuin vertailu, jotta ruudussa
-        luvattu sopimusmäärä ei voi erota siitä mitä listalla oikeasti
-        on. Käsin kirjoitettu luku vanhenee ensimmäisenä päivänä, jolloin
-        joku piilottaa tai avaa yhden rivin.
-      */}
-      <ServiceGrid planCount={plans.length} />
-
-      {/*
-        Oppaat olivat neljä isoa korttia, jotka veivät kokonaisen ruudullisen
-        tilaa ja houkuttelivat pois vertailusta juuri ennen loppukehotusta.
-        Sisäiset linkit ovat tärkeitä hakukoneille, joten ne säilyvät —
-        mutta kevyenä rivinä, ei kilpailevana osiona.
-
-        Rivi jäi palveluvalikoiman ALAPUOLELLE tarkoituksella: se on
-        kevyin osio sivulla ja toimii siltana loppukehotukseen. Sen
-        `border-t` on nyt myös ainoa viiva palveluosion ympärillä, eli
-        se erottaa aiheet korteista ilman että kortteihin tarvitsee
-        lisätä omia reunoja.
-      */}
-      <section className="border-t border-line pb-16 pt-14">
-        <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
-          <Reveal>
-            <h2 className="font-display text-[15px] font-bold text-ink">
-              Lue lisää omasta tilanteestasi
-            </h2>
-            <div className="mt-4 flex flex-wrap gap-2.5">
-              {topics.map((t) => (
-                <Link
-                  key={t.slug}
-                  href={`/sahkosopimukset/${t.slug}`}
-                  className="group inline-flex items-center gap-2 rounded-full border border-line bg-white px-4 py-2.5 font-display text-[13.5px] font-semibold text-ink/80 transition-all hover:border-accent/45 hover:text-ink"
-                >
-                  {t.h1}
-                  <ArrowRight size={14} className="text-ink/35 transition-transform group-hover:translate-x-0.5 group-hover:text-accentDark" aria-hidden />
-                </Link>
-              ))}
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
+            <Reveal delay={0.08}>
+              {/*
+                NELJÄ RUUTUA: 2 × 2 tabletilla, yksi rivi työpöydällä.
+                Ruudut ovat vaaleita, koska heti yläpuolella on oranssit
+                palveluruudut. Kaksi peräkkäistä oranssia ruudukkoa
+                luettaisiin samaksi osioksi, eikä lukija huomaisi että
+                kysymys vaihtui ("mitä kilpailutetaan" → "mikä on tilanteesi").
+              */}
+              <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {topics.map((t) => {
+                  const Icon = TOPIC_ICON[t.slug] ?? Zap;
+                  return (
+                    <Link
+                      key={t.slug}
+                      href={`/sahkosopimukset/${t.slug}`}
+                      className="lift group flex flex-col rounded-2xl border border-line bg-white p-6 shadow-card"
+                    >
+                      <span className="grid h-11 w-11 place-items-center rounded-xl bg-accentSoft text-accentDark">
+                        <Icon size={20} aria-hidden />
+                      </span>
+                      <h3 className="mt-4 font-display text-[16.5px] font-bold leading-snug text-ink">
+                        {t.h1}
+                      </h3>
+                      <p className="mt-2 text-[14px] leading-relaxed text-ink/70">
+                        {TOPIC_BLURB[t.slug] ?? t.intro}
+                      </p>
+                      <span className="mt-auto flex items-center gap-1.5 pt-5 font-display text-[13.5px] font-bold text-accentDark">
+                        Katso vertailu
+                        <ArrowRight
+                          size={15}
+                          className="transition-transform group-hover:translate-x-1"
+                          aria-hidden
+                        />
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </Reveal>
+          </div>
+        </section>
       </div>
 
+      {/*
+        LOPPUKEHOTUS TARJOAA MOLEMMAT VERTIKAALIT, EI PELKKÄÄ SÄHKÖÄ.
+
+        Tässä luki aiemmin sähkösivun oma kehote ("Kerro asumismuotosi,
+        niin Kettu laskee..."). Se on oikea teksti sähkösivun lopussa,
+        jossa lukija on jo valinnut sähkön, mutta väärä täällä: tämä on
+        se sivu, jolle tullaan brändihaulla valitsematta mitään, ja jos
+        sivun viimeinen kehotus puhuu pelkästä sähköstä, lainaa etsivä
+        kävijä lukee koko palvelun sähköpalveluksi ja poistuu.
+
+        TEKSTI EROTTAA VERTIKAALIT TOISISTAAN, EIKÄ SE OLE SAIVARTELUA.
+        Sähkön Kettu vertailee itse; lainoissa se ohjaa kumppanille. Jos
+        kehote lupaisi molemmista saman, ero paljastuisi ensimmäisellä
+        klikillä — eli kalleimmalla hetkellä, kun kävijä on jo liikkeellä.
+        Sama sääntö kuin palveluruuduissa, ks. `components/ServiceGrid.tsx`.
+
+        Sähkö on ensisijainen nappi, koska siellä on 20 toimivaa
+        affiliate-linkkiä ja oma laskuri; lainat on yksi ohjaus. Lainanappi
+        on kytkimen takana, jottei suljettu vertikaali jätä tähän 404:ää.
+
+        `href` jätetään pois: `CtaSection`in oletus on `ENERGY_COMPARE`.
+        Hubin loppukehote, joka veisi hubille, olisi silmukka.
+      */}
       <CtaSection
-        href="/#vertailu"
-        title="Kettu kilpailuttaa. Sinä säästät."
-        text="Vastaa muutamaan kysymykseen ja Kettu laskee todellisen hinnan puolestasi. Näet selkeästi, mikä sähkösopimus säästää eniten rahaa juuri sinun kodissasi."
-        button="Kilpailuta sähkösopimus"
+        title="Ketuttaako maksaa liikaa?"
+        text="Sähkösopimukset Kettu vertailee itse omalla kulutuksellasi ja näyttää vuosihinnan euroina. Lainatarjoukset haet yhdellä hakemuksella kumppanin kautta. Molemmat ovat maksuttomia."
+        button="Kilpailuta sähkö"
+        secondaryHref={FEATURES.loans ? "/lainat" : undefined}
+        secondaryButton={FEATURES.loans ? "Kilpailuta laina" : undefined}
       />
     </>
   );

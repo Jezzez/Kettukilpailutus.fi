@@ -3,6 +3,7 @@ import Link from "next/link";
 import TrustSection from "@/components/TrustSection";
 import Reveal from "@/components/Reveal";
 import Kettu from "@/components/mascot/Kettu";
+import { ENERGY_COMPARE } from "@/lib/nav";
 
 export const metadata: Metadata = {
   title: "Tietoa meistä – näin Kettukilpailutus.fi toimii",
@@ -70,8 +71,12 @@ export default function AboutPage() {
               <p className="mt-4 font-display text-[17px] font-bold leading-relaxed text-accentDark">
                 Kettu ei arvaa. Se laskee.
               </p>
+              {/* Nappi vie laskuriin, ei etusivulle. Kun vertailu asui
+                  juuressa, `/` oli oikea osoite; nyt juuressa on hub, ja
+                  hubille ohjaaminen lisäisi yhden klikin sen ja ainoan
+                  tuottavan napin väliin. */}
               <Link
-                href="/"
+                href={ENERGY_COMPARE}
                 className="btn-ember mt-7 inline-flex rounded-xl px-7 py-3.5 font-display text-[15px] font-bold text-onEmber transition-all active:scale-[0.98]"
               >
                 Aloita kilpailutus

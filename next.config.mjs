@@ -6,28 +6,24 @@ const nextConfig = {
   compress: true,
 
   /*
-    VANHAT OSOITTEET EIVÄT SAA KUOLLA.
+    OHJAUKSIA EI OLE, EIKÄ `/sahkosopimukset` SAA OHJAUTUA MINNEKÄÄN.
 
-    Sähkövertailu siirtyi osoitteesta /sahkosopimukset etusivulle.
-    Ilman ohjausta jokainen ulkoinen linkki, kirjanmerkki ja Googlen
-    indeksissä oleva osoite osuisi 404:ään, ja sivun ansaitsema
-    hakukonepainoarvo katoaisi sen sijaan että se siirtyisi uuteen
-    osoitteeseen.
+    Täällä oli 17.8.2026 asti rivi
+        { source: "/sahkosopimukset", destination: "/", permanent: true }
+    siltä ajalta, jolloin sähkövertailu asui etusivulla. Kun vertailu
+    palautettiin omaan osoitteeseensa, rivi oli pakko poistaa: se
+    ohjaisi kävijän pois sivulta ennen kuin sivu ehtii renderöityä,
+    eikä `app/sahkosopimukset/page.tsx` aukeaisi koskaan. Oire olisi
+    hämäävä, koska tiedosto on paikallaan ja näyttää oikealta.
 
-    `permanent: true` on 308, eli 301:n moderni vastine. Google käsittelee
-    ne samoin: vanha osoite poistuu indeksistä ja linkkiarvo siirtyy
-    kohteeseen.
+    Ohjaus toiseen suuntaan (`/` → `/sahkosopimukset`) olisi vielä
+    pahempi: etusivu on nyt hub, ja sen ohjaaminen tekisi juuri sen
+    virheen, joka täällä oli ennen — sivuston vahvin osoite olisi
+    tyhjä uudelleenohjaus.
 
-    LÄHDE ON TÄSMÄLLEEN `/sahkosopimukset`, EI `/sahkosopimukset/:path*`.
-    Alasivut ovat yhä olemassa ja tuottavat: sopimussivut osoitteessa
-    /sahkosopimukset/sopimus/[slug] ja neljä laskeutumissivua
-    /sahkosopimukset/[topic]. Jos ohjaus koskisi koko haaraa, ne kaikki
-    valuisivat etusivulle ja katoaisivat hakutuloksista.
+    Vanhat linkit ovat kunnossa ilman mitään sääntöä: `/` on olemassa
+    (hub) ja `/sahkosopimukset` on olemassa (vertailu). Kumpikin
+    palauttaa 200, joten mikään kirjanmerkki ei osu 404:ään.
   */
-  async redirects() {
-    return [
-      { source: "/sahkosopimukset", destination: "/", permanent: true },
-    ];
-  },
 };
 export default nextConfig;

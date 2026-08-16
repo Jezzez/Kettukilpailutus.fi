@@ -8,6 +8,7 @@ import Reveal from "@/components/Reveal";
 import CtaSection from "@/components/CtaSection";
 import { getEnergyTopic, getEnergyTopics, getPlans } from "@/lib/energy";
 import { OG_IMAGE, SITE } from "@/lib/data";
+import { ENERGY_COMPARE, ENERGY_PATH } from "@/lib/nav";
 
 export function generateStaticParams() {
   return getEnergyTopics().map((t) => ({ topic: t.slug }));
@@ -62,11 +63,14 @@ export default function TopicPage({ params }: { params: { topic: string } }) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      /* Kaksi askelta, ei kolmea: sähkövertailu ON etusivu, joten
-         "Etusivu > Sähkösopimukset" olisi sama osoite kahdesti. Google
-         hylkää murupolun, jonka askeleet osoittavat samaan URLiin. */
-      { "@type": "ListItem", position: 1, name: "Sähkösopimukset", item: SITE.url },
-      { "@type": "ListItem", position: 2, name: topic.h1, item: `${SITE.url}/sahkosopimukset/${topic.slug}` },
+      /* Kolme askelta, koska sähkövertailu ei ole enää etusivu. Aiemmin
+         tässä oli kaksi askelta ja "Sähkösopimukset" osoitti juureen: se
+         oli oikein silloin, kun vertailu asui siellä. Nyt juuressa on hub,
+         joten kolmiportainen polku vastaa oikeaa rakennetta eikä yksikään
+         askel osoita samaan URLiin kahdesti. */
+      { "@type": "ListItem", position: 1, name: "Etusivu", item: SITE.url },
+      { "@type": "ListItem", position: 2, name: "Sähkösopimukset", item: `${SITE.url}${ENERGY_PATH}` },
+      { "@type": "ListItem", position: 3, name: topic.h1, item: `${SITE.url}/sahkosopimukset/${topic.slug}` },
     ],
   };
 
@@ -78,8 +82,13 @@ export default function TopicPage({ params }: { params: { topic: string } }) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
 
       <div className="mx-auto max-w-[1180px] px-4 pt-8 sm:px-6">
+        {/* Näkyvä murupolku noudattaa samaa kolmea askelta kuin yllä oleva
+            JSON-LD. Jos ne eroaisivat, Google pitää rakennetta epäluotettavana
+            eikä näytä murupolkua hakutuloksessa lainkaan. */}
         <nav aria-label="Murupolku" className="flex items-center gap-1.5 text-[13px] text-ink/60">
-          <Link href="/" className="hover:text-ink">Sähkösopimukset</Link>
+          <Link href="/" className="hover:text-ink">Etusivu</Link>
+          <ChevronRight size={13} aria-hidden />
+          <Link href={ENERGY_PATH} className="hover:text-ink">Sähkösopimukset</Link>
           <ChevronRight size={13} aria-hidden />
           <span className="text-ink/85">{topic.h1}</span>
         </nav>
@@ -143,7 +152,7 @@ export default function TopicPage({ params }: { params: { topic: string } }) {
       </section>
 
       <CtaSection
-        href="/#vertailu"
+        href={ENERGY_COMPARE}
         title="Katso, paljonko sinä säästäisit"
         text="Kulutusarvio, todelliset vuosihinnat ja paras sopimus — parissa minuutissa."
         button="Kilpailuta sähkösopimus"

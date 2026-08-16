@@ -64,9 +64,9 @@ JSON-tiedostoissa, joten sivut generoituvat staattisesti.
 ## Sivukartta
 
 ```
-/                            sähkövertailu (päävertikaali) — TÄMÄ on etusivu
-/sahkosopimukset             301 → `/` (next.config.mjs), ei omaa sivua
-  /sahkosopimukset/sopimus/[slug]   26 sopimussivua (yksi per näkyvä sopimus)
+/                            hub: esittelee sähkön ja lainat, ei vertailua
+/sahkosopimukset             sähkövertailu (päävertikaali) — TÄSSÄ ansaitaan
+  /sahkosopimukset/sopimus/[slug]   25 sopimussivua (yksi per näkyvä sopimus)
   /sahkosopimukset/[topic]          4 SEO-laskeutumissivua
 /lainat                      ohjaus Sortterille (ei omaa vertailua)
 /luottokortit                korttivertailu — PIILOSSA, ks. lib/features.ts
@@ -83,9 +83,16 @@ yhdestä paikasta — älä piilota osioita muualta käsin.
 
 Sähkösivun osoite on `lib/nav.ts`-vakioissa (`ENERGY_PATH`,
 `ENERGY_COMPARE`) ja "ollaanko sähkösivulla" on `isEnergyPath()`. Älä
-kirjoita polkua käsin komponentteihin: etusivu ei ala merkkijonolla
-`/sahkosopimukset`, joten `startsWith`-tarkistus jättäisi sivuston
-tärkeimmän sivun tunnistamatta.
+kirjoita polkua käsin komponentteihin. Osoite on ehtinyt vaihtua kahdesti
+(`/sahkosopimukset` → `/` → `/sahkosopimukset`), ja joka kerta käsin
+kirjoitetuista poluista osa on jäänyt osoittamaan vanhaan paikkaan.
+
+**Etusivu ei ole sähkösivu.** Juuressa on hub, joka esittelee sähkön ja
+lainat. `isEnergyPath("/")` palauttaa siksi epätoden: muuten navigaation
+aktiivimerkki näyttäisi "Sähkö" valittuna hubilla ja footer tarjoaisi
+siellä sähkölinkkejä muiden palveluiden sijaan. **Älä siirrä vertailua
+takaisin juureen** — kolmas osoitteenvaihto maksaisi enemmän kuin kaksi
+ensimmäistä yhteensä.
 
 ## Keskeiset tiedostot
 
@@ -130,18 +137,19 @@ Täydet tokenit, apuluokat ja perustelut: `DESIGN.md`.
 
 ## Sähkösivun CRO-logiikka — älä poista näitä
 
-0. **Sopimuksia ei näytetä ennen kuin kysely on täytetty.** Etusivun
-   tuloslista on portin takana (`gated = withHero`), ja se on Jessen
+0. **Sopimuksia ei näytetä ennen kuin kysely on täytetty.**
+   `/sahkosopimukset`-sivun tuloslista on portin takana
+   (`gated = withHero`), ja se on Jessen
    nimenomainen päätös 16.8.2026, ei optimoitava muuttuja. Prop
    `resultsVisibleFromStart`, joka päästi listan HTML:ään heti, luotiin ja
    poistettiin samana päivänä. Älä ehdota sitä uudelleen, älä ehdota
    "kolme halvinta heti" -osittaista porttia äläkä sumennettua listaa.
 
-   **Tiedostettu hinta:** portin takana oleva sisältö ei ole etusivun
+   **Tiedostettu hinta:** portin takana oleva sisältö ei ole sivun
    HTML:ssä, joten Googlebot ei näe sieltä yhtään sopimusta. Siksi
    aihesivut `/sahkosopimukset/[topic]` ajavat saman komponentin
    `withHero={false}`, jolloin vertailu on niillä ilman porttia. **Niille
-   ei saa lisätä porttia:** ne ja 26 sopimussivua ovat ainoa paikka, jossa
+   ei saa lisätä porttia:** ne ja 25 sopimussivua ovat ainoa paikka, jossa
    hakukone näkee sopimusdatan.
 
    Cloaking — sisällön renderöinti robotille ja piilottaminen kävijältä —
@@ -211,14 +219,14 @@ tuntuu SEO:ta varten kirjoitetulta.
 ## Datan tila — mikä on oikeaa ja mikä ei
 
 **Sähködata on oikeaa.** `data/electricity.json` sisältää 47 riviä, joista
-**26 on näkyvissä**. Jokaisella näkyvällä on tarkistettu hinta, `checkedAt`
+**25 on näkyvissä**. Jokaisella näkyvällä on tarkistettu hinta, `checkedAt`
 (elokuu 2026) ja `sourceUrl` yhtiön omalle sivulle. Loput ovat piilossa
 kahdesta eri syystä, ja **syyt on pidettävä erillään**:
 
 | Kenttä | Merkitys | Mitä siitä seuraa |
 |---|---|---|
 | `example: true` | hinta on yhä keksitty | 19 riviä, ei saa näyttää ennen tarkistusta |
-| `hidden: true` | hinta on oikea, mutta rivi ei tuota | 2 riviä (Vaasan Sähkö) |
+| `hidden: true` | hinta on oikea, mutta rivi ei tuota | 3 riviä (Vaasan Sähkö ×2, Helen ×1) |
 
 Älä käytä `example`-lippua piilottamiseen. Se tarkoittaa nimenomaan
 "lukua ei ole tarkistettu", ja väärä lippu johtaa siihen, että tarkistettu

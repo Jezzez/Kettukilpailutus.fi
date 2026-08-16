@@ -6,12 +6,25 @@ import { getPlans, getEnergyTopics } from "@/lib/energy";
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
   return [
-    /* Etusivu ON sähkövertailu, ja sen hinnat muuttuvat, joten
-       `daily`. Rivi `/sahkosopimukset` poistettiin: se ohjautuu nyt
-       301:llä tänne, ja ohjautuva osoite sivukartassa on hakukoneelle
-       ristiriitainen viesti — sivukartta lupaa indeksoitavan sivun,
-       palvelin vastaa "tämä ei ole täällä". */
-    { url: SITE.url, lastModified: now, changeFrequency: "daily", priority: 1 },
+    /* Etusivu on hub: se esittelee palvelut eikä sisällä yhtään hintaa,
+       joten se muuttuu vasta kun vertikaali avataan tai suljetaan.
+       `monthly` on siksi rehellinen arvio; `daily` pyytäisi Googlea
+       käymään joka päivä sivulla, joka on sama joka päivä, ja turhat
+       käynnit ovat pois muualta. Prioriteetti on silti 1: tämä on
+       brändihaun laskeutumissivu. */
+    { url: SITE.url, lastModified: now, changeFrequency: "monthly", priority: 1 },
+
+    /* Sähkövertailu palasi omaan osoitteeseensa 17.8.2026, eli rivi
+       palasi myös tänne. Se on jälleen indeksoitava sivu (200, ei
+       ohjaus), ja `daily` on tässä oikea: hinnat muuttuvat.
+       Prioriteetti on sama 1 kuin etusivulla, koska tämä on se sivu,
+       jolla ansainta tapahtuu. */
+    {
+      url: `${SITE.url}/sahkosopimukset`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 1,
+    },
     ...(FEATURES.loans
       ? [
           {
