@@ -479,6 +479,23 @@ export default function ElectricityExperience({
 
   const maxShown = Math.max(...filtered.map((p) => vertailuhinta(p)), 1);
 
+  /** Halvin ensi kuun hinta NÄKYVISSÄ OLEVISTA korteista. Korttien
+   *  hintapalkki ja "+X € / kk vertailun edullisimpaan" lasketaan tästä.
+   *
+   *  Ei `cheapestCost`, joka katsoo koko aineistoa suodattimista
+   *  välittämättä. Suodattimen päällä vertailukohta olisi silloin
+   *  sopimus, jota ruudulla ei näy: kahdessa vierekkäisessä 56 €/kk
+   *  kortissa luki "+24,85 € / kk vertailun edullisimpaan", vaikka ero
+   *  saman listan ylimpään korttiin on 20 senttiä. Lukija ei voi
+   *  tarkistaa lukua listasta, ja tarkistuskelvoton luku vertailusivulla
+   *  maksaa enemmän kuin luvun puuttuminen.
+   *
+   *  `cheapestCost` jää "älä vaihda" -päätökseen, jossa koko aineisto on
+   *  oikea peruste: sitä ei saa sanoa vain siksi, että kävijä on
+   *  suodattanut halvimmat pois. */
+  const halvinNakyva =
+    filtered.length > 0 ? Math.min(...filtered.map((p) => vertailuhinta(p))) : cheapestCost;
+
   /** Halvin näkyvissä oleva sopimus — sekä Ketun suositus, korttien
    *  "Edullisin"-merkki että mobiilin tulospalkki osoittavat tähän.
    *
@@ -2696,7 +2713,7 @@ export default function ElectricityExperience({
                      se veisi tilaa siltä tiedolta, jonka takia kortti klikataan.
                      Jos kortilla ei ole omaa kärkeä, kerrotaan ero halvimpaan
                      — laskettu luku eikä mainoslause. Ks. vahvuudet-kommentti. */
-                  const eroKk = cheapestCost === null ? 0 : (cost - cheapestCost) / 12;
+                  const eroKk = (cost - halvinNakyva) / 12;
                   const vahvuus = badge
                     ? undefined
                     : (vahvuudet.get(plan.id) ??
@@ -2739,7 +2756,7 @@ export default function ElectricityExperience({
                         compareDiff={
                           currentAnnual === null ? null : currentAnnual - vertailuhinta(plan)
                         }
-                        minCost={cheapestCost}
+                        minCost={halvinNakyva}
                         maxCost={maxShown}
                         rank={numero}
                         strength={sort === "cost" ? vahvuus : vahvuudet.get(plan.id)}
