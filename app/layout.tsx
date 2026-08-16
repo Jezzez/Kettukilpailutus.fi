@@ -135,13 +135,21 @@ export const viewport: Viewport = {
   themeColor: "#A83E0A",
 };
 
-const orgJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: SITE.name,
-  url: SITE.url,
-  description: SITE.description,
-};
+/*
+  ORGANIZATION-MERKINTÄ EI OLE ENÄÄ TÄÄLLÄ.
+
+  Tässä oli Organization-lohko, joka renderöityi jokaiselle sivulle. Kun
+  etusivu sai oman, rikkaamman lohkonsa (mukana `logo` ja y-tunnus), samalla
+  sivulla oli kaksi eri Organization-oliota samasta yrityksestä. Google ei
+  laske niitä yhteen vaan joutuu valitsemaan, ja karsittu versio saattoi
+  voittaa täydellisen — eli sivuston logo ja viralliset tiedot jäivät
+  poimimatta.
+
+  Merkintä kuvaa koko sivustoa ja sen `url` osoittaa juureen, joten se
+  kuuluu juuren sivulle. Se asuu nyt `app/page.tsx`:ssä. Älä palauta tätä
+  layoutiin: alasivun oma Organization on aina ristiriita, koska alasivu ei
+  ole se osoite, jonka merkintä ilmoittaa.
+*/
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -167,10 +175,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </Script>
       </head>
       <body>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
-        />
         <a
           href="#sisalto"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-xl focus:bg-accent focus:px-4 focus:py-2 focus:font-display focus:text-sm focus:font-bold focus:text-onEmber"

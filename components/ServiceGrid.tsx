@@ -15,17 +15,20 @@ import { ENERGY_COMPARE } from "@/lib/nav";
  * sähkövertailun pois vahvimmasta osoitteesta ja lisännyt yhden klikin
  * jokaisen kävijän ja laskurin väliin.
  *
- * MIKSI TÄMÄ ON SIVUN LOPUSSA EIKÄ ALUSSA: tämä on ainoa etusivun osio,
- * joka linkittää pois sähkösuppilosta. Ylhäällä se kilpailisi laskurin
- * kanssa ja maksaisi klikkejä. Täällä se tavoittaa lukijan, joka on jo
- * ohittanut laskurin, askeleet ja UKK:n — eli ihmisen, joka ei ole
- * tänään vaihtamassa sähkösopimusta. Hänelle vaihtoehto on poistuminen,
- * ei klikki, joten mikään ei mene hukkaan.
+ * MIKSI TÄMÄ ON HERON HETI ALLA. Osio oli aiemmin sivun lopussa, ja
+ * perustelu oli, ettei se saa kilpailla laskurin kanssa. Se perustelu
+ * kuoli 17.8.2026: laskuri ei ole enää tällä sivulla lainkaan, vaan
+ * osoitteessa `/sahkosopimukset`. Nyt tämä ruudukko ON se, mitä hero
+ * lupaa — kaksi ovea ulos hubista. Ensimmäinen osio heron jälkeen on
+ * sivun luetuin kohta, ja tämän sivun ainoa tehtävä on päästää kävijä
+ * eteenpäin, ei pidätellä häntä.
  *
- * MIKSI TÄMÄ ON MYÖS HAKUKONEASIA: etusivun tuloslista on kyselyn
- * takana, joten palvelimen palauttamassa HTML:ssä ei ole sopimusdataa.
- * Tämä osio on aina näkyvää tekstiä samalla sivulla sekä kävijälle että
- * robotille. Se ei ole cloakingia eikä täytesisältöä: se kertoo mitä
+ * MIKSI TÄMÄ ON MYÖS HAKUKONEASIA: sähkösivun tuloslista on kyselyn
+ * takana, joten sopimusdataa ei ole robotin näkemässä HTML:ssä siellä
+ * eikä täällä. Tämä osio on aina näkyvää tekstiä sekä kävijälle että
+ * robotille, ja sen H3:t ("Sähkösopimukset", "Lainat") ovat ne kaksi
+ * substantiivia, joiden perusteella hakukone ymmärtää mikä palvelu
+ * tämä on. Se ei ole cloakingia eikä täytesisältöä: se kertoo mitä
  * palvelu tekee, mikä on juuri se mitä brändihakija tuli tarkistamaan.
  *
  * TILA TULEE `lib/features.ts`-KYTKIMISTÄ, EI KÄSIN. Jos lisäät tähän
@@ -129,9 +132,28 @@ export default function ServiceGrid({ planCount }: { planCount: number }) {
     <section id="palvelut" className="scroll-mt-24 py-16 md:py-20">
       <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
         <Reveal>
+          {/*
+            OTSIKOSSA ON SUBSTANTIIVIT, EI PELKKÄ BRÄNDIÄÄNI.
+
+            Tässä luki "Yksi kettu, monta sopimusta." Se on hyvää ääntä mutta
+            tyhjä otsikko: siinä ei ole yhtään sanaa, jota kukaan hakee, eikä
+            se kerro silmäilijälle mitä osion alla on. Etusivun H2:t ovat
+            hakukoneelle sivun sisällysluettelo — H1 kertoo mistä sivu on ja
+            H2:t mistä osista se koostuu. Kun molemmat H2:t puhuivat pelkkää
+            brändikieltä, sivulla ei ollut yhtään väliotsikkoa, joka olisi
+            nimennyt sen mitä palvelu myy.
+
+            Sanamuoto on tarkoituksella lähellä sivun title-tagia. Se ei ole
+            toistoa vaan vahvistus: sama väite hakutuloksen otsikossa ja
+            sivun ensimmäisessä väliotsikossa kertoo, että kävijä tuli
+            oikeaan paikkaan.
+
+            Ruutujen omat H3:t ("Sähkösopimukset", "Lainat") olivat jo
+            oikein — ne eivät muutu.
+          */}
           <SectionHead
             eyebrow="Mitä Kettu kilpailuttaa"
-            title="Yksi kettu, monta sopimusta."
+            title="Sähkösopimukset ja lainat samassa paikassa."
             lead="Kettukilpailutus vertailee arjen toistuvia laskuja: niitä, jotka veloitetaan joka kuukausi ja joita tulee harvoin tarkistettua."
           />
         </Reveal>

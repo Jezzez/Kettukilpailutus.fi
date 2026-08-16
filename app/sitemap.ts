@@ -12,7 +12,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
        käymään joka päivä sivulla, joka on sama joka päivä, ja turhat
        käynnit ovat pois muualta. Prioriteetti on silti 1: tämä on
        brändihaun laskeutumissivu. */
-    { url: SITE.url, lastModified: now, changeFrequency: "monthly", priority: 1 },
+    /* KAUTTAVIIVA ON TARKOITUKSELLINEN. Etusivun canonical syntyy
+       `metadataBase`-osoitteen ja polun "/" yhdistelmänä, eli muodossa
+       `https://www.kettukilpailutus.fi/`. Tässä luki sama osoite ilman
+       päätteen kauttaviivaa, eli sivukartta ilmoitti eri merkkijonon kuin
+       sivu itse. Google osaa yhdistää ne, mutta ei ilmaiseksi: erillisenä
+       osoitteena se on yksi ylimääräinen indeksoitava rivi, ja Search
+       Consolessa se näkyy "vaihtoehtoinen sivu, jolla on oikea canonical"
+       -merkintänä. Turha epäselvyys juuri sillä sivulla, jonka pitää olla
+       selvin. */
+    { url: `${SITE.url}/`, lastModified: now, changeFrequency: "monthly", priority: 1 },
 
     /* Sähkövertailu palasi omaan osoitteeseensa 17.8.2026, eli rivi
        palasi myös tänne. Se on jälleen indeksoitava sivu (200, ei

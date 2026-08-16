@@ -46,18 +46,60 @@ export const metadata: Metadata = {
     otsikko on brändihaun ensimmäinen rivi, ja siinä pitää olla sekä nimi
     että se mitä palvelu tekee — nimi yksin ei kerro hakijalle mitään.
   */
-  title: { absolute: "Kettukilpailutus.fi – kilpailuta sähkö ja lainat yhdessä paikassa" },
+  /*
+    PITUUS ON OSA OTSIKKOA. Google katkaisee hakutuloksen otsikon noin
+    600 pikseliin, mikä on suomeksi noin 60 merkkiä. Tässä oli 65 merkkiä
+    ("… yhdessä paikassa"), eli loppu näkyi hakutuloksessa kolmena pisteenä.
+    Katkaistu otsikko ei ole vain ruma: se on hakutuloksen ainoa rivi, jonka
+    perusteella klikki syntyy, ja puolikas lause näyttää huolimattomalta
+    juuri palvelussa, jonka myyntiväite on huolellisuus.
+
+    "sähkösopimukset" täydessä muodossa eikä "sähkö": se on se sana, jota
+    ihmiset hakevat, ja se mahtuu nyt kun turha loppu on poissa.
+  */
+  title: { absolute: "Kettukilpailutus.fi – kilpailuta sähkösopimukset ja lainat" },
+  /*
+    KUVAUS ALKAA VERBILLÄ, EI BRÄNDILLÄ. Brändinimi on jo otsikossa ja
+    näkyvässä osoitteessa; sen toistaminen kuvauksen ensimmäisenä sanana
+    vie tilan siltä, mikä hakijaa oikeasti kiinnostaa eli mitä hän saa.
+
+    Mitta on 153 merkkiä. Google katkaisee noin 155:een, joten koko lause
+    näkyy — myös se jälkimmäinen puolisko, joka kertoo lainoista. Aiempi
+    versio päättyi lupaukseen "eikä sido mihinkään", joka piti sitä paitsi
+    paikkansa vain sähkön osalta; lupaukset kuuluvat sivulle, jossa ne voi
+    perustella, eivät hakutulokseen jossa niitä ei voi.
+  */
   description:
-    "Kettukilpailutus vertailee arjen toistuvat laskut: sähkösopimukset omalla kulutuksellasi ja lainatarjoukset yhdellä hakemuksella. Ilmainen eikä sido mihinkään.",
+    "Kilpailuta sähkösopimukset ja lainat yhdessä paikassa. Kettu laskee sähkön vuosihinnan omalla kulutuksellasi ja hakee lainatarjoukset yhdellä hakemuksella.",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Kettukilpailutus.fi – kilpailuta sähkö ja lainat yhdessä paikassa",
+    title: "Kettukilpailutus.fi – kilpailuta sähkösopimukset ja lainat",
     description:
       "Ketuttaako maksaa liikaa? Anna Ketun kilpailuttaa puolestasi. Sähkösopimukset euroina, lainatarjoukset yhdellä hakemuksella.",
     url: "/",
-    // Pakko toistaa: sivun oma openGraph-lohko korvaa juuritason lohkon
-    // kokonaan, jolloin kuva katoaisi. Ks. OG_IMAGE lib/data.ts.
-    images: [OG_IMAGE],
+    /*
+      KUVA ON OLIOMUODOSSA, EI PELKKÄNÄ OSOITTEENA.
+
+      Sivun oma `openGraph`-lohko korvaa juuritason lohkon kokonaan, joten
+      kuva on pakko toistaa tässä. Aiemmin se toistettiin pelkkänä
+      merkkijonona `[OG_IMAGE]`, jolloin mukana tuli vain osoite: layoutissa
+      määritellyt `width`, `height` ja `alt` jäivät pois nimenomaan sillä
+      sivulla, jota jaetaan eniten.
+
+      Mitat merkitsevät, koska Facebook ja LinkedIn varaavat esikatselulle
+      tilan ennen kuin kuva on latautunut. Ilman mittoja ne arvaavat, ja
+      väärin arvattu suhde rajaa kortin logon poikki. `alt` taas on ainoa
+      kuvateksti ruudunlukijalle ja niille chateille, jotka eivät lataa
+      kuvaa lainkaan.
+    */
+    images: [
+      {
+        url: OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: SITE.name + " – Ketuttaako maksaa liikaa? Anna Ketun kilpailuttaa puolestasi.",
+      },
+    ],
   },
 };
 
@@ -122,30 +164,77 @@ export default function HomePage() {
     vertailu oli etusivu; siirron jälkeen se olisi siellä ristiriita.
     Merkintää EI saa olla kahdessa paikassa: kaksi Organization-lohkoa
     samalla sivustolla on ristiriitainen signaali eikä kaksinkertainen.
+    Juurilayoutissa oli 17.8.2026 asti toinen, karsitumpi lohko — se on
+    poistettu, ks. `app/layout.tsx`.
+
+    KAKSI OLIOTA, YKSI LOHKO. `@graph` sitoo Organizationin ja WebSiten
+    yhteen `@id`-viittauksella. Kaksi erillistä script-tagia jättäisi
+    hakukoneen päättelemään itse, ovatko ne sama toimija; nyt `publisher`
+    sanoo sen suoraan. WebSite on tässä siksi, että se on entiteetti, jonka
+    varassa brändihaun sitelinkit ja tietopaneelin nimi ovat — ja brändihaku
+    on tämän sivun ainoa oma hakuliikenne.
+
+    SEARCHACTIONIA EI OLE. Se kertoisi Googlelle, että sivustolla on haku
+    johon voi ohjata suoraan hakutuloksesta. Hakua ei ole, joten merkintä
+    olisi valhe ja johtaisi rikkinäiseen osoitteeseen.
   */
+  const orgId = `${SITE.url}/#organisaatio`;
+
   const orgJsonLd = {
     "@context": "https://schema.org",
-    "@type": "Organization",
-    name: SITE.name,
-    url: SITE.url,
-    /*
-      LOGO OSOITTI AIEMMIN OSOITTEESEEN `/icon.svg`, JOKA EI OLE OLEMASSA.
-      Tiedosto poistettiin repositoriosta, kun favicon vaihdettiin PNG:ksi,
-      mutta tämä rivi jäi. Google haki siis sivuston virallista logoa ja sai
-      404:n, eli merkintä oli rikki koko ajan.
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": orgId,
+        name: SITE.name,
+        url: SITE.url,
+        /*
+          LOGO OSOITTI AIEMMIN OSOITTEESEEN `/icon.svg`, JOKA EI OLE OLEMASSA.
+          Tiedosto poistettiin repositoriosta, kun favicon vaihdettiin PNG:ksi,
+          mutta tämä rivi jäi. Google haki siis sivuston virallista logoa ja sai
+          404:n, eli merkintä oli rikki koko ajan.
 
-      Osoite on nyt `public/`-kansion tiedosto, joka tarjoillaan sellaisenaan.
-      Älä osoita tätä `app/icon.png`:hen: se on Nextin metadatatiedosto, joka
-      tarjoillaan välimuistitunnisteen kanssa (`/icon.png?<hash>`), eikä sen
-      osoite ole pysyvä. Rakenteinen data tarvitsee pysyvän osoitteen.
+          Osoite on nyt `public/`-kansion tiedosto, joka tarjoillaan
+          sellaisenaan. Älä osoita tätä `app/icon.png`:hen: se on Nextin
+          metadatatiedosto, joka tarjoillaan välimuistitunnisteen kanssa
+          (`/icon.png?<hash>`), eikä sen osoite ole pysyvä. Rakenteinen data
+          tarvitsee pysyvän osoitteen.
 
-      Tässä käytetään logoa, jossa on nimi mukana, ei pelkkää ketunpäätä:
-      tämä kenttä ruokkii tietopaneelia, ja siinä brändi pitää pystyä
-      lukemaan, ei vain tunnistamaan.
-    */
-    logo: `${SITE.url}/isokettulogo.png`,
-    description:
-      "Suomalainen kilpailutuspalvelu: sähkösopimukset ja lainat puolueettomasti vertailtuna.",
+          Tässä käytetään logoa, jossa on nimi mukana, ei pelkkää ketunpäätä:
+          tämä kenttä ruokkii tietopaneelia, ja siinä brändi pitää pystyä
+          lukemaan, ei vain tunnistamaan.
+        */
+        logo: `${SITE.url}/isokettulogo.png`,
+        description:
+          "Suomalainen kilpailutuspalvelu: sähkösopimukset ja lainat puolueettomasti vertailtuna.",
+        /*
+          VIRALLISET TIEDOT OVAT TÄSSÄ, KOSKA NE OVAT TOTTA JA TARKISTETTAVISSA.
+
+          Y-tunnus on julkinen ja löytyy YTJ:stä, joten se on hakukoneelle
+          ainoa kenttä tässä merkinnässä, jonka se voi varmistaa ulkopuolelta.
+          Rahaa liikuttavassa vertailupalvelussa "onko takana oikea yritys" on
+          se kysymys, joka ratkaisee luottamuksen — ja sama kysymys ratkaisee
+          sen, kohdellaanko sivustoa hakutuloksissa yrityksenä vai
+          nimettömänä affiliate-sivuna.
+
+          Arvot tulevat `SITE.operator`-vakiosta, ei tähän kirjoitettuna: ne
+          näkyvät jo alatunnisteessa, ja kahteen paikkaan kirjoitettu y-tunnus
+          ehtii erkaantua.
+        */
+        legalName: SITE.operator.legalName,
+        taxID: SITE.operator.businessId,
+        email: SITE.operator.email,
+        areaServed: "FI",
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${SITE.url}/#sivusto`,
+        url: SITE.url,
+        name: SITE.name,
+        inLanguage: "fi-FI",
+        publisher: { "@id": orgId },
+      },
+    ],
   };
 
   return (
@@ -206,7 +295,29 @@ export default function HomePage() {
             width={1432}
             height={1016}
             priority
-            sizes="130vw"
+            /*
+              `sizes` ALKAA TYÖPÖYTÄEHDOLLA, VAIKKA KUVA ON MOBIILIN.
+
+              Tässä luki pelkkä "130vw". `md:hidden` piilottaa elementin
+              työpöydällä, mutta se on silti DOM:issa, ja `priority` lisää
+              sivun `<head>`:iin esilatauksen. Selain ei tiedä mitään
+              CSS-näkyvyydestä esilatausta tehdessään: se laski 130 % 1440
+              pikselistä ja latasi 1872 pikselin levyisen version kuvasta,
+              jota työpöydällä ei piirretä lainkaan. Se oli satoja kilotavuja
+              hukkalatausta joka ainoalla työpöytäkäynnillä — ja koska se
+              tapahtui esilatauksena, se kilpaili kaistasta juuri sen kuvan
+              kanssa, joka näkyy.
+
+              Nyt 768 pikselistä ylöspäin `sizes` on 1px, jolloin selain
+              valitsee pienimmän srcset-vaihtoehdon. Kuvaa ei voi jättää
+              lataamatta kokonaan, mutta muutaman kilotavun pikkukuva on
+              se hinta, jonka `md:hidden`-ratkaisu maksaa.
+
+              Sama temppu toisin päin on työpöytäkuvassa alempana
+              (`(min-width: 768px) 560px, 1px`). Jos muutat toista, muuta
+              molemmat — ne ovat pari.
+            */
+            sizes="(min-width: 768px) 1px, 130vw"
             className="absolute bottom-0 left-[-13%] w-[130%] max-w-none opacity-40"
             style={{
               WebkitMaskImage: "linear-gradient(to top, #000 55%, transparent 100%)",
@@ -394,7 +505,23 @@ export default function HomePage() {
             <Reveal delay={0.12} className="hidden md:block">
               <Image
                 src="/kettu-rantatuoli.webp"
-                alt="Kettu ottaa rennosti rantatuolissa drinkki kädessä"
+                /*
+                  ALT KUVAILEE KUVAN, EI TUNGE HAKUSANOJA.
+
+                  Houkutus olisi kirjoittaa tähän "sähkön ja lainojen
+                  kilpailutus Suomessa". Se olisi hakusanojen tunkemista
+                  alt-tekstiin: Google tunnistaa sen, eikä ruudunlukijan
+                  käyttäjä saisi tietää mitä kuvassa on. Brändinimi on
+                  mukana siksi, että se on totta — tämä on Kettukilpailutuksen
+                  maskotti, ei kuvapankin kettu — ja koska maskotti on se,
+                  jolla brändi tunnistetaan kuvahaussa.
+
+                  Mobiiliversiolla samasta kuvasta on `alt=""` ja
+                  `aria-hidden`. Se on tarkoituksellista: kaksi elementtiä
+                  samasta kuvasta luettaisiin ääneen kahdesti, ja mobiilissa
+                  kuva on pelkkä himmennetty tausta.
+                */
+                alt="Kettukilpailutuksen kettu-maskotti ottaa rennosti rantatuolissa"
                 width={1432}
                 height={1016}
                 priority
@@ -465,9 +592,24 @@ export default function HomePage() {
         <section className="pb-16 md:pb-20">
           <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
             <Reveal>
+              {/*
+                OTSIKOSSA ON "SÄHKÖSOPIMUS", EI PELKKÄ KEHOTUS.
+
+                Tässä luki "Aloita omasta tilanteestasi." Kehotus on hyvä
+                mutta sanaton: se ei kerro hakukoneelle eikä silmäilijälle,
+                minkä asian tilanteesta puhutaan. Yläotsikko ("eyebrow") on
+                `<p>`, ei otsikkoelementti, joten siinä ollut sana
+                "sähkösopimukset" ei painanut mitään — H2 on ainoa rivi
+                tästä lohkosta, joka luetaan otsikkona.
+
+                Sivun otsikkorakenne on nyt: H1 kertoo mitä palvelu tekee,
+                ensimmäinen H2 nimeää vertikaalit ja tämä toinen H2 nimeää
+                sähkösopimuksen valintaperusteen. Kolme tasoa, ei yhtään
+                hyppyä — ja jokaisessa on sana, jolla joku hakee.
+              */}
               <SectionHead
                 eyebrow="Sähkösopimukset tilanteen mukaan"
-                title="Aloita omasta tilanteestasi."
+                title="Löydä oikea sähkösopimus omaan tilanteeseesi."
                 lead="Kulutus ja sopimustyyppi ratkaisevat, mikä sähkösopimus on sinulle halvin. Valitse lähin tilanne, niin vertailu on valmiiksi rajattu."
               />
             </Reveal>
