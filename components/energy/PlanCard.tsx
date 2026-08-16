@@ -598,8 +598,8 @@ export default function PlanCard({
                     Säästät{" "}
                     <strong className="font-data font-bold">
                       {diffMonthly.toLocaleString("fi-FI", {
-                        minimumFractionDigits: 1,
-                        maximumFractionDigits: 1,
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
                       })}{" "}
                       €
                     </strong>{" "}
@@ -612,8 +612,8 @@ export default function PlanCard({
                   <span>
                     <strong className="font-data font-bold">
                       {Math.abs(diffMonthly).toLocaleString("fi-FI", {
-                        minimumFractionDigits: 1,
-                        maximumFractionDigits: 1,
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
                       })}{" "}
                       €
                     </strong>{" "}
@@ -626,7 +626,7 @@ export default function PlanCard({
 
           <div className="flex items-baseline gap-1.5">
             <span className="font-display font-data font-price text-[30px] font-extrabold leading-none tracking-[-0.03em] text-ink">
-              {monthly.toLocaleString("fi-FI", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} €
+              {monthly.toLocaleString("fi-FI", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
             </span>
             <span className="font-display text-[13px] font-semibold text-ink/60">/ kk</span>
             {/* Ison luvun kesto sanotaan ISON LUVUN VIERESSÄ, ei alaviitteenä.
@@ -680,8 +680,8 @@ export default function PlanCard({
               Sitten{" "}
               <span className="font-data font-bold text-ink/80">
                 {normalMonthly.toLocaleString("fi-FI", {
-                  minimumFractionDigits: 1,
-                  maximumFractionDigits: 1,
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
                 })}{" "}
                 €
               </span>{" "}

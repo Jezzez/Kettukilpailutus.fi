@@ -65,7 +65,11 @@ const HERO_CLAIMS = [
 const LOADING_TIP =
   "Vuonna 1879 Edisonin työryhmä esitteli käytännöllisen hehkulampun. Ratkaisu syntyi monen keksijän aiemman työn pohjalta.";
 
-const RESULT_LOADING_MS = 7000;
+/* Latauksen kesto. Tämä on keinotekoinen viive konversiopolun
+   kriittisimmässä kohdassa, joten jokainen sekunti maksaa poistumia.
+   Laskettu 7 000:sta 5 000:een elokuussa 2026. Jos tätä joskus koskee,
+   suunta on alaspäin, ei ylöspäin. */
+const RESULT_LOADING_MS = 5000;
 
 /**
  * Sähkön koko kokemus.
@@ -202,11 +206,9 @@ export default function ElectricityExperience({
   */
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const resultTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const foundTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   useEffect(() => () => {
     if (advanceTimer.current) clearTimeout(advanceTimer.current);
     if (resultTimer.current) clearTimeout(resultTimer.current);
-    if (foundTimer.current) clearInterval(foundTimer.current);
   }, []);
 
   /*
@@ -229,7 +231,6 @@ export default function ElectricityExperience({
   const quizMounted = useRef(false);
   const [submitted, setSubmitted] = useState(false);
   const [loadingResults, setLoadingResults] = useState(false);
-  const [loadingFound, setLoadingFound] = useState(0);
   const showResults = !gated || submitted;
   const quizStartedRef = useRef(false);
   const quizCompletedRef = useRef(false);
@@ -247,6 +248,9 @@ export default function ElectricityExperience({
     trackEvent("quiz_complete", { category: "electricity" });
   }, [gated]);
 
+  /** Tosi vasta kun tämän vaiheen "Jatka"-nappia on painettu vastaamatta.
+   *  Nollataan vaiheen vaihtuessa, ks. `stepBlocker`. */
+  const [triedNext, setTriedNext] = useState(false);
   const [kwh, setKwh] = useState(initialKwh);
   /** Tosi heti kun kulutus on kirjoitettu käsin — ks. `kwhBlockEl`. */
   const [kwhTouched, setKwhTouched] = useState(false);
@@ -337,6 +341,10 @@ export default function ElectricityExperience({
       block: "start",
     });
   }, [step, gated, submitted, reduce]);
+
+  /* Uusi vaihe alkaa aina puhtaalta pöydältä: edellisen vaiheen
+     estoteksti ei saa seurata mukana seuraavaan kysymykseen. */
+  useEffect(() => setTriedNext(false), [step]);
 
   /*
     YKSI KENTTÄ, KAKSI ERI LUKUA — JA SIKSI TULKINTA NÄYTETÄÄN AUKI.
@@ -1397,8 +1405,14 @@ export default function ElectricityExperience({
    *  tarkoituksellista — pakotettuna osa keksisi luvun, ja keksitty
    *  lähtöhinta tuottaa keksityn säästön. Se on tämän sivun pahin
    *  virhe, pahempi kuin täyttämättä jäänyt kenttä. */
+  /*  ESTOTEKSTI VASTA SEN JÄLKEEN, KUN JATKAA ON YRITETTY.
+      Aiemmin se oli ruudulla heti vaiheen auettua, eli sivu moitti
+      käyttäjää ennen kuin tämä oli ehtinyt tehdä mitään. Se on
+      kilpailutuksen ensimmäinen ruutu ja siksi kallein paikka tuntua
+      nalkuttavalta. Lause on silti pakko olla olemassa: harmaa nappi
+      ilman selitystä luetaan rikkinäiseksi napiksi. */
   const stepBlocker =
-    stepValid ? null
+    stepValid || !triedNext ? null
     : step === 2 ? "Kirjoita kulutus, vähintään 500 kWh. Tai palaa taaksepäin valitsemaan koti."
     : "Valitse yksi vaihtoehto jatkaaksesi.";
 
@@ -1422,25 +1436,9 @@ export default function ElectricityExperience({
     */
     if (advice) setType(advice.type);
 
-    const resultType = advice?.type ?? type;
-    const matchingPlans = plans.filter((plan) =>
-      (resultType ? plan.type === resultType : true) &&
-      (greenOnly ? plan.green : true)
-    ).length;
-
-    setLoadingFound(0);
     setLoadingResults(true);
 
-    const loadingStartedAt = Date.now();
-    foundTimer.current = setInterval(() => {
-      const elapsed = Date.now() - loadingStartedAt;
-      const found = Math.floor((elapsed / RESULT_LOADING_MS) * (matchingPlans + 1));
-      setLoadingFound(Math.min(found, matchingPlans));
-    }, 100);
-
     resultTimer.current = setTimeout(() => {
-      if (foundTimer.current) clearInterval(foundTimer.current);
-      foundTimer.current = null;
       setLoadingResults(false);
       setSubmitted(true);
       markQuizCompleted();
@@ -1596,10 +1594,22 @@ export default function ElectricityExperience({
 
           {step < LAST_STEP ? (
             <button
-              onClick={() => setStep(step + 1)}
-              disabled={!stepValid}
-              className={`btn-ember inline-flex flex-1 items-center justify-center gap-2 rounded-xl px-7 py-4 font-display text-[16.5px] font-bold text-onEmber transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 sm:flex-none ${
-                stepValid ? "btn-ready" : ""
+              /* Nappi ei ole `disabled`, vaikka näyttää siltä. Syy on
+                 estoteksti: `disabled`-nappi ei lähetä klikkiä lainkaan,
+                 joten sivu ei voisi kertoa mitä puuttuu juuri sillä
+                 hetkellä kun käyttäjä sitä kysyy. Ruutulukija myös
+                 ohittaa disabled-napit kokonaan. Nyt painallus vastaa
+                 aina jotain. */
+              onClick={() => {
+                if (!stepValid) {
+                  setTriedNext(true);
+                  return;
+                }
+                setStep(step + 1);
+              }}
+              aria-disabled={!stepValid}
+              className={`btn-ember inline-flex flex-1 items-center justify-center gap-2 rounded-xl px-7 py-4 font-display text-[16.5px] font-bold text-onEmber transition-all active:scale-[0.98] sm:flex-none ${
+                stepValid ? "btn-ready" : "cursor-not-allowed opacity-45"
               }`}
             >
               Jatka <ArrowRight size={17} aria-hidden />
@@ -1674,18 +1684,12 @@ export default function ElectricityExperience({
             Hetki — lasken sinulle parhaat vaihtoehdot.
           </h3>
 
-          <div className="mx-auto mt-3 flex w-fit items-center gap-3 rounded-xl border border-gold/30 bg-gold/[0.08] px-4 py-2.5 md:mx-0 md:mt-4">
-            <span className="font-display font-data text-[1.8rem] font-extrabold leading-none text-accent">
-              {loadingFound}
-            </span>
-            <span className="text-left text-[12.5px] font-semibold leading-tight text-ink/70">
-              {loadingFound === 1 ? (
-                <>hakuehtoihisi sopiva<br />sopimus löytynyt</>
-              ) : (
-                <>hakuehtoihisi sopivaa<br />sopimusta löytynyt</>
-              )}
-            </span>
-          </div>
+          {/* Tässä oli laskuri "n hakuehtoihisi sopivaa sopimusta löytynyt".
+              Se poistettiin: luku juoksi ylöspäin ajastimella eikä haun
+              etenemisestä, eli se esitti laskennaksi jotain, mitä ei
+              tapahtunut. Sivun koko myyntiargumentti on, että luvut
+              pitävät paikkansa, ja silloin lataus­ruutukaan ei saa näyttää
+              laskevansa. */}
 
           <div className="relative mt-3 rounded-2xl border border-line bg-white px-4 py-4 shadow-card sm:px-5 md:mt-5">
             <span className="absolute -top-2 left-1/2 h-4 w-4 -translate-x-1/2 rotate-45 border-l border-t border-line bg-white md:hidden" aria-hidden />
@@ -2330,8 +2334,8 @@ export default function ElectricityExperience({
                       </p>
                       <p className="mt-0.5 font-display font-data font-price text-[2rem] font-extrabold leading-none tracking-tight text-cream">
                         {(vertailuhinta(recommendedPlan) / 12).toLocaleString("fi-FI", {
-                          minimumFractionDigits: 1,
-                          maximumFractionDigits: 1,
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
                         })}{" "}
                         €
                         <span className="ml-1 text-[15px] font-semibold text-ink/75">/ kk</span>
@@ -2348,8 +2352,8 @@ export default function ElectricityExperience({
                       <p className="mt-0.5 font-display font-data text-[1.35rem] font-bold leading-none text-cream">
                         {recommendedPlan.campaign
                           ? `${(normalAnnualCost(recommendedPlan, kwh) / 12).toLocaleString("fi-FI", {
-                              minimumFractionDigits: 1,
-                              maximumFractionDigits: 1,
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
                             })} € / kk`
                           : `${annualCost(recommendedPlan, kwh).toLocaleString("fi-FI", {
                               maximumFractionDigits: 0,
@@ -2400,8 +2404,8 @@ export default function ElectricityExperience({
                           </p>
                           <p className="mt-0.5 font-display font-data text-[1.35rem] font-bold leading-none text-cream">
                             {(savingCounted / 12).toLocaleString("fi-FI", {
-                              minimumFractionDigits: 1,
-                              maximumFractionDigits: 1,
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
                             })}{" "}
                             € / kk
                           </p>
@@ -2718,21 +2722,32 @@ export default function ElectricityExperience({
                     ? undefined
                     : (vahvuudet.get(plan.id) ??
                       (eroKk >= 0.05
-                          ? `+${eroKk.toLocaleString("fi-FI", {
+                          ? /* LYHYT MUOTO, KOSKA PITKÄ EI MAHTUNUT.
+                               "+24,85 € / kk vertailun edullisim…" katkesi
+                               juuri siihen sanaan, joka kertoo mihin
+                               verrataan, koska rivi on kortin ylälaidassa
+                               kampanjamerkin vieressä. Vertailukohta on
+                               silti pakko sanoa: pelkkä "+1,40 € / kk" ei
+                               kerro mihin verrataan, ja luku jota ei voi
+                               tarkistaa on vertailusivulla pahempi kuin ei
+                               lukua. "Halvimpaan" on lyhin muoto, joka
+                               säilyttää tarkistettavuuden — vertailukohta
+                               on saman listan ylin hinta. */
+                            `+${eroKk.toLocaleString("fi-FI", {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
-                          })} € / kk vertailun edullisimpaan`
+                          })} € / kk halvimpaan`
                         : /* Alle viisi senttiä kuussa on pyöristysvirheen kokoinen
                              ero — alle 60 senttiä vuodessa. "+0,02 € / kk" olisi
                              tosi mutta typerä: se saisi kortin näyttämään
                              kalliimmalta ilman että se on sitä.
 
-                             "Sama hinta" ei ole liioittelua vaan sama väite, jonka
-                             kortin oma luku jo tekee: molemmissa korteissa lukee
-                             yhden desimaalin tarkkuudella sama €/kk. Jos teksti
-                             sanoisi jotain muuta, se olisi ristiriidassa kortin
-                             oman hintaluvun kanssa. */
-                          "Sama hinta kuin vertailun edullisin"));
+                             "Sama hinta" on pyöristys, mutta oikeaan suuntaan:
+                             viiden sentin ero kuukaudessa ei ole kummankaan
+                             kortin valinnan syy, ja sen nostaminen otsikoksi
+                             tekisi listasta tarkemman näköisen kuin mihin
+                             pörssihinnan arvio oikeasti riittää. */
+                          "Sama hinta kuin halvin"));
                   return (
                     <motion.div
                       key={plan.id}

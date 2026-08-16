@@ -140,7 +140,7 @@ export default function EnergyStickyBar({
           <p className="mt-1 flex items-baseline gap-1.5 truncate">
             <span className="font-display font-data font-price text-[21px] font-extrabold leading-tight text-ink">
               {/* Sama tarkkuus kuin kortissa — ks. perustelu PlanCard.tsx */}
-              {monthly.toLocaleString("fi-FI", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} €
+              {monthly.toLocaleString("fi-FI", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
             </span>
             <span className="text-[12px] font-semibold text-ink/75">/ kk</span>
             <span className="truncate text-[12px] text-ink/70">· {plan.provider}</span>

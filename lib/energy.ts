@@ -395,15 +395,20 @@ export const TYPE_LABEL: Record<ElectricityPlan["type"], string> = {
  * sähkölämmitystä n. 4 000, omakotitalo ilman sähkölämmitystä n. 6 000,
  * sähkölämmitteinen 150 m² talo 17 000–20 000.
  *
- * Kerrostalon 1 000 on tietoisesti noiden haarukoiden ALLA: se on vähän
- * kuluttavan yksinasujan luku, ei tyypillisen kerrostaloasunnon. Siksi
- * käyttöliittymä saa kutsua näitä vain "arvioksi" — luvun viereen ei saa
+ * Kerrostalo nostettiin 1 000:sta 1 500:aan elokuussa 2026. 1 000 oli niin
+ * selvästi julkaistujen haarukoiden alla, että se oli vähän kuluttavan
+ * yksinasujan luku eikä tyypillisen kerrostaloasunnon. 1 500 osuu
+ * haarukan (1 500–2 500) alalaitaan, eli varovaisuusperiaate säilyy,
+ * mutta luku on puolustettavissa lähteillä. Sillä on väliä myös siksi,
+ * että tämä on nyt hakukoneelle näkyvän oletuslistan kulutus.
+ *
+ * Siksi käyttöliittymä saa kutsua näitä vain "arvioksi" — luvun viereen ei saa
  * kirjoittaa väitettä siitä, mikä on tavallista tai keskimääräistä.
  * Väärä keskiarvoväite olisi kuluttajansuojariski ja veisi sivulta juuri
  * sen luottamuksen, jonka varassa koko klikki on.
  */
 export const DWELLINGS = [
-  { key: "kerrostalo", label: "Kerrostalo", kwh: 1000, hint: "n. 1 000 kWh/v" },
+  { key: "kerrostalo", label: "Kerrostalo", kwh: 1500, hint: "n. 1 500 kWh/v" },
   { key: "rivitalo", label: "Rivitalo", kwh: 3500, hint: "n. 3 500 kWh/v" },
   { key: "omakotitalo", label: "Omakotitalo", kwh: 7000, hint: "ei sähkölämmitystä, n. 7 000 kWh/v" },
   { key: "sahkolammitys", label: "Sähkölämmitteinen talo", kwh: 18000, hint: "n. 18 000 kWh/v" },
