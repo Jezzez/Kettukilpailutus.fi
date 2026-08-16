@@ -1828,12 +1828,14 @@ export default function ElectricityExperience({
                   kirjain keskellä lausetta on Kettu, joka on erisnimi.
                 */}
                 <h1 className="mt-4 max-w-[22ch] font-hero text-[2.7rem] leading-[1.05] text-cream sm:text-[3.1rem] sm:leading-[1.03] md:text-[3.5rem]">
-                  Kilpailuta{" "}
+                  <span className="whitespace-nowrap">Anna ketun</span>{" "}
+                  <br className="lg:hidden" />
                   {/* Korostus on lämmintä kultaa, ei toista oranssia:
                       oranssilla pohjalla oranssi korostus ei erotu. */}
-                  <em className="text-goldInk">sähkösopimus</em>.
-                  <br className="sm:hidden" />{" "}
-                  <span className="sm:whitespace-nowrap">Anna Ketun hoitaa loput.</span>
+                  <span className="whitespace-nowrap lg:whitespace-normal">
+                    <em className="text-goldInk">Kilpailuttaa</em>
+                    <br className="lg:hidden" /> puolestasi.
+                  </span>
                 </h1>
 
                 <p className="mt-5 max-w-[48ch] text-[15.5px] leading-relaxed text-ink/85 sm:text-[16.5px]">
