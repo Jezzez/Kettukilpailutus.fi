@@ -81,7 +81,22 @@ export default function HomePage() {
     "@type": "Organization",
     name: SITE.name,
     url: SITE.url,
-    logo: `${SITE.url}/icon.svg`,
+    /*
+      LOGO OSOITTI AIEMMIN OSOITTEESEEN `/icon.svg`, JOKA EI OLE OLEMASSA.
+      Tiedosto poistettiin repositoriosta, kun favicon vaihdettiin PNG:ksi,
+      mutta tämä rivi jäi. Google haki siis sivuston virallista logoa ja sai
+      404:n, eli merkintä oli rikki koko ajan.
+
+      Osoite on nyt `public/`-kansion tiedosto, joka tarjoillaan sellaisenaan.
+      Älä osoita tätä `app/icon.png`:hen: se on Nextin metadatatiedosto, joka
+      tarjoillaan välimuistitunnisteen kanssa (`/icon.png?<hash>`), eikä sen
+      osoite ole pysyvä. Rakenteinen data tarvitsee pysyvän osoitteen.
+
+      Tässä käytetään logoa, jossa on nimi mukana, ei pelkkää ketunpäätä:
+      tämä kenttä ruokkii tietopaneelia, ja siinä brändi pitää pystyä
+      lukemaan, ei vain tunnistamaan.
+    */
+    logo: `${SITE.url}/isokettulogo.png`,
     description: "Suomalainen kilpailutuspalvelu: sähkösopimukset ja muut arjen sopimukset puolueettomasti vertailtuna.",
   };
 
