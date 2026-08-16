@@ -6,6 +6,7 @@ import Faq from "@/components/Faq";
 import Reveal from "@/components/Reveal";
 import SectionHead from "@/components/SectionHead";
 import CtaSection from "@/components/CtaSection";
+import ServiceGrid from "@/components/ServiceGrid";
 import TailSweep from "@/components/fox/TailSweep";
 import { annualCost, getPlans, getEnergyTopics } from "@/lib/energy";
 import { OG_IMAGE, SITE } from "@/lib/data";
@@ -341,10 +342,40 @@ export default function HomePage() {
       </section>
 
       {/*
+        PALVELUVALIKOIMA TULEE HETI UKK:N JÄLKEEN.
+
+        MIKSI VASTA TÄSSÄ EIKÄ YLEMPÄNÄ: tämä on etusivun ainoa osio,
+        joka linkittää pois sähkösuppilosta. Heti heron alla se
+        kilpailisi laskurin kanssa ja jokainen sen klikki olisi pois
+        affiliate-napista. Tässä kohtaa lukija on jo ohittanut laskurin,
+        askeleet ja UKK:n, eli hän ei ole tänään vaihtamassa
+        sähkösopimusta. Vaihtoehto tälle osiolle on poistuminen, ei
+        klikki, joten mikään ei mene hukkaan.
+
+        MIKSI ETUSIVULLA EIKÄ OSOITTEESSA /palvelut: brändihaulla Google
+        näyttää sen sivun, joka on osoitteessa `/`. Alasivu ei nouse
+        etusivun ohi sivuston omalla nimellä, joten erillinen hub olisi
+        jäänyt näkymättömiin juuri siinä haussa, jota varten se olisi
+        tehty.
+
+        `planCount` tulee samasta lähteestä kuin vertailu, jotta ruudussa
+        luvattu sopimusmäärä ei voi erota siitä mitä listalla oikeasti
+        on. Käsin kirjoitettu luku vanhenee ensimmäisenä päivänä, jolloin
+        joku piilottaa tai avaa yhden rivin.
+      */}
+      <ServiceGrid planCount={plans.length} />
+
+      {/*
         Oppaat olivat neljä isoa korttia, jotka veivät kokonaisen ruudullisen
         tilaa ja houkuttelivat pois vertailusta juuri ennen loppukehotusta.
         Sisäiset linkit ovat tärkeitä hakukoneille, joten ne säilyvät —
         mutta kevyenä rivinä, ei kilpailevana osiona.
+
+        Rivi jäi palveluvalikoiman ALAPUOLELLE tarkoituksella: se on
+        kevyin osio sivulla ja toimii siltana loppukehotukseen. Sen
+        `border-t` on nyt myös ainoa viiva palveluosion ympärillä, eli
+        se erottaa aiheet korteista ilman että kortteihin tarvitsee
+        lisätä omia reunoja.
       */}
       <section className="border-t border-line pb-16 pt-14">
         <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
