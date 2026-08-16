@@ -3,13 +3,14 @@ import { ArrowRight } from "lucide-react";
 import Reveal from "./Reveal";
 import TailSweep from "./fox/TailSweep";
 import FoxSlot from "./fox/FoxSlot";
+import { ENERGY_COMPARE } from "@/lib/nav";
 
 export default function CtaSection({
   /* Oletuskohde on sähkövertailu, koska se on ainoa auki oleva
      vertikaali. Aiempi oletus vei korttivertailuun, joka palauttaa
      nyt 404 — ja loppukehote on sivuston viimeinen mahdollisuus
      ansaita, joten sen ei kuulu koskaan osoittaa umpikujaan. */
-  href = "/sahkosopimukset#vertailu",
+  href = ENERGY_COMPARE,
   title = "Löydä sinulle paras luottokortti tänään",
   text = "Vastaa kolmeen kysymykseen – Kettu järjestää kortit puolestasi.",
   button = "Aloita ilmainen vertailu",

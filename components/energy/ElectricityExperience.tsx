@@ -141,6 +141,7 @@ export default function ElectricityExperience({
   initialType = null,
   initialKwh = 5000,
   withHero = true,
+  resultsVisibleFromStart = false,
   heading,
   intro,
 }: {
@@ -148,6 +149,8 @@ export default function ElectricityExperience({
   initialType?: "spot" | "fixed" | "open" | null;
   initialKwh?: number;
   withHero?: boolean;
+  /** Tuloslista on HTML:ssä heti, vaikka kysely olisi vastaamatta. */
+  resultsVisibleFromStart?: boolean;
   heading?: string;
   intro?: string;
 }) {
@@ -171,10 +174,19 @@ export default function ElectricityExperience({
     ja veisi vastauksen pois heti latautuvalta sivulta. Siellä lista
     näkyy suoraan.
 
-    HUOM. hakukonenäkyvyys: tällä sivulla sopimuslista ei ole enää
-    palvelimen palauttamassa HTML:ssä. Yksittäiset sopimussivut
-    (`/sahkosopimukset/sopimus/[slug]`) ja aihesivut kantavat sen
-    sisällön indeksiin — älä poista niitä.
+    HAKUKONENÄKYVYYS RATKAISTIIN ERI PROPILLA, ÄLÄ PALAUTA VANHAA.
+
+    Portti oli myös se, joka piti koko vertailun poissa palvelimen
+    palauttamasta HTML:stä: yhtiöiden nimet, marginaalit ja hinnat
+    olivat `submitted`-tilan takana, eikä Googlebot vastaa kyselyyn.
+    Sivustolla oli siis vertailusivu, jolla ei hakukoneen silmissä
+    ollut vertailusisältöä lainkaan — ja juuri se sisältö on ainoa,
+    mitä kilpailijoiden oppailla ei ole.
+
+    Korjaus ei purkanut porttia vaan erotti siitä yhden asian:
+    `resultsVisibleFromStart` päästää tuloslistan HTML:ään heti
+    oletuskulutuksella, kysely jää tarkentajaksi. Kysely siis säilyy
+    kaikkine hyötyineen, mutta se ei ole enää sisällön este.
   */
   const gated = withHero;
   const [step, setStep] = useState(1);
@@ -231,7 +243,7 @@ export default function ElectricityExperience({
   const quizMounted = useRef(false);
   const [submitted, setSubmitted] = useState(false);
   const [loadingResults, setLoadingResults] = useState(false);
-  const showResults = !gated || submitted;
+  const showResults = !gated || submitted || resultsVisibleFromStart;
   const quizStartedRef = useRef(false);
   const quizCompletedRef = useRef(false);
   const offersViewedRef = useRef(false);
@@ -1622,7 +1634,12 @@ export default function ElectricityExperience({
                  nappi näyttäisi vaisummalta kuin sitä edeltäneet neljä. */
               className="btn-ember btn-ready inline-flex flex-1 items-center justify-center gap-2 rounded-xl px-7 py-4 font-display text-[16.5px] font-bold text-onEmber transition-all active:scale-[0.98] sm:flex-none"
             >
-              Näytä sopimukset <ArrowRight size={17} aria-hidden />
+              {/* Etusivulla sopimukset ovat jo ruudulla, joten "näytä
+                  sopimukset" lupaisi jotain, mikä on jo tapahtunut, ja saisi
+                  napin tuntumaan turhalta. Siellä nappi lupaa sen, mitä
+                  vastauksilla oikeasti saa: listan omilla luvuilla. */}
+              {resultsVisibleFromStart ? "Laske minun hintani" : "Näytä sopimukset"}{" "}
+              <ArrowRight size={17} aria-hidden />
             </button>
           )}
         </div>
@@ -1643,7 +1660,9 @@ export default function ElectricityExperience({
             onClick={submitQuiz}
             className="mt-3 text-[13.5px] font-medium text-ink/55 underline underline-offset-4 hover:text-ink"
           >
-            Ohita loput kysymykset ja näytä sopimukset
+            {resultsVisibleFromStart
+              ? "Ohita loput kysymykset"
+              : "Ohita loput kysymykset ja näytä sopimukset"}
           </button>
         )}
       </div>
@@ -1781,18 +1800,29 @@ export default function ElectricityExperience({
                   Otsikko on antiikvaa ja normaalipainoista tarkoituksella.
                   Kun otsikko ei ole lihava, sivun painavin elementti on
                   oranssi nappi — ja katse menee sinne, mistä palkkio tulee.
-                  Kursivoitu "laskemalla" on sivun ainoa koristeellinen ele.
+                  Kursivoitu kultainen sana on sivun ainoa koristeellinen ele.
+
+                  OTSIKOSSA ON PAKKO LUKEA "SÄHKÖSOPIMUS".
+
+                  Tässä luki aiemmin pelkkä slogan "Anna ketun Kilpailuttaa
+                  puolestasi." Se on hyvä slogan mutta huono H1: sivun
+                  tärkeimmässä otsikossa ei ollut sitä sanaa, jolla tätä
+                  sivua haetaan, eikä hakukone voi arvata sitä brändin
+                  nimestä, jota kukaan ei vielä hae. Slogan ei kadonnut,
+                  se on otsikon yläpuolisessa silmäkulmassa.
+
+                  Samalla korjaantui iso alkukirjain keskellä lausetta:
+                  "Kilpailuttaa" näytti kirjoitusvirheeltä, vaikka se oli
+                  korostus. Korostus tehdään nyt värillä, ja ainoa iso
+                  kirjain keskellä lausetta on Kettu, joka on erisnimi.
                 */}
-                <h1 className="mt-4 max-w-[19ch] font-hero text-[2.7rem] leading-[1.05] text-cream sm:text-[3.1rem] sm:leading-[1.03] md:text-[3.5rem]">
-                  Anna ketun{" "}
-                  <br className="sm:hidden" />
+                <h1 className="mt-4 max-w-[22ch] font-hero text-[2.7rem] leading-[1.05] text-cream sm:text-[3.1rem] sm:leading-[1.03] md:text-[3.5rem]">
+                  Kilpailuta{" "}
                   {/* Korostus on lämmintä kultaa, ei toista oranssia:
                       oranssilla pohjalla oranssi korostus ei erotu. */}
-                  <span className="sm:whitespace-nowrap">
-                    <em className="text-goldInk">Kilpailuttaa</em>
-                    <br className="sm:hidden" />{" "}
-                    puolestasi.
-                  </span>
+                  <em className="text-goldInk">sähkösopimus</em>.
+                  <br className="sm:hidden" />{" "}
+                  <span className="sm:whitespace-nowrap">Anna Ketun hoitaa loput.</span>
                 </h1>
 
                 <p className="mt-5 max-w-[48ch] text-[15.5px] leading-relaxed text-ink/85 sm:text-[16.5px]">
@@ -2032,6 +2062,14 @@ export default function ElectricityExperience({
         lupausrivillä. Sama lupaus kolmesti yhdellä ruudulla ei vahvista
         sitä vaan alkaa kuulostaa vakuuttelulta. Tilalla on Kettu, joka
         on ainoa merkki, jonka takana tällä sivustolla oikeasti ollaan.
+      */}
+      {/*
+        HUOM: tämä lohko ei renderöidy tällä hetkellä millään sivulla.
+        Etusivu käyttää `resultsVisibleFromStart`ia ja aihesivut
+        `withHero={false}`, joten `showResults` on aina tosi. Lohkoa ei
+        poistettu, koska se on ainoa toteutus "portin takana" -tilalle:
+        jos jokin tuleva sivu halutaan porttiin, se tarvitaan sellaisenaan.
+        Jos porttia ei oteta käyttöön, tämä kannattaa poistaa.
       */}
       {!showResults && !loadingResults && (
         <section className="theme-light bg-paper pt-14">

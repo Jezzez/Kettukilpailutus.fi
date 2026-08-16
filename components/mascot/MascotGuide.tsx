@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { X } from "lucide-react";
 import Kettu, { type KettuPose } from "./Kettu";
+import { ENERGY_COMPARE, isEnergyPath } from "@/lib/nav";
 
 /**
  * Kettu-opas — hillitty versio.
@@ -35,7 +36,7 @@ export default function MascotGuide() {
 
   // Tervehdys kerran
   useEffect(() => {
-    const greeting = window.location.pathname.startsWith("/sahkosopimukset")
+    const greeting = isEnergyPath(window.location.pathname)
       ? "Moi! Olen Kettu – lasken sähkön hinnat kulutuksellasi."
       : window.location.pathname.startsWith("/luottokortit")
         ? "Moi! Olen Kettu – autan löytämään parhaan kortin."
@@ -56,7 +57,7 @@ export default function MascotGuide() {
         window.innerHeight + window.scrollY >= document.body.scrollHeight - 320;
       if (nearBottom && !saidBottom.current) {
         saidBottom.current = true;
-        setBubble(window.location.pathname.startsWith("/sahkosopimukset")
+        setBubble(isEnergyPath(window.location.pathname)
           ? "Edullisin sopimuksesi odottaa vertailussa."
           : "Paras osumasi odottaa vertailussa.");
         setTimeout(() => setBubble(null), 5200);
@@ -81,8 +82,8 @@ export default function MascotGuide() {
     if (el) {
       el.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
     } else {
-      // Sivulla ei ole vertailua (hub, blogi, infosivut) → ohjaa päävertikaaliin.
-      window.location.href = "/sahkosopimukset#vertailu";
+      // Sivulla ei ole vertailua (blogi, infosivut) → ohjaa päävertikaaliin.
+      window.location.href = ENERGY_COMPARE;
     }
   };
 

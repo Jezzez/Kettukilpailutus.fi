@@ -8,24 +8,44 @@ import FoxMark from "./FoxMark";
 import AffiliateButton from "./AffiliateButton";
 import { FEATURES } from "@/lib/features";
 import { LOAN_PARTNER } from "@/lib/loans";
+import { ENERGY_COMPARE, ENERGY_PATH, isEnergyPath } from "@/lib/nav";
 
-const NAV = [
-  { href: "/sahkosopimukset", label: "Sähkö", match: "/sahkosopimukset" },
+/*
+  AKTIIVISUUS ON FUNKTIO, EI ETULIITE.
+
+  Ennen jokaisella rivillä oli `match`-merkkijono, jota verrattiin
+  `startsWith`illä. Se ei enää toimi sähkölle: vertailu on etusivulla,
+  ja "/" on jokaisen polun alku — sähkölinkki olisi ollut korostettuna
+  ihan joka sivulla. Predikaatti antaa jokaiselle riville oman ehdon
+  ilman että muut rivit muuttuvat.
+*/
+type NavItem = { href: string; label: string; active: (pathname: string) => boolean };
+
+const NAV: NavItem[] = [
+  { href: ENERGY_PATH, label: "Sähkö", active: isEnergyPath },
   /* Korttilinkki palaa tähän itsestään, kun FEATURES.cards kääntyy
      todeksi. Piilotettuna se ei vain veisi kävijää 404:ään vaan myös
      jakaisi navigaation huomion kahtia — ja navigaatiossa jokainen
      ylimääräinen vaihtoehto on pois päävertikaalin klikeistä. */
   ...(FEATURES.cards
-    ? [{ href: "/luottokortit", label: "Luottokortit", match: "/luottokortit" }]
+    ? [
+        {
+          href: "/luottokortit",
+          label: "Luottokortit",
+          active: (p: string) => p.startsWith("/luottokortit") || p.startsWith("/kortit"),
+        },
+      ]
     : []),
-  ...(FEATURES.loans ? [{ href: "/lainat", label: "Lainat", match: "/lainat" }] : []),
-  { href: "/blogi", label: "Oppaat", match: "/blogi" },
-  { href: "/tietoa", label: "Tietoa", match: "/tietoa" },
+  ...(FEATURES.loans
+    ? [{ href: "/lainat", label: "Lainat", active: (p: string) => p.startsWith("/lainat") }]
+    : []),
+  { href: "/blogi", label: "Oppaat", active: (p: string) => p.startsWith("/blogi") },
+  { href: "/tietoa", label: "Tietoa", active: (p: string) => p.startsWith("/tietoa") },
 ];
 
 /** Kontekstirivi logon alla kertoo, missä alustan osassa ollaan. */
 function contextLabel(pathname: string): string {
-  if (pathname.startsWith("/sahkosopimukset")) return "Sähkösopimukset";
+  if (isEnergyPath(pathname)) return "Sähkösopimukset";
   if (FEATURES.cards && (pathname.startsWith("/luottokortit") || pathname.startsWith("/kortit")))
     return "Luottokortit";
   if (FEATURES.loans && pathname.startsWith("/lainat")) return "Lainat";
@@ -37,7 +57,7 @@ function contextLabel(pathname: string): string {
 function ctaHref(pathname: string): string {
   if (FEATURES.cards && (pathname.startsWith("/luottokortit") || pathname.startsWith("/kortit")))
     return "/luottokortit#vertailu";
-  return "/sahkosopimukset#vertailu";
+  return ENERGY_COMPARE;
 }
 
 /**
@@ -141,7 +161,7 @@ export default function Header() {
 
         <nav className="hidden items-center gap-8 lg:flex" aria-label="Päävalikko">
           {NAV.map((item) => {
-            const active = pathname.startsWith(item.match);
+            const active = item.active(pathname);
             return (
               <Link
                 key={item.label}
@@ -209,7 +229,7 @@ export default function Header() {
                   href={item.href}
                   onClick={() => setOpen(false)}
                   className={`block rounded-xl px-4 py-3 font-display text-[15px] font-medium ${
-                    pathname.startsWith(item.match) ? "bg-accentSoft text-accentDark" : "text-ink/80 hover:bg-mist"
+                    item.active(pathname) ? "bg-accentSoft text-accentDark" : "text-ink/80 hover:bg-mist"
                   }`}
                 >
                   {item.label}

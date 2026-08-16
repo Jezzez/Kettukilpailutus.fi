@@ -62,9 +62,11 @@ export default function TopicPage({ params }: { params: { topic: string } }) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Etusivu", item: SITE.url },
-      { "@type": "ListItem", position: 2, name: "Sähkösopimukset", item: `${SITE.url}/sahkosopimukset` },
-      { "@type": "ListItem", position: 3, name: topic.h1, item: `${SITE.url}/sahkosopimukset/${topic.slug}` },
+      /* Kaksi askelta, ei kolmea: sähkövertailu ON etusivu, joten
+         "Etusivu > Sähkösopimukset" olisi sama osoite kahdesti. Google
+         hylkää murupolun, jonka askeleet osoittavat samaan URLiin. */
+      { "@type": "ListItem", position: 1, name: "Sähkösopimukset", item: SITE.url },
+      { "@type": "ListItem", position: 2, name: topic.h1, item: `${SITE.url}/sahkosopimukset/${topic.slug}` },
     ],
   };
 
@@ -77,9 +79,7 @@ export default function TopicPage({ params }: { params: { topic: string } }) {
 
       <div className="mx-auto max-w-[1180px] px-4 pt-8 sm:px-6">
         <nav aria-label="Murupolku" className="flex items-center gap-1.5 text-[13px] text-ink/60">
-          <Link href="/" className="hover:text-ink">Etusivu</Link>
-          <ChevronRight size={13} aria-hidden />
-          <Link href="/sahkosopimukset" className="hover:text-ink">Sähkösopimukset</Link>
+          <Link href="/" className="hover:text-ink">Sähkösopimukset</Link>
           <ChevronRight size={13} aria-hidden />
           <span className="text-ink/85">{topic.h1}</span>
         </nav>
@@ -143,7 +143,7 @@ export default function TopicPage({ params }: { params: { topic: string } }) {
       </section>
 
       <CtaSection
-        href="/sahkosopimukset#vertailu"
+        href="/#vertailu"
         title="Katso, paljonko sinä säästäisit"
         text="Kulutusarvio, todelliset vuosihinnat ja paras sopimus — parissa minuutissa."
         button="Kilpailuta sähkösopimus"

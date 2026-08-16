@@ -6,8 +6,12 @@ import { getPlans, getEnergyTopics } from "@/lib/energy";
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
   return [
-    { url: SITE.url, lastModified: now, changeFrequency: "weekly", priority: 1 },
-    { url: `${SITE.url}/sahkosopimukset`, lastModified: now, changeFrequency: "daily", priority: 1 },
+    /* Etusivu ON sähkövertailu, ja sen hinnat muuttuvat, joten
+       `daily`. Rivi `/sahkosopimukset` poistettiin: se ohjautuu nyt
+       301:llä tänne, ja ohjautuva osoite sivukartassa on hakukoneelle
+       ristiriitainen viesti — sivukartta lupaa indeksoitavan sivun,
+       palvelin vastaa "tämä ei ole täällä". */
+    { url: SITE.url, lastModified: now, changeFrequency: "daily", priority: 1 },
     ...(FEATURES.loans
       ? [
           {

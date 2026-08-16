@@ -240,7 +240,7 @@ export default function PostPage({ params }: { params: { slug: string } }) {
       </section>
     ) : (
     <CtaSection
-      href={isEnergy ? "/sahkosopimukset#vertailu" : "/luottokortit#vertailu"}
+      href={isEnergy ? "/#vertailu" : "/luottokortit#vertailu"}
       title={
         isEnergy
           ? "Katso nyt, paljonko sinä maksat liikaa sähköstä"

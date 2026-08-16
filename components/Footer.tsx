@@ -7,6 +7,7 @@ import { getCards, SITE } from "@/lib/data";
 import { getPlans, getEnergyTopics } from "@/lib/energy";
 import FoxMark from "./FoxMark";
 import { FEATURES } from "@/lib/features";
+import { ENERGY_PATH, isEnergyPath } from "@/lib/nav";
 
 /**
  * Footer seuraa kontekstia: sähköä kilpailuttavalle ei tarjota
@@ -15,7 +16,7 @@ import { FEATURES } from "@/lib/features";
  */
 export default function Footer() {
   const pathname = usePathname() ?? "/";
-  const onEnergy = pathname.startsWith("/sahkosopimukset");
+  const onEnergy = isEnergyPath(pathname);
   const onCards =
     FEATURES.cards && (pathname.startsWith("/luottokortit") || pathname.startsWith("/kortit"));
 
@@ -42,7 +43,7 @@ export default function Footer() {
       : {
           title: "Kilpailuta",
           links: [
-            { href: "/sahkosopimukset", label: "Sähkösopimukset" },
+            { href: ENERGY_PATH, label: "Sähkösopimukset" },
             ...(FEATURES.cards ? [{ href: "/luottokortit", label: "Luottokortit" }] : []),
             ...(FEATURES.loans ? [{ href: "/lainat", label: "Lainat" }] : []),
             { href: "/blogi", label: "Ketun oppaat" },

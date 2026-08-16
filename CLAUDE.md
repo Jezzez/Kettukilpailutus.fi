@@ -64,8 +64,8 @@ JSON-tiedostoissa, joten sivut generoituvat staattisesti.
 ## Sivukartta
 
 ```
-/                            hub — kategoriavalitsin
-/sahkosopimukset             sähkövertailu (päävertikaali)
+/                            sähkövertailu (päävertikaali) — TÄMÄ on etusivu
+/sahkosopimukset             301 → `/` (next.config.mjs), ei omaa sivua
   /sahkosopimukset/sopimus/[slug]   26 sopimussivua (yksi per näkyvä sopimus)
   /sahkosopimukset/[topic]          4 SEO-laskeutumissivua
 /lainat                      ohjaus Sortterille (ei omaa vertailua)
@@ -80,6 +80,12 @@ tulossa: /vakuutukset /internet
 Vertikaalien näkyvyys on `lib/features.ts`-kytkimien takana: `cards: false`,
 `loans: true`. Kytkin ohjaa navigaatiota, footeria, etusivua ja sivukarttaa
 yhdestä paikasta — älä piilota osioita muualta käsin.
+
+Sähkösivun osoite on `lib/nav.ts`-vakioissa (`ENERGY_PATH`,
+`ENERGY_COMPARE`) ja "ollaanko sähkösivulla" on `isEnergyPath()`. Älä
+kirjoita polkua käsin komponentteihin: etusivu ei ala merkkijonolla
+`/sahkosopimukset`, joten `startsWith`-tarkistus jättäisi sivuston
+tärkeimmän sivun tunnistamatta.
 
 ## Keskeiset tiedostot
 
