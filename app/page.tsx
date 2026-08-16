@@ -158,13 +158,23 @@ export default function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }} />
 
       {/*
-        `resultsVisibleFromStart` on koko tämän sivun syy olla olemassa:
-        tuloslista on palvelimen palauttamassa HTML:ssä heti, oletuksena
-        kerrostalon 1 500 kWh. Kysely jää tarkentajaksi eikä ole enää
-        sisällön este. Ks. perustelut ElectricityExperience.tsx:n
-        porttikommentista.
+        ETUSIVU ON PORTIN TAKANA: sopimuksia ei näytetä ennen kuin kysely
+        on täytetty. Tämä on Jessen päätös 16.8.2026 eikä siitä
+        neuvotella. Prop `resultsVisibleFromStart`, joka päästi listan
+        HTML:ään heti, poistettiin kokonaan.
+
+        SEURAUS, JOKA PITÄÄ MUISTAA: tämän sivun HTML:ssä ei ole
+        sopimusten nimiä eikä hintoja. Hakukonesisältö tulee aihesivuilta
+        ja 26 sopimussivulta, jotka näyttävät saman datan ilman kyselyä.
+        Jos joskus harkitset portin lisäämistä niillekin, tarkista ensin
+        mitä sivustolle jää indeksoitavaksi — vastaus on tällä hetkellä
+        "ei mitään vertailusisältöä".
+
+        `initialKwh={1500}` on kerrostaloasunnon oletus. Se ei näy
+        kävijälle ennen vastauksia, mutta se on ItemList-järjestyksen ja
+        kyselyn lähtöarvon peruste.
       */}
-      <ElectricityExperience plans={plans} initialKwh={1500} resultsVisibleFromStart />
+      <ElectricityExperience plans={plans} initialKwh={1500} />
 
       {/*
         Kaikki heron alapuolinen sisältö on vaalealla pinnalla. Tuloslista ja

@@ -130,6 +130,23 @@ Täydet tokenit, apuluokat ja perustelut: `DESIGN.md`.
 
 ## Sähkösivun CRO-logiikka — älä poista näitä
 
+0. **Sopimuksia ei näytetä ennen kuin kysely on täytetty.** Etusivun
+   tuloslista on portin takana (`gated = withHero`), ja se on Jessen
+   nimenomainen päätös 16.8.2026, ei optimoitava muuttuja. Prop
+   `resultsVisibleFromStart`, joka päästi listan HTML:ään heti, luotiin ja
+   poistettiin samana päivänä. Älä ehdota sitä uudelleen, älä ehdota
+   "kolme halvinta heti" -osittaista porttia äläkä sumennettua listaa.
+
+   **Tiedostettu hinta:** portin takana oleva sisältö ei ole etusivun
+   HTML:ssä, joten Googlebot ei näe sieltä yhtään sopimusta. Siksi
+   aihesivut `/sahkosopimukset/[topic]` ajavat saman komponentin
+   `withHero={false}`, jolloin vertailu on niillä ilman porttia. **Niille
+   ei saa lisätä porttia:** ne ja 26 sopimussivua ovat ainoa paikka, jossa
+   hakukone näkee sopimusdatan.
+
+   Cloaking — sisällön renderöinti robotille ja piilottaminen kävijältä —
+   ei ole vaihtoehto missään muodossa.
+
 1. **Laskuri on heron sisällä** — työkalu ennen myyntipuhetta
 2. **Asumismuoto → kWh** → jokainen hinta on henkilökohtainen euromäärä, ei c/kWh
 3. **Vapaaehtoinen "nykyinen hintani"** → säästö lasketaan omaan sopimukseen,

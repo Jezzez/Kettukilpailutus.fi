@@ -141,7 +141,6 @@ export default function ElectricityExperience({
   initialType = null,
   initialKwh = 5000,
   withHero = true,
-  resultsVisibleFromStart = false,
   heading,
   intro,
 }: {
@@ -149,8 +148,6 @@ export default function ElectricityExperience({
   initialType?: "spot" | "fixed" | "open" | null;
   initialKwh?: number;
   withHero?: boolean;
-  /** Tuloslista on HTML:ssä heti, vaikka kysely olisi vastaamatta. */
-  resultsVisibleFromStart?: boolean;
   heading?: string;
   intro?: string;
 }) {
@@ -174,19 +171,35 @@ export default function ElectricityExperience({
     ja veisi vastauksen pois heti latautuvalta sivulta. Siellä lista
     näkyy suoraan.
 
-    HAKUKONENÄKYVYYS RATKAISTIIN ERI PROPILLA, ÄLÄ PALAUTA VANHAA.
+    PORTTI ON JESSEN NIMENOMAINEN PÄÄTÖS. ÄLÄ PURA SITÄ.
 
-    Portti oli myös se, joka piti koko vertailun poissa palvelimen
-    palauttamasta HTML:stä: yhtiöiden nimet, marginaalit ja hinnat
-    olivat `submitted`-tilan takana, eikä Googlebot vastaa kyselyyn.
-    Sivustolla oli siis vertailusivu, jolla ei hakukoneen silmissä
-    ollut vertailusisältöä lainkaan — ja juuri se sisältö on ainoa,
-    mitä kilpailijoiden oppailla ei ole.
+    Tässä oli hetken aikaa prop `resultsVisibleFromStart`, joka päästi
+    tuloslistan HTML:ään heti oletuskulutuksella. Se poistettiin
+    16.8.2026 Jessen päätöksellä: sopimuksia ei näytetä ennen kuin
+    kysely on täytetty, eikä siitä neuvotella. Jos luet tätä ja
+    mietit "voisi näyttää kolme halvinta heti" tai "voisi näyttää
+    listan sumennettuna" — ei voi. Se kysymys on jo kysytty ja
+    vastattu.
 
-    Korjaus ei purkanut porttia vaan erotti siitä yhden asian:
-    `resultsVisibleFromStart` päästää tuloslistan HTML:ään heti
-    oletuskulutuksella, kysely jää tarkentajaksi. Kysely siis säilyy
-    kaikkine hyötyineen, mutta se ei ole enää sisällön este.
+    TIEDOSTETTU HINTA: portti pitää sopimuslistan poissa palvelimen
+    palauttamasta HTML:stä, koska Googlebot ei vastaa kyselyyn.
+    Etusivu ei siis kilpaile hakusanalla "halvin sähkösopimus" sillä
+    sisällöllä, joka portin takana on.
+
+    MISTÄ HAKUKONESISÄLTÖ SILLOIN TULEE: muualta sivustolta, ei tästä
+    komponentista.
+      1. Aihesivut `/sahkosopimukset/[topic]` ajavat tämän saman
+         komponentin `withHero={false}`, jolloin `gated` on epätosi ja
+         koko vertailu on HTML:ssä ilman kyselyä. Ne ovat siis se
+         paikka, jossa hakukone näkee sopimukset. ÄLÄ laita niille
+         porttia — silloin sitä sisältöä ei ole enää missään.
+      2. 26 sopimussivua `/sahkosopimukset/sopimus/[slug]` näyttävät
+         yhden sopimuksen hinnat ja ehdot kokonaan ilman kyselyä.
+      3. Etusivun oma näkyvä sisältö on kaikki muu kuin tuloslista:
+         hero, askelosio, läpinäkyvyys, FAQ, aihelinkit.
+
+    Cloaking ei ole vaihtoehto: sisältöä ei renderöidä robotille ja
+    piiloteta kävijältä. Siitä tulee manuaalinen rangaistus.
   */
   const gated = withHero;
   const [step, setStep] = useState(1);
@@ -243,7 +256,7 @@ export default function ElectricityExperience({
   const quizMounted = useRef(false);
   const [submitted, setSubmitted] = useState(false);
   const [loadingResults, setLoadingResults] = useState(false);
-  const showResults = !gated || submitted || resultsVisibleFromStart;
+  const showResults = !gated || submitted;
   const quizStartedRef = useRef(false);
   const quizCompletedRef = useRef(false);
   const offersViewedRef = useRef(false);
@@ -1634,11 +1647,11 @@ export default function ElectricityExperience({
                  nappi näyttäisi vaisummalta kuin sitä edeltäneet neljä. */
               className="btn-ember btn-ready inline-flex flex-1 items-center justify-center gap-2 rounded-xl px-7 py-4 font-display text-[16.5px] font-bold text-onEmber transition-all active:scale-[0.98] sm:flex-none"
             >
-              {/* Etusivulla sopimukset ovat jo ruudulla, joten "näytä
-                  sopimukset" lupaisi jotain, mikä on jo tapahtunut, ja saisi
-                  napin tuntumaan turhalta. Siellä nappi lupaa sen, mitä
-                  vastauksilla oikeasti saa: listan omilla luvuilla. */}
-              {resultsVisibleFromStart ? "Laske minun hintani" : "Näytä sopimukset"}{" "}
+              {/* Nappi lupaa täsmälleen sen, mitä painallus tekee: portti
+                  aukeaa ja sopimukset tulevat ruudulle. Älä vaihda tätä
+                  epämääräisempään ("Jatka", "Valmis") — konkreettinen lupaus
+                  on se, mikä saa viimeisen vaiheen loppuun asti. */}
+              Näytä sopimukset{" "}
               <ArrowRight size={17} aria-hidden />
             </button>
           )}
@@ -1660,9 +1673,7 @@ export default function ElectricityExperience({
             onClick={submitQuiz}
             className="mt-3 text-[13.5px] font-medium text-ink/55 underline underline-offset-4 hover:text-ink"
           >
-            {resultsVisibleFromStart
-              ? "Ohita loput kysymykset"
-              : "Ohita loput kysymykset ja näytä sopimukset"}
+            Ohita loput kysymykset ja näytä sopimukset
           </button>
         )}
       </div>
@@ -2064,12 +2075,12 @@ export default function ElectricityExperience({
         on ainoa merkki, jonka takana tällä sivustolla oikeasti ollaan.
       */}
       {/*
-        HUOM: tämä lohko ei renderöidy tällä hetkellä millään sivulla.
-        Etusivu käyttää `resultsVisibleFromStart`ia ja aihesivut
-        `withHero={false}`, joten `showResults` on aina tosi. Lohkoa ei
-        poistettu, koska se on ainoa toteutus "portin takana" -tilalle:
-        jos jokin tuleva sivu halutaan porttiin, se tarvitaan sellaisenaan.
-        Jos porttia ei oteta käyttöön, tämä kannattaa poistaa.
+        TÄMÄ ON PORTIN TAKANA -TILA, ELI SE MITÄ ETUSIVUN KÄVIJÄ NÄKEE
+        ENNEN KUIN KYSELY ON TÄYTETTY. Aihesivuilla `gated` on epätosi,
+        joten siellä tätä ei näy koskaan. Tämä on siis etusivun ainoa
+        tuloslistan paikalla oleva sisältö ennen vastauksia — jos tähän
+        koskee, koske harkiten: se on viimeinen ruutu ennen kuin kävijä
+        joko täyttää kyselyn tai poistuu.
       */}
       {!showResults && !loadingResults && (
         <section className="theme-light bg-paper pt-14">
