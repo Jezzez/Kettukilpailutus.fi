@@ -391,7 +391,7 @@ export default function HomePage() {
                   kappaleeseen; kumpaakaan ei tarvitse uhrata.
                 */}
                 <p className="mt-5 max-w-md text-[16px] leading-relaxed text-ink/90 sm:text-[17.5px]">
-                  Kettukilpailutus vertailee sähkösopimukset omalla kulutuksellasi ja hakee lainatarjoukset yhdellä hakemuksella. Ei soittoja, ei papereita, ei yhteystietoja.
+                  Kettukilpailutus vertailee sähkösopimukset omalla kulutuksellasi ja hakee lainatarjoukset yhdellä hakemuksella.
                 </p>
               </Reveal>
 
