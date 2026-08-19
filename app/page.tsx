@@ -266,18 +266,14 @@ export default function HomePage() {
           ainoat tuottavat linkit taitteen alle. Taustana se antaa saman
           tunnelman ilman että vie riviäkään.
 
-          MITOITUS ON ERI KUIN LAINASIVULLA, KOSKA KUVA ON ERI MUOTOA.
-          `rahakettu` on pystykuva ja mitoitetaan korkeudella; tämä on
-          vaakakuva (1432 × 1016), joten korkeusmitoitus levittäisi sen
-          moninkertaiseksi ruudun leveyteen nähden. Leveys on siis se, mitä
-          ohjataan, ja kuva ankkuroidaan alareunaan.
+          MOBIILIKUVA ON LÄPINÄKYVÄ PYSTYKUVA. `kettuetusivu` on tarkoitettu
+          puhelimen taustalle, joten se ankkuroidaan alareunaan ja rajataan
+          leveydellä niin, että hahmo tukee tekstin tunnelmaa ilman että se
+          vie tilaa painikkeilta.
 
-          HÄIVYTYS ON YLÖSPÄIN, EI VASEMMALLE KUTEN LAINASIVULLA. Sekin
-          seuraa kuvan muodosta: pystykuva mahtuu tekstin viereen, joten
-          lainasivulla riittää häivyttää sen vasen reuna. Vaakakuva täyttää
-          koko leveyden, joten se on väistämättä tekstin ALLA, ja ainoa
-          suunta, johon se voi väistyä, on ylös. Kuva on siis kirkkaimmillaan
-          alareunassa ja liukenee oranssiin ennen kuin osuu otsikkoon.
+          HÄIVYTYS ON YLÖSPÄIN. Hahmo on kirkkaimmillaan alareunassa ja
+          liukenee oranssiin ennen kuin se osuu otsikkoon. Näin kuva antaa
+          herolle persoonan, mutta tekstin ja nappien kontrasti säilyy.
 
           Käytännössä tekstirivit ja ingressi ovat puhtaalla oranssilla,
           napit ja luottamusrivi kuvan haaleimman kohdan päällä. Se on
@@ -290,10 +286,10 @@ export default function HomePage() {
           className="pointer-events-none absolute inset-0 z-0 overflow-hidden md:hidden"
         >
           <Image
-            src="/kettu-rantatuoli.webp"
+            src="/kettuetusivu.png"
             alt=""
-            width={1432}
-            height={1016}
+            width={941}
+            height={1672}
             priority
             /*
               `sizes` ALKAA TYÖPÖYTÄEHDOLLA, VAIKKA KUVA ON MOBIILIN.
@@ -318,7 +314,7 @@ export default function HomePage() {
               molemmat — ne ovat pari.
             */
             sizes="(min-width: 768px) 1px, 130vw"
-            className="absolute bottom-15 left-[-9%] w-[120%] max-w-none opacity-40"
+            className="absolute bottom-0 left-[0%] w-[75%] max-w-none opacity-40"
             style={{
               WebkitMaskImage: "linear-gradient(to top, #000 55%, transparent 100%)",
               maskImage: "linear-gradient(to top, #000 55%, transparent 100%)",
@@ -371,9 +367,9 @@ export default function HomePage() {
                   alarajaa katkaisi otsikon 320 px:n näytöllä.
                 */}
                 <h1 className="mt-4 font-hero text-[clamp(1.9rem,8.4vw,2.7rem)] leading-[1.06] text-cream sm:text-[3rem]">
-                  Ota iisisti.
+                  Anna ketun
                   <br />
-                  Kettu <em className="text-goldInk">kilpailuttaa</em> sähkön ja lainat.
+                  <em className="text-goldInk">kilpailuttaa</em> puolestasi.
                 </h1>
 
                 {/*
