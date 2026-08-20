@@ -9,7 +9,6 @@ import Reveal from "@/components/Reveal";
 import SectionHead from "@/components/SectionHead";
 import FoxSlot from "@/components/fox/FoxSlot";
 import TailSweep from "@/components/fox/TailSweep";
-import LoanStickyCta from "@/components/loans/LoanStickyCta";
 import SortterCalculator from "@/components/loans/SortterCalculator";
 import { OG_IMAGE, SITE } from "@/lib/data";
 import { FEATURES } from "@/lib/features";
@@ -82,6 +81,7 @@ export const metadata: Metadata = {
   kokonsa `base`-merkkijonoon, joka tulee luokkalistassa ensin.
 */
 const BIG_BTN = "w-full sm:w-auto !px-9 !py-5 !text-[17px]";
+const HERO_SCROLL_BTN = `${BIG_BTN} btn-ember inline-flex items-center justify-center gap-2 rounded-xl font-display font-bold !text-onEmber shadow-lift transition-all hover:bg-mist active:scale-[0.98] sm:!bg-white sm:bg-none sm:!text-accentDark`;
 
 /** Heron luottamusrivi. Jokainen kohta on tosi ja tarkistettavissa. */
 const HERO_CHECKS = ["Yksi hakemus", "Useita pankkeja", "Maksuton vertailu"];
@@ -171,16 +171,10 @@ export default function LoansPage() {
 
               <Reveal delay={0.1}>
                 <div className="theme-light mt-8" data-loan-cta>
-                  <AffiliateButton
-                    href={LOAN_PARTNER.url}
-                    cardId={LOAN_PARTNER.id}
-                    placement="lainat-hero"
-                    variant="inverse"
-                    className={`${BIG_BTN} btn-ember !text-onEmber sm:!bg-white sm:bg-none sm:!text-accentDark`}
-                  >
+                  <a href="#laskuri" className={HERO_SCROLL_BTN}>
                     Hae lainatarjoukset
                     <ArrowRight size={19} aria-hidden />
-                  </AffiliateButton>
+                  </a>
                 </div>
 
                 <ul className="mt-5 flex max-w-lg flex-wrap gap-2">
@@ -220,7 +214,10 @@ export default function LoansPage() {
       </section>
 
       <div className="theme-light bg-paper pt-px">
-        <div className="relative z-20 mx-auto -mt-40 max-w-[1180px] px-4 sm:px-6 md:-mt-44">
+        <div
+          id="laskuri"
+          className="relative z-20 mx-auto -mt-40 max-w-[1180px] scroll-mt-24 px-4 sm:px-6 md:-mt-44"
+        >
           <SortterCalculator />
         </div>
       </div>
@@ -370,8 +367,6 @@ export default function LoansPage() {
           </div>
         </Reveal>
       </section>
-
-      <LoanStickyCta />
     </>
   );
 }
