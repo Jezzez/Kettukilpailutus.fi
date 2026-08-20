@@ -18,7 +18,7 @@
         "Myyjän osuus on käytännössä aina kaksi lukua. Perusmaksu on kiinteä kuukausimaksu, joka juoksee riippumatta siitä, kulutatko sähköä vai et. Elokuussa 2026 vertailussamme olevien sopimusten perusmaksut asettuvat 3,90 ja 5,99 euron välille kuukaudessa, eli vuositasolla noin 47 ja 72 euron välille.",
         "Energiamaksu on se osa, joka kertyy kulutuksen mukaan, ja se merkitään sentteinä kilowattitunnilta. Tässä kohtaa kiinteä ja pörssisidonnainen sopimus näyttävät laskulla erilaisilta.",
         "Kiinteähintaisessa sopimuksessa laskulla lukee yksi luku, esimerkiksi 9,99 c/kWh, ja se on koko energian hinta. Elokuussa 2026 vertailumme kiinteät sopimukset asettuvat 9,59 ja 13,80 sentin välille kilowattitunnilta.",
-        "Pörssisopimuksessa laskulla on kaksi lukua: kuukauden toteutunut pörssihinta ja yhtiön marginaali. Marginaali on se osa, jolla pörssisopimukset oikeasti eroavat toisistaan, koska pörssihinta on kaikille sama. Vertailumme pörssisopimusten marginaalit asettuvat 0,42 ja 1,99 sentin välille kilowattitunnilta. Ero halvimman ja kalleimman välillä on 1,57 senttiä kilowattitunnilta, mikä tarkoittaa 18 000 kilowattitunnin sähkölämmitteisessä talossa noin 283 euroa vuodessa pelkästä marginaalista.",
+        "Pörssisopimuksessa laskulla on kaksi lukua: kuukauden toteutunut pörssihinta ja yhtiön marginaali. Marginaali on se osa, jolla pörssisopimukset oikeasti eroavat toisistaan, koska pörssihinta on kaikille sama. Vertailumme pörssisopimusten marginaalit asettuvat 0,37 ja 1,99 sentin välille kilowattitunnilta. Ero halvimman ja kalleimman välillä on 1,62 senttiä kilowattitunnilta, mikä tarkoittaa 18 000 kilowattitunnin sähkölämmitteisessä talossa noin 292 euroa vuodessa pelkästä marginaalista.",
         "Konkreettinen esimerkki auttaa hahmottamaan mittasuhteet. Rivitaloasunnossa, jossa kuluu 3 500 kilowattituntia vuodessa, vertailun edullisin kiinteä sopimus (9,65 c/kWh, perusmaksu 3,90 €/kk) maksaa vuodessa noin 385 euroa. Sama kulutus vertailun kalleimmalla kiinteällä sopimuksella (13,80 c/kWh, perusmaksu 4,90 €/kk) maksaa noin 542 euroa. Ero on 157 euroa vuodessa, eikä sähkö ole senttiäkään erilaista.",
         "Jos haluat nähdä oman kulutuksesi kohdalla lasketut euromäärät, ne saa suoraan [sähkösopimusten vertailusta](/sahkosopimukset).",
         "## Siirtomaksu: laskun se osa, jota ei voi kilpailuttaa",
@@ -48,7 +48,7 @@
         "Nopein tapa selvittää oma tilanne on ottaa viimeisin lasku esiin, katsoa siitä oma energiahinta ja perusmaksu, ja syöttää ne [vertailun laskuriin](/sahkosopimukset#vertailu). Silloin näet euroina, kannattaako vaihtaa. Jos ei kannata, saat myös sen vastauksen.",
         "Jos mietit vielä, onko oma kulutuksesi tavallinen, siihen vastaa opas [paljonko sähköä oikeasti kuluu](/blogi/paljonko-sahkoa-kuluu).",
         "## Lähteet",
-        "Sähkövero, huoltovarmuusmaksu ja arvonlisäverokanta: [Verohallinto, sähkövero](https://www.vero.fi/yritykset-ja-yhteisot/verot-ja-maksut/valmisteverotus/sahkovero/). Siirtohinnoittelun valvonta ja korotuskatto: [Energiavirasto, siirtohinnoittelun valvonta](https://energiavirasto.fi/siirtohinnoittelun-valvonta). Sopimusten hinnat, marginaalit ja perusmaksut ovat Kettukilpailutuksen omaa vertailudataa, tarkistettu yhtiöiden omilta sivuilta elokuun alussa 2026."
+        "Sähkövero, huoltovarmuusmaksu ja arvonlisäverokanta: [Verohallinto, sähkövero](https://www.vero.fi/yritykset-ja-yhteisot/verot-ja-maksut/valmisteverotus/sahkovero/). Siirtohinnoittelun valvonta ja korotuskatto: [Energiavirasto, siirtohinnoittelun valvonta](https://energiavirasto.fi/siirtohinnoittelun-valvonta). Sopimusten hinnat, marginaalit ja perusmaksut ovat Kettukilpailutuksen omaa vertailudataa, tarkistettu yhtiöiden omista tilauslinkeistä elokuussa 2026."
       ]
     },
     {
@@ -99,7 +99,7 @@
         "Se osa laskusta, jossa raha oikeasti liikkuu vuosittain, on sähkön myyjän osuus. Sen tarkistaminen vie muutaman minuutin ja onnistuu [vertailun laskurilla](/sahkosopimukset#vertailu), joka laskee hinnat sinun ilmoittamallasi kulutuksella. Jos oma sopimuksesi osoittautuu jo edulliseksi, sekin on hyvä tieto. Silloin tiedät, ettei siirtomaksun suuruudelle vain voi tehdä mitään.",
         "Jos haluat ensin ymmärtää koko laskun rakenteen, aloita oppaasta [sähkölasku rivi riviltä](/blogi/sahkolasku-rivi-rivilta).",
         "## Lähteet",
-        "Siirtohinnoittelun valvonta, nelivuotiset valvontajaksot ja siirtohintojen korotuskatto: [Energiavirasto, siirtohinnoittelun valvonta](https://energiavirasto.fi/siirtohinnoittelun-valvonta). Vakiokorvaus jakelun keskeytyksestä perustuu sähkömarkkinalakiin, ks. [Energiavirasto](https://energiavirasto.fi/). Sähkövero ja huoltovarmuusmaksu: [Verohallinto, sähkövero](https://www.vero.fi/yritykset-ja-yhteisot/verot-ja-maksut/valmisteverotus/sahkovero/). Sopimusten hinnat, marginaalit ja perusmaksut ovat Kettukilpailutuksen omaa vertailudataa, tarkistettu yhtiöiden omilta sivuilta elokuun alussa 2026."
+        "Siirtohinnoittelun valvonta, nelivuotiset valvontajaksot ja siirtohintojen korotuskatto: [Energiavirasto, siirtohinnoittelun valvonta](https://energiavirasto.fi/siirtohinnoittelun-valvonta). Vakiokorvaus jakelun keskeytyksestä perustuu sähkömarkkinalakiin, ks. [Energiavirasto](https://energiavirasto.fi/). Sähkövero ja huoltovarmuusmaksu: [Verohallinto, sähkövero](https://www.vero.fi/yritykset-ja-yhteisot/verot-ja-maksut/valmisteverotus/sahkovero/). Sopimusten hinnat, marginaalit ja perusmaksut ovat Kettukilpailutuksen omaa vertailudataa, tarkistettu yhtiöiden omista tilauslinkeistä elokuussa 2026."
       ]
     },
     {
@@ -159,7 +159,7 @@
         "Laske, paljonko säästäisit vuodessa. Sen saa selville syöttämällä oman kulutuksesi ja nykyisen hintasi [vertailun laskuriin](/sahkosopimukset#vertailu), joka näyttää eron euroina. Se kertoo suoraan myös sen, jos nykyinen sopimuksesi on jo halvempi kuin tarjolla olevat.",
         "Jos vaihto kannattaa, tee uusi sopimus ja anna uuden myyjän hoitaa loput. Vanhalle yhtiölle ei tarvitse ilmoittaa mitään.",
         "## Lähteet",
-        "Kuluttajan oikeudet sähkösopimuksissa, irtisanominen ja etämyynnin peruuttamisoikeus: [Kilpailu- ja kuluttajavirasto](https://www.kkv.fi/ajankohtaista/tiedotteet/usein-kysyttya-sahkosta/). Määräaikaisten sopimusten jatkaminen ja irtisanomisoikeus: [Kilpailu- ja kuluttajavirasto, määräaikaisten sopimusten jatkaminen](https://www.kkv.fi/paatokset/kuluttaja-asiat/kuluttaja-asiamiehen-ratkaisut/maaraaikaisten-sahkonmyyntisopimusten-jatkaminen/). Sähkön toimitusehtoja ja katkaisua koskeva sääntely: [Energiavirasto](https://energiavirasto.fi/). Sopimusten hinnat, marginaalit ja perusmaksut ovat Kettukilpailutuksen omaa vertailudataa, tarkistettu yhtiöiden omilta sivuilta elokuun alussa 2026."
+        "Kuluttajan oikeudet sähkösopimuksissa, irtisanominen ja etämyynnin peruuttamisoikeus: [Kilpailu- ja kuluttajavirasto](https://www.kkv.fi/ajankohtaista/tiedotteet/usein-kysyttya-sahkosta/). Määräaikaisten sopimusten jatkaminen ja irtisanomisoikeus: [Kilpailu- ja kuluttajavirasto, määräaikaisten sopimusten jatkaminen](https://www.kkv.fi/paatokset/kuluttaja-asiat/kuluttaja-asiamiehen-ratkaisut/maaraaikaisten-sahkonmyyntisopimusten-jatkaminen/). Sähkön toimitusehtoja ja katkaisua koskeva sääntely: [Energiavirasto](https://energiavirasto.fi/). Sopimusten hinnat, marginaalit ja perusmaksut ovat Kettukilpailutuksen omaa vertailudataa, tarkistettu yhtiöiden omista tilauslinkeistä elokuussa 2026."
       ]
     },
     {
@@ -174,7 +174,7 @@
         "Tässä oppaassa käydään läpi molempien logiikka, viime vuosien toteutuneet hinnat ja kolme kysymystä, jotka käytännössä ratkaisevat valinnan.",
         "## Miten pörssisähkö ja kiinteä hinta eroavat?",
         "Kiinteässä sopimuksessa sovit energian hinnan etukäteen koko sopimuskaudeksi. Elokuussa 2026 vertailumme kiinteät sopimukset asettuvat 9,59 ja 13,80 sentin välille kilowattitunnilta, ja sopimuskaudet ovat 6 tai 24 kuukautta. Hinta on sama tammikuun pakkasaamuna ja heinäkuun tuulisena yönä.",
-        "Pörssisopimuksessa maksat sähköstä sen hinnan, joka pohjoismaisessa sähköpörssissä on kunakin hetkenä. Päälle tulee yhtiön marginaali ja kuukausittainen perusmaksu. Vertailumme pörssisopimusten marginaalit asettuvat 0,42 ja 1,99 sentin välille kilowattitunnilta.",
+        "Pörssisopimuksessa maksat sähköstä sen hinnan, joka pohjoismaisessa sähköpörssissä on kunakin hetkenä. Päälle tulee yhtiön marginaali ja kuukausittainen perusmaksu. Vertailumme pörssisopimusten marginaalit asettuvat 0,37 ja 1,99 sentin välille kilowattitunnilta.",
         "Olennainen ero: kiinteässä sopimuksessa ostat vakuutuksen hinnannousua vastaan, ja vakuutuksella on hinta. Pörssisopimuksessa kannat riskin itse ja saat vastineeksi markkinahinnan ilman riskilisää.",
         "## Mitä pörssisähkö on maksanut viime vuosina?",
         "Luvut kertovat tästä enemmän kuin mikään arvio. Vuoden 2025 pörssisähkön keskihinta Suomessa oli 5,08 senttiä kilowattitunnilta arvonlisäveroineen ja 4,05 senttiä ilman arvonlisäveroa. Pörssisopimuksen asiakas maksoi tämän päälle marginaalin, eli noin puoli senttiä, sekä perusmaksun.",
@@ -215,7 +215,7 @@
         "Jos budjetti kestää vaihtelun ja pystyt siirtämään kulutusta, valitse pörssisähkö ja katso ennen kaikkea marginaalia ja perusmaksua. Ne ovat ainoat luvut, joilla pörssisopimukset eroavat toisistaan.",
         "Jos budjetti kestää mutta et halua ajatella asiaa lainkaan, kumpi tahansa toimii. Silloin ratkaisee kokonaishinta, jonka näet [sähkösopimusten vertailusta](/sahkosopimukset#vertailu) omalla kulutuksellasi laskettuna. Vertailussa voi rajata näkyviin vain pörssisopimukset tai vain kiinteät, jolloin valinta pilkkoutuu kahteen erilliseen ja helpompaan päätökseen.",
         "## Lähteet",
-        "Pörssisähkön toteutuneet hinnat ja vuosikeskiarvot perustuvat Nord Poolin Suomen hinta-alueen spot-hintoihin, [Nord Pool](https://www.nordpoolgroup.com/). Sähkövero ja arvonlisävero: [Verohallinto, sähkövero](https://www.vero.fi/yritykset-ja-yhteisot/verot-ja-maksut/valmisteverotus/sahkovero/). Sopimusten hinnat, marginaalit ja perusmaksut ovat Kettukilpailutuksen omaa vertailudataa, tarkistettu yhtiöiden omilta sivuilta elokuun alussa 2026."
+        "Pörssisähkön toteutuneet hinnat ja vuosikeskiarvot perustuvat Nord Poolin Suomen hinta-alueen spot-hintoihin, [Nord Pool](https://www.nordpoolgroup.com/). Sähkövero ja arvonlisävero: [Verohallinto, sähkövero](https://www.vero.fi/yritykset-ja-yhteisot/verot-ja-maksut/valmisteverotus/sahkovero/). Sopimusten hinnat, marginaalit ja perusmaksut ovat Kettukilpailutuksen omaa vertailudataa, tarkistettu yhtiöiden omista tilauslinkeistä elokuussa 2026."
       ]
     },
     {
@@ -271,7 +271,7 @@
         "Selvitä uuden asunnon vuosikulutus kilowattitunteina. Tee sopimus noin kaksi viikkoa ennen muuttoa ja merkitse alkamispäiväksi muuttopäivä. Anna uuden myyjän hoitaa vanhan sopimuksen päättäminen. Ota kuva mittarista molemmissa asunnoissa. Tarkista ensimmäinen lasku.",
         "Jos vertailu tuntuu työläältä, se ei sitä ole: kun kulutusluku on tiedossa, [vertailu](/sahkosopimukset#vertailu) näyttää sopimusten vuosihinnat euroina samalla kulutuksella laskettuna, eikä sentteinä, joita joutuisi itse kertomaan.",
         "## Lähteet",
-        "Kuluttajan oikeudet sähkösopimuksissa, muutto ja irtisanomisajat: [Kilpailu- ja kuluttajavirasto](https://www.kkv.fi/ajankohtaista/tiedotteet/usein-kysyttya-sahkosta/). Määräaikaisen sopimuksen irtisanomisoikeus: [Kilpailu- ja kuluttajavirasto, määräaikaisten sopimusten jatkaminen](https://www.kkv.fi/paatokset/kuluttaja-asiat/kuluttaja-asiamiehen-ratkaisut/maaraaikaisten-sahkonmyyntisopimusten-jatkaminen/). Sopimusten hinnat, marginaalit ja perusmaksut ovat Kettukilpailutuksen omaa vertailudataa, tarkistettu yhtiöiden omilta sivuilta elokuun alussa 2026."
+        "Kuluttajan oikeudet sähkösopimuksissa, muutto ja irtisanomisajat: [Kilpailu- ja kuluttajavirasto](https://www.kkv.fi/ajankohtaista/tiedotteet/usein-kysyttya-sahkosta/). Määräaikaisen sopimuksen irtisanomisoikeus: [Kilpailu- ja kuluttajavirasto, määräaikaisten sopimusten jatkaminen](https://www.kkv.fi/paatokset/kuluttaja-asiat/kuluttaja-asiamiehen-ratkaisut/maaraaikaisten-sahkonmyyntisopimusten-jatkaminen/). Sopimusten hinnat, marginaalit ja perusmaksut ovat Kettukilpailutuksen omaa vertailudataa, tarkistettu yhtiöiden omista tilauslinkeistä elokuussa 2026."
       ]
     },
     {
@@ -332,7 +332,7 @@
         "Ota siis luku esiin ennen kuin vertailet. Jos sitä ei ole, käytä asuntotyypin arviota. Väärä arvio johtaa väärään euromäärään, mutta harvoin väärään sopimukseen.",
         "Jos olet muuttamassa etkä tiedä uuden asunnon kulutusta, muuton aikataulua ja tiedonhankintaa käsitellään oppaassa [sähkösopimus muutossa](/blogi/sahkosopimus-muutossa).",
         "## Lähteet",
-        "Kotitalouden sähkönkulutuksen jakauma ja käyttöveden osuus: [Motiva](https://www.motiva.fi/tietopankki/kodin-kayttoveden-lammitys/). Asuntotyyppikohtaiset kulutushaarukat on koottu sähköyhtiöiden julkaisemista arvioista ja tarkistettu elokuussa 2026. Sopimusten hinnat, marginaalit ja perusmaksut ovat Kettukilpailutuksen omaa vertailudataa, tarkistettu yhtiöiden omilta sivuilta elokuun alussa 2026."
+        "Kotitalouden sähkönkulutuksen jakauma ja käyttöveden osuus: [Motiva](https://www.motiva.fi/tietopankki/kodin-kayttoveden-lammitys/). Asuntotyyppikohtaiset kulutushaarukat on koottu sähköyhtiöiden julkaisemista arvioista ja tarkistettu elokuussa 2026. Sopimusten hinnat, marginaalit ja perusmaksut ovat Kettukilpailutuksen omaa vertailudataa, tarkistettu yhtiöiden omista tilauslinkeistä elokuussa 2026."
       ]
     },
     {
@@ -390,7 +390,7 @@
         "Yösähkö ei ole itsessään halpaa eikä kallista. Se on hinnoittelutapa, joka palkitsee yöllä kuluttamisesta ja rankaisee päivällä kuluttamisesta. Jos kotona on varaava lämmitys, ajastettu vesivaraaja tai sähköauto, se kannattaa laskea. Jos ei ole, yleissähkö on lähes aina yksinkertaisempi ja halvempi.",
         "Kumpaan tahansa päädytkin, sähkön myyjän hinta kannattaa tarkistaa erikseen. Sen näkee omalla kulutuksella laskettuna [sähkösopimusten vertailusta](/sahkosopimukset#vertailu), joka kertoo myös sen, jos nykyinen sopimuksesi on jo tarjolla olevia edullisempi.",
         "## Lähteet",
-        "Kotitalouden sähkönkulutuksen jakauma: [Motiva](https://www.motiva.fi/tietopankki/kodin-kayttoveden-lammitys/). Siirtotuotteiden hinnoittelu ja siirtohinnoittelun valvonta: [Energiavirasto, siirtohinnoittelun valvonta](https://energiavirasto.fi/siirtohinnoittelun-valvonta). Yöajan tarkat kellonajat vaihtelevat verkkoyhtiöittäin, joten ne on tarkistettava oman yhtiön hinnastosta. Sopimusten hinnat, marginaalit ja perusmaksut ovat Kettukilpailutuksen omaa vertailudataa, tarkistettu yhtiöiden omilta sivuilta elokuun alussa 2026."
+        "Kotitalouden sähkönkulutuksen jakauma: [Motiva](https://www.motiva.fi/tietopankki/kodin-kayttoveden-lammitys/). Siirtotuotteiden hinnoittelu ja siirtohinnoittelun valvonta: [Energiavirasto, siirtohinnoittelun valvonta](https://energiavirasto.fi/siirtohinnoittelun-valvonta). Yöajan tarkat kellonajat vaihtelevat verkkoyhtiöittäin, joten ne on tarkistettava oman yhtiön hinnastosta. Sopimusten hinnat, marginaalit ja perusmaksut ovat Kettukilpailutuksen omaa vertailudataa, tarkistettu yhtiöiden omista tilauslinkeistä elokuussa 2026."
       ]
     },
     {
@@ -448,7 +448,7 @@
         "Selvitä sopimuksesi päättymispäivä ja merkitse kalenteriin muistutus kuukautta aiemmin. Lue jatkotarjouksesta vain energiahinta, perusmaksu ja kausi. Muunna ne vuosihinnaksi omalla kulutuksellasi. Vertaa markkinaan ja tee päätös luvun perusteella.",
         "Koko tarkistus vie muutaman minuutin, ja se tehdään kerran kahdessa vuodessa. Harvassa ovat kotitalouden päätökset, joissa aikaa vastaan saa yhtä paljon.",
         "## Lähteet",
-        "Määräaikaisten sopimusten jatkaminen, myyjän ilmoitusvelvollisuus ja kuluttajan irtisanomisoikeus: [Kilpailu- ja kuluttajavirasto, määräaikaisten sopimusten jatkaminen](https://www.kkv.fi/paatokset/kuluttaja-asiat/kuluttaja-asiamiehen-ratkaisut/maaraaikaisten-sahkonmyyntisopimusten-jatkaminen/) sekä [Kilpailu- ja kuluttajavirasto](https://www.kkv.fi/ajankohtaista/tiedotteet/usein-kysyttya-sahkosta/). Sopimusten hinnat, marginaalit ja perusmaksut ovat Kettukilpailutuksen omaa vertailudataa, tarkistettu yhtiöiden omilta sivuilta elokuun alussa 2026."
+        "Määräaikaisten sopimusten jatkaminen, myyjän ilmoitusvelvollisuus ja kuluttajan irtisanomisoikeus: [Kilpailu- ja kuluttajavirasto, määräaikaisten sopimusten jatkaminen](https://www.kkv.fi/paatokset/kuluttaja-asiat/kuluttaja-asiamiehen-ratkaisut/maaraaikaisten-sahkonmyyntisopimusten-jatkaminen/) sekä [Kilpailu- ja kuluttajavirasto](https://www.kkv.fi/ajankohtaista/tiedotteet/usein-kysyttya-sahkosta/). Sopimusten hinnat, marginaalit ja perusmaksut ovat Kettukilpailutuksen omaa vertailudataa, tarkistettu yhtiöiden omista tilauslinkeistä elokuussa 2026."
       ]
     },
     {
@@ -553,7 +553,7 @@
         "Kuluttajan kannalta tämä tarkoittaa yksittäisiä jaksoja, joilla sähkön energiaosuus on nolla tai negatiivinen. Siirtomaksu ja verot kertyvät silti normaalisti, joten lasku ei koskaan mene miinukselle, mutta halvimmat hetket kannattaa käyttää.",
         "## Muuttaako varttihinnoittelu sopimusten vertailua?",
         "Ei muuta. Pörssisopimusten keskinäinen ero on edelleen sama kaksi lukua: marginaali sentteinä kilowattitunnilta ja perusmaksu euroina kuukaudessa. Pörssihinta itsessään on kaikilla sama riippumatta siitä, lasketaanko se tunnin vai vartin jaksoissa.",
-        "Vertailussamme pörssisopimusten marginaalit asettuvat elokuussa 2026 0,42 ja 1,99 sentin välille kilowattitunnilta. Ero halvimman ja kalleimman välillä on 1,57 senttiä, mikä 18 000 kilowattitunnin sähkölämmitteisessä talossa tarkoittaa noin 283 euroa vuodessa. Se on suuruusluokaltaan aivan eri asia kuin mikään ajoituksen hienosäätö.",
+        "Vertailussamme pörssisopimusten marginaalit asettuvat elokuussa 2026 0,37 ja 1,99 sentin välille kilowattitunnilta. Ero halvimman ja kalleimman välillä on 1,62 senttiä, mikä 18 000 kilowattitunnin sähkölämmitteisessä talossa tarkoittaa noin 292 euroa vuodessa. Se on suuruusluokaltaan aivan eri asia kuin mikään ajoituksen hienosäätö.",
         "Toisin sanoen: varttihinnoittelu on hyvä tuntea, mutta se ei ole se paikka, jossa kotitalouden sähkölaskussa on eniten pelivaraa. Sopimuksen valinta on.",
         "## Vaikuttaako muutos siirtomaksuun?",
         "Siirtomaksuun varttihinnoittelu ei tuo hintavaihtelua. Siirtomaksu on edelleen kiinteä sentti kilowattitunnilta tai aikaperusteinen kahdella hintatasolla, riippuen siitä minkä siirtotuotteen olet valinnut.",
@@ -567,7 +567,7 @@
         "Käytännön hyöty tulee edelleen samasta asiasta kuin ennenkin: isot kuormat halvoille jaksoille ja sopimus, jonka marginaali ja perusmaksu ovat kunnossa. Jälkimmäisen voi tarkistaa omalla kulutuksellaan [sähkösopimusten vertailusta](/sahkosopimukset#vertailu).",
         "Jos pörssisähkön logiikka on vielä epäselvä, kannattaa aloittaa oppaasta [pörssisähkö selitettynä](/blogi/porssisahko-selitettyna).",
         "## Lähteet",
-        "Vartin mittaisen markkinan käyttöönotto Suomessa ja mittauksen siirtymäajat: [Fingrid](https://www.fingrid.fi/) ja [Energiavirasto](https://energiavirasto.fi/). Pörssihintojen muodostuminen: [Nord Pool](https://www.nordpoolgroup.com/). Sähkövero ja arvonlisävero: [Verohallinto, sähkövero](https://www.vero.fi/yritykset-ja-yhteisot/verot-ja-maksut/valmisteverotus/sahkovero/). Sopimusten hinnat, marginaalit ja perusmaksut ovat Kettukilpailutuksen omaa vertailudataa, tarkistettu yhtiöiden omilta sivuilta elokuun alussa 2026."
+        "Vartin mittaisen markkinan käyttöönotto Suomessa ja mittauksen siirtymäajat: [Fingrid](https://www.fingrid.fi/) ja [Energiavirasto](https://energiavirasto.fi/). Pörssihintojen muodostuminen: [Nord Pool](https://www.nordpoolgroup.com/). Sähkövero ja arvonlisävero: [Verohallinto, sähkövero](https://www.vero.fi/yritykset-ja-yhteisot/verot-ja-maksut/valmisteverotus/sahkovero/). Sopimusten hinnat, marginaalit ja perusmaksut ovat Kettukilpailutuksen omaa vertailudataa, tarkistettu yhtiöiden omista tilauslinkeistä elokuussa 2026."
       ]
     },
     {
@@ -626,7 +626,7 @@
         "Sama koskee monia muita pieniä niksejä. Ne eivät ole vääriä, mutta ne vievät huomion siltä kolmelta neljäsosalta, jossa raha oikeasti on.",
         "## Se yhdestoista vinkki, joka on nopein",
         "Kaikki edellä oleva pienentää kulutusta. Yksi asia pienentää laskua kuluttamatta yhtään vähemmän: sopimuksen hinta.",
-        "Vertailussamme näkyvien pörssisopimusten marginaalit asettuvat elokuussa 2026 välille 0,42 ja 1,99 senttiä kilowattitunnilta. Ero halvimman ja kalleimman välillä on 18 000 kilowattitunnin talossa noin 283 euroa vuodessa. Kiinteissä sopimuksissa hajonta on 9,59 ja 13,80 sentin välillä, eli yli 750 euroa vuodessa samassa talossa.",
+        "Vertailussamme näkyvien pörssisopimusten marginaalit asettuvat elokuussa 2026 välille 0,37 ja 1,99 senttiä kilowattitunnilta. Ero halvimman ja kalleimman välillä on 18 000 kilowattitunnin talossa noin 292 euroa vuodessa. Kiinteissä sopimuksissa hajonta on 9,59 ja 13,80 sentin välillä, eli yli 750 euroa vuodessa samassa talossa.",
         "Näiden lukujen tarkistaminen vie muutaman minuutin, eikä se edellytä lyhyempiä suihkuja. [Katso oman kulutuksesi mukainen vertailu](/sahkosopimukset#vertailu).",
         "Tämä ei tarkoita, että säästövinkit olisivat turhia. Kulutuksen pienentäminen on pysyvää ja se pienentää myös siirtolaskua, johon kilpailuttaminen ei vaikuta. Järjestys vain kannattaa valita niin, että nopein ja varmin tehdään ensin.",
         "## Yhteenveto",
@@ -634,7 +634,7 @@
         "Valmiustilat, yksittäiset lamput ja vastaavat pikkuasiat ovat oikeita mutta pieniä. Ne kannattaa tehdä sitten, kun isot on tehty.",
         "Jos haluat ymmärtää, mistä laskusi ylipäätään koostuu, aloita oppaasta [sähkölasku rivi riviltä](/blogi/sahkolasku-rivi-rivilta). Jos kulutuksesi on suuri, aiheeseen on oma oppaansa: [sähkölämmittäjän sopimusopas](/blogi/sahkolammittajan-sopimusopas).",
         "## Lähteet",
-        "Sähkönkulutuksen jakauma ja käyttöveden osuus: [Motiva, kodin käyttöveden lämmitys](https://www.motiva.fi/tietopankki/kodin-kayttoveden-lammitys/). Lämpöpumppujen säästöluvut: [Motiva, ilmalämpöpumppu](https://www.motiva.fi/koti_ja_asuminen/remontoi_ja_huolla/energiatehokas_sahkolammitys/lampopumpun_hankinta/ilmalampopumppu). Käyttöveden lämpötilasuositus ja legionellariski: [Terveyden ja hyvinvoinnin laitos](https://thl.fi/). Sähkövero ja huoltovarmuusmaksu: [Verohallinto](https://www.vero.fi/yritykset-ja-yhteisot/verot-ja-maksut/valmisteverotus/sahkovero/). Sopimusten hinnat ja marginaalit ovat Kettukilpailutuksen omaa vertailudataa, tarkistettu yhtiöiden omilta sivuilta elokuun alussa 2026."
+        "Sähkönkulutuksen jakauma ja käyttöveden osuus: [Motiva, kodin käyttöveden lämmitys](https://www.motiva.fi/tietopankki/kodin-kayttoveden-lammitys/). Lämpöpumppujen säästöluvut: [Motiva, ilmalämpöpumppu](https://www.motiva.fi/koti_ja_asuminen/remontoi_ja_huolla/energiatehokas_sahkolammitys/lampopumpun_hankinta/ilmalampopumppu). Käyttöveden lämpötilasuositus ja legionellariski: [Terveyden ja hyvinvoinnin laitos](https://thl.fi/). Sähkövero ja huoltovarmuusmaksu: [Verohallinto](https://www.vero.fi/yritykset-ja-yhteisot/verot-ja-maksut/valmisteverotus/sahkovero/). Sopimusten hinnat ja marginaalit ovat Kettukilpailutuksen omaa vertailudataa, tarkistettu yhtiöiden omista tilauslinkeistä elokuussa 2026."
       ]
     },
     {
@@ -653,7 +653,7 @@
         "Käytännössä tämä tarkoittaa, että sähkölämmittäjän ei kannata valita sopimusta perusmaksun perusteella eikä varsinkaan hylätä halpaa energiahintaa siksi, että perusmaksu on euron kalliimpi. Vertailumme laskee molemmat mukaan samaan vuosisummaan juuri tästä syystä.",
         "## Pörssi vai kiinteä, kun kulutus on iso",
         "Tähän saa laskettua tarkan rajan, koska molempien hinnat ovat tiedossa.",
-        "Halvin vertailussamme näkyvä kiinteä sopimus on 9,65 senttiä kilowattitunnilta ja sen perusmaksu 3,90 euroa kuukaudessa. Halvimman pörssisopimuksen marginaali on 0,39 senttiä ja perusmaksu 4,50 euroa.",
+        "Halvin vertailussamme näkyvä kiinteä sopimus on 9,65 senttiä kilowattitunnilta ja sen perusmaksu 3,90 euroa kuukaudessa. Halvimman pörssisopimuksen marginaali on 0,37 senttiä ja perusmaksu 4,45 euroa.",
         "18 000 kilowattitunnin talossa nämä menevät tasan, kun pörssisähkön vuosikeskiarvo asettuu noin 9,2 senttiin kilowattitunnilta. Sen alle jäävällä keskihinnalla pörssi on halvempi.",
         "Vertailun vuoksi toteutuneet vuosikeskiarvot arvonlisäveron kanssa: 2022 noin 18,75 senttiä, 2023 noin 6,68 senttiä, 2024 noin 5,68 senttiä ja 2025 noin 5,09 senttiä kilowattitunnilta. Neljästä vuodesta yhtenä kiinteä olisi voittanut, kolmena pörssi.",
         "Tämä ei ole ennuste. Se on kuvaus siitä, mitä riski tarkoittaa: kolme vuotta neljästä pörssi on ollut selvästi halvempi, ja yhtenä vuonna se oli selvästi kalliimpi. Sähkölämmitteisessä talossa se yksi vuosi maksaa tuhansia euroja, koska kulutus on suuri juuri silloin, kun hinta on korkeimmillaan.",
@@ -692,7 +692,7 @@
         "Kiinteä sopimus on tässä talossa ostettua ennustettavuutta. Se maksaa keskimäärin enemmän, ja se on täysin pätevä valinta, jos talvikuukauden lasku ei saa yllättää.",
         "Laske oma tilanteesi [sähkösopimusten vertailussa](/sahkosopimukset#vertailu) 18 000 kilowattitunnin esiasetuksella tai omalla tarkalla kulutuksellasi. Vertailu näyttää molempien sopimustyyppien vuosihinnan samassa näkymässä.",
         "## Lähteet",
-        "Lämpöpumppujen säästöluvut: [Motiva, ilmalämpöpumppu](https://www.motiva.fi/koti_ja_asuminen/remontoi_ja_huolla/energiatehokas_sahkolammitys/lampopumpun_hankinta/ilmalampopumppu) ja [Motiva, mikä lämpöpumppu kannattaa valita](https://www.motiva.fi/tietopankki/mika-lampopumppu-kannattaa-valita-kotiini/). Määräaikaisten sopimusten jatkaminen ja irtisanomisoikeus: [Kilpailu- ja kuluttajavirasto](https://www.kkv.fi/paatokset/kuluttaja-asiat/kuluttaja-asiamiehen-ratkaisut/maaraaikaisten-sahkonmyyntisopimusten-jatkaminen/). Pörssisähkön toteutuneet vuosikeskiarvot perustuvat Nord Poolin Suomen hinta-alueen spot-hintoihin, [nordpoolgroup.com](https://www.nordpoolgroup.com/). Sopimusten hinnat, marginaalit ja perusmaksut ovat Kettukilpailutuksen omaa vertailudataa, tarkistettu yhtiöiden omilta sivuilta elokuun alussa 2026."
+        "Lämpöpumppujen säästöluvut: [Motiva, ilmalämpöpumppu](https://www.motiva.fi/koti_ja_asuminen/remontoi_ja_huolla/energiatehokas_sahkolammitys/lampopumpun_hankinta/ilmalampopumppu) ja [Motiva, mikä lämpöpumppu kannattaa valita](https://www.motiva.fi/tietopankki/mika-lampopumppu-kannattaa-valita-kotiini/). Määräaikaisten sopimusten jatkaminen ja irtisanomisoikeus: [Kilpailu- ja kuluttajavirasto](https://www.kkv.fi/paatokset/kuluttaja-asiat/kuluttaja-asiamiehen-ratkaisut/maaraaikaisten-sahkonmyyntisopimusten-jatkaminen/). Pörssisähkön toteutuneet vuosikeskiarvot perustuvat Nord Poolin Suomen hinta-alueen spot-hintoihin, [nordpoolgroup.com](https://www.nordpoolgroup.com/). Sopimusten hinnat, marginaalit ja perusmaksut ovat Kettukilpailutuksen omaa vertailudataa, tarkistettu yhtiöiden omista tilauslinkeistä elokuussa 2026."
       ]
     },
     {
@@ -717,7 +717,7 @@
         "Uusi koti tarkoittaa usein myös eri kulutusta. Kerrostaloasunnosta sähkölämmitteiseen omakotitaloon muuttavan kulutus voi kymmenkertaistua, jolloin myös oikea sopimustyyppi on eri. Muuttoon liittyvät käytännön vaiheet on käyty läpi oppaassa [sähkösopimus muutossa](/blogi/sahkosopimus-muutossa).",
         "## 3. Kun sopimuksesi on toistaiseksi voimassa oleva",
         "Toistaiseksi voimassa oleva sopimus on se, jolla ei ole päättymispäivää. Sen hintaa myyjä saa muuttaa ilmoittamalla asiasta etukäteen, ja hinta elää markkinan mukana ilman että asiakas tekee mitään.",
-        "Tämä on se sopimustyyppi, jossa vuosia jatkunut passiivisuus näkyy selvimmin. Vertailussamme on elokuussa 2026 kaksi toistaiseksi voimassa olevaa kiinteähintaista sopimusta, ja niiden hinnat ovat 6,99 ja 13,90 senttiä kilowattitunnilta. Ero on lähes seitsemän senttiä, mikä 18 000 kilowattitunnin talossa tarkoittaa noin 1 240 euroa vuodessa. Halvempi luku on tarjoushinta, jonka voimassaolo päättyy elokuun lopussa, mutta se ei muuta asiaa: hintahaitari on tässä sopimustyypissä leveämpi kuin missään muussa.",
+        "Tämä on se sopimustyyppi, jossa vuosia jatkunut passiivisuus näkyy selvimmin. Vertailussamme on elokuussa 2026 kaksi toistaiseksi voimassa olevaa kiinteähintaista sopimusta, ja niiden hinnat ovat 10,18 ja 13,90 senttiä kilowattitunnilta. Ero on 3,72 senttiä, mikä 18 000 kilowattitunnin talossa tarkoittaa noin 670 euroa vuodessa. Halvemman sopimuksen hinta on lisäksi voimassa vain kvartaalin kerrallaan, joten sitä kannattaa seurata.",
         "Sama sähkö, sama verkko, sama pistorasia. Ainoa ero on se, kumman paperin asiakas on aikanaan allekirjoittanut.",
         "## 4. Kun myyjä ilmoittaa hinnanmuutoksesta",
         "Hinnanmuutosilmoitus on käytännössä kutsu tarkistaa tilanne. Muutos voi olla pieni ja perusteltu, mutta se on myös ainoa hetki, jolloin myyjä itse kertoo, että hinta on nyt eri kuin ennen.",
@@ -733,7 +733,7 @@
         "Kukaan ei tiedä, mihin sähkön hinta seuraavaksi liikkuu, eivät myöskään sähköyhtiöt. Siksi järkevin ajoitus on se hetki, jolloin sopimuksesi ei ole sidottu.",
         "## Paljonko kilpailuttamisella oikeasti säästää",
         "Riippuu kahdesta asiasta: mikä nykyinen sopimuksesi on ja paljonko kulutat.",
-        "Vertailussamme näkyvien 12 pörssisopimuksen marginaalit asettuvat elokuussa 2026 välille 0,42 ja 1,99 senttiä kilowattitunnilta. Pelkkä marginaaliero halvimman ja kalleimman välillä on 18 000 kilowattitunnin talossa noin 283 euroa vuodessa ja 3 500 kilowattitunnin rivitaloasunnossa noin 55 euroa.",
+        "Vertailussamme näkyvien 11 pörssisopimuksen marginaalit asettuvat elokuussa 2026 välille 0,37 ja 1,99 senttiä kilowattitunnilta. Pelkkä marginaaliero halvimman ja kalleimman välillä on 18 000 kilowattitunnin talossa noin 292 euroa vuodessa ja 3 500 kilowattitunnin rivitaloasunnossa noin 57 euroa.",
         "Kiinteissä sopimuksissa hajonta on suurempi, 9,59 ja 13,80 senttiä kilowattitunnilta. Neljän sentin ero tarkoittaa sähkölämmitteisessä talossa yli 750 euroa vuodessa.",
         "Kerrostaloasunnossa, jonka kulutus on noin 1 000 kilowattituntia vuodessa, samat erot ovat kymmeniä euroja. Silloin perusmaksulla on suhteessa enemmän väliä kuin kilowattituntihinnalla, koska perusmaksu juoksee kulutuksesta riippumatta.",
         "Tämä on syy siihen, miksi vertailumme kysyy ensin asumismuodon. Sentit eivät kerro mitään ennen kuin ne on kerrottu omalla kulutuksella. [Katso oma tilanteesi vertailusta](/sahkosopimukset#vertailu).",
@@ -752,7 +752,7 @@
         "Jos et jaksa seurata mitään näistä, riittää yksi sääntö: tarkista tilanne kerran vuodessa. Se vie muutaman minuutin, ja pahin mahdollinen lopputulos on tieto siitä, että nykyinen sopimuksesi on jo hyvä.",
         "Jos et vielä tiedä, kumpi sopimustyyppi sinulle sopii, lue [pörssisähkö vai kiinteä](/blogi/porssisahko-vai-kiintea). Jos määräaikainen sopimuksesi on juuri päättymässä, aiheeseen on oma oppaansa: [määräaikainen sopimus päättyy](/blogi/maaraaikainen-sopimus-paattyy).",
         "## Lähteet",
-        "Määräaikaisten sopimusten jatkaminen ja myyjän ilmoitusvelvollisuus: [Kilpailu- ja kuluttajavirasto](https://www.kkv.fi/paatokset/kuluttaja-asiat/kuluttaja-asiamiehen-ratkaisut/maaraaikaisten-sahkonmyyntisopimusten-jatkaminen/) sekä [KKV:n usein kysyttyä sähköstä](https://www.kkv.fi/ajankohtaista/tiedotteet/usein-kysyttya-sahkosta/). Sähkövero ja huoltovarmuusmaksu: [Verohallinto](https://www.vero.fi/yritykset-ja-yhteisot/verot-ja-maksut/valmisteverotus/sahkovero/). Sopimusten hinnat ja marginaalit ovat Kettukilpailutuksen omaa vertailudataa, tarkistettu yhtiöiden omilta sivuilta elokuun alussa 2026."
+        "Määräaikaisten sopimusten jatkaminen ja myyjän ilmoitusvelvollisuus: [Kilpailu- ja kuluttajavirasto](https://www.kkv.fi/paatokset/kuluttaja-asiat/kuluttaja-asiamiehen-ratkaisut/maaraaikaisten-sahkonmyyntisopimusten-jatkaminen/) sekä [KKV:n usein kysyttyä sähköstä](https://www.kkv.fi/ajankohtaista/tiedotteet/usein-kysyttya-sahkosta/). Sähkövero ja huoltovarmuusmaksu: [Verohallinto](https://www.vero.fi/yritykset-ja-yhteisot/verot-ja-maksut/valmisteverotus/sahkovero/). Sopimusten hinnat ja marginaalit ovat Kettukilpailutuksen omaa vertailudataa, tarkistettu yhtiöiden omista tilauslinkeistä elokuussa 2026."
       ]
     },
     {
@@ -781,12 +781,12 @@
         "Vertailulaskurimme käyttää pörssihinnan oletuksena 5,08 senttiä kilowattitunnilta, eli vuoden 2025 toteutunutta keskiarvoa. Se on oletus menneestä, ei ennuste tulevasta, ja siksi luku on merkitty laskurissa näkyviin.",
         "## Esimerkki: paljonko marginaali maksaa euroina",
         "Otetaan rivitaloasunto, jonka sähkönkulutus on noin 3 500 kilowattituntia vuodessa.",
-        "Halvimmalla vertailussamme näkyvällä pörssisopimuksella, jonka marginaali on 0,39 senttiä ja perusmaksu 4,50 euroa kuukaudessa, energia maksaisi vuoden 2025 keskihinnalla noin 191 euroa ja perusmaksut noin 54 euroa. Yhteensä noin 245 euroa vuodessa.",
-        "Kalleimmalla vertailussamme näkyvällä pörssisopimuksella, jonka marginaali on 1,99 senttiä ja perusmaksu 5,95 euroa, sama kulutus maksaisi noin 319 euroa. Ero on noin 74 euroa vuodessa, vaikka sähkö on täsmälleen samaa ja tulee samasta verkosta.",
-        "Sähkölämmitteisessä talossa, jonka kulutus on noin 18 000 kilowattituntia, pelkkä marginaaliero kasvaa noin 290 euroon vuodessa. Mitä enemmän kulutat, sitä enemmän marginaali painaa ja sitä vähemmän perusmaksu.",
+        "Halvimmalla vertailussamme näkyvällä pörssisopimuksella, jonka marginaali on 0,37 senttiä ja perusmaksu 4,45 euroa kuukaudessa, energia maksaisi vuoden 2025 keskihinnalla noin 191 euroa ja perusmaksut noin 53 euroa. Yhteensä noin 244 euroa vuodessa.",
+        "Kalleimmalla vertailussamme näkyvällä pörssisopimuksella, jonka marginaali on 1,99 senttiä ja perusmaksu 5,95 euroa, sama kulutus maksaisi noin 319 euroa. Ero on noin 75 euroa vuodessa, vaikka sähkö on täsmälleen samaa ja tulee samasta verkosta.",
+        "Sähkölämmitteisessä talossa, jonka kulutus on noin 18 000 kilowattituntia, pelkkä marginaaliero kasvaa noin 292 euroon vuodessa. Mitä enemmän kulutat, sitä enemmän marginaali painaa ja sitä vähemmän perusmaksu.",
         "## Milloin pörssisähkö on halvempaa kuin kiinteä",
         "Tähän saa poikkeuksellisen tarkan vastauksen, koska molempien hinnat ovat tiedossa.",
-        "Halvin vertailussamme näkyvä kiinteä sopimus maksaa 9,65 senttiä kilowattitunnilta ja sen perusmaksu on 3,90 euroa kuukaudessa. Halvimman pörssisopimuksen kokonaishinta on pörssihinta plus 0,39 senttiä, perusmaksu 4,50 euroa.",
+        "Halvin vertailussamme näkyvä kiinteä sopimus maksaa 9,65 senttiä kilowattitunnilta ja sen perusmaksu on 3,90 euroa kuukaudessa. Halvimman pörssisopimuksen kokonaishinta on pörssihinta plus 0,37 senttiä, perusmaksu 4,45 euroa.",
         "Sähkölämmitteisessä talossa (18 000 kWh) nämä kaksi menevät tasan, kun pörssisähkön vuosikeskiarvo asettuu noin 9,2 senttiin kilowattitunnilta. Sen alle jäävällä keskihinnalla pörssi on halvempi, sen yli kiinteä.",
         "Neljän viime vuoden aikana tuo raja on ylitetty kerran, vuonna 2022. Se ei tarkoita, etteikö se voisi ylittyä uudelleen. Kiinteän sopimuksen hinta ei olekaan veikkaus siitä, mitä sähkö tulee maksamaan, vaan hinta siitä, että joku muu kantaa riskin.",
         "## Miksi hinta menee joskus miinukselle",
@@ -803,7 +803,7 @@
         "Automaattinen ohjaus muuttaa laskelmaa eniten. Ajastettu autolataus ja ohjattu lämminvesivaraaja tuovat säästön ilman että kenenkään tarvitsee katsoa hintakäyrää.",
         "## Näin vertaat pörssisopimuksia",
         "Pörssihinta on kaikilla myyjillä sama. Se tulee samasta pörssistä, eikä kukaan osta sitä muita halvemmalla. Siksi pörssisopimusten vertailussa on vain kaksi lukua, joilla on merkitystä: marginaali sentteinä kilowattitunnilta ja perusmaksu euroina kuukaudessa.",
-        "Vertailussamme näkyvien 12 pörssisopimuksen marginaalit asettuvat elokuussa 2026 välille 0,42 ja 1,99 senttiä kilowattitunnilta, ja perusmaksut välille 4,90 ja 5,99 euroa kuukaudessa. Kaikki hinnat on tarkistettu yhtiöiden omilta sivuilta.",
+        "Vertailussamme näkyvien 11 pörssisopimuksen marginaalit asettuvat elokuussa 2026 välille 0,37 ja 1,99 senttiä kilowattitunnilta, ja perusmaksut välille 4,45 ja 5,99 euroa kuukaudessa. Kaikki hinnat on tarkistettu yhtiöiden omista tilauslinkeistä.",
         "Kampanjahinnat kannattaa lukea tarkkaan. Osassa sopimuksia marginaali on alennettu määräajaksi, osassa perusmaksu on nolla muutaman ensimmäisen kuukauden. Kampanja on aitoa rahaa, mutta se päättyy, ja sen jälkeen maksat normaalihintaa. Siksi vertailussamme näkyy sekä ensimmäisen vuoden hinta että kampanjan jälkeinen normaalihinta.",
         "Kolmas asia, joka kannattaa tarkistaa, on se, koskeeko kampanja myös vanhoja asiakkaita. Osa tarjouksista on rajattu vain uusille asiakkaille, ja se lukee vertailussa sopimuksen kohdalla.",
         "Oman kulutuksesi mukaiset eurot näet [sähkösopimusten vertailusta](/sahkosopimukset#vertailu). Laskuri kysyy asumismuodon tai tarkan kulutuksen ja näyttää jokaisen sopimuksen hinnan vuodessa, ei senttiä kilowattitunnilta.",
@@ -817,7 +817,7 @@
         "Se, mihin voit vaikuttaa varmasti, on marginaali ja perusmaksu. Ne ovat tiedossa etukäteen, ne eivät riipu säästä, ja niiden ero halvimman ja kalleimman sopimuksen välillä on sähkölämmitteisessä talossa satoja euroja vuodessa.",
         "Jos et vielä tiedä, kumpi sopimustyyppi sinulle sopii, lue [pörssisähkö vai kiinteä](/blogi/porssisahko-vai-kiintea). Jos haluat ymmärtää koko laskun rakenteen, aloita oppaasta [sähkölasku rivi riviltä](/blogi/sahkolasku-rivi-rivilta).",
         "## Lähteet",
-        "Sähköveron ja huoltovarmuusmaksun määrät: [Verohallinto, sähkövero](https://www.vero.fi/yritykset-ja-yhteisot/verot-ja-maksut/valmisteverotus/sahkovero/). Pörssisähkön toteutuneet hinnat ja vuosikeskiarvot perustuvat Nord Poolin Suomen hinta-alueen spot-hintoihin, [nordpoolgroup.com](https://www.nordpoolgroup.com/). Sopimusten marginaalit, perusmaksut ja kiinteät hinnat ovat Kettukilpailutuksen omaa vertailudataa, ja ne on tarkistettu yhtiöiden omilta sivuilta elokuun alussa 2026."
+        "Sähköveron ja huoltovarmuusmaksun määrät: [Verohallinto, sähkövero](https://www.vero.fi/yritykset-ja-yhteisot/verot-ja-maksut/valmisteverotus/sahkovero/). Pörssisähkön toteutuneet hinnat ja vuosikeskiarvot perustuvat Nord Poolin Suomen hinta-alueen spot-hintoihin, [nordpoolgroup.com](https://www.nordpoolgroup.com/). Sopimusten marginaalit, perusmaksut ja kiinteät hinnat ovat Kettukilpailutuksen omaa vertailudataa, ja ne on tarkistettu yhtiöiden omista tilauslinkeistä elokuussa 2026."
       ]
     },
     {

@@ -66,7 +66,7 @@ JSON-tiedostoissa, joten sivut generoituvat staattisesti.
 ```
 /                            hub: esittelee sähkön ja lainat, ei vertailua
 /sahkosopimukset             sähkövertailu (päävertikaali) — TÄSSÄ ansaitaan
-  /sahkosopimukset/sopimus/[slug]   25 sopimussivua (yksi per näkyvä sopimus)
+  /sahkosopimukset/sopimus/[slug]   24 sopimussivua (yksi per näkyvä sopimus)
   /sahkosopimukset/[topic]          4 SEO-laskeutumissivua
 /lainat                      ohjaus Sortterille (ei omaa vertailua)
 /luottokortit                korttivertailu — PIILOSSA, ks. lib/features.ts
@@ -149,7 +149,7 @@ Täydet tokenit, apuluokat ja perustelut: `DESIGN.md`.
    HTML:ssä, joten Googlebot ei näe sieltä yhtään sopimusta. Siksi
    aihesivut `/sahkosopimukset/[topic]` ajavat saman komponentin
    `withHero={false}`, jolloin vertailu on niillä ilman porttia. **Niille
-   ei saa lisätä porttia:** ne ja 25 sopimussivua ovat ainoa paikka, jossa
+   ei saa lisätä porttia:** ne ja 24 sopimussivua ovat ainoa paikka, jossa
    hakukone näkee sopimusdatan.
 
    Cloaking — sisällön renderöinti robotille ja piilottaminen kävijältä —
@@ -219,14 +219,14 @@ tuntuu SEO:ta varten kirjoitetulta.
 ## Datan tila — mikä on oikeaa ja mikä ei
 
 **Sähködata on oikeaa.** `data/electricity.json` sisältää 47 riviä, joista
-**25 on näkyvissä**. Jokaisella näkyvällä on tarkistettu hinta, `checkedAt`
+**24 on näkyvissä**. Jokaisella näkyvällä on tarkistettu hinta, `checkedAt`
 (elokuu 2026) ja `sourceUrl` yhtiön omalle sivulle. Loput ovat piilossa
 kahdesta eri syystä, ja **syyt on pidettävä erillään**:
 
 | Kenttä | Merkitys | Mitä siitä seuraa |
 |---|---|---|
 | `example: true` | hinta on yhä keksitty | 19 riviä, ei saa näyttää ennen tarkistusta |
-| `hidden: true` | hinta on oikea, mutta rivi ei tuota | 3 riviä (Vaasan Sähkö ×2, Helen ×1) |
+| `hidden: true` | hinta on oikea, mutta rivi ei tuota | 4 riviä (Vaasan Sähkö ×2, Helen ×1, Oomi Aktiivinen) |
 
 Älä käytä `example`-lippua piilottamiseen. Se tarkoittaa nimenomaan
 "lukua ei ole tarkistettu", ja väärä lippu johtaa siihen, että tarkistettu

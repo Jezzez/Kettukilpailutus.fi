@@ -29,20 +29,20 @@
       ],
       "features": [
         "Pörssihinta + 0,59 c/kWh",
-        "Perusmaksu 5,99 €/kk",
+        "Perusmaksu 0 € kolme ensimmäistä kuukautta",
         "Ei määräaikaa — irtisanottavissa milloin vain",
         "Sähkön alkuperä varmennettu alkuperätakuilla"
       ],
-      "summary": "Fortumin pörssisopimus ilman määräaikaa. Marginaali 0,59 c/kWh ja perusmaksu 5,99 €/kk ilman tarjousjaksoa: hinta on sama ensimmäisenä ja kolmantena vuotena.",
+      "summary": "Fortumin pörssisopimus ilman määräaikaa. Marginaali 0,59 c/kWh ja perusmaksu 5,99 €/kk, mutta kolme ensimmäistä kuukautta ilman perusmaksua.",
       "pros": [
         "Suomen tunnetuin sähköyhtiö — yli kaksi miljoonaa asiakasta",
-        "Ei tarjousjaksoa, jonka jälkeen lasku nousee",
+        "Perusmaksuetu pienentää ensimmäisen vuoden laskua",
         "Ei sitovaa määräaikaa",
         "Tuntihinnat näkyvät Fortum-sovelluksessa"
       ],
       "cons": [
         "Marginaali ei ole vertailun pienin",
-        "Perusmaksu 5,99 €/kk on vertailun korkeimpia"
+        "Perusmaksu nousee 5,99 euroon kolmen kuukauden jälkeen"
       ],
       "bestFor": "Valitse tämä, jos haluat pörssisähköä isolta ja tunnetulta toimijalta etkä halua sitoutua määräajaksi.",
       "faq": [
@@ -55,7 +55,12 @@
           "Kulutukseesi ja pörssin oletuskeskihintaan. Todellinen lasku riippuu siitä, milloin sähköä käytät: pörssisopimuksessa yöllä ja tuulisina päivinä kulutettu sähkö on halvempaa kuin pakkasaamun sähkö."
         ]
       ],
-      "logo": "/logot/fortum.png"
+      "logo": "/logot/fortum.png",
+      "campaign": {
+        "label": "Perusmaksu 0 € · 3 kk",
+        "months": 3,
+        "basicFee": 0
+      }
     },
     {
       "id": "fortum-takuu-24kk",
@@ -173,7 +178,7 @@
       "reviews": null,
       "affiliateUrl": "https://go.adt267.com/t/t?a=2027550605&as=2098832052&t=2&tk=1",
       "partner": true,
-      "checkedAt": "2026-08-12",
+      "checkedAt": "2026-08-20",
       "sourceUrl": "https://www.vattenfall.fi/kampanjat/sahkoa-kotiin/",
       "gradient": [
         "#3E3227",
@@ -228,7 +233,7 @@
       "reviews": null,
       "affiliateUrl": "https://go.adt267.com/t/t?a=1884560810&as=2098832052&t=2&tk=1",
       "partner": true,
-      "checkedAt": "2026-08-12",
+      "checkedAt": "2026-08-20",
       "sourceUrl": "https://www.vattenfall.fi/kampanjat/sahkoa-kotiin/",
       "gradient": [
         "#4A3C2E",
@@ -405,22 +410,24 @@
         "#443A31"
       ],
       "features": [
-        "Hinta 10,18 c/kWh heinä–syyskuussa 2026 — yhtiö julkaisee hinnan neljännesvuosittain",
-        "Tutustumistarjous 6,99 c/kWh voimassa 31.8.2026 asti",
+        "Hinta 10,18 c/kWh heinä–syyskuussa 2026, yhtiö julkaisee hinnan neljännesvuosittain",
+        "Tilauslinkin takana kesätarjous 6,99 c/kWh, voimassa 31.8.2026 asti",
+        "Seuraavan neljänneksen hinta julkaistaan 15.9.2026",
         "Perusmaksu 5,95 €/kk, ensimmäinen kuukausi 0 €",
-        "Toistaiseksi voimassa oleva — ei määräaikaa",
+        "Toistaiseksi voimassa oleva, ei määräaikaa",
         "Fossiilivapaa sähkö"
       ],
-      "summary": "Toistaiseksi voimassa oleva sopimus, jonka hinnan Aalto julkaisee neljännesvuosittain: heinä–syyskuussa 2026 se on 10,18 c/kWh, ja vertailun euromäärä lasketaan sillä. Sivulla on lisäksi 6,99 sentin tutustumistarjous 31.8.2026 asti, mutta sitä ei lasketa mukaan, koska se ei kerro mitä sopimus maksaa tarjouksen jälkeen.",
+      "summary": "Toistaiseksi voimassa oleva sopimus, jonka hinnan Aalto julkaisee neljännesvuosittain: heinä–syyskuussa 2026 se on 10,18 c/kWh, ja vertailun euromäärä lasketaan sillä. Tilauslinkin takana on lisäksi kesätarjous 6,99 c/kWh, mutta se päättyy 31.8.2026, joten se ei kerro mitä sopimus maksaa vuoden mittaan. Seuraavan neljänneksen hinta julkaistaan 15.9.2026.",
       "pros": [
-        "Ei määräaikaa — voit vaihtaa milloin tahansa ilman korvausta",
+        "Ei määräaikaa, voit vaihtaa milloin tahansa ilman korvausta",
         "Hinta julkaistaan neljännesvuosittain etukäteen, joten muutos ei tule yllätyksenä",
-        "Ensimmäinen kuukausi ilman perusmaksua",
-        "Fossiilivapaa sähkö"
+        "Tilaushetkellä voimassa oleva kesätarjous 6,99 c/kWh on selvästi kvartaalihintaa halvempi",
+        "Ensimmäinen kuukausi ilman perusmaksua"
       ],
       "cons": [
         "Hintaa saa muuttaa neljännesvuosittain, toisin kuin määräaikaisessa sopimuksessa",
         "Hinta on vaihdellut selvästi: 11,38 c/kWh (Q1/2026), 9,92 (Q2/2026) ja 10,18 (Q3/2026)",
+        "Kesätarjous päättyy 31.8.2026 eikä kerro loppuvuoden hintaa",
         "Perusmaksu 5,95 €/kk on vertailun korkeampaa päätä"
       ],
       "bestFor": "Valitse tämä, jos et halua sitoutua määräaikaan mutta haluat hinnan, joka on tiedossa kvartaaliksi kerrallaan.",
@@ -693,7 +700,7 @@
       ],
       "features": [
         "Kiinteä 13,90 c/kWh ilman määräaikaa",
-        "Perusmaksu 1 €/kk kolme ensimmäistä kuukautta, sen jälkeen 4,90 €/kk",
+        "Perusmaksu 0 € ensimmäisen kuukauden, sen jälkeen 4,90 €/kk",
         "Voit irtisanoa milloin tahansa"
       ],
       "summary": "Vakaa hinta ilman määräaikaa. Maksat kiinteän kilowattituntihinnan mutta voit vaihtaa pois milloin haluat. Hinta on selvästi korkeampi kuin saman yhtiön määräaikaisissa sopimuksissa, joten joustosta maksaa tässä paljon.",
@@ -705,7 +712,7 @@
       "cons": [
         "Yhtiö saa muuttaa hintaa ilmoittamalla siitä etukäteen",
         "Selvästi kalliimpi kuin Hehkun oma määräaikainen sopimus: 13,90 vastaan 9,68 c/kWh",
-        "Perusmaksuetu on pieni: kolme kuukautta euron kuukausihintaan"
+        "Perusmaksuetu on lyhyt: vain ensimmäinen kuukausi"
       ],
       "bestFor": "Valitse tämä, jos haluat ennustettavan hinnan mutta et halua sitoutua määräajaksi — esimerkiksi jos muutto häämöttää.",
       "faq": [
@@ -719,9 +726,9 @@
         ]
       ],
       "campaign": {
-        "label": "Perusmaksu 1 € · 3 kk",
-        "months": 3,
-        "basicFee": 1
+        "label": "Perusmaksu 0 € · 1 kk",
+        "months": 1,
+        "basicFee": 0
       },
       "region": "Helsinki",
       "logo": "/logot/hehku-energia.png"
@@ -741,7 +748,7 @@
       "reviews": null,
       "affiliateUrl": "https://go.adt246.net/t/t?a=1138376807&as=2098832052&t=2&tk=1",
       "partner": true,
-      "checkedAt": "2026-08-12",
+      "checkedAt": "2026-08-20",
       "sourceUrl": "https://www.nordicgreen.fi/adtraction/",
       "gradient": [
         "#564636",
@@ -789,9 +796,9 @@
       "provider": "Cheap Energy",
       "name": "Pörssisähkö",
       "type": "spot",
-      "basicFee": 4.9,
+      "basicFee": 4.45,
       "energyPrice": null,
-      "spotMargin": 0.78,
+      "spotMargin": 0.37,
       "green": false,
       "fixedTermMonths": null,
       "rating": null,
@@ -799,28 +806,31 @@
       "affiliateUrl": "https://go.adt246.net/t/t?a=1914907838&as=2098832052&t=2&tk=1&url=https%3A%2F%2Fwww.cheapenergy.fi%2Ftilauslomake%2F%3Fp%3Dporssisahko",
       "partner": true,
       "checkedAt": "2026-08-20",
-      "sourceUrl": "https://www.cheapenergy.fi/sahkosopimus/porssisahko/",
+      "sourceUrl": "https://www.cheapenergy.fi/tilauslomake/?p=porssisahko",
       "gradient": [
         "#1F1A16",
         "#3A322B"
       ],
       "features": [
-        "Puoli vuotta 0,39 c/kWh ilman perusmaksua",
-        "Sen jälkeen 0,78 c/kWh ja 4,90 €/kk",
+        "Pörssihinta + 0,37 c/kWh, marginaali ei nouse myöhemmin",
+        "Perusmaksu 0 € neljä ensimmäistä kuukautta, sen jälkeen 4,45 €/kk",
         "Hinnoittelu pörssin varttituntihinnan mukaan",
+        "Enintään 50 000 kWh vuodessa",
         "Ei määräaikaa"
       ],
-      "summary": "Puolen vuoden ajan sekä marginaali että perusmaksu ovat alennettuja. Sen jälkeen marginaali kaksinkertaistuu, mutta perusmaksu pysyy matalana.",
+      "summary": "Vertailun matalin pörssimarginaali, 0,37 c/kWh, ja se pysyy samana koko sopimuksen ajan. Neljä ensimmäistä kuukautta menee ilman perusmaksua, sen jälkeen perusmaksu on 4,45 €/kk. Hinta koskee uusia asiakkaita.",
       "pros": [
-        "Kuuden kuukauden kaksoisalennus: marginaali ja perusmaksu",
-        "Matala perusmaksu myös tarjousjakson jälkeen",
+        "Vertailun matalin marginaali, 0,37 c/kWh",
+        "Marginaali ei nouse tarjousjakson jälkeen",
+        "Neljä kuukautta ilman perusmaksua",
         "Ei sitovaa määräaikaa"
       ],
       "cons": [
-        "Normaali marginaali 0,78 c/kWh on kaksinkertainen tarjoushintaan nähden",
-        "Pieni yhtiö, noin 30 000 asiakasta"
+        "Perusmaksuetu kestää neljä kuukautta, sen jälkeen 4,45 €/kk",
+        "Kulutuskatto 50 000 kWh vuodessa",
+        "Pörssisähkön lasku vaihtelee kuukausittain, myös ylöspäin"
       ],
-      "bestFor": "Valitse tämä, jos haluat halvan alkupuolen vuoden ja aiot tarkistaa tilanteen uudelleen tarjousjakson jälkeen.",
+      "bestFor": "Valitse tämä, jos haluat pörssisähköä pienimmällä mahdollisella marginaalilla etkä halua kilpailuttaa uudelleen puolen vuoden päästä.",
       "faq": [
         [
           "Mitä marginaali tarkoittaa?",
@@ -832,10 +842,9 @@
         ]
       ],
       "campaign": {
-        "label": "0,39 c/kWh · 6 kk",
-        "months": 6,
-        "basicFee": 0,
-        "spotMargin": 0.39
+        "label": "Perusmaksu 0 € · 4 kk",
+        "months": 4,
+        "basicFee": 0
       },
       "logo": "/logot/cheap-energy.png"
     },
@@ -1633,7 +1642,8 @@
         "months": 5,
         "basicFee": 0
       },
-      "logo": "/logot/oomi.png"
+      "logo": "/logot/oomi.png",
+      "hidden": true
     },
     {
       "id": "helen-perussahko-24-kk",
