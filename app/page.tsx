@@ -339,7 +339,7 @@ export default function HomePage() {
               molemmat — ne ovat pari.
             */
             sizes="(min-width: 768px) 1px, 90vw"
-            className="absolute bottom-0 right-40 h-[min(100%,150vw)] w-auto max-w-none opacity-[0.42]"
+            className="absolute bottom-0 right-20 h-[min(100%,150vw)] w-auto max-w-none opacity-[0.42]"
             style={{
               WebkitMaskImage: "linear-gradient(to top, #000 58%, transparent 100%)",
               maskImage: "linear-gradient(to top, #000 58%, transparent 100%)",

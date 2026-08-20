@@ -176,7 +176,7 @@ export default function LoansPage() {
                     cardId={LOAN_PARTNER.id}
                     placement="lainat-hero"
                     variant="inverse"
-                    className={BIG_BTN}
+                    className={`${BIG_BTN} btn-ember !text-onEmber sm:!bg-white sm:bg-none sm:!text-accentDark`}
                   >
                     Hae lainatarjoukset
                     <ArrowRight size={19} aria-hidden />
