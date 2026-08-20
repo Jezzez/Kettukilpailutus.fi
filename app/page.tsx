@@ -75,7 +75,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Kettukilpailutus.fi – kilpailuta sähkösopimukset ja lainat",
     description:
-      "Ketuttaako maksaa liikaa? Anna Ketun kilpailuttaa puolestasi. Sähkösopimukset euroina, lainatarjoukset yhdellä hakemuksella.",
+      "Ketuttaako maksaa liikaa? Anna Ketun kilpailuttaa puolestasi. Sähkösopimukset sekä lainatarjoukset yhdellä hakemuksella.",
     url: "/",
     /*
       KUVA ON OLIOMUODOSSA, EI PELKKÄNÄ OSOITTEENA.
@@ -369,7 +369,7 @@ export default function HomePage() {
                 <h1 className="mt-4 font-hero text-[clamp(1.9rem,8.4vw,2.7rem)] leading-[1.06] text-cream sm:text-[3rem]">
                   Anna ketun
                   <br />
-                  <em className="text-goldInk">kilpailuttaa</em> puolestasi.
+                  <em className="text-goldInk">Kilpailuttaa</em> puolestasi.
                 </h1>
 
                 {/*
