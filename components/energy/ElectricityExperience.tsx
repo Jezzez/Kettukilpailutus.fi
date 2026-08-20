@@ -1803,7 +1803,7 @@ export default function ElectricityExperience({
               <div>
                 <div className="flex items-center gap-3">
                   <span className="font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-accentDark">
-                    Ketuttaako maksaa liikaa?
+                    Ketuttaako maksaa liikaa? 
                   </span>
                 </div>
 
@@ -1834,7 +1834,7 @@ export default function ElectricityExperience({
                       oranssilla pohjalla oranssi korostus ei erotu. */}
                   <span className="whitespace-nowrap lg:whitespace-normal">
                     <em className="text-goldInk">Kilpailuttaa</em>
-                    <br className="lg:hidden" /> puolestasi.
+                    <br className="lg:hidden" /> puolestasi. 
                   </span>
                 </h1>
 

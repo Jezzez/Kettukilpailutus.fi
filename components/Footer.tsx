@@ -149,6 +149,16 @@ export default function Footer() {
                 </Link>
               </li>
             ))}
+            <li>
+              <a
+                href="https://go.popvakuutus.fi/t/t?a=1710920255&as=2098832052&t=2&tk=1"
+                target="_blank"
+                rel="nofollow sponsored noopener"
+                className="text-sm text-ink/70 transition-colors hover:text-accentDark"
+              >
+                POP Vakuutus
+              </a>
+            </li>
             {/*
               EVÄSTEASETUKSET ON TÄÄLLÄ, EI KELLUVANA NAPPINA.
 
