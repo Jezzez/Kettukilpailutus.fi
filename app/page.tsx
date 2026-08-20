@@ -266,27 +266,52 @@ export default function HomePage() {
           ainoat tuottavat linkit taitteen alle. Taustana se antaa saman
           tunnelman ilman että vie riviäkään.
 
-          MOBIILIKUVA ON LÄPINÄKYVÄ PYSTYKUVA. `kettuetusivu` on tarkoitettu
-          puhelimen taustalle, joten se ankkuroidaan alareunaan ja rajataan
-          leveydellä niin, että hahmo tukee tekstin tunnelmaa ilman että se
-          vie tilaa painikkeilta.
+          MOBIILIKUVA ON LÄPINÄKYVÄ PYSTYKUVA. `kettu-etusivu-mobiili` on
+          puolivartalokuva, joka on rajattu reiden korkeudelta. Se ankkuroidaan
+          alareunaan, jolloin rajaus jää heron alareunan kaarron taakse eikä
+          näytä katkaistulta.
+
+          KUVA MITOITETAAN KORKEUDESTA, EI LEVEYDESTÄ. Tässä luki aiemmin
+          `w-[75%]`. Leveysmitoituksen ongelma on, että hero käyttäytyy
+          päinvastoin kuin kuva: mitä kapeampi puhelin, sitä useammalle
+          riville otsikko, ingressi ja luottamusrivi katkeavat, eli sitä
+          KORKEAMPI hero. Samaan aikaan leveydestä mitoitettu kuva kutistuu.
+          Pienellä puhelimella nuo kaksi liikettä lasketaan yhteen ja ketun
+          pää valuu nappien taakse, jossa se ei näy lainkaan. Kun korkeus
+          tulee heron korkeudesta, hahmo on samassa kohdassa jokaisella
+          leveydellä. Luku 80 % on haettu 390 pikselin leveydeltä, joka on
+          yleisin puhelin: siinä ketun silmät osuvat ingressin ensimmäiselle
+          riville, otsikko jää kokonaan puhtaalle oranssille ja kuono jää
+          juuri ensimmäisen napin yläpuolelle.
+
+          `150vw` on korkeuden katto. Kuvan suhde on noin 1:1,78, joten 150vw
+          korkeutta vastaa 84 % näytön leveydestä. Ilman kattoa hyvin kapea ja
+          pitkä hero (iPhone SE, 320 px) venyttäisi hahmon 112-prosenttiseksi
+          näytön leveydestä, jolloin se rajautuisi molemmista reunoista ja
+          hahmo hajoaisi tunnistamattomaksi tekstuuriksi.
+
+          HAHMO ON OIKEASSA REUNASSA. Teksti on vasemmalle tasattu, joten
+          otsikon alku on sivun tihein kohta. Ketun kasvot ovat vertailun
+          kirkkain yksityiskohta (valkoinen kuono, tummat silmät), ja
+          vasemmalla ne osuisivat suoraan H1:n alle. Oikeassa reunassa kasvot
+          asettuvat ingressin viimeisten rivien tasolle, jossa tekstiä on
+          vähiten.
 
           HÄIVYTYS ON YLÖSPÄIN. Hahmo on kirkkaimmillaan alareunassa ja
           liukenee oranssiin ennen kuin se osuu otsikkoon. Näin kuva antaa
           herolle persoonan, mutta tekstin ja nappien kontrasti säilyy.
 
-          Käytännössä tekstirivit ja ingressi ovat puhtaalla oranssilla,
-          napit ja luottamusrivi kuvan haaleimman kohdan päällä. Se on
-          tarkistettu tältä leveydeltä: jos kuvaa nostaa tai häivytystä
-          lyhentää, kermanvalkoinen otsikko menee ketun vaalean puvun päälle
-          ja kontrasti putoaa luettavuuden rajalle.
+          Käytännössä otsikko on puhtaalla oranssilla, ingressi ketun
+          haaleimman kohdan päällä ja napit peittävät vaalean puvun. Jos
+          nostat kuvaa tai lyhennät häivytystä, kermanvalkoinen otsikko menee
+          vaalean bleiserin päälle ja kontrasti putoaa luettavuuden rajalle.
         */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 z-0 overflow-hidden md:hidden"
         >
           <Image
-            src="/kettuetusivu.png"
+            src="/kettu-etusivu-mobiili.webp"
             alt=""
             width={941}
             height={1672}
@@ -313,11 +338,11 @@ export default function HomePage() {
               (`(min-width: 768px) 560px, 1px`). Jos muutat toista, muuta
               molemmat — ne ovat pari.
             */
-            sizes="(min-width: 768px) 1px, 130vw"
-            className="absolute bottom-0 left-[0%] w-[75%] max-w-none opacity-40"
+            sizes="(min-width: 768px) 1px, 90vw"
+            className="absolute bottom-0 right-0 h-[min(80%,150vw)] w-auto max-w-none opacity-[0.42]"
             style={{
-              WebkitMaskImage: "linear-gradient(to top, #000 55%, transparent 100%)",
-              maskImage: "linear-gradient(to top, #000 55%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to top, #000 58%, transparent 100%)",
+              maskImage: "linear-gradient(to top, #000 58%, transparent 100%)",
             }}
           />
         </div>
