@@ -8,6 +8,19 @@ import { getPlans, getEnergyTopics } from "@/lib/energy";
 import FoxMark from "./FoxMark";
 import { FEATURES } from "@/lib/features";
 import { ENERGY_PATH, isEnergyPath } from "@/lib/nav";
+import { trackAffiliateClick } from "@/lib/track";
+
+/**
+ * Alatunnisteen linkki. `partner` erottaa affiliate-linkin sisäisestä:
+ * ne renderöidään eri elementillä (`<a>` vs. `<Link>`), ne saavat
+ * `rel="nofollow sponsored"` ja ne lähettävät `affiliate_click`-tapahtuman.
+ *
+ * MIKSI TYYPPI EIKÄ VAIN URL-TARKISTUS: `nofollow sponsored` ei ole
+ * kosmetiikkaa vaan Googlen vaatimus maksetusta linkistä. Jos sen
+ * lisääminen jäisi sen varaan, että joku muistaa katsoa alkaako osoite
+ * "https", ensimmäinen unohdus veisi koko domainin luotettavuutta.
+ */
+type FooterLink = { href: string; label: string; partner?: true };
 
 /**
  * Footer seuraa kontekstia: sähköä kilpailuttavalle ei tarjota
@@ -20,7 +33,7 @@ export default function Footer() {
   const onCards =
     FEATURES.cards && (pathname.startsWith("/luottokortit") || pathname.startsWith("/kortit"));
 
-  const contextNav = onEnergy
+  const contextNav: { title: string; links: FooterLink[] } = onEnergy
     ? {
         title: "Sähkösopimukset",
         /* Enintään viisi linkkiä. Aiemmin tässä oli neljä opassivua ja
@@ -41,12 +54,33 @@ export default function Footer() {
           links: getCards().slice(0, 5).map((c) => ({ href: `/kortit/${c.slug}`, label: c.name })),
         }
       : {
+          /*
+            KILPAILUTA-LISTA ON AINOA PAIKKA ALATUNNISTEESSA, JOSTA TULEE
+            RAHAA. Sähkö ja lainat vievät omille sivuilleen, Telia ja POP
+            suoraan kumppanille — meillä ei ole niistä omaa vertailua, joten
+            väliin rakennettu laskeutumissivu olisi tyhjä sivu, joka vain
+            lisää yhden klikin matkalle.
+
+            "Ketun oppaat" poistettiin tästä listasta: sama linkki on rivin
+            verran oikealla Sivusto-sarakkeessa, eikä blogi ole
+            kilpailutuskohde. Kaksi identtistä linkkiä vierekkäisissä
+            sarakkeissa saa listan näyttämään täytteeltä.
+          */
           title: "Kilpailuta",
           links: [
             { href: ENERGY_PATH, label: "Sähkösopimukset" },
             ...(FEATURES.cards ? [{ href: "/luottokortit", label: "Luottokortit" }] : []),
             ...(FEATURES.loans ? [{ href: "/lainat", label: "Lainat" }] : []),
-            { href: "/blogi", label: "Ketun oppaat" },
+            {
+              href: "https://go.adt291.com/t/t?a=1553065612&as=2098832052&t=2&tk=1",
+              label: "Telia",
+              partner: true,
+            },
+            {
+              href: "https://go.popvakuutus.fi/t/t?a=1710920255&as=2098832052&t=2&tk=1",
+              label: "POP Vakuutus",
+              partner: true,
+            },
           ],
         };
 
@@ -125,9 +159,24 @@ export default function Footer() {
           <ul className="mt-2.5 space-y-1.5">
             {contextNav.links.map((l) => (
               <li key={l.href}>
-                <Link href={l.href} className="text-sm text-ink/70 transition-colors hover:text-accentDark">
-                  {l.label}
-                </Link>
+                {l.partner ? (
+                  <a
+                    href={l.href}
+                    target="_blank"
+                    rel="nofollow sponsored noopener"
+                    onClick={() => trackAffiliateClick(l.label, "footer")}
+                    className="text-sm text-ink/70 transition-colors hover:text-accentDark"
+                  >
+                    {l.label}
+                  </a>
+                ) : (
+                  <Link
+                    href={l.href}
+                    className="text-sm text-ink/70 transition-colors hover:text-accentDark"
+                  >
+                    {l.label}
+                  </Link>
+                )}
               </li>
             ))}
           </ul>
@@ -149,16 +198,6 @@ export default function Footer() {
                 </Link>
               </li>
             ))}
-            <li>
-              <a
-                href="https://go.popvakuutus.fi/t/t?a=1710920255&as=2098832052&t=2&tk=1"
-                target="_blank"
-                rel="nofollow sponsored noopener"
-                className="text-sm text-ink/70 transition-colors hover:text-accentDark"
-              >
-                POP Vakuutus
-              </a>
-            </li>
             {/*
               EVÄSTEASETUKSET ON TÄÄLLÄ, EI KELLUVANA NAPPINA.
 
