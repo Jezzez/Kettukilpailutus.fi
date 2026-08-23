@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import Reveal from "@/components/Reveal";
-import SectionMark from "@/components/home/SectionMark";
+import Eyebrow from "@/components/home/Eyebrow";
 import type { Post } from "@/lib/types";
 
 /*
@@ -15,10 +15,10 @@ import type { Post } from "@/lib/types";
   näytöllistä. Vaakarulla vie yhden kortin verran korkeutta ja näyttää
   silti kolme.
 
-  KOLMAS KORTTI KURKISTAA REUNASTA TARKOITUKSELLA. Kortti on 78 vh leveä,
+  KOLMAS KORTTI KURKISTAA REUNASTA TARKOITUKSELLA. Kortti on 78 vw leveä,
   jolloin seuraavan reuna jää näkyviin ja rulla lukee rullaksi. Täyteen
-  leveyteen sovitettu kortti näyttää yhdeltä kortilta, eikä kukaan pyyhkäise
-  sivuun.
+  leveyteen sovitettu kortti näyttää yhdeltä kortilta, eikä kukaan
+  pyyhkäise sivuun.
 */
 
 function fiDateShort(iso: string): string {
@@ -31,15 +31,13 @@ export default function GuideRail({ posts }: { posts: Post[] }) {
   const shown = posts.slice(0, 3);
 
   return (
-    <section className="theme-light bg-mist px-5 py-20 sm:px-8 md:py-28 lg:px-10">
-      <div className="mx-auto max-w-[1180px]">
+    <section className="theme-light bg-mist py-16 md:py-24">
+      <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
         <Reveal>
-          <SectionMark index="04" total="04">
-            Oppaat
-          </SectionMark>
+          <Eyebrow>Oppaat</Eyebrow>
 
-          <div className="mt-6 flex flex-col justify-between gap-5 md:flex-row md:items-end">
-            <h2 className="max-w-[15ch] font-hero text-[clamp(2.3rem,8vw,4rem)] leading-[0.96]">
+          <div className="mt-4 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+            <h2 className="max-w-[18ch] font-hero text-[clamp(2rem,6vw,3.2rem)] leading-[0.98]">
               Etkö ole vielä valmis vertailemaan?
             </h2>
             <Link
@@ -58,13 +56,20 @@ export default function GuideRail({ posts }: { posts: Post[] }) {
       </div>
 
       {/*
-        Rulla vuotaa tarkoituksella osion sivupehmusteiden yli (`-mx-5`),
-        jotta ensimmäinen kortti alkaa samalta linjalta kuin otsikko mutta
-        viimeinen voi liukua ruudun reunan yli. Sisään jäävä rulla näyttää
-        laatikolta laatikon sisällä.
+        Rulla on osiotason elementti, ei otsikkopalstan sisällä: sillä on
+        sama vasen pehmuste kuin otsikolla, mutta oikea reuna jatkuu ruudun
+        yli. Laatikon sisään suljettu rulla näyttää laatikolta laatikon
+        sisällä, eikä kukaan pyyhkäise sivuun.
+
+        `scroll-pl-4` EI OLE KORISTE. Ilman sitä `snap-mandatory` kohdistaa
+        ensimmäisen kortin rullan reunaan eikä sen pehmusteeseen: selain
+        asettaa `scrollLeft`-arvoksi 16, ja kortti latoutuu kiinni ruudun
+        vasempaan reunaan, vaikka otsikko alkaa 16 pikselin päästä. Mitattu
+        390 pikselin leveydellä. Rikkinäinen vasen linja on juuri se, mistä
+        sivu näyttää keskeneräiseltä.
       */}
       <Reveal delay={0.05}>
-        <div className="scrollbar-none -mx-5 mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-2 sm:-mx-8 sm:px-8 md:mx-auto md:grid md:max-w-[1180px] md:grid-cols-3 md:overflow-visible md:px-0 lg:-mx-0">
+        <div className="scrollbar-none mt-9 flex snap-x snap-mandatory scroll-pl-4 gap-4 overflow-x-auto px-4 pb-2 sm:scroll-pl-6 sm:px-6 md:mx-auto md:grid md:max-w-[1180px] md:grid-cols-3 md:overflow-visible">
           {shown.map((post) => (
             <Link
               key={post.slug}
@@ -78,7 +83,7 @@ export default function GuideRail({ posts }: { posts: Post[] }) {
                 <span>{post.readMinutes} min</span>
               </div>
 
-              <h3 className="mt-6 font-hero text-[1.25rem] leading-tight group-hover:text-accentDark">
+              <h3 className="mt-5 font-hero text-[1.2rem] leading-tight group-hover:text-accentDark">
                 {post.title}
               </h3>
               <p className="mt-3 flex-1 text-[14px] leading-relaxed text-ink/65">

@@ -2,40 +2,35 @@ import type { Metadata } from "next";
 import HomeHero from "@/components/home/HomeHero";
 import RouteCards from "@/components/home/RouteCards";
 import SpreadBlock from "@/components/home/SpreadBlock";
-import LoansBelt from "@/components/home/LoansBelt";
 import TrustBlock from "@/components/home/TrustBlock";
 import GuideRail from "@/components/home/GuideRail";
 import ClosingBelt from "@/components/home/ClosingBelt";
 import { getPosts, OG_IMAGE, SITE } from "@/lib/data";
 import { getHomeFacts } from "@/lib/home";
-import { FEATURES } from "@/lib/features";
 
 /*
   ETUSIVU — HUB.
 
-  MITÄ TÄSSÄ ON KORJATTU. Vanha etusivu oli mobiilissa 4231 pikseliä korkea,
-  siitä noin 2000 pikseliä yhtenäistä vaaleaa ilman yhtään väripintaa, ja
-  ainoa oranssi vyö oli aivan lopussa. Kuusi lähes samannäköistä korttia
-  peräkkäin ei kertonut kävijälle, mikä niistä on tärkein. Kun mikään ei ole
-  korostettu, kaikki on yhtä tärkeää, ja kävijä valitsee sen mikä on
-  lähinnä — eli usein ei mitään.
+  KUUSI OSIOTA, JOKAINEN YKSI ASIA. Etusivun aiemmat versiot yrittivät
+  tehdä monta asiaa kerralla: ne limittivät osioita päällekkäin, vaihtoivat
+  taustaa seitsemän kertaa ja ripottelivat maskotin joka toiseen lohkoon.
+  Lopputulos oli 5987 pikseliä pitkä sivu, jolla ei ollut yhtään kohtaa,
+  josta silmä olisi tiennyt mistä aloittaa. Nyt jokaisella osiolla on yksi
+  tehtävä ja sen tehtävä lukee pikkuotsikossa.
 
-  KOLME RATKAISUA:
+  1. HERO — kuka olemme ja mihin painetaan. Kaksi palstaa, teksti ja kuva
+     erillään; kuva ei voi kasvaa tekstin päälle.
+  2. REITIT — sähkö vai lainat. Hubin ainoa varsinainen työ, ja siksi heti
+     heron alla ennen yhtäkään perustelua.
+  3. HINTAERO — yksi kova luku, joka tekee klikistä tarpeellisen.
+  4. LÄPINÄKYVYYS — mistä saamme palkkamme.
+  5. OPPAAT — ulospääsy niille, jotka eivät ole vielä valmiita.
+  6. LOPPUKEHOTUS — toinen ja viimeinen nappi.
 
-  1. RYTMI. Pinta vaihtuu kuusi kertaa: ember → vaalea → hiekka → ember →
-     paperi → usva → ember. Jokainen vaihdos on syy jatkaa selaamista, ja
-     kolme oranssia vyötä jakavat sivun paloihin, jotka jaksaa lukea.
-
-  2. HIERARKIA. Reittikortit ovat epäsymmetriset (3:2). Sähkö on leveämpi,
-     valkoinen ja siinä on oranssi nappi; lainat on kapeampi, usvanharmaa ja
-     siinä on tekstilinkki. Sähkö on ainoa vertikaali, jossa Kettu itse
-     laskee ja jossa palkkio on suurin — sen kuuluu näyttää siltä.
-
-  3. YKSI KOVA LUKU. Sivulla on täsmälleen yksi numeroväite, jota
-     kilpailijalla ei ole: halvimman ja kalleimman sopimuksen ero
-     ensimmäisenä vuonna. Se lasketaan `lib/home.ts`:ssä oikeasta datasta,
-     joten se ei voi vanhentua vahingossa eikä sitä voi kopioida sanomalla
-     samaa.
+  ORANSSIA ON KAKSI VYÖTÄ, ei kolme. Erillinen lainavyö keskellä sivua
+  poistettiin: se toisti sanasta sanaan sen, mikä lukee jo reittikortissa,
+  ja maksoi noin 700 pikseliä pystytilaa. Toisto ei ollut painotusta vaan
+  este halvimman klikin ja kävijän välissä.
 
   MITÄ TÄSSÄ EI OLE: laskuria, kyselyä eikä sopimuslistaa. Ne kuuluvat
   `/sahkosopimukset`-sivulle portin taakse (ks. CLAUDE.md). Hubin tehtävä on
@@ -106,7 +101,6 @@ export default function HomePage() {
         <HomeHero facts={facts} />
         <RouteCards facts={facts} />
         <SpreadBlock facts={facts} />
-        {FEATURES.loans && <LoansBelt />}
         <TrustBlock facts={facts} />
         <GuideRail posts={posts} />
         <ClosingBelt />

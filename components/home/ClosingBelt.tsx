@@ -2,8 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import Reveal from "@/components/Reveal";
-import TailSweep from "@/components/fox/TailSweep";
-import PawTrail from "@/components/fox/PawTrail";
 import { FEATURES } from "@/lib/features";
 import { ENERGY_COMPARE } from "@/lib/nav";
 
@@ -19,36 +17,29 @@ import { ENERGY_COMPARE } from "@/lib/nav";
   Uusi väite tässä kohdassa pakottaisi lukemaan uudelleen juuri silloin,
   kun hän on jo päättänyt. Kehotus toistaa sloganin ja tarjoaa napin.
 
+  KUVA ON OMASSA PALSTASSAAN eikä nouse vyön reunan yli. Aiemmin kuva
+  työntyi negatiivisella marginaalilla ulos osiosta, jolloin ketun pää
+  leikkautui edellisen osion pohjaan eikä leikkaus näyttänyt tahalliselta
+  millään näyttöleveydellä.
+
   EMBER-ANSA: `bg-cream` + kiinteä `text-[#A83E0A]`, ei `text-accentDark`.
 */
 
 export default function ClosingBelt() {
   return (
-    <section className="theme-ember ember-surface relative isolate">
-      {/* Yläreunan hännänveto: `fill` on edellisen vyöhykkeen väri (usva). */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-16 rotate-180">
-        <div className="theme-light">
-          <TailSweep fill="rgb(var(--c-mist))" height={64} />
-        </div>
-      </div>
-
-      <div className="relative z-10 mx-auto grid max-w-[1180px] items-center gap-10 px-5 pb-20 pt-24 sm:px-8 md:grid-cols-[1.2fr_0.8fr] md:pb-24 md:pt-32 lg:px-10">
+    <section className="theme-ember ember-surface relative overflow-hidden">
+      <div className="relative z-10 mx-auto grid max-w-[1180px] items-center gap-8 px-4 py-16 sm:px-6 md:grid-cols-[1.2fr_0.8fr] md:py-20">
         <Reveal>
-          <p className="flex items-center gap-3 font-display text-[11px] font-bold uppercase tracking-[0.2em] text-onEmber/80">
-            Viisi minuuttia
-            <PawTrail count={4} size={9} className="text-onEmber/45" />
-          </p>
-
-          <h2 className="mt-5 max-w-[13ch] font-hero text-[clamp(2.5rem,9vw,5rem)] leading-[0.94] text-onEmber">
+          <h2 className="max-w-[14ch] font-hero text-[clamp(2.2rem,6.5vw,3.6rem)] leading-[0.98] text-onEmber">
             Anna Ketun kilpailuttaa.
           </h2>
 
-          <p className="mt-6 max-w-[44ch] text-[17px] leading-relaxed text-onEmber/85 sm:text-[18px]">
+          <p className="mt-5 max-w-[46ch] text-[17px] leading-relaxed text-onEmber/85">
             Kysely vie noin viisi minuuttia, eikä se pyydä sinulta
             yhteystietoja. Päätöksen teet itse.
           </p>
 
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
             <Link
               href={ENERGY_COMPARE}
               className="lift inline-flex items-center justify-center gap-2 rounded-xl bg-cream px-6 py-4 font-display text-[16px] font-bold text-[#A83E0A] shadow-lift"
@@ -59,7 +50,7 @@ export default function ClosingBelt() {
             {FEATURES.loans && (
               <Link
                 href="/lainat"
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-onEmber/40 bg-onEmber/10 px-6 py-4 font-display text-[16px] font-bold text-onEmber transition-colors hover:bg-onEmber/20"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-onEmber/40 px-6 py-4 font-display text-[16px] font-bold text-onEmber transition-colors hover:bg-onEmber/12"
               >
                 Vertaile lainoja
               </Link>
@@ -67,22 +58,14 @@ export default function ClosingBelt() {
           </div>
         </Reveal>
 
-        {/*
-          MASKOTTI NOUSEE VYÖN YLÄREUNAN YLI. Kuva on rajaamattomassa
-          osiossa (`isolate`, ei `overflow-hidden`), joten korvat menevät
-          hännänvedon päälle. Se on ainoa kohta sivulla, jossa jokin
-          rikkoo vyön reunan, ja siksi se lukee tahalliselta.
-        */}
-        <Reveal delay={0.07} className="relative mx-auto -mt-10 w-full max-w-[260px] md:-mt-24 md:max-w-[320px]">
-          <div className="halo-glow relative">
-            <Image
-              src="/kettu-muotokuva.webp"
-              alt="Kettu tervehtii ja odottaa kilpailutuksen aloittamista"
-              width={569}
-              height={900}
-              className="relative mx-auto h-auto max-h-[380px] w-auto object-contain md:max-h-[460px]"
-            />
-          </div>
+        <Reveal delay={0.07} className="order-last">
+          <Image
+            src="/kettu-muotokuva.webp"
+            alt="Kettu tervehtii ja odottaa kilpailutuksen aloittamista"
+            width={569}
+            height={900}
+            className="mx-auto h-auto max-h-[220px] w-auto object-contain md:max-h-[340px]"
+          />
         </Reveal>
       </div>
     </section>
