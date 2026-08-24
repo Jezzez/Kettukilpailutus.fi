@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import Eyebrow from "@/components/home/Eyebrow";
+import SpreadBar from "@/components/home/SpreadBar";
 import { ENERGY_COMPARE } from "@/lib/nav";
 import { euro, fiDate, type HomeFacts } from "@/lib/home";
 import { ASSUMED_SPOT_AVG, SPOT_AVG_BASIS } from "@/lib/energy";
@@ -72,12 +73,7 @@ export default function SpreadBlock({ facts }: { facts: HomeFacts }) {
                   </p>
                 </div>
 
-                <div className="mt-3.5 h-1.5 overflow-hidden rounded-full bg-white">
-                  <div
-                    className="h-full rounded-full bg-accent"
-                    style={{ width: `${Math.round(row.ratio * 100)}%` }}
-                  />
-                </div>
+                <SpreadBar ratio={row.ratio} delay={i * 0.08} />
               </div>
             </Reveal>
           ))}

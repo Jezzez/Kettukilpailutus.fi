@@ -441,6 +441,103 @@ h1, h2, h3 { letter-spacing: -0.02em; }
   background: linear-gradient(90deg, rgba(217,162,79,0) 0%, rgba(217,162,79,0.6) 50%, rgba(217,162,79,0) 100%);
 }
 
+/* ==========================================================================
+   LIIKE — NELJÄ EFEKTIÄ, EI ENEMPÄÄ
+
+   Jokainen näistä animoi VAIN `transform`- tai `opacity`-ominaisuutta.
+   Ne ovat ainoat kaksi, jotka selain voi piirtää näytönohjaimella ilman
+   että sivun taitto lasketaan uudelleen. Puhelimessa mikä tahansa muu
+   animoitu ominaisuus (leveys, väri, varjo, sijainti) pudottaa
+   ruudunpäivityksen kolmasosaan, ja nykivä sivu näyttää halvemmalta kuin
+   sivu ilman yhtään efektiä.
+
+   KAIKKI ON `prefers-reduced-motion`-kyselyn sisällä. Jatkuvasti pyörivä
+   liike on osalle kävijöistä oire, ei koriste, eikä yksikään näistä ole
+   niin tärkeä että se ansaitsisi pahoinvoinnin.
+   ========================================================================== */
+
+/* PAINALLUKSEN KUITTAUS.
+
+   Puhelimessa ei ole hover-tilaa. Kortti, joka ei reagoi kosketukseen
+   mitenkään, tuntuu kuvalta eikä napilta, ja kävijä painaa uudelleen tai
+   luulee ettei mitään tapahtunut. Pieni kutistuminen sormen alla on
+   halvin mahdollinen tapa kertoa "tämä on nappi ja se otti klikin".
+
+   MÄÄRITELTY `.lift`:n JÄLKEEN tarkoituksella: kun molemmat luokat ovat
+   samassa elementissä ja kävijä sekä osoittaa että painaa, painallus
+   voittaa nostoliikkeen. */
+@media (prefers-reduced-motion: no-preference) {
+  .press { transition: transform 120ms cubic-bezier(0.22, 0.61, 0.36, 1); }
+  .press:active { transform: scale(0.972); }
+}
+
+/* KIILTO NAPIN YLI.
+
+   Sivun molemmat reittikortit ovat nyt identtiset, eli kumpikaan ei erotu
+   muodolla. Hitaasti napin yli kulkeva valo on se, mikä erottaa napin
+   kortin muusta pinnasta ilman että sen tarvitsee olla isompi tai
+   kirkkaampi. Väli on pitkä (kiilto näkyy noin joka viides sekunti),
+   koska tiheämpi toisto muuttuu vilkkuvaksi mainokseksi. */
+@media (prefers-reduced-motion: no-preference) {
+  .sheen { position: relative; overflow: hidden; }
+  .sheen > * { position: relative; z-index: 1; }
+  .sheen::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 42%;
+    pointer-events: none;
+    background: linear-gradient(100deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.42) 50%, rgba(255,255,255,0) 100%);
+    transform: translate3d(-180%, 0, 0);
+    animation: sheen-sweep 5.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+  @keyframes sheen-sweep {
+    0%, 64% { transform: translate3d(-180%, 0, 0); }
+    100% { transform: translate3d(330%, 0, 0); }
+  }
+}
+
+/* NUOLEN TÖNÄISY.
+
+   Kolmen pikselin liike napin nuolessa, kerran neljässä ja puolessa
+   sekunnissa. Se on juuri sen verran, että perifeerinen näkö huomaa
+   suunnan — eteenpäin — ilman että liike vie huomion tekstiltä. */
+@media (prefers-reduced-motion: no-preference) {
+  .nudge { animation: nudge-x 4.6s ease-in-out infinite; }
+  @keyframes nudge-x {
+    0%, 74%, 100% { transform: translate3d(0, 0, 0); }
+    84% { transform: translate3d(3px, 0, 0); }
+  }
+}
+
+/* HERON HITAASTI LIIKKUVA VALO.
+
+   Oranssi vyö on sivun ensimmäinen ruutu ja täysin staattinen pinta.
+   Yksi erittäin hidas, pehmeä valokehä sen päällä tekee pinnasta elävän
+   sen sijaan, että se olisi maalattu palkki. Liike on niin hidasta
+   (18 s kierros), ettei sitä huomaa katsomalla — sen huomaa vasta jos
+   sen ottaa pois.
+
+   Elementti on `aria-hidden` ja `pointer-events: none`, eli se ei ole
+   olemassa ruudunlukijalle eikä ota klikkejä napilta. */
+.aurora {
+  pointer-events: none;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(255,199,140,0.42) 0%, rgba(255,150,70,0.16) 46%, rgba(255,150,70,0) 70%);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .aurora {
+    animation: aurora-drift 18s ease-in-out infinite;
+    will-change: transform, opacity;
+  }
+  @keyframes aurora-drift {
+    0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.7; }
+    50% { transform: translate3d(-5%, 4%, 0) scale(1.16); opacity: 1; }
+  }
+}
+
 /* Ensisijainen nappi: kevyt pystygradientti tekee napista veistetyn.
    Tasainen täyttöväri näyttää tummalla halvalta. */
 .btn-ember {
