@@ -58,18 +58,37 @@ export default function HomeHero({ facts }: { facts: HomeFacts }) {
       value: Math.round(facts.maxSpread),
       suffix: " €",
       count: true,
-      label: "suurin ero halvimman ja kalleimman välillä",
+      label: "halvimman ja kalleimman ero",
     },
     {
       value: 0,
       suffix: " €",
       count: false,
-      label: `vertailu maksaa, hinnat ${fiDate(facts.priceDate)}`,
+      label: "vertailu maksaa sinulle",
     },
   ];
 
+  /*
+    HERO ON PUHELIMESSA KOKO RUUDUN KORKUINEN.
+
+    `min-h-[100svh]` tekee ensimmäisestä ruudusta kansikuvan: kävijä näkee
+    otsikon, maskotin, molemmat napit ja lukurivin kerralla, eikä alle jää
+    puolikasta seuraavaa osiota vetämässä katsetta pois. `svh` eikä `vh`,
+    koska `vh` ei laske mobiiliselaimen osoiteriviä pois ja hero jäisi sen
+    verran liian korkeaksi — juuri nappien alta.
+
+    MIINUS 74 PIKSELIÄ ON HEADERIN KORKEUS (`components/Header.tsx`,
+    `h-[74px]`). Header on `sticky`, eli se on normaalissa virrassa ja vyö
+    alkaa vasta sen alta. Pelkkä `100svh` teki herosta täsmälleen headerin
+    verran liian korkean, jolloin alin rivi jäi ruudun alapuolelle. Jos
+    headerin korkeus muuttuu, muuta tämä luku samalla.
+
+    Vain puhelimessa. Työpöydällä koko ruudun korkuinen vyö ilman yhtään
+    näkyvää sisältöä alla lukee mainokseksi, ja hubin tehtävä on ohjata
+    eteenpäin heti.
+  */
   return (
-    <section className="theme-ember ember-surface relative overflow-hidden">
+    <section className="theme-ember ember-surface relative flex min-h-[calc(100svh-74px)] flex-col justify-center overflow-hidden md:min-h-0 md:block">
       {/*
         HITAASTI LIIKKUVA VALO VYÖN TAKANA.
 
@@ -103,19 +122,17 @@ export default function HomeHero({ facts }: { facts: HomeFacts }) {
         joka on ankkuroitu oikeaan reunaan: se ei voi levitä vasemmalle
         millään näyttökoolla.
 
-        MIKSI PUHELIMESSA VAIN 46 % KORKEUDESTA. Työpöydällä maskotti saa
-        olla lähes koko vyön korkuinen, koska teksti käyttää vain vasemman
-        puoliskon. Puhelimessa tekstipalsta on koko leveys, joten täyden
-        korkuinen hahmo osui mitattuna otsikon, ingressin ja molempien
-        nappien taakse: kermanvaalea bleiseri kermanvaalean tekstin alla
-        söi kontrastin juuri siitä kolmesta elementistä, joiden varassa
-        klikki on. 46 % ankkuroituna alareunaan pitää hahmon nappien
-        alapuolella, tilastopaneelin takana — näkyvissä, mutta ei minkään
-        luettavan alla.
+        MASKOTTI ON PUHELIMESSA ISO, EI PIENI. Välissä oli versio, jossa
+        hahmo kutistettiin 46 prosenttiin ja työnnettiin alanurkkaan, jotta
+        se ei olisi tekstin alla. Se ratkaisi kontrastin ja rikkoi sivun:
+        vierekkäin sähkö- ja lainasivun kanssa hub oli ainoa, jolla ei ollut
+        kansikuvaa, eli ainoa joka näytti keskeneräiseltä. Oikea ratkaisu ei
+        ole pienentää kuvaa vaan tummentaa se tekstin alta, mikä on
+        seuraavan kerroksen tehtävä.
       */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 right-0 z-0 w-[70%] overflow-hidden md:w-[50%]"
+        className="pointer-events-none absolute inset-y-0 right-0 z-0 w-[88%] overflow-hidden md:w-[52%]"
       >
         <Image
           src="/kettu-innostunut.webp"
@@ -123,16 +140,38 @@ export default function HomeHero({ facts }: { facts: HomeFacts }) {
           width={910}
           height={1507}
           priority
-          className="absolute bottom-0 right-[-8%] h-[46%] w-auto max-w-none object-contain opacity-30 md:right-0 md:h-[96%] md:opacity-40"
+          className="absolute bottom-0 right-[-6%] h-[86%] w-auto max-w-none object-contain opacity-[0.62] md:right-0 md:h-[96%] md:opacity-45"
           style={{
             WebkitMaskImage:
-              "linear-gradient(to left, #000 62%, transparent 100%)",
-            maskImage: "linear-gradient(to left, #000 62%, transparent 100%)",
+              "linear-gradient(to left, #000 58%, transparent 100%)",
+            maskImage: "linear-gradient(to left, #000 58%, transparent 100%)",
           }}
         />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-[1180px] px-4 pt-12 sm:px-6 md:pt-20">
+      {/*
+        TUMMENNUS MASKOTIN JA TEKSTIN VÄLISSÄ.
+
+        Tämä on se kerros, jonka takia maskotti saa olla iso. Ilman sitä oli
+        vain kaksi huonoa vaihtoehtoa: haalea kettu, jolloin sivu ei
+        hätkähdytä, tai kirkas kettu otsikon alla, jolloin kermanvaalea
+        bleiseri ja kermanvaalea teksti sulavat yhteen eikä otsikkoa lue.
+
+        Liukuväri on tumma vasemmalla ja katoaa kokonaan 74 prosentin
+        kohdalla, eli juuri siinä missä tekstipalsta loppuu ja ketun kasvot
+        alkavat. Teksti saa siis oman tumman pohjansa ja hahmo jää täyteen
+        voimaansa. Sävy on vyön oma tumma pää (#8E3206), ei uusi väri.
+      */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[1]"
+        style={{
+          backgroundImage:
+            "linear-gradient(96deg, #8E3206 0%, rgba(142,50,6,0.86) 26%, rgba(142,50,6,0.42) 52%, rgba(142,50,6,0) 74%)",
+        }}
+      />
+
+      <div className="relative z-10 mx-auto w-full max-w-[1180px] px-4 pt-8 sm:px-6 sm:pt-12 md:pt-20">
         <Reveal>
           {/*
             MERKKIPILLERI EIKÄ PALJAS PIKKUOTSIKKO. Sama sana, mutta
@@ -156,14 +195,14 @@ export default function HomeHero({ facts }: { facts: HomeFacts }) {
             kultaan, joten sana pysyy luettavana myös silloin kun selain ei
             osaa leikata väriä tekstiin — silloin se piirtyy kermana.
           */}
-          <h1 className="mt-6 max-w-[13ch] font-hero text-[clamp(3rem,10.5vw,5.4rem)] leading-[0.9] text-onEmber">
+          <h1 className="mt-6 max-w-[9ch] font-hero text-[clamp(3.1rem,12vw,5.4rem)] leading-[0.88] text-onEmber sm:max-w-[13ch]">
             Ketuttaako maksaa{" "}
             <span className="bg-gradient-to-br from-cream via-cream to-gold bg-clip-text text-transparent">
               liikaa?
             </span>
           </h1>
 
-          <p className="mt-6 max-w-[40ch] text-[17px] leading-relaxed text-onEmber/85 sm:text-[19px]">
+          <p className="mt-5 max-w-[30ch] text-[17px] leading-relaxed text-onEmber/85 sm:max-w-[40ch] sm:text-[19px]">
             Anna Ketun kilpailuttaa. Sähkösopimukset ja lainat samasta
             paikasta, ilmaiseksi ja selvällä suomella.
           </p>
@@ -224,25 +263,36 @@ export default function HomeHero({ facts }: { facts: HomeFacts }) {
           tarkistettavissa.
         */}
         <Reveal delay={0.12}>
-          <div className="mb-12 mt-12 overflow-hidden rounded-2xl border border-onEmber/15 bg-[#7E2C05]/35 md:mb-16 md:mt-16">
+          <div className="mt-9 overflow-hidden rounded-2xl border border-onEmber/15 bg-[#7E2C05]/45 backdrop-blur-[2px] md:mt-16">
             <div className="gold-rule" />
-            <dl className="grid divide-y divide-onEmber/15 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+            <dl className="grid grid-cols-3 divide-x divide-onEmber/15">
               {stats.map((s) => (
-                <div key={s.label} className="px-5 py-5 sm:px-6 sm:py-7">
-                  <dt className="font-hero text-[1.9rem] leading-none text-onEmber sm:text-[2.2rem]">
+                <div key={s.label} className="px-3 py-4 sm:px-6 sm:py-7">
+                  <dt className="font-hero text-[1.35rem] leading-none text-onEmber sm:text-[2.2rem]">
                     {s.count ? (
                       <CountUp value={s.value} suffix={s.suffix} />
                     ) : (
                       `${s.value.toLocaleString("fi-FI")}${s.suffix}`
                     )}
                   </dt>
-                  <dd className="mt-2 max-w-[26ch] text-[13px] leading-snug text-onEmber/70">
+                  <dd className="mt-1.5 max-w-[26ch] text-[11px] leading-snug text-onEmber/70 sm:mt-2 sm:text-[13px]">
                     {s.label}
                   </dd>
                 </div>
               ))}
             </dl>
           </div>
+
+          {/*
+            HINTAPÄIVÄ OMALLA RIVILLÄÄN, EI LUVUN SELITTEESSÄ. Kun se oli
+            kolmannen luvun selitteenä ("vertailu maksaa, hinnat 20.8.2026"),
+            se vei nauhassa kolme riviä ja työnsi luvut eri korkeuksille.
+            Tieto on silti pakko näkyä: se on ainoa asia, joka erottaa
+            tarkistetun vertailun arvauksesta.
+          */}
+          <p className="mb-5 mt-2 text-[12px] text-onEmber/55 md:mb-16 md:mt-3 md:text-[13px]">
+            Hinnat tarkistettu {fiDate(facts.priceDate)}.
+          </p>
         </Reveal>
       </div>
     </section>

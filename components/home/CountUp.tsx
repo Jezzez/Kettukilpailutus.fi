@@ -55,14 +55,27 @@ export default function CountUp({
     let raf = 0;
     let cancelled = false;
 
-    setShown(0);
-
     /*
       Sama pehmennys kuin sivuston muissa liikkeissä: nopea lähtö, pitkä
       hidastuva loppu. Luku siis "asettuu" paikalleen sen sijaan että
       pysähtyisi kesken vauhdin.
     */
     const run = () => {
+      /*
+        Nollaus tehdään vasta tässä, ei heti observerin lauetessa. Syy on
+        mitattu: taustavälilehdellä selain jäädyttää `requestAnimationFrame`
+        -kutsut mutta ei IntersectionObserveria. Jos nollaus olisi
+        observerissa, luku putoaisi nollaan eikä yksikään ruutu ajaisi sitä
+        takaisin ylös. Kun välilehti on piilossa, animaatiota ei aloiteta
+        lainkaan ja oikea luku jää näkyviin sellaisenaan.
+
+        Tämä on sama vika, jonka takia framer-motionin `useInView` aikanaan
+        poistettiin: nolla euroa väärässä kohdassa vie luottamuksen koko
+        vertailulta, eikä väärä nolla saa olla mahdollinen missään tilassa.
+      */
+      if (document.visibilityState !== "visible") return;
+
+      setShown(0);
       const t0 = performance.now();
       const tick = (t: number) => {
         if (cancelled) return;
