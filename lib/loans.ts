@@ -68,6 +68,28 @@ import type { FaqItem } from "./types";
  */
 export const SORTTER_APPLICATION_URL = "https://kettukilpailutus.hakemus-sortter.fi/";
 
+/**
+ * CO-BRANDED HAKEMUSSIVU YRITYSLAINOILLE.
+ *
+ * Sama aliverkkotunnus, oma polku. Tarkistettu sivun datasta samalla
+ * tavalla kuin kuluttajapuolen sivu: `/sme` sisältää palvelimen puolelta
+ * valmiina `affiliate_id` 958405be-… ja `offer_id` 4f317b7d-…, eli
+ * täsmälleen saman parin kuin juuren sivu. Osoitteeseen ei siksi lisätä
+ * tunnisteita tässäkään.
+ *
+ * KOSKA TUNNISTE ON SAMA, EROTTELU TAPAHTUU VAIN `utm`:LLÄ. Sortterin
+ * raportissa yrityslainahakemus ei erotu kuluttajahakemuksesta
+ * tunnisteen perusteella, koska pari on sama molemmilla sivuilla — ero
+ * syntyy laskeutumissivusta. Jos yrityspuolen tuotto halutaan joskus
+ * nähdä erikseen, se vaatii oman utm-arvon, ei omaa tunnistetta.
+ *
+ * EI PÄÄTTÄVÄÄ KENOVIIVAA. Widget liittää perään `?amount=…`, joten
+ * osoite muuttuu muotoon `/sme?amount=…`. Tämä on täsmälleen se osoite,
+ * jonka Sortter antoi.
+ */
+export const SORTTER_SME_APPLICATION_URL =
+  "https://kettukilpailutus.hakemus-sortter.fi/sme";
+
 /** Kumppani. Kaikki tämän sivun napit vievät co-branded hakemussivulle. */
 export const LOAN_PARTNER = {
   id: "sortter",
@@ -130,6 +152,15 @@ export const LOAN_WIDGET = {
    * sivulla on yksi kohde eikä kahta.
    */
   b2cUrl: SORTTER_APPLICATION_URL,
+
+  /**
+   * Yrityslainapuolen kohde. Widgetissä on erilliset `b2cUrl` ja
+   * `b2bUrl`, eli sama laskuri osaa ohjata kummankin hakijan omalle
+   * hakemussivulleen. Ilman tätä yrityslainaa hakeva kävijä päätyisi
+   * kuluttajalomakkeelle, eli väärään hakemukseen — se on menetetty
+   * hakemus, ei pelkkä kauneusvirhe.
+   */
+  b2bUrl: SORTTER_SME_APPLICATION_URL,
 
   /**
    * Liukujen aloitusarvot: 25 000 € ja 6 vuotta. Ne eivät ole väite

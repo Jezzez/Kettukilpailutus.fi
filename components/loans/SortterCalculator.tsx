@@ -36,10 +36,12 @@ import { LOAN_WIDGET } from "@/lib/loans";
  */
 
 interface SortterFormProps {
-  /** "personal" | "corporate" | "both". Yrityslainoja emme markkinoi. */
+  /** "personal" | "corporate" | "both". Meillä molemmat. */
   type?: string;
   /** Minne nappi vie. Ilman tätä widget käyttää sortter.fi:n oletusta. */
   b2cUrl?: string;
+  /** Sama yrityslainapuolelle. Oma osoite, ks. lib/loans.ts. */
+  b2bUrl?: string;
   /** Seurantaparametrit, jotka liitetään Sortterin osoitteeseen. */
   utm?: string;
   b2cLoanAmount?: string;
@@ -181,7 +183,13 @@ export default function SortterCalculator() {
       */}
       <sortter-reseller-form
         ref={formRef}
-        type="personal"
+        /*
+          "both" eli sama laskuri palvelee sekä kuluttaja- että
+          yrityslainan hakijaa. Widgetissä on tätä varten omat
+          `b2cUrl`- ja `b2bUrl`-kohteet, joten kumpikin hakija päätyy
+          omalle co-branded hakemussivulleen.
+        */
+        type="both"
         /*
           KOHDE ON PAKKO ASETTAA. Widgetin oletus on
           `https://sortter.fi/lainahakemus/`, jolla ei ole mitään
@@ -196,6 +204,7 @@ export default function SortterCalculator() {
           kyselymerkkijonoa: widget kirjoittaa kysymysmerkin itse.
         */
         b2cUrl={LOAN_WIDGET.b2cUrl}
+        b2bUrl={LOAN_WIDGET.b2bUrl}
         utm={LOAN_WIDGET.utm}
         b2cLoanAmount={String(LOAN_WIDGET.amount)}
         b2cLoanPeriod={String(LOAN_WIDGET.periodYears)}
