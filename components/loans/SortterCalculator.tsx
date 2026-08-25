@@ -165,6 +165,24 @@ export default function SortterCalculator() {
             box-shadow: 0 14px 34px -16px rgba(60, 35, 15, 0.45) !important;
           }
 
+          /*
+            RIVI OLI VINOSSA OIKEALLE. Sisempi kaista saa leveydekseen
+            emonsa sisältöleveyden (338 px) mutta lisää siihen vielä oman
+            8 px pehmusteensa molemmin puolin, koska se laskee leveyden
+            sisältölaatikkona. Mitattu 390 px:n leveydellä: kaista oli
+            354 px leveä 338 px:n tilassa, eli napit alkoivat 8 px
+            sisennettyinä vasemmalta mutta ylittivät oikean reunan 8 px.
+            Siksi valittu oranssi nappi hipoi kermapillerin reunaa oikealla
+            ja vasemmalle jäi selvä kermakaista.
+
+            border-box panee pehmusteen leveyden sisään, jolloin kaista
+            asettuu tasan emonsa sisälle ja napit jakautuvat symmetrisesti.
+          */
+          [class*="selector-module--selector"] {
+            box-sizing: border-box !important;
+            width: 100% !important;
+          }
+
           [class*="selector-module--container"] button {
             color: #BA4A08 !important;
           }
