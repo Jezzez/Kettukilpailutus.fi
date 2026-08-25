@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import HomeHero from "@/components/home/HomeHero";
-import RouteCards from "@/components/home/RouteCards";
-import SpreadBlock from "@/components/home/SpreadBlock";
+import Verticals from "@/components/home/Verticals";
 import TrustBlock from "@/components/home/TrustBlock";
 import GuideRail from "@/components/home/GuideRail";
 import ClosingBelt from "@/components/home/ClosingBelt";
@@ -11,26 +10,37 @@ import { getHomeFacts } from "@/lib/home";
 /*
   ETUSIVU — HUB.
 
-  KUUSI OSIOTA, JOKAINEN YKSI ASIA. Etusivun aiemmat versiot yrittivät
-  tehdä monta asiaa kerralla: ne limittivät osioita päällekkäin, vaihtoivat
-  taustaa seitsemän kertaa ja ripottelivat maskotin joka toiseen lohkoon.
-  Lopputulos oli 5987 pikseliä pitkä sivu, jolla ei ollut yhtään kohtaa,
-  josta silmä olisi tiennyt mistä aloittaa. Nyt jokaisella osiolla on yksi
-  tehtävä ja sen tehtävä lukee pikkuotsikossa.
+  KOLME PALVELUA, SAMA PAINO. Etusivu esitteli aiemmin sähkön omalla
+  osiollaan, lainat puolikkaalla kortilla ja vakuutukset ei ollenkaan. Se
+  ei ollut päätös vaan kertymä: sähköstä oli eniten kerrottavaa, joten se
+  sai eniten tilaa, ja tilasta tuli painotus. Kävijälle sivu näytti
+  sähkövertailulta, jossa mainitaan laina, eikä lainaa kilpailuttamaan
+  tullut tunnistanut olevansa oikeassa paikassa.
 
-  1. HERO — kuka olemme ja mihin painetaan. Kaksi palstaa, teksti ja kuva
-     erillään; kuva ei voi kasvaa tekstin päälle.
-  2. REITIT — sähkö vai lainat. Hubin ainoa varsinainen työ, ja siksi heti
-     heron alla ennen yhtäkään perustelua.
-  3. HINTAERO — yksi kova luku, joka tekee klikistä tarpeellisen.
-  4. LÄPINÄKYVYYS — mistä saamme palkkamme.
-  5. OPPAAT — ulospääsy niille, jotka eivät ole vielä valmiita.
-  6. LOPPUKEHOTUS — toinen ja viimeinen nappi.
+  Nyt jokainen palvelu saa oman, rakenteeltaan identtisen osionsa
+  (`components/home/Verticals.tsx`), ja kaikki neljä paikkaa, joissa
+  palveluista puhutaan, lukevat saman `lib/services.ts`-taulukon. Yhtä
+  palvelua ei voi kasvattaa koskematta kaikkiin kolmeen.
 
-  ORANSSIA ON KAKSI VYÖTÄ, ei kolme. Erillinen lainavyö keskellä sivua
-  poistettiin: se toisti sanasta sanaan sen, mikä lukee jo reittikortissa,
-  ja maksoi noin 700 pikseliä pystytilaa. Toisto ei ollut painotusta vaan
-  este halvimman klikin ja kävijän välissä.
+  1. HERO — yksi lupaus ja kolme identtistä laattaa, jotka vievät alas
+     omaan osioonsa. Maskotti on taustalla, ei omana palstanaan.
+  2.–4. SÄHKÖ, LAINAT, VAKUUTUKSET — sama kuori, sama otsikkokoko, sama
+     paneeli, sama nappi. Jokainen vastaa kysymykseen "mitä tapahtuu kun
+     painan nappia", koska se on kysymys, joka pysäyttää klikin.
+  5. LÄPINÄKYVYYS — mistä saamme palkkamme ja kuka minkäkin työn tekee.
+  6. OPPAAT — ulospääsy niille, jotka eivät ole vielä valmiita.
+  7. LOPPUKEHOTUS — kolme samannäköistä nappia, viimeinen mahdollisuus.
+
+  ERILLINEN "NÄIN SE TOIMII" -OSIO POISTETTIIN samalla kun vertikaalit
+  saivat omat askeleensa. Yleinen kolmen askeleen lista, joka yritti
+  kuvata kolmen eri palvelun kulun kerralla, pakotti lukijan kääntämään
+  jokaisen lauseen omalle palvelulleen — ja juuri se kääntämisen tarve
+  oli se, mistä palautteessa valitettiin. Askeleet ovat nyt sen palvelun
+  vieressä, jota ne koskevat.
+
+  TAUSTOJEN RYTMI: oranssi → paperi → usva → paperi → hiekka → usva →
+  oranssi. Kahdella peräkkäisellä osiolla ei ole samaa pintaa, koska
+  silloin niiden raja katoaa ja kaksi osiota luetaan yhdeksi pitkäksi.
 
   MITÄ TÄSSÄ EI OLE: laskuria, kyselyä eikä sopimuslistaa. Ne kuuluvat
   `/sahkosopimukset`-sivulle portin taakse (ks. CLAUDE.md). Hubin tehtävä on
@@ -39,13 +49,22 @@ import { getHomeFacts } from "@/lib/home";
 
 export const metadata: Metadata = {
   title: { absolute: "Kettukilpailutus.fi – kilpailuta sähkösopimukset ja lainat" },
+  /*
+    KUVAUKSESSA MAINITAAN VAKUUTUKSET, OTSIKOSSA EI.
+
+    Vakuutuksissa emme vertaile mitään: POP Vakuutus antaa tarjouksen ja
+    Kettu ohjaa sinne. Otsikko "kilpailuta sähkö, lainat ja vakuutukset"
+    lupaisi hakutuloksessa vertailun, jota sivulla ei ole, ja lupaus
+    romahtaisi yhden klikin päässä. Kuvaus saa siis sanan "vakuutustarjous"
+    mukaan sanomalla suoraan, mistä on kyse.
+  */
   description:
-    "Kilpailuta sähkösopimukset ja lainat yhdessä paikassa. Kettu laskee sähkön vuosihinnan omalla kulutuksellasi ja hakee lainatarjoukset yhdellä hakemuksella.",
+    "Kilpailuta sähkösopimukset ja lainat yhdessä paikassa ja pyydä vakuutustarjous POP Vakuutukselta. Kettu laskee sähkön vuosihinnan omalla kulutuksellasi ja lainatarjoukset haetaan yhdellä hakemuksella.",
   alternates: { canonical: "/" },
   openGraph: {
     title: "Kettukilpailutus.fi – kilpailuta sähkösopimukset ja lainat",
     description:
-      "Ketuttaako maksaa liikaa? Anna Ketun kilpailuttaa puolestasi. Sähkösopimukset sekä lainatarjoukset yhdellä hakemuksella.",
+      "Ketuttaako maksaa liikaa? Anna Ketun kilpailuttaa puolestasi. Sähkösopimukset, lainatarjoukset yhdellä hakemuksella ja vakuutustarjous POP Vakuutukselta.",
     url: "/",
     images: [
       {
@@ -73,7 +92,7 @@ export default function HomePage() {
         url: SITE.url,
         logo: `${SITE.url}/isokettulogo.png`,
         description:
-          "Suomalainen kilpailutuspalvelu: sähkösopimukset ja lainat puolueettomasti vertailtuna.",
+          "Suomalainen kilpailutuspalvelu: sähkösopimukset ja lainat puolueettomasti vertailtuna sekä vakuutustarjous kumppanilta.",
         legalName: SITE.operator.legalName,
         taxID: SITE.operator.businessId,
         email: SITE.operator.email,
@@ -99,8 +118,7 @@ export default function HomePage() {
 
       <main>
         <HomeHero facts={facts} />
-        <RouteCards facts={facts} />
-        <SpreadBlock facts={facts} />
+        <Verticals facts={facts} />
         <TrustBlock facts={facts} />
         <GuideRail posts={posts} />
         <ClosingBelt />

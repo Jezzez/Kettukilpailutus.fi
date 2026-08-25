@@ -1,40 +1,35 @@
 import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import CountUp from "@/components/home/CountUp";
-import { FEATURES } from "@/lib/features";
-import { ENERGY_COMPARE } from "@/lib/nav";
+import { getServices } from "@/lib/services";
 import { fiDate, type HomeFacts } from "@/lib/home";
 
 /*
   HERO — SIVUSTON ENSIMMÄINEN RUUTU.
 
-  MIKSI TÄMÄ EI OLE KAKSIPALSTAINEN NIIN KUIN MUUT HEROT. Sähkösivun ja
-  aihesivujen hero on ruudukko, jossa vasemmalla on teksti ja oikealla
-  laskuri. Kun hubilla oli sama ruudukko, hub näytti sähkösivulta josta
-  puuttui laskuri — eli keskeneräiseltä versiolta oikeasta sivusta. Se on
-  pahin mahdollinen ensivaikutelma sivulla, jonka ainoa tehtävä on saada
-  kävijä luottamaan ja klikkaamaan eteenpäin.
+  YKSI LUPAUS, KOLME TASAVERTAISTA OVEA. Aiemmassa versiossa herossa oli
+  kaksi painiketta, joista sähkö oli kermanvalkoinen ja lainat pelkkä
+  ääriviiva. Se oli suunniteltu valinnaksi, mutta se luettiin
+  järjestykseksi: kirkas nappi on oikea vastaus ja himmeä on varavaihtoehto.
+  Kun sivustolla on kolme kilpailutettavaa palvelua, sellainen hero mainostaa
+  yhtä ja mainitsee kaksi.
 
-  RAKENNE ON NYT YKSI TEKSTIPALSTA KOKO LEVEYDELTÄ JA MASKOTTI TAUSTALLA.
-  Maskotti ei ole enää ruudukon toinen palsta vaan koko vyön korkuinen
-  taustahahmo oikeassa reunassa. Kaksi seurausta, jotka molemmat vievät
-  klikkiin päin:
+  Nyt kaikki kolme ovat identtisiä laattoja, jotka rakennetaan samasta
+  `getServices()`-taulukosta. Ne eivät voi eriytyä myöhemmissä muokkauksissa,
+  koska yhtään niistä ei kirjoiteta tässä tiedostossa.
 
-  1. Otsikko saa koko leveyden. Se voi olla puhelimessa selvästi entistä
-     isompi ilman että mikään siirtyy, ja iso otsikko on ainoa asia, jonka
-     nopeasti selaava ehtii lukea.
-  2. Napit nousevat ylemmäs. Kun kuvalle ei varata omaa palstaa, kaikki
-     ennen nappia mahtuu puhelimessa yhteen ruutuun, eikä kävijän tarvitse
-     vierittää päästäkseen ainoaan kohtaan, joka tuottaa.
+  LAATAT VIEVÄT OSIOON, EIVÄT SUORAAN ULOS. Sähkö- ja lainalaatta voisivat
+  hyvin viedä suoraan kohteeseensa, mutta vakuutuslaatta ei: sen takana on
+  kumppanin sivu, ja kävijä on kertaakaan kuulematta siitä väärässä
+  paikassa. Kun yksi laatta joutuu pysähtymään osioon, kaikki kolme
+  pysähtyvät — muuten tasavertaisuus katoaa juuri siinä kohdassa, jossa se
+  on tarkoitus näyttää. Sivustolla on `scroll-behavior: smooth`, joten
+  siirtymä on liu'utus eikä hyppy.
 
-  MASKOTTI ON SAMALLA TAVALLA KUIN MUILLA SIVUILLA: oikeaan reunaan
-  ankkuroitu, `aria-hidden`, `pointer-events-none`, haalennettu ja
-  vasemmalle häivytetty maskilla, jotta se ei koskaan kilpaile tekstin
-  kanssa. Erona on, että täällä sama hahmo on myös työpöydällä — hubilla ei
-  ole laskuria täyttämässä oikeaa reunaa, ja tyhjä oranssi puolikas näyttää
-  siltä että jotain jäi lataamatta.
+  MASKOTTI ON TAUSTAHAHMO, EI PALSTA. Yksi tekstipalsta koko leveydeltä ja
+  kettu oikeassa reunassa: otsikko saa koko leveyden ja laatat nousevat
+  ylemmäs, eli kaikki ennen ensimmäistä klikkiä mahtuu puhelimessa yhteen
+  ruutuun.
 
   YKSI KUVAELEMENTTI, EI KAHTA. Erilliset mobiili- ja työpöytäkuvat
   tarkoittaisivat kahta `priority`-kuvaa, joista selain lataa molemmat ja
@@ -42,23 +37,30 @@ import { fiDate, type HomeFacts } from "@/lib/home";
 */
 
 export default function HomeHero({ facts }: { facts: HomeFacts }) {
+  const services = getServices();
+
   /*
-    `count: false` kolmannella rivillä on tarkoituksellinen. Nollasta
-    nollaan juokseva luku on liikettä, joka ei kerro mitään, ja se veisi
-    katseen kahdelta luvulta, jotka oikeasti kertovat.
+    LUKURIVI EI SAA OLLA YHDEN VERTIKAALIN MAINOS.
+
+    Rivissä oli aiemmin kaksi sähkölukua kolmesta, ja niistä isoin
+    (1 544 €) oli sähkölämmitteisen talon hintaero. Kaksi asiaa meni siinä
+    pieleen kerralla: rivi kallistui sähköön, ja sivun kovin luku seisoi
+    kaukana siitä osiosta, joka sen selittää.
+
+    Iso luku on nyt sähkön omassa osiossa palkkien vieressä, jossa lukija
+    näkee saman silmäyksellä myös asumismuodon ja laskuperusteen. Tänne
+    jäivät luvut, jotka koskevat koko sivustoa: montako palvelua on
+    kilpailutettavissa ja mitä se maksaa kävijälle. Kolmas on sähköstä,
+    koska se on ainoa tarkistettu määrä joka meillä on — lainoista ja
+    vakuutuksista meillä ei ole yhtään lukua, eikä sellaista keksitä
+    tasapainon vuoksi.
   */
   const stats = [
     {
-      value: facts.planCount,
+      value: services.length,
       suffix: "",
       count: true,
-      label: `sopimusta ${facts.providerCount} yhtiöltä`,
-    },
-    {
-      value: Math.round(facts.maxSpread),
-      suffix: " €",
-      count: true,
-      label: "halvimman ja kalleimman ero",
+      label: "palvelua kilpailutettavana",
     },
     {
       value: 0,
@@ -66,39 +68,38 @@ export default function HomeHero({ facts }: { facts: HomeFacts }) {
       count: false,
       label: "vertailu maksaa sinulle",
     },
+    {
+      value: facts.planCount,
+      suffix: "",
+      count: true,
+      label: `sähkösopimusta ${facts.providerCount} yhtiöltä`,
+    },
   ];
 
   /*
     HERO ON PUHELIMESSA KOKO RUUDUN KORKUINEN.
 
-    `min-h-[100svh]` tekee ensimmäisestä ruudusta kansikuvan: kävijä näkee
-    otsikon, maskotin, molemmat napit ja lukurivin kerralla, eikä alle jää
+    `min-h-[calc(100svh-74px)]` tekee ensimmäisestä ruudusta kansikuvan:
+    otsikko, maskotti, kolme laattaa ja lukurivi kerralla, eikä alle jää
     puolikasta seuraavaa osiota vetämässä katsetta pois. `svh` eikä `vh`,
-    koska `vh` ei laske mobiiliselaimen osoiteriviä pois ja hero jäisi sen
-    verran liian korkeaksi — juuri nappien alta.
+    koska `vh` ei laske mobiiliselaimen osoiteriviä pois.
 
     MIINUS 74 PIKSELIÄ ON HEADERIN KORKEUS (`components/Header.tsx`,
     `h-[74px]`). Header on `sticky`, eli se on normaalissa virrassa ja vyö
-    alkaa vasta sen alta. Pelkkä `100svh` teki herosta täsmälleen headerin
-    verran liian korkean, jolloin alin rivi jäi ruudun alapuolelle. Jos
-    headerin korkeus muuttuu, muuta tämä luku samalla.
+    alkaa vasta sen alta. Jos headerin korkeus muuttuu, muuta tämä samalla.
 
     Vain puhelimessa. Työpöydällä koko ruudun korkuinen vyö ilman yhtään
-    näkyvää sisältöä alla lukee mainokseksi, ja hubin tehtävä on ohjata
-    eteenpäin heti.
+    näkyvää sisältöä alla lukee mainokseksi.
   */
   return (
     <section className="theme-ember ember-surface relative flex min-h-[calc(100svh-74px)] flex-col justify-center overflow-hidden md:min-h-0 md:block">
       {/*
-        HITAASTI LIIKKUVA VALO VYÖN TAKANA.
-
-        Oranssi vyö on tasainen väripinta, ja tasainen pinta näyttää
-        puhelimen ruudulla painetulta kuvalta. Yksi hyvin hidas (18 s),
+        HITAASTI LIIKKUVA VALO VYÖN TAKANA. Tasainen väripinta näyttää
+        puhelimen ruudulla painetulta kuvalta. Yksi hyvin hidas,
         pehmeäreunainen valokehä otsikon takana saa pinnan elämään ilman
-        että mikään vilkkuu. Se on `pointer-events: none` eikä ole
-        sisällön päällä (sisältö on `z-10`), joten se ei voi varastaa
-        yhtään klikkiä. Animoi vain `transform`ia ja `opacity`a, eli se
-        pyörii kompositorissa eikä hidasta vieritystä.
+        että mikään vilkkuu. `pointer-events: none` eikä sisällön päällä,
+        joten se ei voi varastaa yhtään klikkiä. Animoi vain `transform`ia
+        ja `opacity`a, eli pyörii kompositorissa eikä hidasta vieritystä.
       */}
       <div
         aria-hidden
@@ -111,36 +112,29 @@ export default function HomeHero({ facts }: { facts: HomeFacts }) {
         MIKSI MASKI EIKÄ PELKKÄ HAALENNUS. Pelkkä `opacity` jättää kuvalle
         terävän pystyreunan siihen, mihin kuva loppuu, ja terävä reuna
         keskellä oranssia pintaa lukee virheeksi. Vasemmalle häipyvä maski
-        sulattaa hahmon vyöhön, jolloin se on tunnelmaa eikä liimattu
-        kuva — ja samalla se pitää tekstin alta pois juuri sen osan
+        sulattaa hahmon vyöhön ja pitää tekstin alta pois juuri sen osan
         kuvasta, joka olisi tekstin päällä.
 
-        KORKEUS ON PROSENTTIA VYÖSTÄ, EI KIINTEÄ PIKSELIMÄÄRÄ. Aiemmin
-        maskotti skaalattiin heron korkeuden mukaan ilman kattoa, ja kun
-        hero kasvoi sisällön myötä, kuvasta tuli valtava ja se valui
-        otsikon päälle. Nyt kuva on omassa `overflow-hidden`-laatikossaan,
-        joka on ankkuroitu oikeaan reunaan: se ei voi levitä vasemmalle
-        millään näyttökoolla.
+        KORKEUS ON PROSENTTIA VYÖSTÄ, EI KIINTEÄ PIKSELIMÄÄRÄ. Kuva on
+        omassa `overflow-hidden`-laatikossaan, joka on ankkuroitu oikeaan
+        reunaan: se ei voi levitä vasemmalle millään näyttökoolla.
 
-        MASKOTTI ON PUHELIMESSA ISO, EI PIENI. Välissä oli versio, jossa
-        hahmo kutistettiin 46 prosenttiin ja työnnettiin alanurkkaan, jotta
-        se ei olisi tekstin alla. Se ratkaisi kontrastin ja rikkoi sivun:
-        vierekkäin sähkö- ja lainasivun kanssa hub oli ainoa, jolla ei ollut
-        kansikuvaa, eli ainoa joka näytti keskeneräiseltä. Oikea ratkaisu ei
-        ole pienentää kuvaa vaan tummentaa se tekstin alta, mikä on
-        seuraavan kerroksen tehtävä.
+        KUVA ON KOKOVARTALOHAHMO, JOKA SEISOO VYÖN POHJALLA. Aiempi
+        `kettu-innostunut.webp` oli rajattu polvista, jolloin `bottom-0`
+        leikkasi hahmon keskeltä säärtä. `kettu-hub-hero.webp` päättyy
+        kenkiin, joten alareuna on hahmon oma eikä rajaus.
       */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-y-0 right-0 z-0 w-[88%] overflow-hidden md:w-[52%]"
       >
         <Image
-          src="/kettu-innostunut.webp"
+          src="/kettu-hub-hero.webp"
           alt=""
           width={910}
-          height={1507}
+          height={1492}
           priority
-          className="absolute bottom-0 right-[-6%] h-[86%] w-auto max-w-none object-contain opacity-[0.62] md:right-0 md:h-[96%] md:opacity-45"
+          className="absolute bottom-0 right-[-6%] h-[86%] w-auto max-w-none object-contain opacity-[0.62] md:right-0 md:h-[96%] md:opacity-50"
           style={{
             WebkitMaskImage:
               "linear-gradient(to left, #000 58%, transparent 100%)",
@@ -152,15 +146,14 @@ export default function HomeHero({ facts }: { facts: HomeFacts }) {
       {/*
         TUMMENNUS MASKOTIN JA TEKSTIN VÄLISSÄ.
 
-        Tämä on se kerros, jonka takia maskotti saa olla iso. Ilman sitä oli
+        Tämä on se kerros, jonka takia maskotti saa olla iso. Ilman sitä on
         vain kaksi huonoa vaihtoehtoa: haalea kettu, jolloin sivu ei
         hätkähdytä, tai kirkas kettu otsikon alla, jolloin kermanvaalea
         bleiseri ja kermanvaalea teksti sulavat yhteen eikä otsikkoa lue.
 
-        Liukuväri on tumma vasemmalla ja katoaa kokonaan 74 prosentin
-        kohdalla, eli juuri siinä missä tekstipalsta loppuu ja ketun kasvot
-        alkavat. Teksti saa siis oman tumman pohjansa ja hahmo jää täyteen
-        voimaansa. Sävy on vyön oma tumma pää (#8E3206), ei uusi väri.
+        Liukuväri on tumma vasemmalla ja katoaa 74 prosentin kohdalla, eli
+        siinä missä tekstipalsta loppuu ja ketun kasvot alkavat. Sävy on
+        vyön oma tumma pää (#8E3206), ei uusi väri.
       */}
       <div
         aria-hidden
@@ -173,11 +166,6 @@ export default function HomeHero({ facts }: { facts: HomeFacts }) {
 
       <div className="relative z-10 mx-auto w-full max-w-[1180px] px-4 pt-8 sm:px-6 sm:pt-12 md:pt-20">
         <Reveal>
-          {/*
-            MERKKIPILLERI EIKÄ PALJAS PIKKUOTSIKKO. Sama sana, mutta
-            kehystettynä se lukee merkiltä eikä leipätekstin ensimmäiseltä
-            riviltä. Kultainen piste on sivuston toinen väri, ei kolmas.
-          */}
           <span className="inline-flex items-center gap-2 rounded-full border border-onEmber/25 bg-[#7E2C05]/35 px-4 py-1.5 font-display text-[11px] font-bold uppercase tracking-[0.16em] text-onEmber/85">
             <span className="h-1.5 w-1.5 rounded-full bg-gold" aria-hidden />
             Kilpailutuspalvelu
@@ -185,15 +173,13 @@ export default function HomeHero({ facts }: { facts: HomeFacts }) {
 
           {/*
             OTSIKON LEVEYS RAJATAAN OTSIKOSTA, EI KÄÄREESTÄ. `ch`-yksikkö
-            laskee vanhemman fonttikoon mukaan. Kun `max-w-[16ch]` oli
-            kääreessä, se laskettiin 16 pikselin leipätekstistä eli noin
-            160 pikseliksi, ja koko tekstipalsta kutistui siihen 90
-            pikselin otsikon alla. Raja kuuluu siis h1-elementille itselleen.
+            laskee vanhemman fonttikoon mukaan, joten kääreessä se
+            laskettaisiin leipätekstistä ja koko palsta kutistuisi.
 
-            KULTAINEN LIUKUVÄRI VAIN YHDESSÄ SANASSA. Se sana on "liikaa",
-            eli koko palvelun lupauksen ydin. Liukuväri kulkee kermasta
-            kultaan, joten sana pysyy luettavana myös silloin kun selain ei
-            osaa leikata väriä tekstiin — silloin se piirtyy kermana.
+            KULTAINEN LIUKUVÄRI VAIN SANASSA "liikaa", eli koko palvelun
+            lupauksen ytimessä. Liukuväri kulkee kermasta kultaan, joten
+            sana pysyy luettavana myös silloin kun selain ei osaa leikata
+            väriä tekstiin — silloin se piirtyy kermana.
           */}
           <h1 className="mt-6 max-w-[9ch] font-hero text-[clamp(3.1rem,12vw,5.4rem)] leading-[0.88] text-onEmber sm:max-w-[13ch]">
             Ketuttaako maksaa{" "}
@@ -202,68 +188,79 @@ export default function HomeHero({ facts }: { facts: HomeFacts }) {
             </span>
           </h1>
 
-          <p className="mt-5 max-w-[30ch] text-[17px] leading-relaxed text-onEmber/85 sm:max-w-[40ch] sm:text-[19px]">
-            Anna Ketun kilpailuttaa. Sähkösopimukset ja lainat samasta
-            paikasta, ilmaiseksi ja selvällä suomella.
-          </p>
-        </Reveal>
-
-        <Reveal delay={0.06}>
           {/*
-            ENSISIJAINEN NAPPI ON KERMANVALKOINEN, EI ORANSSI. Oranssilla
-            vyöllä oranssi nappi on sama väri kuin pohja. Vaalea nappi on
-            ruudun ainoa vaalea piste, ja juuri se on koko vyön tarkoitus.
-
-            Mobiilissa napit ovat pinossa ja täysleveät: vierekkäin ne
-            jäisivät 390 pikselin leveydellä alle 44 pikselin
-            kosketusalueeseen.
+            ALARIVI KERTOO MITÄ TAPAHTUU, EI MITÄ OLEMME. Vanha rivi
+            kuvaili palvelua ("samasta paikasta, selvällä suomella") mutta
+            ei yhtäkään tekoa, joten sloganin jälkeen kävijä ei tiennyt mitä
+            napin takana tapahtuu. Nyt rivi nimeää kaikki kolme palvelua ja
+            sen, mitä ne maksavat. Ei lupausta säästöstä: rivin on pysyttävä
+            totena myös silloin, kun kävijän nykyinen sopimus on jo halvin.
           */}
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <Link
-              href={ENERGY_COMPARE}
-              className="lift press sheen inline-flex items-center justify-center gap-2 rounded-xl bg-cream px-6 py-4 font-display text-[16px] font-bold text-[#A83E0A] shadow-lift"
-            >
-              Kilpailuta sähkö
-              <ArrowRight size={18} aria-hidden className="nudge" />
-            </Link>
-
-            {FEATURES.loans && (
-              <Link
-                href="/lainat"
-                className="press inline-flex items-center justify-center gap-2 rounded-xl border border-onEmber/40 px-6 py-4 font-display text-[16px] font-bold text-onEmber transition-colors hover:bg-onEmber/12"
-              >
-                Vertaile lainoja
-              </Link>
-            )}
-          </div>
-
-          {/*
-            LUOTTAMUSRIVI HETI NAPIN ALLA, EI OSIONA ALEMPANA. Kaksi
-            yleisintä syytä olla klikkaamatta vertailunappia ovat "joudunko
-            maksamaan" ja "joudunko antamaan numeroni". Molemmat kuuluvat
-            samaan ruutuun napin kanssa, koska alempana ne eivät ehdi
-            vaikuttaa päätökseen.
-          */}
-          <p className="mt-4 font-display text-[13px] font-medium text-onEmber/65">
-            Ilmainen · Ei yhteystietoja · Ei rekisteröitymistä
+          <p className="mt-5 max-w-[32ch] text-[17px] leading-relaxed text-onEmber/85 sm:max-w-[46ch] sm:text-[19px]">
+            Sähkö, lainat ja vakuutukset kilpailutettuna samassa paikassa.
+            Kettu tekee laskutyön, sinä teet päätöksen. Sinulle ilmaista.
           </p>
         </Reveal>
 
         {/*
-          LUKURIVI ON HERON POHJALLA OMANA PANEELINAAN.
+          KOLME LAATTAA, KAIKKI SAMAN NÄKÖISIÄ.
 
-          MIKSI PANEELI EIKÄ PALJAS RIVI VIIVAN ALLA: maskotti on nyt
+          MIKSI RINNAKKAIN MYÖS PUHELIMESSA. Allekkain ladotut vaihtoehdot
+          eivät ole valinta vaan lista: ylin luetaan oletukseksi ja loput
+          ohitetaan. Rinnakkain ne ovat kysymys, johon on pakko vastata.
+          Kuvake päällekkäin nimen kanssa mahtuu 390 pikselillä kolmeen
+          sarakkeeseen ilman että yksikään nimi katkeaa kahdelle riville.
+
+          KERMANVAALEA POHJA, EI ORANSSIA. Oranssilla vyöllä oranssi laatta
+          on sama väri kuin pohja. Vaaleat laatat ovat ruudun ainoat vaaleat
+          pisteet, ja juuri se on koko vyön tarkoitus.
+
+          EMBER-ANSA: `bg-cream` + kiinteä `text-[#A83E0A]`, ei
+          `text-accentDark` — `.theme-ember`-vyöllä jälkimmäinen kääntyy
+          vaaleaksi kermaksi ja teksti katoaa pohjaan.
+        */}
+        <Reveal delay={0.06}>
+          <nav aria-label="Kilpailutettavat palvelut" className="mt-8">
+            <ul className="grid grid-cols-3 gap-2 sm:gap-3">
+              {services.map(({ key, name, Icon }) => (
+                <li key={key}>
+                  <a
+                    href={`#${key}`}
+                    className="lift press sheen flex h-full flex-col items-center justify-center gap-2 rounded-xl bg-cream px-2 py-4 text-center font-display text-[14px] font-bold text-[#A83E0A] shadow-lift sm:gap-2.5 sm:py-5 sm:text-[16px]"
+                  >
+                    <Icon size={20} strokeWidth={2.2} aria-hidden />
+                    {name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/*
+            LUOTTAMUSRIVI HETI LAATTOJEN ALLA, EI OSIONA ALEMPANA. Kaksi
+            yleisintä syytä olla klikkaamatta ovat "joudunko maksamaan" ja
+            "joudunko antamaan tietoni". Molemmat kuuluvat samaan ruutuun
+            painikkeiden kanssa, koska alempana ne eivät ehdi vaikuttaa
+            päätökseen.
+
+            "Ei rekisteröitymistä" koskee kaikkia kolmea; "ei
+            yhteystietoja" ei koskisi, koska laina- ja vakuutushakemus
+            luonnollisesti kysyy ne. Siksi se lause on nyt sähkön omassa
+            osiossa eikä täällä.
+          */}
+          <p className="mt-4 font-display text-[13px] font-medium text-onEmber/65">
+            Ilmainen · Ei rekisteröitymistä · Päätöksen teet itse
+          </p>
+        </Reveal>
+
+        {/*
+          LUKURIVI ON HERON POHJALLA OMANA PANEELINAAN. Maskotti on
           taustalla myös lukujen kohdalla, ja paljas teksti kuvan päällä on
           juuri se kohta, jossa vertailun luvut näyttäisivät epätarkoilta.
-          Oma tummempi pinta erottaa luvut taustasta, ja samalla se sulkee
-          heron: rivi lukee allekirjoituksena eikä kilpaile napin kanssa.
-
-          LUVUT TULEVAT DATASTA, EIVÄT TÄSTÄ TIEDOSTOSTA. Rivi ei lupaa
-          mitään, se kertoo mitä on jo tehty, ja jokainen luku on
-          tarkistettavissa.
+          Oma tummempi pinta erottaa luvut taustasta ja sulkee heron.
         */}
         <Reveal delay={0.12}>
-          <div className="mt-9 overflow-hidden rounded-2xl border border-onEmber/15 bg-[#7E2C05]/45 backdrop-blur-[2px] md:mt-16">
+          <div className="mt-8 overflow-hidden rounded-2xl border border-onEmber/15 bg-[#7E2C05]/45 backdrop-blur-[2px] md:mt-14">
             <div className="gold-rule" />
             <dl className="grid grid-cols-3 divide-x divide-onEmber/15">
               {stats.map((s) => (
@@ -284,14 +281,13 @@ export default function HomeHero({ facts }: { facts: HomeFacts }) {
           </div>
 
           {/*
-            HINTAPÄIVÄ OMALLA RIVILLÄÄN, EI LUVUN SELITTEESSÄ. Kun se oli
-            kolmannen luvun selitteenä ("vertailu maksaa, hinnat 20.8.2026"),
-            se vei nauhassa kolme riviä ja työnsi luvut eri korkeuksille.
-            Tieto on silti pakko näkyä: se on ainoa asia, joka erottaa
-            tarkistetun vertailun arvauksesta.
+            HINTAPÄIVÄ OMALLA RIVILLÄÄN, EI LUVUN SELITTEESSÄ. Selitteessä
+            se veisi nauhassa kolme riviä ja työntäisi luvut eri
+            korkeuksille. Tieto on silti pakko näkyä: se on ainoa asia, joka
+            erottaa tarkistetun vertailun arvauksesta.
           */}
           <p className="mb-5 mt-2 text-[12px] text-onEmber/55 md:mb-16 md:mt-3 md:text-[13px]">
-            Hinnat tarkistettu {fiDate(facts.priceDate)}.
+            Sähkön hinnat tarkistettu {fiDate(facts.priceDate)}.
           </p>
         </Reveal>
       </div>

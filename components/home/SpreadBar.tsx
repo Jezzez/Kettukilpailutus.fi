@@ -31,18 +31,31 @@ import { motion, useReducedMotion } from "framer-motion";
 export default function SpreadBar({
   ratio,
   delay = 0,
+  trackClassName = "bg-white",
 }: {
   /** Osuus suurimmasta erosta, 0–1. */
   ratio: number;
   /** Porrastus sekunteina, jotta rivit kasvavat peräkkäin. */
   delay?: number;
+  /**
+   * Uran väri.
+   *
+   * MIKSI TÄMÄ ON SÄÄDETTÄVISSÄ: ura oli kiinteästi `bg-white`, mikä
+   * toimi hiekanvärisellä pinnalla. Kun palkit siirtyivät valkoisen
+   * paneelin sisään, ura katosi taustaan eikä palkin täysi mitta enää
+   * näkynyt — silloin lyhyt palkki ei kerro mitään, koska vertailukohtaa
+   * ei ole. Oletus on ennallaan, joten vanhat käyttöpaikat eivät muutu.
+   */
+  trackClassName?: string;
 }) {
   const reduce = useReducedMotion();
   const width = `${Math.round(ratio * 100)}%`;
 
   if (reduce) {
     return (
-      <div className="mt-3.5 h-2 overflow-hidden rounded-full bg-white">
+      <div
+        className={`mt-3.5 h-2 overflow-hidden rounded-full ${trackClassName}`}
+      >
         <div
           className="h-full rounded-full bg-gradient-to-r from-accent to-gold"
           style={{ width }}
@@ -64,7 +77,7 @@ export default function SpreadBar({
   */
   return (
     <motion.div
-      className="mt-3.5 h-2 overflow-hidden rounded-full bg-white"
+      className={`mt-3.5 h-2 overflow-hidden rounded-full ${trackClassName}`}
       initial="alku"
       whileInView="taysi"
       viewport={{ once: true, margin: "-60px" }}

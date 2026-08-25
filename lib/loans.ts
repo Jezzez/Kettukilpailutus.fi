@@ -192,7 +192,7 @@ export const LOAN_STEPS: { title: string; text: string }[] = [
   },
   {
     title: "Vertaa tarjoukset",
-    text: "Näet oikeat tarjoukset rinnakkain — et mainoksen alinta korkoa.",
+    text: "Näet oikeat tarjoukset rinnakkain, et mainoksen alinta korkoa.",
   },
   {
     title: "Valitse tai jätä väliin",

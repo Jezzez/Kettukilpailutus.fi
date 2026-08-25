@@ -1,9 +1,7 @@
 import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import Reveal from "@/components/Reveal";
-import { FEATURES } from "@/lib/features";
-import { ENERGY_COMPARE } from "@/lib/nav";
+import ServiceCta from "@/components/home/ServiceCta";
+import { getServices } from "@/lib/services";
 
 /*
   LOPPUKEHOTUS — SIVUN VIIMEINEN VYÖ.
@@ -15,46 +13,60 @@ import { ENERGY_COMPARE } from "@/lib/nav";
 
   MIKSI TÄSSÄ EI OLE UUTTA ARGUMENTTIA: kaikki perustelut on jo esitetty.
   Uusi väite tässä kohdassa pakottaisi lukemaan uudelleen juuri silloin,
-  kun hän on jo päättänyt. Kehotus toistaa sloganin ja tarjoaa napin.
+  kun hän on jo päättänyt. Kehotus toistaa sloganin ja tarjoaa napit.
+
+  KOLME NAPPIA, KAIKKI SAMAN NÄKÖISIÄ. Aiemmin tässä oli kaksi nappia,
+  joista sähkö oli kermanvalkoinen ja lainat pelkkä ääriviiva. Se luettiin
+  järjestykseksi eikä valinnaksi: kirkas nappi on oikea vastaus, himmeä on
+  varavaihtoehto. Nyt napit rakennetaan samasta `getServices()`-taulukosta
+  ja samasta `ServiceCta`-komponentista kuin heron laatat ja
+  vertikaaliosioiden napit, joten ne eivät voi eriytyä.
+
+  NAPIT OVAT ALLEKKAIN PUHELIMESSA. Rinnakkain kolme koko lauseen mittaista
+  nappia ("Kilpailuta sähkö", "Vertaile lainoja", "Pyydä tarjous") katkeaisi
+  390 pikselillä eri kohdista, jolloin ne olisivat eri korkuisia eivätkä
+  enää lukisi joukoksi. Tässä kohtaa sivua allekkain ladottu lista ei
+  myöskään haittaa: kävijä on jo lukenut kaikkien kolmen osion sisällön,
+  joten hän tietää kumpaa on tullut hakemaan.
+
+  MIKSI TÄMÄ EI OLE `"use client"` VAIKKA NAPEISSA ON SEURANTA:
+  `ServiceCta` on asiakaskomponentti, tämä vyö ei. Vain napit lähtevät
+  selaimeen, ei koko osio kuvineen.
 
   KUVA ON OMASSA PALSTASSAAN eikä nouse vyön reunan yli. Aiemmin kuva
   työntyi negatiivisella marginaalilla ulos osiosta, jolloin ketun pää
   leikkautui edellisen osion pohjaan eikä leikkaus näyttänyt tahalliselta
   millään näyttöleveydellä.
-
-  EMBER-ANSA: `bg-cream` + kiinteä `text-[#A83E0A]`, ei `text-accentDark`.
 */
 
 export default function ClosingBelt() {
+  const services = getServices();
+
   return (
     <section className="theme-ember ember-surface relative overflow-hidden">
-      <div className="relative z-10 mx-auto grid max-w-[1180px] items-center gap-8 px-4 py-16 sm:px-6 md:grid-cols-[1.2fr_0.8fr] md:py-20">
+      <div className="relative z-10 mx-auto grid max-w-[1180px] items-center gap-8 px-4 py-16 sm:px-6 md:grid-cols-[1.15fr_0.85fr] md:py-20">
         <Reveal>
           <h2 className="max-w-[14ch] font-hero text-[clamp(2.2rem,6.5vw,3.6rem)] leading-[0.98] text-onEmber">
             Anna Ketun kilpailuttaa.
           </h2>
 
           <p className="mt-5 max-w-[46ch] text-[17px] leading-relaxed text-onEmber/85">
-            Kysely vie noin viisi minuuttia, eikä se pyydä sinulta
-            yhteystietoja. Päätöksen teet itse.
+            Valitse palvelu, vastaa muutamaan kysymykseen ja katso hinta.
+            Päätöksen teet aina itse.
           </p>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <Link
-              href={ENERGY_COMPARE}
-              className="lift inline-flex items-center justify-center gap-2 rounded-xl bg-cream px-6 py-4 font-display text-[16px] font-bold text-[#A83E0A] shadow-lift"
-            >
-              Kilpailuta sähkö
-              <ArrowRight size={18} aria-hidden />
-            </Link>
-            {FEATURES.loans && (
-              <Link
-                href="/lainat"
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-onEmber/40 px-6 py-4 font-display text-[16px] font-bold text-onEmber transition-colors hover:bg-onEmber/12"
-              >
-                Vertaile lainoja
-              </Link>
-            )}
+          <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            {services.map((service) => (
+              <ServiceCta
+                key={service.key}
+                name={service.name}
+                href={service.href}
+                label={service.cta}
+                external={service.external}
+                placement={`etusivu_loppu_${service.key}`}
+                variant="cream"
+              />
+            ))}
           </div>
         </Reveal>
 
