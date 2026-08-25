@@ -128,6 +128,54 @@ export default function SortterCalculator() {
         shadowRoot.append(style);
       }
 
+      /*
+        VÄLILEHTIRIVI SAA OMAN PINNAN.
+
+        Widget julistaa oman taustavärinsä muodossa
+        `background: var(--color-white)` ja määrittelee `--color-white`:n
+        `:root`-lohkossa. Varjo-DOM:issa `:root` ei osu mihinkään, joten
+        muuttuja jää määrittelemättömäksi ja tausta läpinäkyväksi.
+        Mitattu: rivin laskettu `background-color` on `rgba(0, 0, 0, 0)`.
+
+        Kuluttajapuolen yksin ollessa tätä ei huomannut, koska riviä ei
+        ollut olemassa. Nyt rivi kelluu heron oranssin päällä ilman omaa
+        pohjaa, ja koska valitsematon välilehti on oranssia tekstiä, siitä
+        tuli oranssia oranssilla. Se ei ole kauneusvirhe: jos kävijä ei
+        näe "Yrityslainat"-välilehteä, koko yrityslainapuoli on olemassa
+        vain meille.
+
+        Rivi saa siis saman vaalean kortin pinnan kuin lomake sen alla,
+        jolloin ne luetaan yhdeksi työkaluksi eikä kahdeksi kelluvaksi
+        palaksi. Valitsematon teksti vaihtuu brändioranssin tummempaan
+        valoarvoon (#BA4A08), koska #E8691B jää vaalealla noin 3,2:1
+        kontrastiin. Uusia värejä ei tule yhtään.
+
+        VALITSIMET OVAT OSITTAISIA. Sortterin luokkanimissä on
+        käännöksen hajautustunniste (`--6016e`), ja skriptin osoitteessa
+        ei ole versionumeroa, joten tunniste voi vaihtua tuotannossa
+        milloin tahansa. `[class*=…]` kestää sen; tarkka luokkanimi ei.
+      */
+      if (shadowRoot && !shadowRoot.querySelector("style[data-kettu-sortter-tabs]")) {
+        const tabStyle = document.createElement("style");
+        tabStyle.dataset.kettuSortterTabs = "";
+        tabStyle.textContent = `
+          [class*="selector-module--container"] {
+            background: #FFFDF9 !important;
+            border: 1px solid #E2D4BD !important;
+            box-shadow: 0 14px 34px -16px rgba(60, 35, 15, 0.45) !important;
+          }
+
+          [class*="selector-module--container"] button {
+            color: #BA4A08 !important;
+          }
+
+          [class*="selector-module--container"] button[class*="selector-module--selected"] {
+            color: #FFFDF9 !important;
+          }
+        `;
+        shadowRoot.append(tabStyle);
+      }
+
       setReady(true);
     });
     return () => {
