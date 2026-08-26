@@ -287,7 +287,7 @@ export default function HomeHero({ facts }: { facts: HomeFacts }) {
             väittämään väärin.
           */}
           <p className="mb-5 mt-2 text-[12px] text-onEmber/55 md:mb-16 md:mt-3 md:text-[13px]">
-            Sähkön hinnat tarkistettu {fiDate(facts.priceDate)}.
+           
           </p>
         </Reveal>
       </div>
