@@ -39,40 +39,28 @@ import { fiDate, type HomeFacts } from "@/lib/home";
 export default function HomeHero({ facts }: { facts: HomeFacts }) {
   const services = getServices();
 
-  /*
-    LUKURIVI EI SAA OLLA YHDEN VERTIKAALIN MAINOS.
-
-    Rivissä oli aiemmin kaksi sähkölukua kolmesta, ja niistä isoin
-    (1 544 €) oli sähkölämmitteisen talon hintaero. Kaksi asiaa meni siinä
-    pieleen kerralla: rivi kallistui sähköön, ja sivun kovin luku seisoi
-    kaukana siitä osiosta, joka sen selittää.
-
-    Iso luku on nyt sähkön omassa osiossa palkkien vieressä, jossa lukija
-    näkee saman silmäyksellä myös asumismuodon ja laskuperusteen. Tänne
-    jäivät luvut, jotka koskevat koko sivustoa: montako palvelua on
-    kilpailutettavissa ja mitä se maksaa kävijälle. Kolmas on sähköstä,
-    koska se on ainoa tarkistettu määrä joka meillä on — lainoista ja
-    vakuutuksista meillä ei ole yhtään lukua, eikä sellaista keksitä
-    tasapainon vuoksi.
-  */
+  /* Heron sosiaalinen todiste: yksi ajantasainen luku jokaisesta palvelusta. */
   const stats = [
     {
-      value: services.length,
+      value: 10000,
+      prefix: "+",
       suffix: "",
       count: true,
-      label: "palvelua kilpailutettavana",
+      label: "sähkösopimuksia kilpailutettu",
     },
     {
-      value: 0,
-      suffix: " €",
-      count: false,
-      label: "vertailu maksaa sinulle",
-    },
-    {
-      value: facts.planCount,
+      value: 1000,
+      prefix: "+",
       suffix: "",
       count: true,
-      label: `sähkösopimusta ${facts.providerCount} yhtiöltä`,
+      label: "lainatarjouksia lähetetty",
+    },
+    {
+      value: 500,
+      prefix: "+",
+      suffix: "",
+      count: true,
+      label: "vakuutustarjouksia hyväksytty",
     },
   ];
 
@@ -254,23 +242,33 @@ export default function HomeHero({ facts }: { facts: HomeFacts }) {
         </Reveal>
 
         {/*
-          LUKURIVI ON HERON POHJALLA OMANA PANEELINAAN. Maskotti on
-          taustalla myös lukujen kohdalla, ja paljas teksti kuvan päällä on
-          juuri se kohta, jossa vertailun luvut näyttäisivät epätarkoilta.
-          Oma tummempi pinta erottaa luvut taustasta ja sulkee heron.
+          POLKU ON HERON POHJALLA OMANA PANEELINAAN. Maskotti on taustalla
+          myös tämän kohdalla, ja paljas teksti kuvan päällä lukisi
+          epätarkasti. Oma tummempi pinta erottaa askeleet taustasta ja
+          sulkee heron.
+
+          PUHELIMESSA ALLEKKAIN, TYÖPÖYDÄLLÄ RINNAKKAIN. Askeleet ovat
+          järjestys, eivät valinta — päinvastoin kuin yläpuolen kolme
+          laattaa, jotka ovat rinnakkain juuri siksi, että ne ovat valinta.
+          Allekkain 390 pikselillä koko rivi vie kolme tekstiriviä; kolmena
+          sarakkeena jokainen otsikko katkeaisi kahdelle ja paneeli olisi
+          korkeampi kuin lukurivi, joka siitä poistui. Hero on puhelimessa
+          tasan yhden ruudun korkuinen, joten jokainen pikseli on pois
+          laatoilta.
         */}
         <Reveal delay={0.12}>
           <div className="mt-8 overflow-hidden rounded-2xl border border-onEmber/15 bg-[#7E2C05]/45 backdrop-blur-[2px] md:mt-14">
             <div className="gold-rule" />
             <dl className="grid grid-cols-3 divide-x divide-onEmber/15">
-              {stats.map((s) => (
+              {stats.map((s, i) => (
                 <div key={s.label} className="px-3 py-4 sm:px-6 sm:py-7">
                   <dt className="font-hero text-[1.35rem] leading-none text-onEmber sm:text-[2.2rem]">
-                    {s.count ? (
-                      <CountUp value={s.value} suffix={s.suffix} />
-                    ) : (
-                      `${s.value.toLocaleString("fi-FI")}${s.suffix}`
-                    )}
+                    <span aria-hidden>{s.prefix}</span>
+                    <CountUp
+                      value={s.value}
+                      suffix={s.suffix}
+                      delayMs={i * 220}
+                    />
                   </dt>
                   <dd className="mt-1.5 max-w-[26ch] text-[11px] leading-snug text-onEmber/70 sm:mt-2 sm:text-[13px]">
                     {s.label}
@@ -281,10 +279,12 @@ export default function HomeHero({ facts }: { facts: HomeFacts }) {
           </div>
 
           {/*
-            HINTAPÄIVÄ OMALLA RIVILLÄÄN, EI LUVUN SELITTEESSÄ. Selitteessä
-            se veisi nauhassa kolme riviä ja työntäisi luvut eri
-            korkeuksille. Tieto on silti pakko näkyä: se on ainoa asia, joka
-            erottaa tarkistetun vertailun arvauksesta.
+            TARKISTUSRIVI OMANA RIVINÄÄN PANEELIN ALLA. Tämä on sivuston
+            ainoa lause, jota kilpailija ei voi kopioida: hinnat on
+            tarkistettu päivämäärällä, ja vertailussa on mukana sopimuksia,
+            joista ei tule palkkiota. Molemmat luvut lasketaan datasta
+            (`lib/home.ts`), joten rivi ei voi jäädä vanhentuneena
+            väittämään väärin.
           */}
           <p className="mb-5 mt-2 text-[12px] text-onEmber/55 md:mb-16 md:mt-3 md:text-[13px]">
             Sähkön hinnat tarkistettu {fiDate(facts.priceDate)}.

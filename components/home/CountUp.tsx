@@ -33,15 +33,31 @@ import { useEffect, useRef, useState } from "react";
 export default function CountUp({
   value,
   suffix = "",
-  durationMs = 1200,
+  durationMs = 2400,
+  delayMs = 0,
   className,
 }: {
   /** Lopullinen arvo. Näytetään aina kokonaislukuna. */
   value: number;
   /** Yksikkö luvun perään, esim. " €". */
   suffix?: string;
-  /** Animaation kesto millisekunteina. */
+  /**
+   * Animaation kesto millisekunteina.
+   *
+   * 2400 ms on kaksi kertaa aiempi 1200 ms. Syy on katse, ei tyyli: 1,2
+   * sekunnissa luku ehti perille ennen kuin kävijä oli lukenut otsikon,
+   * jolloin hän näki vain valmiin numeron eikä koskaan huomannut sen
+   * liikkuneen. Liike on se, joka pysäyttää katseen lukuun, ja luku on
+   * se, joka perustelee klikin.
+   */
   durationMs?: number;
+  /**
+   * Viive ennen aloitusta. Kolme lukua rinnakkain samalla hetkellä
+   * käynnistettynä luetaan yhtenä nykäyksenä; porrastettuna silmä ehtii
+   * käydä ne läpi vasemmalta oikealle siinä järjestyksessä, jossa ne on
+   * kirjoitettu.
+   */
+  delayMs?: number;
   className?: string;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -53,6 +69,7 @@ export default function CountUp({
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     let raf = 0;
+    let timer = 0;
     let cancelled = false;
 
     /*
@@ -75,15 +92,26 @@ export default function CountUp({
       */
       if (document.visibilityState !== "visible") return;
 
-      setShown(0);
-      const t0 = performance.now();
-      const tick = (t: number) => {
-        if (cancelled) return;
-        const p = Math.min(1, (t - t0) / durationMs);
-        setShown(value * (1 - Math.pow(1 - p, 3)));
-        if (p < 1) raf = requestAnimationFrame(tick);
-      };
-      raf = requestAnimationFrame(tick);
+      /*
+        NOLLAUS JA VIIVE OVAT SAMASSA HETKESSÄ. Jos luku nollattaisiin heti
+        ja juoksu alkaisi vasta viiveen jälkeen, kolmas luku seisoisi
+        nollassa lähes puoli sekuntia näkyvissä. Nolla väärässä kohdassa on
+        se virhe, jota koko tämä komponentti on kirjoitettu välttämään, joten
+        oikea luku pysyy paikallaan siihen asti kun sen oma juoksu alkaa.
+      */
+      timer = window.setTimeout(() => {
+        if (cancelled || document.visibilityState !== "visible") return;
+
+        setShown(0);
+        const t0 = performance.now();
+        const tick = (t: number) => {
+          if (cancelled) return;
+          const p = Math.min(1, (t - t0) / durationMs);
+          setShown(value * (1 - Math.pow(1 - p, 3)));
+          if (p < 1) raf = requestAnimationFrame(tick);
+        };
+        raf = requestAnimationFrame(tick);
+      }, delayMs);
     };
 
     const io = new IntersectionObserver(
@@ -99,9 +127,10 @@ export default function CountUp({
     return () => {
       cancelled = true;
       io.disconnect();
+      clearTimeout(timer);
       cancelAnimationFrame(raf);
     };
-  }, [value, durationMs]);
+  }, [value, durationMs, delayMs]);
 
   return (
     <span ref={ref} className={className}>
