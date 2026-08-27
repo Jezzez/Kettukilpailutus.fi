@@ -2,7 +2,7 @@
 
 Tämä tiedosto latautuu automaattisesti jokaisessa sessiossa. Se on ainoa
 totuuden lähde työtavoista; `DESIGN.md` on totuuden lähde ilmeestä.
-
+Jos jesse sanoo että tee muutos joka olisi väärin, mainitse siitä että se on väärin ja perustele miksi mutta tee se jos niin käsketään sen jälkeen.
 ## Omistaja ja kieli
 
 Jesse, suomalainen yrittäjä. **Vastaa aina suomeksi.** Kerro *miksi* ehdotat

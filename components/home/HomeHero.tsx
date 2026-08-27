@@ -185,8 +185,7 @@ export default function HomeHero({ facts }: { facts: HomeFacts }) {
             totena myös silloin, kun kävijän nykyinen sopimus on jo halvin.
           */}
           <p className="mt-5 max-w-[32ch] text-[17px] leading-relaxed text-onEmber/85 sm:max-w-[46ch] sm:text-[19px]">
-            Sähkö, lainat ja vakuutukset kilpailutettuna samassa paikassa.
-            Kettu tekee laskutyön, sinä teet päätöksen. Sinulle ilmaista.
+            Anna ketun kilpailuttaa puolestasi. Sähkösopimukset, lainat ja vakuutukset kilpailutettuna samassa paikassa.
           </p>
         </Reveal>
 

@@ -114,13 +114,13 @@ export function getServices(): Service[] {
       lead: "Pyydä tarjous vakuutuksistasi ja vertaa sitä nykyiseen laskuusi.",
       /*
         TÄMÄ LAUSE ON KOKO OSION EHTO. POP Vakuutus on yksi yhtiö, ei
-        vertailu, eikä sanaa "kilpailuta" saa käyttää tässä yhteydessä.
-        Kävijä huomaisi eron sekunnissa saapuessaan POP:n sivulle, ja
-        pettymys siinä kohdassa maksaa enemmän kuin yksi vakuutusklikki
-        tuottaa.
+        vertailu. Napin lyhyt toimintakehotus on käyttäjän toiveesta
+        "Kilpailuta vakuutus", mutta itse kuvausteksti kertoo edelleen
+        suoraan, että tarjous tulee POP Vakuutukselta eikä kyse ole usean
+        yhtiön vertailusta.
       */
       handledBy: "Tarjouksen antaa POP Vakuutus.",
-      cta: "Pyydä tarjous",
+      cta: "Kilpailuta vakuutus",
     },
   ];
 }

@@ -23,7 +23,7 @@ import { getServices } from "@/lib/services";
   vertikaaliosioiden napit, joten ne eivät voi eriytyä.
 
   NAPIT OVAT ALLEKKAIN PUHELIMESSA. Rinnakkain kolme koko lauseen mittaista
-  nappia ("Kilpailuta sähkö", "Vertaile lainoja", "Pyydä tarjous") katkeaisi
+  nappia ("Kilpailuta sähkö", "Vertaile lainoja", "Kilpailuta vakuutus") katkeaisi
   390 pikselillä eri kohdista, jolloin ne olisivat eri korkuisia eivätkä
   enää lukisi joukoksi. Tässä kohtaa sivua allekkain ladottu lista ei
   myöskään haittaa: kävijä on jo lukenut kaikkien kolmen osion sisällön,
@@ -33,19 +33,19 @@ import { getServices } from "@/lib/services";
   `ServiceCta` on asiakaskomponentti, tämä vyö ei. Vain napit lähtevät
   selaimeen, ei koko osio kuvineen.
 
-  KUVA ON OMASSA PALSTASSAAN eikä nouse vyön reunan yli. Aiemmin kuva
-  työntyi negatiivisella marginaalilla ulos osiosta, jolloin ketun pää
-  leikkautui edellisen osion pohjaan eikä leikkaus näyttänyt tahalliselta
-  millään näyttöleveydellä.
+  TYÖPÖYDÄLLÄ KUVA ANKKUROIDAAN VYÖN ALAREUNAAN ja korvat saavat nousta
+  edellisen osion puolelle. Puhelimessa kuva on heron tapaan taustalla,
+  himmennettynä ja sisällön takana, jotta tekstit ja painikkeet säilyvät
+  helposti käytettävinä.
 */
 
 export default function ClosingBelt() {
   const services = getServices();
 
   return (
-    <section className="theme-ember ember-surface relative overflow-hidden">
-      <div className="relative z-10 mx-auto grid max-w-[1180px] items-center gap-8 px-4 py-16 sm:px-6 md:grid-cols-[1.15fr_0.85fr] md:py-20">
-        <Reveal>
+    <section className="theme-ember ember-surface relative overflow-hidden md:overflow-visible">
+      <div className="relative z-10 mx-auto grid max-w-[1180px] items-center gap-8 px-4 py-16 sm:px-6 md:min-h-[430px] md:grid-cols-[1.15fr_0.85fr] md:py-20">
+        <Reveal className="relative z-10">
           <h2 className="max-w-[14ch] font-hero text-[clamp(2.2rem,6.5vw,3.6rem)] leading-[0.98] text-onEmber">
             Anna Ketun kilpailuttaa.
           </h2>
@@ -70,15 +70,27 @@ export default function ClosingBelt() {
           </div>
         </Reveal>
 
-        <Reveal delay={0.07} className="order-last">
+        <Reveal
+          delay={0.07}
+          className="pointer-events-none absolute inset-0 z-0 overflow-hidden md:inset-y-auto md:bottom-0 md:left-auto md:right-[7%] md:z-20 md:h-[520px] md:w-[329px] md:overflow-visible"
+        >
           <Image
             src="/kettu-muotokuva.webp"
             alt="Kettu tervehtii ja odottaa kilpailutuksen aloittamista"
             width={569}
             height={900}
-            className="mx-auto h-auto max-h-[220px] w-auto object-contain md:max-h-[340px]"
+            className="absolute bottom-0 right-[-6%] h-[86%] w-auto max-w-none object-contain opacity-[0.42] md:static md:h-full md:max-h-none md:opacity-100"
           />
         </Reveal>
+
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-[1] md:hidden"
+          style={{
+            backgroundImage:
+              "linear-gradient(96deg, #8E3206 0%, rgba(142,50,6,0.86) 26%, rgba(142,50,6,0.42) 52%, rgba(142,50,6,0) 74%)",
+          }}
+        />
       </div>
     </section>
   );
