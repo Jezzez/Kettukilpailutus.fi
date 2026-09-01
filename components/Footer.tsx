@@ -72,6 +72,11 @@ export default function Footer() {
             ...(FEATURES.cards ? [{ href: "/luottokortit", label: "Luottokortit" }] : []),
             ...(FEATURES.loans ? [{ href: "/lainat", label: "Lainat" }] : []),
             {
+              href: "https://go.adt212.net/t/t?a=1948992733&as=2098832052&t=2&tk=1",
+              label: "Morrow Bank",
+              partner: true,
+            },
+            {
               href: "https://go.adt291.com/t/t?a=1553065612&as=2098832052&t=2&tk=1",
               label: "Telia",
               partner: true,
