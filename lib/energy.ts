@@ -101,11 +101,22 @@ export interface ElectricityPlan {
    * näyttäisi tarkistamattomalta, ja juuri se tieto ratkaisee, onko rivi
    * julkaisukelpoinen. Kaksi eri syytä ansaitsevat kaksi eri kenttää.
    *
-   * MIHIN TÄTÄ KÄYTETÄÄN: sopimuksiin, jotka eivät tuota. Ilman
+   * MIHIN TÄTÄ KÄYTETÄÄN, SYY 1: sopimuksiin, jotka eivät tuota. Ilman
    * kumppanuutta klikki maksaa mainoksena mutta ei palauta euroakaan,
    * ja mainosliikenteessä se on suoraa tappiota. Rivi jää JSONiin, koska
    * kumppanuus voi syntyä myöhemmin ja silloin paluu on yhden kentän
    * poisto — ei uudelleen kerätty hinta-aineisto.
+   *
+   * SYY 2: sopimuksiin, joilla ei ole julkaistua pysyvää hintaa. Jos
+   * yhtiö julkaisee vain lyhyen tarjoushinnan eikä kerro, mihin hinta
+   * sen jälkeen asettuu, vuosikustannusta ei voi laskea rehellisesti:
+   * tarjoushinnalla laskettu euromäärä on liian pieni koko vuodelle ja
+   * voi viedä sopimuksen jopa "Ketun valinnaksi" hinnalla, joka on
+   * voimassa muutaman päivän. Vanhan, poistetun hinnan käyttäminen taas
+   * on julkaisematonta lukua. Kummassakin tapauksessa oikea vastaus on
+   * jättää rivi pois, kunnes yhtiö julkaisee hinnan, joka kestää vuoden
+   * yli. Tämä koskee myös kumppanisopimuksia: `partner: true` ja
+   * `hidden: true` yhdessä tarkoittaa nimenomaan tätä.
    *
    * HUOM: tämä ei ole tapa piilottaa kalliita sopimuksia. Vertailu, josta
    * on siivottu pois vaihtoehdot, jotka voittaisivat kumppanit, lakkaa
