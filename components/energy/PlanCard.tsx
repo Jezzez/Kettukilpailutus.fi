@@ -2,8 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { ChevronDown, Leaf, Star, Tag, TrendingDown, TrendingUp } from "lucide-react";
+import { Leaf, Star, Tag, TrendingDown, TrendingUp } from "lucide-react";
 import type { ElectricityPlan } from "@/lib/energy";
 import {
   annualCost,
@@ -272,28 +271,12 @@ export default function PlanCard({
   const omaOsuusVuosi = ownChargesAnnual(plan, kwh);
 
   /*
-    MOBIILISSA YKSITYISKOHDAT AVATAAN, TYÖPÖYDÄLLÄ NE OVAT AINA AUKI.
+    KAIKKI HINTATIEDOT NÄKYVÄT SAMALLA KERTAA.
 
-    Kortti oli mobiilissa 527 pikseliä korkea eli 88 % puhelimen ruudusta,
-    ja 21 korttia teki sivusta 30 ruudullista. Selaaminen ei silloin ole
-    vertailua vaan urakka, ja urakka keskeytetään ennen ostonappia.
-
-    Piiloon menee vain PÄÄTÖKSEN JÄLKEINEN tieto: marginaali, perusmaksu ja
-    ominaisuuslista. Niitä ei lueta selatessa vaan vasta kun kaksi sopimusta
-    on jo valittu vertailtavaksi. Näkyviin jää kaikki, millä valinta tehdään
-    — sija, logo, tyyppi, €/kk, hintapalkki, ero nykyiseen ja kampanjan
-    jälkeinen hinta.
-
-    Kampanjan jälkeinen hinta EI mene piiloon, vaikka se on rivi lisää.
-    Halvimman ensimmäisen vuoden näyttäminen ja pysyvän hinnan piilottaminen
-    napin taakse olisi täsmälleen se temppu, jota tämä sivusto ei tee.
-
-    Työpöydällä tilaa on eikä ongelmaa ollut, joten siellä kaikki näkyy
-    kuten ennenkin: `hidden sm:block` piilottaa vain kapealla ruudulla.
+    Marginaali, perusmaksu, yhtiön oma osuus ja ominaisuuslista ovat nyt
+    suoraan jokaisessa kortissa sekä puhelimella että työpöydällä. Näin
+    kävijä voi tarkistaa hinnan muodostumisen ilman ylimääräistä klikkausta.
   */
-  const [avattu, setAvattu] = useState(false);
-
-
   return (
     /*
       PYSTYKORTISTA VAAKARIVIKSI — MIKSI KOKO RAKENNE VAIHTUI.
@@ -316,14 +299,9 @@ export default function PlanCard({
       hintapalkki, ensimmäisen vuoden hinta, kampanjan jälkeinen hinta,
       ero nykyiseen ja ostonappi. Ne ovat kaikki päätöksentekotietoa.
 
-      MITÄ MENI "TIEDOT"-NAPIN TAAKSE MYÖS TYÖPÖYDÄLLÄ: marginaali,
-      perusmaksu, yhtiön oma osuus ja ominaisuuslista. Ne luetaan vasta
-      kun kaksi sopimusta on jo valittu vertailtavaksi, eli ne eivät ole
-      silmäilytietoa. Tämä on muutoksen ainoa aito riski: erittely oli
-      kortin läpinäkyvyyslupaus. Siksi nappi lukee "Hinnan erittely" eikä
-      "Tiedot" — lukija näkee että erittely on olemassa, vaikka se ei ole
-      auki. Piilotettu tieto, jonka olemassaolosta ei kerrota, on eri asia
-      kuin piilotettu tieto, jonka nimen näkee.
+      MARGINAALI, PERUSMAKSU, YHTIÖN OMA OSUUS JA OMINAISUUSLISTA näkyvät
+      nyt suoraan jokaisessa kortissa. Hintojen erittely on osa päätöstä,
+      joten käyttäjän ei tarvitse avata sitä erikseen.
 
       MERKKINAUHA EI OLE ENÄÄ AINA PAIKALLA. Tyhjä 44 pikselin nauha oli
       olemassa vain siksi, että vierekkäisten korttien hinnat osuisivat
@@ -546,8 +524,7 @@ export default function PlanCard({
             "X € 1. vuosi" on listan järjestysperuste, eli ainoa selitys
             sille miksi rivi voi olla eri kohdassa kuin sen iso luku
             antaisi olettaa. "Sitten Y €/kk" kertoo mihin kampanjahinta
-            nousee. Kumpaakaan ei saa poistaa eikä siirtää "Hinnan
-            erittely" -napin taakse: silloin sivu näyttäisi halvimman
+            nousee. Kumpaakaan ei saa poistaa eikä piilottaa: silloin sivu näyttäisi halvimman
             ensimmäisen vuoden ja piilottaisi pysyvän hinnan, mikä on
             täsmälleen se temppu jota tämä vertailu ei tee.
 
@@ -622,47 +599,23 @@ export default function PlanCard({
               {plan.partner ? "Tee sopimus" : "Siirry palveluntarjoajalle"}
             </AffiliateButton>
           </div>
-          {/*
-            ERITTELYNAPPI KERTOO MITÄ SEN TAKANA ON.
-
-            "Tiedot" ei kerro, avautuuko sieltä hinnasto vai
-            markkinointiteksti, joten sitä ei paineta. "Hinnan erittely"
-            kertoo, ja samalla se todistaa listaa selaavalle, että erittely
-            on olemassa vaikkei se ole auki. Juuri se on ero piilotetun ja
-            salatun tiedon välillä.
-
-            Nappi on vaimea ja ostonapin alapuolella: se ei saa kilpailla
-            huomiosta sen napin kanssa, joka tuottaa.
-          */}
-          <button
-            type="button"
-            onClick={() => setAvattu((v) => !v)}
-            aria-expanded={avattu}
-            aria-controls={`tiedot-${plan.id}`}
-            className="flex items-center justify-center gap-1 rounded-lg px-2 py-1 text-[12px] font-semibold text-ink/65 transition-colors hover:text-ink"
-          >
-            {avattu ? "Piilota erittely" : "Hinnan erittely"}
-            <ChevronDown size={14} className={avattu ? "rotate-180" : ""} aria-hidden />
-          </button>
         </div>
         </div>
         {/* Hinta+nappi-kääre loppuu. Ks. `sm:contents`-perustelu ylempänä. */}
       </div>
 
       {/*
-        AVATTAVA ERITTELY — KOKO RIVIN LEVYINEN, EI SARAKKEEN.
+        HINNAN ERITTELY — KOKO RIVIN LEVYINEN, EI SARAKKEEN.
 
-        Auki oleva erittely on rivin alla omana lohkonaan, jotta sen kolme
-        hintariviä ja ominaisuuslista mahtuvat vierekkäin työpöydällä.
-        Sarakkeen sisällä ne olisivat 200 pikselin levyisiä ja rivi
-        kasvaisi kaksinkertaiseksi juuri sen tiedon takia, joka ei ole
-        silmäilytietoa.
+        Erittely on rivin alla omana lohkonaan, jotta sen kolme hintariviä
+        ja ominaisuuslista mahtuvat vierekkäin työpöydällä. Sarakkeen
+        sisällä ne olisivat 200 pikselin levyisiä ja rivi kasvaisi
+        kaksinkertaiseksi.
       */}
-      {avattu && (
-        <div
-          id={`tiedot-${plan.id}`}
-          className="grid gap-3 border-t border-line px-3 py-3 sm:grid-cols-2 sm:gap-5 sm:px-4"
-        >
+      <div
+        id={`tiedot-${plan.id}`}
+        className="grid gap-3 border-t border-line px-3 py-3 sm:grid-cols-2 sm:gap-5 sm:px-4"
+      >
           {/* Ks. `energiaKampanja`-kommentti komponentin ylaosassa. */}
           <dl className="space-y-2 rounded-xl border border-line bg-black/10 p-3">
             <div className="flex items-start justify-between gap-3 text-[12px]">
@@ -755,8 +708,7 @@ export default function PlanCard({
               </Link>
             </div>
           </div>
-        </div>
-      )}
+      </div>
     </article>
   );
 }
