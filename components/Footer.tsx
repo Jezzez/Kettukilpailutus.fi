@@ -77,6 +77,11 @@ export default function Footer() {
               partner: true,
             },
             {
+              href: "https://go.adt246.net/t/t?a=2048125529&as=2098832052&t=2&tk=1",
+              label: "OmaLaina.fi",
+              partner: true,
+            },
+            {
               href: "https://go.adt291.com/t/t?a=1553065612&as=2098832052&t=2&tk=1",
               label: "Telia",
               partner: true,

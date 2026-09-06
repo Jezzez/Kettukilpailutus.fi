@@ -1391,7 +1391,7 @@ export default function ElectricityExperience({
     {
       n: 1,
       title: "Valitse asuntosi tyyppi",
-      hint: "Tästä Kettu päättelee kulutuksen. Arvio riittää, tarkennat sen seuraavaksi.",
+      hint: "Seuraavassa vaiheessa voit tarkentaa tietoja, jotta saat mahdollisimman tarkan arvion sähkönkulutuksestasi ja kustannuksistasi.",
     },
     {
       n: 2,
@@ -2736,11 +2736,26 @@ export default function ElectricityExperience({
               kasva säiliötään suuremmaksi ja `truncate` pääsee tekemään
               työnsä niin kuin oli tarkoitus.
 
-              `sm:`- ja `lg:`-versiot eivät korjaa tätä, koska ne alkavat
-              vasta 640 pikselistä. Vika näkyi siis vain puhelimessa —
-              eli juuri siellä, missä suurin osa kävijöistä on.
+              Vika näkyi vain puhelimessa — eli juuri siellä, missä
+              suurin osa kävijöistä on.
+
+              YKSI SARAKE KAIKILLA LEVEYKSILLÄ.
+
+              Tässä oli `sm:grid-cols-2 lg:grid-cols-3`. Kolmen sarakkeen
+              ruudukko näyttää vertailulta mutta ei toimi sellaisena:
+              vierekkäisten korttien hinnat eivät osu samalle vaakalinjalle
+              heti kun yhdessä on kampanjarivi ja toisessa ei, joten
+              jokainen kortti on luettava erikseen. Puhelimessa sarakkeita
+              oli joka tapauksessa vain yksi, ja pystykortti vei koko
+              ruudun: yksi sopimus per pyyhkäisy, 24 pyyhkäisyä listan
+              läpi. Sitä ei tehdä loppuun, eikä keskeytetty selaus päädy
+              "Tee sopimus" -nappiin.
+
+              Yksi sarake + vaakariviksi muutettu kortti (ks. PlanCard.tsx)
+              laittaa hinnan, palkin ja napin samaan pystylinjaan joka
+              rivillä. Vertailu on silloin katseen pudottaminen alaspäin.
             */}
-            <motion.div layout={!reduce} className="mt-4 grid grid-cols-1 gap-4 pt-2 sm:grid-cols-2 lg:grid-cols-3">
+            <motion.div layout={!reduce} className="mt-4 grid grid-cols-1 gap-2.5 pt-2">
               <AnimatePresence mode="popLayout">
                 {(naytaKaikki ? naytettavat : naytettavat.slice(0, NAYTA_ALUKSI)).map((plan, i) => {
                   const cost = vertailuhinta(plan);

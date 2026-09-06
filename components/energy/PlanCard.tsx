@@ -293,299 +293,203 @@ export default function PlanCard({
   */
   const [avattu, setAvattu] = useState(false);
 
+
   return (
     /*
-      Nosto tulee yhteisestä `.lift`-säännöstä (globals.css), ei kortin
-      omasta `transition-all duration-300` -määrittelystä. Kortilla oli
-      oma ajoitus, laskurilla toinen ja oppailla kolmas — eri nopeuksilla
-      liikkuva sivu tuntuu tehdyltä eri käsillä, ja juuri se on se
-      "ei ole sulava" -vaikutelma. Yksi sääntö, yksi nopeus, koko sivusto.
-      `.lift` kunnioittaa myös `prefers-reduced-motion`-asetusta.
+      PYSTYKORTISTA VAAKARIVIKSI — MIKSI KOKO RAKENNE VAIHTUI.
+
+      Kortti oli 530 pikseliä korkea kolmen sarakkeen ruudukossa. Puhelimella
+      se tarkoitti yhtä sopimusta ruudullista kohti: 24 sopimuksen silmäily
+      oli 24 pyyhkäisyä, eikä kukaan tee sitä loppuun. Vertailu, joka ei
+      mahdu silmäiltäväksi, ei ole vertailu vaan selauslista, ja keskeytetty
+      selaus ei koskaan päädy "Tee sopimus" -nappiin.
+
+      Rivi ratkaisee saman asian mitä pystykortti yritti: se laittaa saman
+      tiedon samaan pystylinjaan JOKAISESSA sopimuksessa. Hinta on aina
+      samalla kohdalla vasemmalta, joten hintojen vertailu on katseen
+      pudottaminen alaspäin — ei kortista toiseen hyppimistä. Kolmen
+      sarakkeen ruudukossa se ei onnistunut, koska vierekkäisten korttien
+      sisältö oli eri korkeudella heti kun yhdessä oli kampanjarivi ja
+      toisessa ei.
+
+      MITÄ JÄI NÄKYVIIN: sija, logo, yhtiö, sopimustyyppi, €/kk,
+      hintapalkki, ensimmäisen vuoden hinta, kampanjan jälkeinen hinta,
+      ero nykyiseen ja ostonappi. Ne ovat kaikki päätöksentekotietoa.
+
+      MITÄ MENI "TIEDOT"-NAPIN TAAKSE MYÖS TYÖPÖYDÄLLÄ: marginaali,
+      perusmaksu, yhtiön oma osuus ja ominaisuuslista. Ne luetaan vasta
+      kun kaksi sopimusta on jo valittu vertailtavaksi, eli ne eivät ole
+      silmäilytietoa. Tämä on muutoksen ainoa aito riski: erittely oli
+      kortin läpinäkyvyyslupaus. Siksi nappi lukee "Hinnan erittely" eikä
+      "Tiedot" — lukija näkee että erittely on olemassa, vaikka se ei ole
+      auki. Piilotettu tieto, jonka olemassaolosta ei kerrota, on eri asia
+      kuin piilotettu tieto, jonka nimen näkee.
+
+      MERKKINAUHA EI OLE ENÄÄ AINA PAIKALLA. Tyhjä 44 pikselin nauha oli
+      olemassa vain siksi, että vierekkäisten korttien hinnat osuisivat
+      samalle vaakalinjalle. Rivilistassa vierekkäisiä kortteja ei ole,
+      joten koko perustelu katosi — ja sen mukana 44 pikseliä jokaisesta
+      merkittömästä sopimuksesta.
     */
     <article
-      /*
-        KÄRKIKORTIN KEHYS.
-
-        Kaikki kortit ovat oranssia, joten ykkösen piti erottua jollain
-        muulla kuin pohjavärillä. Kermanvalkoinen rengas kehyksen
-        ulkopuolella on kirkkain arvo koko ruudukossa heti ostonapin
-        jälkeen, eikä se muuta kortin kokoa — reunan paksuntaminen olisi
-        siirtänyt ykköskortin sisällön pikselin muita alemmas ja
-        rikkonut sen vaakalinjan, jolla hintoja verrataan.
-
-        Rengas seuraa SIJAA eikä merkkiä: se kertoo "tämä on ensimmäinen
-        valitsemassasi järjestyksessä". Uusia värejä ei tullut yhtään.
-      */
-      className={`lift theme-ember ember-surface group relative flex h-full flex-col overflow-hidden rounded-2xl border shadow-cardHover ${
+      className={`lift theme-ember ember-surface group relative overflow-hidden rounded-2xl border shadow-cardHover ${
         rank === 1 ? "ring-2 ring-cream/45" : ""
       } ${
         foxPick ? "border-gold hover:border-gold" : "border-line hover:border-cream/55"
       }`}
     >
       {/*
-        MERKKIPALKKI ON AINA 44 PIKSELIÄ KORKEA — MYÖS ILMAN MERKKIÄ.
+        KETUN VALINTA ON OHUT NAUHA, EI KORTIN LEVYINEN LOHKO.
 
-        Kaksi korttia kuudesta saa merkin. Jos merkitön kortti jättää
-        palkin kokonaan pois, sen sisältö nousee palkin verran ylemmäs,
-        ja kuuden kortin hintaluvut asettuvat kolmelle eri vaakalinjalle.
-        Vertailu tehdään pyyhkäisemällä katse rivin yli: kun luvut ovat
-        samalla linjalla, erot lukee pysähtymättä; kun eivät, jokainen
-        kortti pitää lukea erikseen. Tyhjä palkki maksaa 44 pikseliä
-        korkeutta ja ostaa sillä koko listan luettavuuden.
+        Merkki tarvitsee yhä oman pintansa: kultainen laatta rivin sisällä
+        olisi ollut kolmas lätkä sopimustyypin ja kampanjan rinnalla, eikä
+        kolmesta samankokoisesta lätkästä erotu yksikään. Nauha vie 28
+        pikseliä ja saa yhden rivin näyttämään erilaiselta koko listassa.
 
-        YKSI PALKKI, KAKSI TIETOA: MERKKI VASEMMALLA, KAMPANJA OIKEALLA.
-
-        Kampanjamerkki ei mahtunut merkkinauhan rinnalle omaksi toiseksi
-        palkiksi rikkomatta 44 pikselin sääntöä, joten palkki on yksi
-        rivi, jonka vasen puoli kertoo Ketun merkin ja oikea kumppanin
-        tarjouksen. Korkeus pysyy samana kaikissa yhdistelmissä.
+        Perustelu "Paras 1. vuosi" on samalla rivillä eikä sen alla: rivi
+        on matala, ja kaksirivinen merkki söisi nauhan koko hyödyn.
       */}
-      <div
-        className={`flex h-10 items-center gap-2 px-3.5 sm:px-4 ${
-          foxPick ? "bg-gold" : "border-b border-white/10 bg-black/10"
-        }`}
-      >
-        {foxPick && (
-          <div className="flex min-w-0 items-center gap-2.5">
-            {/*
-              KULTAINEN TASSU TUMMALLA LAATALLA — EI TASSUA SUORAAN NAUHALLE.
-
-              Nauha on kultaa, joten kultainen tassu suoraan sen päällä olisi
-              kaksi samaa sävyä päällekkäin eli näkymätön. Tumma pyöreä laatta
-              antaa tassulle taustan, ja samalla merkki alkaa lukea sinettinä
-              eikä ikonina — juuri sitä se on. Kilpailijat rakentavat saman
-              luottamuksen kolmannen osapuolen sertifikaateilla (TÜV, eKomi),
-              joita Ketulla ei ole eikä niitä keksitä. Oma sinetti on ainoa
-              rehellinen tapa saada sama visuaalinen paino.
-
-              Tassu on sivuston yleinen allekirjoitus: sama muoto toistuu
-              jokaisen kortin ominaisuusriveillä, joten lukija on jo oppinut,
-              että tassun vieressä oleva väite on Ketun oma kannanotto eikä
-              sähköyhtiön markkinointitekstiä.
-            */}
-            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#4A2E06] text-gold shadow-[0_1px_2px_rgba(74,26,2,0.4)]">
-              <FoxPaw size={15} />
-            </span>
-            <div className="min-w-0">
-              <p className="truncate font-display text-[11px] font-bold uppercase leading-none tracking-[0.14em] text-[#4A2E06]">
-                Ketun valinta
-              </p>
-              {/*
-                PERUSTELU HETI MERKIN ALLA, EI RIVIN OIKEASSA REUNASSA.
-
-                Oikeassa reunassa se katosi mobiilissa kokonaan ja työpöydällä
-                se luki niin kaukana merkistä, ettei sitä yhdistetty siihen.
-                Vertailusivun yleisin epäily on "onko tämä nosto ostettu?", ja
-                siihen pitää vastata siinä sekunnissa kun epäily syntyy.
-
-                RIVI SANOO TÄSMÄLLEEN SEN, MITÄ KOODI LASKEE. Merkki menee
-                sopimukseen, jonka ensimmäinen vuosi on halvin niistä, jotka
-                voittavat kävijän nykyisen hinnan jo ensi kuussa. Kortin
-                rivillä "… € 1. vuosi" on juuri se luku, joten lukija voi
-                todeta väitteen korttien omista luvuista. Väärä perustelu
-                merkin alla on pahempi kuin perustelun puuttuminen: kiinni
-                jäänyt vertailusivu menettää klikin lisäksi paluukäynnin.
-
-                HUOM: kortin iso numero on ensi kuun hinta, joten merkki ei
-                osu aina pienimpään isoon numeroon. Se on tietoinen valinta,
-                ks. `monthly`-kommentti.
-
-                RIVI ON LYHYT, KOSKA SEN ON MAHDUTTAVA KAMPANJAMERKIN
-                VIEREEN. Pidempi muoto katkesi kolmella pisteellä juuri
-                niissä korteissa, joissa on kampanja, eli useimmiten.
-              */}
-              <p className="mt-1 truncate font-data text-[10.5px] font-bold leading-none text-[#5C3A08]">
-                Paras 1. vuosi
-              </p>
-            </div>
-          </div>
-        )}
-        {!foxPick && strength && (
-          /*
-            MERKITTÖMÄN KORTIN VAHVUUSLAUSE — HILJAINEN, EI KOLMAS MERKKI.
-
-            Palkki oli merkittömillä korteilla tyhjä, ja tyhjä palkki luki
-            keskeneräiseltä juuri niissä korteissa, jotka muutenkin katosivat
-            massaan. Nyt siinä lukee se yksi asia, jossa kortti on koko listan
-            kärki — tai ero halvimpaan, jos kärkeä ei ole. Molemmat ovat
-            laskettuja lukuja, eivät markkinointilauseita.
-
-            TYPOGRAFIA ON TARKOITUKSELLA HILJAINEN: pieni kirjain, ei
-            harvennusta, ei ikonia, kerma 70 %:n peitolla. "Edullisin" ja
-            "Ketun valinta" ovat versaalilla, harvennettuina ja kirkkaalla
-            nauhalla. Jos vahvuuslause näyttäisi samalta, kortteja olisi kuusi
-            merkittyä eli nolla merkittyä — merkki toimii vain, jos merkittömiä
-            on enemmän. Tämä on kuvateksti, ei mitali.
-
-            Ei valkoista: kerma on sivuston oma vaalea, ja kiinteä valkoinen
-            olisi kolmas vaalea sävy oranssin päällä.
-          */
-          <p className="flex min-w-0 items-center gap-2 text-[11.5px] font-semibold leading-none text-cream/70">
-            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-cream/45" aria-hidden />
-            <span className="truncate">{strength}</span>
+      {foxPick && (
+        <div className="flex h-7 items-center gap-2 bg-gold px-3 sm:px-4">
+          <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#4A2E06] text-gold">
+            <FoxPaw size={11} />
+          </span>
+          <p className="truncate font-display text-[10.5px] font-bold uppercase leading-none tracking-[0.14em] text-[#4A2E06]">
+            Ketun valinta
           </p>
-        )}
-        {campaign && (
-          /*
-            KERMANVALKOINEN LAATTA TUMMALLA PALKILLA, TUMMA VAALEALLA.
-
-            Tyhjä palkki on tarkoituksella tummennettu, jotta merkitön
-            kortti ei saisi merkkiä. Kampanjamerkki saa silti olla kirkas:
-            se EI ole koristeraita vaan kortin ainoa aikarajattu tieto,
-            joten sen lukeminen merkiksi on oikein.
-          */
-          <span
-            className={`ml-auto flex shrink-0 items-center gap-1 rounded-md px-2 py-1 font-display text-[10.5px] font-bold leading-none ${
-              foxPick ? "bg-[#4A2E06] text-cream" : "bg-cream text-[#A83E0A]"
-            }`}
-            title={campaign.limit ? `Tarjous: ${campaign.limit}` : "Kumppanin oma tarjous"}
-          >
-            <Tag size={11} className="shrink-0" aria-hidden />
-            {campaign.label}
+          <span className="shrink-0 font-data text-[10.5px] font-bold leading-none text-[#5C3A08]">
+            Paras 1. vuosi
           </span>
-        )}
-      </div>
-
-      {/*
-        LOGOKAISTA — VAALEA VYÖ KORTIN YLÄOSASSA, LOGO ISONA KESKELLÄ.
-
-        Logo oli aiemmin 40 pikselin laatta yhtiön nimen vieressä. Siinä koossa
-        se ei tehnyt työtään: sähkövertailussa yhtiö tunnistetaan logosta
-        nopeammin kuin nimestä, ja tunnistettu yhtiö madaltaa kynnystä painaa
-        "Tee sopimus" -nappia. Tuntematon yhtiö taas saa kävijän poistumaan
-        googlaamaan — ja se kävijä ei useimmiten palaa. Peukalonkynnen kokoinen
-        kuvake ei ehdi tuottaa sitä tunnistusta.
-
-        VYÖ ON ORANSSI, EI VAALEA. Jessen valinta: vaalea kaista katkaisi
-        kortin kahtia ja näytti siltä, että logo on liimattu päälle. Oranssilla
-        kortti luetaan yhtenä pintana ja brändi pysyy yhtenäisenä.
-
-        Hinta on se, että logoja ei ole tehty oranssille pohjalle. Osalla
-        kumppaneista tunnus on läpinäkyvä PNG (Fortum, Nordic Green, Oomi,
-        Vattenfall) ja istuu suoraan vyölle. Osalla tunnus tulee mukanaan oman
-        värillisen neliönsä kanssa (Aalto tummanvihreä, Cheap Energy keltainen,
-        Hehku persikka) — niitä ei saa muokata läpinäkyväksi, koska tunnuksen
-        muuttaminen on tavaramerkin vääristämistä. Ne näkyvät siis värillisinä
-        neliöinä oranssilla. Ainoa oikea korjaus on hakea kumppanin omat
-        läpinäkyvät logotiedostot (Adtractionin mediapankki), ei kuvankäsittely.
-
-        `theme-ember` kääntää `bg-white`-luokan oranssiksi, joten vyö tehdään
-        `bg-black/10`-kerroksella: sama oranssi hitusen syvempänä, jolloin
-        kortissa on yhä rakennetta ilman toista väriä.
-
-        SIJALUKU on absoluuttisesti vasemmassa reunassa: rivissä se työntäisi
-        logon numeron verran oikealle, eivätkä kuuden kortin logot osuisi
-        samaan pystylinjaan.
-      */}
-      <div className="relative flex items-center justify-center border-b border-cream/15 bg-black/10 px-12 py-4">
-        {rank !== undefined && (
-          /*
-            KOLME KÄRKISIJAA EROTTUVAT — VALOARVOLLA, EI MITALEILLA.
-
-            KETUN VALINNALLA ON NYT NUMERO 1, EI TASSUA. Aiemmin kortti
-            saattoi olla nostettu listan kärkeen painotetun valinnan
-            perusteella, jolloin siinä ei voinut lukea sijalukua: numero
-            olisi väittänyt järjestystä, jota kortin omat hinnat eivät
-            tue. Kun suositus on aina halvin, lista on puhtaassa
-            hintajärjestyksessä ja merkkikortti on aidosti ykkönen —
-            numero ja merkki kertovat saman asian eivätkä riitele.
-
-            Palkintopallin idea on oikea: kolmen kärki pitää lukea
-            palkintosijoina eikä juoksevana numerointina. Mitaliemojit
-            🥇🥈🥉 eivät silti käy. Ne ovat käyttöjärjestelmän omia
-            värikuvakkeita, eli ne näyttävät erilaisilta jokaisella
-            laitteella eikä niiden väreihin voi vaikuttaa — punaiset
-            nauhat ja harmaa hopea toisivat sivulle kolme uutta väriä
-            kahden sallitun rinnalle. Emoji lukee myös leikkisänä, ja
-            21 numeroa kolmen emojin perässä näyttäisi virheeltä.
-
-            Sama järjestys tehdään siis kirkkaudella: 1. täysi kerma,
-            2. vahva kermareunus, 3. himmeä kermareunus, loput vaimeat.
-            Kolme kärkeä erottuu yhdellä silmäyksellä, ilme pysyy
-            aikuisena eikä uusia värejä tule yhtään.
-          */
-          <span
-            className={`absolute left-3 top-1/2 grid -translate-y-1/2 place-items-center rounded-lg font-data font-extrabold tabular-nums ${
-              rank === 1
-                ? "h-7 w-7 bg-cream text-[13px] text-[#A83E0A] shadow-[0_1px_3px_rgba(74,26,2,0.35)]"
-                : rank === 2
-                  ? "h-6 w-6 border border-cream/60 bg-black/15 text-[12px] text-cream"
-                  : rank === 3
-                    ? "h-6 w-6 border border-cream/35 bg-black/15 text-[12px] text-cream/85"
-                    : "h-6 w-6 border border-cream/15 bg-black/15 text-[12px] text-cream/60"
-            }`}
-            aria-hidden
-          >
-            {rank}
-          </span>
-        )}
-        <ProviderLogo provider={plan.provider} logo={plan.logo} />
-      </div>
-
-      {/*
-        NIMI JA MERKIT KESKITETTYNÄ LOGON ALLE.
-
-        Vasemmalle tasattu nimi keskitetyn logon alla näyttäisi siltä, että
-        toinen niistä on pudonnut väärään kohtaan. Kun koko yläosa on yhdellä
-        keskilinjalla, kortti luetaan yhtenä tuotteena eikä kahdesta osasta
-        kootuksi.
-
-        Tyyppimerkit ovat samassa lohkossa eivätkä omalla rivillään: yksi
-        vaakaviiva vähemmän kortissa. Kun kortteja on kymmeniä allekkain,
-        viivat alkavat lukea raitakuviona eikä rakenteena — juuri se saa
-        listan näyttämään tuhannelta samalta kortilta.
-      */}
-      <div className="border-b border-line px-3.5 py-3 text-center sm:px-4">
-        <h3 className="truncate font-display text-[16px] font-bold leading-tight text-ink">
-          <Link href={`/sahkosopimukset/sopimus/${plan.slug}`} className="underline-offset-4 hover:underline">
-            {plan.provider}
-          </Link>
-        </h3>
-        <p className="mt-0.5 truncate text-[12.5px] text-ink/60">{plan.name}</p>
-        <div className="mt-2 flex flex-wrap items-center justify-center gap-1.5">
-          <TypeBadges plan={plan} />
         </div>
-      </div>
+      )}
 
-      <div className="flex flex-1 flex-col p-3.5 sm:p-4">
-        <div>
+      {/*
+        RIVIN SARAKKEET.
+
+        Työpöytä: [sija+logo] [nimi ja merkit] [hinta ja palkki] [nappi].
+        Kolme ensimmäistä ovat kiinteässä suhteessa, jotta hintasarake
+        alkaa jokaisessa rivissä samasta kohdasta — se on koko rivimuodon
+        syy. Nappisarake on `auto`, koska napin leveys on sen tekstin
+        mittainen ja kahden eri tekstin ("Tee sopimus" /
+        "Siirry palveluntarjoajalle") venyttäminen samaan mittaan tekisi
+        lyhyemmästä oudon leveän.
+
+        Puhelin: kaksi saraketta. Ylärivi on logo ja nimi, sen alle
+        koko leveydeltä hinta ja nappi. Rivin korkeus on noin 190
+        pikseliä, eli 700 pikselin ruudulle mahtuu kolme sopimusta.
+      */}
+      <div className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-x-3 gap-y-3 p-3 sm:grid-cols-[auto_minmax(0,1.05fr)_minmax(0,1fr)_auto] sm:items-center sm:gap-x-5 sm:p-4">
+        {/*
+          SIJALUKU JA LOGO SAMASSA SARAKKEESSA, LOGOLLE KIINTEÄ LAATIKKO.
+
+          Logo oli ennen `max-w-[60%]`, jolloin jokainen logo oli eri
+          levyinen ja yhtiöiden nimet alkoivat eri kohdasta. Pystykortissa
+          sillä ei ollut väliä, koska nimi oli logon alla keskitettynä.
+          Rivissä sillä on: eri kohdasta alkavat nimet lukevat siltä, että
+          rivit on ladottu käsin eri leveyksille.
+
+          Kiinteä laatikko ratkaisee samalla sen ongelman, jonka takia
+          logojen piti olla neliöitä. Nyt levyinen tekstilogo (Hehku,
+          Sähkötytöt) skaalautuu laatikon sisään `object-contain`-säännöllä
+          eikä työnnä mitään sivuun.
+
+          Sijaluvun kirkkausportaikko on ennallaan: 1. täysi kerma, 2.–3.
+          kermareunus, loput vaimeat. Ks. alkuperäinen perustelu — mitaleja
+          ei käytetä, koska ne toisivat sivulle kolme uutta väriä.
+        */}
+        <div className="flex items-center gap-2.5 sm:gap-3">
+          {rank !== undefined && (
+            <span
+              className={`grid shrink-0 place-items-center rounded-lg font-data font-extrabold tabular-nums ${
+                rank === 1
+                  ? "h-7 w-7 bg-cream text-[13px] text-[#A83E0A] shadow-[0_1px_3px_rgba(74,26,2,0.35)]"
+                  : rank === 2
+                    ? "h-6 w-6 border border-cream/60 bg-black/15 text-[12px] text-cream"
+                    : rank === 3
+                      ? "h-6 w-6 border border-cream/35 bg-black/15 text-[12px] text-cream/85"
+                      : "h-6 w-6 border border-cream/15 bg-black/15 text-[12px] text-cream/60"
+              }`}
+              aria-hidden
+            >
+              {rank}
+            </span>
+          )}
+          <ProviderLogo provider={plan.provider} logo={plan.logo} />
+        </div>
+
+        {/* NIMI, SOPIMUSTYYPPI JA KAMPANJA */}
+        <div className="min-w-0">
+          <h3 className="truncate font-display text-[15px] font-bold leading-tight text-ink sm:text-[16px]">
+            <Link
+              href={`/sahkosopimukset/sopimus/${plan.slug}`}
+              className="underline-offset-4 hover:underline"
+            >
+              {plan.provider}
+            </Link>
+          </h3>
+          <p className="truncate text-[12.5px] text-ink/60">{plan.name}</p>
+          <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+            <TypeBadges plan={plan} />
+            {campaign && (
+              /*
+                KAMPANJALÄTKÄ SIIRTYI OMASTA NAUHASTAAN MERKKIEN JOUKKOON.
+
+                Kampanja on yhä kortin ainoa aikarajattu tieto, eli syy
+                toimia tänään, mutta rivimuodossa sille ei ole omaa
+                yläkulmaa. Kermanvalkoinen pohja pitää sen kirkkaimpana
+                kolmesta lätkästä, joten se luetaan yhä tarjoukseksi eikä
+                ominaisuudeksi.
+              */
+              <span
+                className="inline-flex shrink-0 items-center gap-1 rounded-md bg-cream px-2 py-0.5 font-display text-[10.5px] font-bold leading-none text-[#A83E0A]"
+                title={campaign.limit ? `Tarjous: ${campaign.limit}` : "Kumppanin oma tarjous"}
+              >
+                <Tag size={11} className="shrink-0" aria-hidden />
+                {campaign.label}
+              </span>
+            )}
+          </div>
           {/*
-            YKSI DESIMAALI, EI PYÖRISTYSTÄ KOKONAISIIN EUROIHIN.
+            VAHVUUSLAUSE MERKITTÖMÄLLE RIVILLE — HILJAINEN, EI NELJÄS LÄTKÄ.
 
-            Kokonaisina euroina 367 €/v ja 376 €/v näyttivät molemmat
-            "31 €/kk". Silloin "Ketun valinta" -kortissa luki "ei halvin",
-            vaikka sen hinta näytti täsmälleen samalta kuin halvimman —
-            ja mobiilin tulospalkki väitti samaa lukua edullisimmaksi.
-            Lukija, joka huomaa tuollaisen ristiriidan, ei enää usko
-            muitakaan lukuja, ja juuri lukujen uskominen on tämän sivun
-            koko ansaintalogiikka. Desimaali maksaa vähän silmää ja
-            poistaa ristiriidan kokonaan.
-
-            Sama tarkkuus on heron kärkiluvussa ja tulospalkissa —
-            kolmen eri pyöristyksen näyttäminen olisi sama ongelma
-            uudessa muodossa.
-
-            Samasta syystä myös alla oleva ero-lätkä näyttää desimaalin.
-            Se pyöristi aiemmin kokonaisluvuksi, jolloin suosituspaneeli
-            sanoi "0,6 € / kk" ja saman sopimuksen kortti sanoi "1 € / kk"
-            yhdellä ja samalla ruudulla. Kaksi eri lukua samasta asiasta
-            on pahempi kuin pieni luku.
+            Sama perustelu kuin ennen: pieni kirjain, ei harvennusta, ei
+            ikonia. Jos tämä näyttäisi merkiltä, jokaisella rivillä olisi
+            merkki eli yhdelläkään ei olisi.
           */}
-          {/* Ero nykyiseen ENNEN hintaa: se on ainoa luku, jota ei voi
-              päätellä muualta kortista, ja se on syy lukea loput.
+          {!foxPick && strength && (
+            <p className="mt-1.5 flex min-w-0 items-center gap-2 text-[11.5px] font-semibold leading-none text-cream/70">
+              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-cream/45" aria-hidden />
+              <span className="truncate">{strength}</span>
+            </p>
+          )}
+        </div>
 
-              LÄTKÄ NÄKYY VAIN KUN EROA ON. Alle puolen euron kohdalla
-              tässä luki aiemmin "Käytännössä sama hinta kuin nyt". Se ei
-              kertonut mitään, mitä kortin omat luvut eivät jo kertoneet,
-              ja se vei parhaan paikan kortin yläreunasta — sen paikan,
-              jossa muissa korteissa lukee säästö. Rivi ei myöskään anna
-              mitään tehtävää: se ei kehota vaihtamaan eikä varoita
-              vaihtamasta. Tyhjä tila lukee nopeammin kuin sisällötön
-              lause, ja säästölätkät erottuvat kun niitä ei ympäröi
-              joukko yhtä painavan näköisiä "ei mitään" -lätkiä. */}
+        {/*
+          HINTA JA NAPPI VIERETYSTEN MYÖS PUHELIMESSA.
+
+          Ensimmäinen versio latoi puhelimessa hinnan omalle riville ja
+          napin sen alle, jolloin rivi oli 291 pikseliä: kaksi sopimusta
+          ruudulla. Kun nappi nousee hinnan viereen, rivi on noin 210
+          pikseliä ja ruudulle mahtuu kolme. Se oli koko muutoksen tavoite.
+
+          `sm:contents` poistaa tämän kääreen työpöydältä kokonaan, jolloin
+          hinta ja nappi palaavat omiksi ruudukkosarakkeikseen ja pysyvät
+          samassa pystylinjassa joka rivillä. Ilman sitä olisi kaksi eri
+          asettelupuuta ylläpidettävänä, ja ne erkanevat aina.
+
+          `items-end`: nappi asettuu hintalohkon alareunaan eikä keskelle.
+          Keskitettynä se osui hintaluvun ja palkin väliin, jolloin katse
+          pysähtyi nappiin ennen kuin ehti lukea hinnan — ja hinta on se,
+          joka saa napin painetuksi.
+        */}
+        <div className="col-span-2 flex items-end gap-3 sm:contents">
+        <div className="min-w-0 flex-1">
+          {/* Ero nykyiseen: ainoa luku, jota ei voi päätellä muualta
+              rivistä, joten se on hintaluvun yläpuolella. Näkyy vain kun
+              eroa on yli 50 senttiä kuussa — ks. alkuperäinen perustelu. */}
           {diffMonthly !== null && Math.abs(diffMonthly) > 0.5 && (
             <p
-              className={`mb-2 inline-flex items-center gap-1.5 rounded-lg border px-2 py-1 text-[12px] ${
+              className={`mb-1.5 inline-flex items-center gap-1.5 rounded-lg border px-2 py-0.5 text-[11.5px] ${
                 diffMonthly > 0.5
                   ? "border-cream/45 bg-black/15 text-cream"
                   : "border-cream/15 bg-black/10 text-ink/65"
@@ -593,54 +497,39 @@ export default function PlanCard({
             >
               {diffMonthly > 0.5 ? (
                 <>
-                  <TrendingDown size={13} className="shrink-0" aria-hidden />
+                  <TrendingDown size={12} className="shrink-0" aria-hidden />
                   <span>
                     Säästät{" "}
-                    <strong className="font-data font-bold">
-                      {diffMonthly.toLocaleString("fi-FI", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })}{" "}
-                      €
-                    </strong>{" "}
-                    / kk nykyiseen verrattuna
+                    <strong className="font-data font-bold">{money(diffMonthly)} €</strong> / kk
                   </span>
                 </>
-              ) : diffMonthly < -0.5 ? (
+              ) : (
                 <>
-                  <TrendingUp size={13} className="shrink-0" aria-hidden />
+                  <TrendingUp size={12} className="shrink-0" aria-hidden />
                   <span>
-                    <strong className="font-data font-bold">
-                      {Math.abs(diffMonthly).toLocaleString("fi-FI", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })}{" "}
-                      €
-                    </strong>{" "}
-                    / kk kalliimpi kuin nykyinen
+                    <strong className="font-data font-bold">{money(Math.abs(diffMonthly))} €</strong>{" "}
+                    / kk kalliimpi
                   </span>
                 </>
-              ) : null}
+              )}
             </p>
           )}
 
-          <div className="flex items-baseline gap-1.5">
-            <span className="font-display font-data font-price text-[30px] font-extrabold leading-none tracking-[-0.03em] text-ink">
-              {monthly.toLocaleString("fi-FI", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
+          <div className="flex flex-wrap items-baseline gap-x-1.5">
+            <span className="font-display font-data font-price text-[26px] font-extrabold leading-none tracking-[-0.03em] text-ink sm:text-[28px]">
+              {money(monthly)} €
             </span>
             <span className="font-display text-[13px] font-semibold text-ink/60">/ kk</span>
-            {/* Ison luvun kesto sanotaan ISON LUVUN VIERESSÄ, ei alaviitteenä.
-                Nimeämätön kampanjahinta luetaan pysyväksi hinnaksi, ja hinta
-                joka paljastuu vasta laskusta on peruutus eikä palkkio. */}
             {campaign ? (
-              <span className="font-display text-[12px] font-semibold text-ink/50">
+              <span className="font-display text-[11.5px] font-semibold text-ink/50">
                 ensimmäiset {campaign.months} kk
               </span>
             ) : null}
           </div>
 
+          {/* Hintapalkki: pitkä palkki = halpa. Ks. `barWidth`-perustelu. */}
           <div
-            className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-black/20"
+            className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-black/20"
             role="img"
             aria-label={`Ensi kuun hinta suhteessa vertailun edullisimpaan: mitä pidempi palkki, sitä edullisempi sopimus. Tämä ${barWidth} prosenttia täydestä.`}
             title="Mitä pidempi palkki, sitä edullisempi sopimus ensi kuussa"
@@ -651,228 +540,233 @@ export default function PlanCard({
             />
           </div>
 
-          {/* Ensimmäisen vuoden kokonaishinta. Tämä on listan
-              järjestysperuste, joten se on myös ainoa selitys sille, miksi
-              kortti voi olla eri kohdassa kuin sen iso luku antaisi olettaa.
-              Älä poista. */}
-          <p className="mt-2 text-[12px] text-ink/60">
-            {yearly.toLocaleString("fi-FI", { maximumFractionDigits: 0 })} € 1. vuosi
-            <span className="mx-1.5 text-cream/40" aria-hidden>·</span>
-            {campaign ? "kampanja mukana" : "laskettu kulutuksellasi"}
-          </p>
-
           {/*
-            MIHIN ISO LUKU NOUSEE, HETI ISON LUVUN ALLA.
+            KAKSI PAKOLLISTA LUKUA YHDELLÄ RIVILLÄ.
 
-            Iso luku on kampanjahinta, eli se loppuu. Ilman tätä riviä
-            kortti lupaisi hinnan, joka nousee ilman varoitusta: yksi
-            peruutus, yksi menetetty palkkio ja yksi asiakas joka ei palaa.
-            Tämä rivi on myös ainoa selitys sille, miksi kortti voi olla
-            listassa alempana kuin kalliimman näköinen kortti.
+            "X € 1. vuosi" on listan järjestysperuste, eli ainoa selitys
+            sille miksi rivi voi olla eri kohdassa kuin sen iso luku
+            antaisi olettaa. "Sitten Y €/kk" kertoo mihin kampanjahinta
+            nousee. Kumpaakaan ei saa poistaa eikä siirtää "Hinnan
+            erittely" -napin taakse: silloin sivu näyttäisi halvimman
+            ensimmäisen vuoden ja piilottaisi pysyvän hinnan, mikä on
+            täsmälleen se temppu jota tämä vertailu ei tee.
 
-            Rajoitus ("vain uusille asiakkaille") on samalla rivillä: se on
-            ainoa asia, joka voi tehdä koko tarjouksesta lukijalle
-            mahdottoman, ja sen lukeminen vasta kumppanin sivulta on
-            hukkaan mennyt klikki molemmille osapuolille.
+            Ne ovat nyt samalla rivillä välipisteellä erotettuna, koska
+            kaksi erillistä riviä maksoi 18 pikseliä jokaisesta
+            sopimuksesta ilman että kumpikaan luku muuttui.
           */}
-          {campaign && normalMonthly !== null && (
-            <p className="mt-1 text-[12px] text-ink/60">
-              Sitten{" "}
-              <span className="font-data font-bold text-ink/80">
-                {normalMonthly.toLocaleString("fi-FI", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}{" "}
-                €
-              </span>{" "}
-              / kk
-              {campaign.limit ? (
-                <>
-                  <span className="mx-1.5 text-cream/40" aria-hidden>·</span>
-                  {campaign.limit}
-                </>
-              ) : null}
-            </p>
-          )}
+          <p className="mt-1.5 text-[11.5px] leading-snug text-ink/60">
+            <span className="font-data font-semibold text-ink/75">
+              {yearly.toLocaleString("fi-FI", { maximumFractionDigits: 0 })} €
+            </span>{" "}
+            1. vuosi
+            {campaign && normalMonthly !== null ? (
+              <>
+                <span className="mx-1.5 text-cream/40" aria-hidden>
+                  ·
+                </span>
+                {/* `whitespace-nowrap`: ilman sitä rivi katkesi puhelimessa
+                    niin, että "kk" jäi yksin seuraavalle riville. Luku ja sen
+                    yksikkö ovat yksi asia, joten ne katkeavat vain yhdessä. */}
+                <span className="whitespace-nowrap">
+                  sitten{" "}
+                  <span className="font-data font-bold text-ink/80">{money(normalMonthly)} €</span> / kk
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="mx-1.5 text-cream/40" aria-hidden>
+                  ·
+                </span>
+                laskettu kulutuksellasi
+              </>
+            )}
+            {campaign?.limit ? (
+              <>
+                <span className="mx-1.5 text-cream/40" aria-hidden>
+                  ·
+                </span>
+                {campaign.limit}
+              </>
+            ) : null}
+          </p>
         </div>
 
-        {/* Avattava osa alkaa. `flex-1` on tässä kääreessä, jotta ostonappi
-            painuu kortin alareunaan myös suljettuna — muuten suljetut kortit
-            olisivat eri korkuisia ja napit sahalaitana. */}
-        <div
-          id={`tiedot-${plan.id}`}
-          className={`flex-1 flex-col ${avattu ? "flex" : "hidden sm:flex"}`}
-        >
-        {/* Ks. `energiaKampanja`-kommentti komponentin ylaosassa. */}
-        <dl className="mt-3.5 space-y-2 rounded-xl border border-line bg-black/10 p-3">
-          <div className="flex items-start justify-between gap-3 text-[12px]">
-            <dt className="text-ink/60">{plan.type === "spot" ? "Marginaali" : "Energia"}</dt>
-            <dd className="text-right font-data font-bold text-ink">
-              {energiaKampanja ?? energiaPysyva}
-              {energiaKampanja && campaign && (
-                <span className="mt-0.5 block text-[11px] font-medium leading-tight text-ink/55">
-                  {campaign.months} kk, sitten {energiaPysyva}
-                </span>
-              )}
-            </dd>
-          </div>
-          <div className="flex items-start justify-between gap-3 text-[12px]">
-            <dt className="text-ink/60">Perusmaksu</dt>
-            <dd className="text-right font-data font-bold text-ink">
-              {perusmaksuKampanja ?? perusmaksuPysyva}
-              {perusmaksuKampanja && campaign && (
-                <span className="mt-0.5 block text-[11px] font-medium leading-tight text-ink/55">
-                  {campaign.months} kk, sitten {perusmaksuPysyva}
-                </span>
-              )}
-            </dd>
-          </div>
-
-          {/* Ks. `omaOsuusVuosi`-kommentti komponentin ylaosassa. Erotettu
-              viivalla, koska tama ei ole hinnaston rivi vaan yhteenveto
-              kahdesta ylla olevasta. */}
-          {omaOsuusVuosi !== null && (
-            <div className="flex items-start justify-between gap-3 border-t border-line pt-2 text-[11.5px]">
-              <dt className="text-ink/55">Ilman pörssin hintaa</dt>
-              <dd className="text-right font-data font-bold text-ink/75">
-                {(omaOsuusVuosi / 12).toLocaleString("fi-FI", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}{" "}
-                €/kk
-                <span className="mt-0.5 block text-[10.5px] font-medium leading-tight text-ink/50">
-                  vain yhtiön oma osuus
-                </span>
-              </dd>
-            </div>
-          )}
-        </dl>
-
         {/*
-          Luettelomerkkinä ketun tassu, ei harmaa väkänen. Väkänen on sama
-          merkki kuin jokaisella verkkokaupalla, joten silmä ohittaa sen.
-          Tassu on brändin oma ele ja toistuu joka kortissa — se saa listan
-          näyttämään Ketun suositukselta eikä tuotekuvauksen kopiolta.
-          Sama tassu on "Ketun valinta" -merkissä, joten kahden välille
-          syntyy yhteys ilman että sitä tarvitsee selittää.
+          NAPPISARAKE.
+
+          Työpöydällä nappi on rivin oikeassa reunassa omassa sarakkeessaan,
+          eli jokaisen rivin nappi on samassa pystylinjassa. Se on rivimuodon
+          toinen tuottoperustelu: kun napit ovat linjassa, listaa voi selata
+          nappi kerrallaan eikä kohdetta tarvitse etsiä joka rivistä
+          uudelleen.
+
+          `theme-light` on pakollinen: `theme-ember` kääntäisi
+          kermanvalkoisen napin oranssiksi, jolloin nappi katoaisi rivin
+          pohjaan. Ks. ember-ansa DESIGN.md:ssä.
         */}
-        <ul className="mt-3 flex-1 space-y-1">
-          {plan.features.slice(0, 3).map((f) => (
-            <li key={f} className="flex items-start gap-2 text-[12.5px] leading-snug text-ink/80">
-              <span className="mt-[3px] shrink-0 text-cream/75" aria-hidden>
-                <FoxPaw />
-              </span>
-              {f}
-            </li>
-          ))}
-        </ul>
-        </div>
-        {/* Avattava osa loppuu. */}
-
-        {/*
-          TÄHTIRIVI NÄKYY VAIN JOS ARVIO ON OLEMASSA.
-
-          Kumppaniyhtiöille ei ole riippumatonta arviolähdettä, joten
-          niiden `rating` on `null`. Keksitty 4,6 tähteä olisi kortin
-          halvin tapa näyttää luotettavalta ja samalla ainoa väite, jonka
-          lukija voi kumota yhdellä haulla — ja kun yksi luku paljastuu
-          keksityksi, myös hinnat lakkaavat kelpaamasta. Sivuston koko
-          ansaintalogiikka on siinä, että luvut kestävät tarkistuksen.
-
-          Kun arviota ei ole, rivin vasen puoli jää tyhjäksi ja "Tiedot"
-          siirtyy oikeaan reunaan `justify-between`-säännön mukaan. Rivin
-          korkeus säilyy, joten korttien vaakalinja ei liiku.
-        */}
-        <div className="mt-3 flex items-center justify-between gap-3 border-t border-line pt-3">
-          {plan.rating !== null ? (
-            <p className="flex items-center gap-1 text-[12px] text-ink/60">
-              <Star size={13} className="fill-star text-star" aria-hidden />
-              <span className="font-data font-bold text-ink">{plan.rating.toFixed(1)}</span>
-              {plan.reviews !== null ? ` (${plan.reviews})` : ""}
-            </p>
-          ) : (
-            /* Tarkistuspäivä arvion tilalla: se on tieto, joka on
-               oikeasti olemassa, ja se vastaa kortin toiseksi yleisimpään
-               epäilyyn ("onko tämä hinta vanha?"). */
-            <p className="text-[12px] text-ink/55">
-              {plan.checkedAt
-                ? `Hinta tarkistettu ${new Date(plan.checkedAt).toLocaleDateString("fi-FI")}`
-                : ""}
-            </p>
-          )}
+        <div className="flex w-[128px] shrink-0 flex-col items-stretch gap-1 sm:w-[176px] sm:gap-1.5 sm:items-end">
+          <div className="theme-light w-full">
+            <AffiliateButton
+              href={plan.affiliateUrl}
+              cardId={plan.id}
+              placement="energy-grid"
+              analytics={{
+                category: "electricity",
+                provider: plan.provider,
+                plan: plan.name,
+              }}
+              variant="inverse"
+              className="w-full"
+            >
+              {plan.partner ? "Tee sopimus" : "Siirry palveluntarjoajalle"}
+            </AffiliateButton>
+          </div>
           {/*
-            SAMA PAIKKA, KAKSI ERI ELETTÄ RUUDUN LEVEYDEN MUKAAN.
+            ERITTELYNAPPI KERTOO MITÄ SEN TAKANA ON.
 
-            Työpöydällä yksityiskohdat ovat jo näkyvissä, joten linkki vie
-            sopimussivulle kuten ennenkin. Mobiilissa samassa kohdassa on
-            nappi, joka avaa piilotetun osan kortin sisällä.
+            "Tiedot" ei kerro, avautuuko sieltä hinnasto vai
+            markkinointiteksti, joten sitä ei paineta. "Hinnan erittely"
+            kertoo, ja samalla se todistaa listaa selaavalle, että erittely
+            on olemassa vaikkei se ole auki. Juuri se on ero piilotetun ja
+            salatun tiedon välillä.
 
-            Mobiilissa EI näytetä molempia. Kaksi lähes samannimistä linkkiä
-            ostonapin vieressä jakaisi huomion juuri siinä kohdassa, jossa
-            sivusto ansaitsee — ja sopimussivulle pääsee joka tapauksessa
-            yhtiön nimestä kortin yläreunassa.
+            Nappi on vaimea ja ostonapin alapuolella: se ei saa kilpailla
+            huomiosta sen napin kanssa, joka tuottaa.
           */}
           <button
             type="button"
             onClick={() => setAvattu((v) => !v)}
             aria-expanded={avattu}
             aria-controls={`tiedot-${plan.id}`}
-            className="flex shrink-0 items-center gap-1 rounded-lg border border-cream/25 bg-black/15 px-2.5 py-1 text-[12.5px] font-semibold text-ink/75 sm:hidden"
+            className="flex items-center justify-center gap-1 rounded-lg px-2 py-1 text-[12px] font-semibold text-ink/65 transition-colors hover:text-ink"
           >
-            {avattu ? "Piilota" : "Tiedot"}
-            <ChevronDown
-              size={14}
-              className={avattu ? "rotate-180" : ""}
-              aria-hidden
-            />
+            {avattu ? "Piilota erittely" : "Hinnan erittely"}
+            <ChevronDown size={14} className={avattu ? "rotate-180" : ""} aria-hidden />
           </button>
-          <Link
-            href={`/sahkosopimukset/sopimus/${plan.slug}`}
-            className="hidden text-[12.5px] font-semibold text-ink/60 underline-offset-4 hover:text-ink hover:underline sm:inline"
-          >
-            Tiedot
-          </Link>
         </div>
-
-        {/*
-          NAPIN TEKSTI KERTOO, MITÄ KLIKKI OIKEASTI TEKEE.
-
-          "Tee sopimus" on kumppanilinkki, josta Kettu saa palkkion.
-          Sopimukselle, jonka yhtiön kanssa ei ole kumppanuutta, sama
-          teksti lupaisi tilausputken, jota linkin päässä ei ole.
-          Neutraali teksti pitää listan avoinna myös yhtiöille, jotka
-          eivät maksa — ja juuri se on ainoa syy uskoa, ettei järjestystä
-          ole ostettu. Vertailu, joka näyttää vain maksavat yhtiöt, on
-          mainos, ja mainokselta ei kysytä neuvoa toista kertaa.
-        */}
-        <div className="theme-light mt-2.5">
-          <AffiliateButton
-            href={plan.affiliateUrl}
-            cardId={plan.id}
-            placement="energy-grid"
-            analytics={{
-              category: "electricity",
-              provider: plan.provider,
-              plan: plan.name,
-            }}
-            variant="inverse"
-            className="w-full"
-          >
-            {plan.partner ? "Tee sopimus" : "Siirry palveluntarjoajalle"}
-          </AffiliateButton>
         </div>
+        {/* Hinta+nappi-kääre loppuu. Ks. `sm:contents`-perustelu ylempänä. */}
       </div>
+
+      {/*
+        AVATTAVA ERITTELY — KOKO RIVIN LEVYINEN, EI SARAKKEEN.
+
+        Auki oleva erittely on rivin alla omana lohkonaan, jotta sen kolme
+        hintariviä ja ominaisuuslista mahtuvat vierekkäin työpöydällä.
+        Sarakkeen sisällä ne olisivat 200 pikselin levyisiä ja rivi
+        kasvaisi kaksinkertaiseksi juuri sen tiedon takia, joka ei ole
+        silmäilytietoa.
+      */}
+      {avattu && (
+        <div
+          id={`tiedot-${plan.id}`}
+          className="grid gap-3 border-t border-line px-3 py-3 sm:grid-cols-2 sm:gap-5 sm:px-4"
+        >
+          {/* Ks. `energiaKampanja`-kommentti komponentin ylaosassa. */}
+          <dl className="space-y-2 rounded-xl border border-line bg-black/10 p-3">
+            <div className="flex items-start justify-between gap-3 text-[12px]">
+              <dt className="text-ink/60">{plan.type === "spot" ? "Marginaali" : "Energia"}</dt>
+              <dd className="text-right font-data font-bold text-ink">
+                {energiaKampanja ?? energiaPysyva}
+                {energiaKampanja && campaign && (
+                  <span className="mt-0.5 block text-[11px] font-medium leading-tight text-ink/55">
+                    {campaign.months} kk, sitten {energiaPysyva}
+                  </span>
+                )}
+              </dd>
+            </div>
+            <div className="flex items-start justify-between gap-3 text-[12px]">
+              <dt className="text-ink/60">Perusmaksu</dt>
+              <dd className="text-right font-data font-bold text-ink">
+                {perusmaksuKampanja ?? perusmaksuPysyva}
+                {perusmaksuKampanja && campaign && (
+                  <span className="mt-0.5 block text-[11px] font-medium leading-tight text-ink/55">
+                    {campaign.months} kk, sitten {perusmaksuPysyva}
+                  </span>
+                )}
+              </dd>
+            </div>
+
+            {/* Ks. `omaOsuusVuosi`-kommentti komponentin ylaosassa. */}
+            {omaOsuusVuosi !== null && (
+              <div className="flex items-start justify-between gap-3 border-t border-line pt-2 text-[11.5px]">
+                <dt className="text-ink/55">Ilman pörssin hintaa</dt>
+                <dd className="text-right font-data font-bold text-ink/75">
+                  {money(omaOsuusVuosi / 12)} €/kk
+                  <span className="mt-0.5 block text-[10.5px] font-medium leading-tight text-ink/50">
+                    vain yhtiön oma osuus
+                  </span>
+                </dd>
+              </div>
+            )}
+          </dl>
+
+          <div className="flex flex-col justify-between gap-2">
+            {/* Luettelomerkkinä ketun tassu, ei harmaa väkänen — ks.
+                alkuperäinen perustelu: väkänen on sama merkki kuin
+                jokaisella verkkokaupalla, joten silmä ohittaa sen. */}
+            <ul className="space-y-1">
+              {plan.features.slice(0, 3).map((f) => (
+                <li
+                  key={f}
+                  className="flex items-start gap-2 text-[12.5px] leading-snug text-ink/80"
+                >
+                  <span className="mt-[3px] shrink-0 text-cream/75" aria-hidden>
+                    <FoxPaw />
+                  </span>
+                  {f}
+                </li>
+              ))}
+            </ul>
+
+            {/*
+              TARKISTUSPÄIVÄ JA LINKKI SOPIMUSSIVULLE.
+
+              Tähtiriviä ei ole, koska yhdelläkään sopimuksella ei ole
+              riippumatonta arviolähdettä ja keksitty tähtiluku on kortin
+              halvin tapa näyttää luotettavalta — ja ainoa väite, jonka
+              lukija voi kumota yhdellä haulla.
+
+              Tarkistuspäivä siirtyi erittelyn sisään: se vastaa kysymykseen
+              "onko tämä hinta vanha?", joka syntyy vasta kun lukija on jo
+              pysähtynyt yhden sopimuksen kohdalle. Silmäilyvaiheessa se vei
+              rivistä tilaa vastaamatta mihinkään.
+            */}
+            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-line pt-2">
+              <p className="text-[12px] text-ink/55">
+                {plan.rating !== null ? (
+                  <>
+                    <Star size={13} className="mr-1 inline fill-star text-star" aria-hidden />
+                    <span className="font-data font-bold text-ink">{plan.rating.toFixed(1)}</span>
+                    {plan.reviews !== null ? ` (${plan.reviews})` : ""}
+                  </>
+                ) : plan.checkedAt ? (
+                  `Hinta tarkistettu ${new Date(plan.checkedAt).toLocaleDateString("fi-FI")}`
+                ) : (
+                  ""
+                )}
+              </p>
+              <Link
+                href={`/sahkosopimukset/sopimus/${plan.slug}`}
+                className="text-[12.5px] font-semibold text-ink/65 underline-offset-4 hover:text-ink hover:underline"
+              >
+                Kaikki tiedot sopimuksesta
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </article>
   );
 }
 
 /**
- * Sopimustyyppi ja uusiutuvuus — samat merkit kahdessa paikassa.
+ * Sopimustyyppi ja uusiutuvuus.
  *
- * Mobiilissa merkit ovat yhtiön nimen alla, työpöydällä omalla rivillään.
- * Yhtenä komponenttina siksi, että kahteen paikkaan kopioitu merkkilista
- * erkanee ensimmäisessä muutoksessa, ja eri tavalla merkitty sopimustyyppi
- * puhelimessa ja koneella on juuri se ero, joka luetaan virheeksi.
+ * Omana komponenttinaan siksi, etta merkkilista on ollut kahdessa paikassa
+ * ennenkin ja kopioitu lista erkanee ensimmaisessa muutoksessa. Eri tavalla
+ * merkitty sopimustyyppi puhelimessa ja koneella luetaan virheeksi.
  */
 function TypeBadges({ plan }: { plan: ElectricityPlan }) {
   return (
@@ -895,29 +789,34 @@ function TypeBadges({ plan }: { plan: ElectricityPlan }) {
 /**
  * Yhtiön logo — tai sen paikka, kun logoa ei ole.
  *
- * Kumppaniyhtiöiden logot on haettu yhtiöiden omilta sivuilta ja normalisoitu
- * 256×256 PNG:ksi kansioon `public/logot/`. Neliömäinen tunnus eikä tekstilogo:
- * tekstilogot ovat eri levyisiä, ja kahdeksan eri suhteista logoa 40 pikselin
- * laatassa näyttäisi siltä, että ne on liitetty huolimattomasti.
+ * Kumppaniyhtiöiden logot on haettu yhtiöiden omilta sivuilta kansioon
+ * `public/logot/`. LAATIKKO ON KIINTEÄ, EI LOGO. Aiemmin logo sai olla
+ * niin leveä kuin halusi (`max-w-[60%]`), koska se oli keskitettynä
+ * pystykortin omalla vyöllään. Rivilistassa logon jälkeen tulee yhtiön
+ * nimi, ja eri levyiset logot aloittaisivat nimet eri kohdasta — lista
+ * lukisi siltä kuin rivit olisi ladottu käsin.
  *
- * Loput 24 sopimusta ovat esimerkkidataa, eikä keksitylle yhtiölle piirretä
- * logoa — se antaisi olemattomalle yhtiölle uskottavan ilmeen. Niissä
- * näytetään nimikirjaimet: rehellinen paikanpitäjä, joka näyttää silti
- * viimeistellyltä.
+ * Kiinteä laatikko + `object-contain` tarkoittaa myös, ettei tunnuksen
+ * tarvitse enää olla neliö: leveä tekstilogo (Hehku, Sähkötytöt)
+ * skaalautuu laatikon sisään sen omassa mittasuhteessa. Tunnusta ei
+ * muokata — logon muuttaminen on tavaramerkin vääristämistä.
+ *
+ * Esimerkkidatan yhtiöille ei piirretä logoa: se antaisi olemattomalle
+ * yhtiölle uskottavan ilmeen. Niissä näytetään nimikirjaimet.
  */
 function ProviderLogo({ provider, logo }: { provider: string; logo?: string }) {
   if (logo) {
     return (
       /* Ei laattaa, ei reunusta, ei taustaa: logo istuu suoraan oranssilla
-         vyöllä. Laatta laatan sisällä näyttäisi siltä, että logo on liitetty
-         korttiin jälkikäteen — ja juuri sitä vaikutelmaa vertailusivu ei
+         pinnalla. Laatta laatan sisällä näyttäisi siltä, että logo on
+         liitetty riviin jälkikäteen — ja juuri sitä vaikutelmaa vertailu ei
          kestä, koska se sama epäilys koskee sitten myös hintoja. */
       <Image
         src={logo}
         alt={`${provider} logo`}
         width={224}
         height={224}
-        className="h-14 w-auto max-w-[60%] object-contain"
+        className="h-9 w-[76px] object-contain sm:h-10 sm:w-[92px]"
       />
     );
   }
@@ -933,7 +832,7 @@ function ProviderLogo({ provider, logo }: { provider: string; logo?: string }) {
 
   return (
     <span
-      className="grid h-14 w-14 place-items-center rounded-2xl border border-cream/25 bg-black/15 font-display text-[19px] font-bold tracking-tight text-cream/60"
+      className="grid h-9 w-[76px] place-items-center rounded-xl border border-cream/25 bg-black/15 font-display text-[15px] font-bold tracking-tight text-cream/60 sm:h-10 sm:w-[92px] sm:text-[16px]"
       title={provider}
       aria-hidden
     >
