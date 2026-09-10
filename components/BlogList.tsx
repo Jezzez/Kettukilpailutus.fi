@@ -6,7 +6,17 @@ import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from "framer-m
 import { Clock } from "lucide-react";
 import type { Post } from "@/lib/types";
 
-const CATEGORIES = ["Kaikki", "Sähkö", "Luottokortit", "Henkilökohtainen talous", "Säästäminen", "Matkustaminen", "Vertailut"];
+/*
+  Järjestys on tarkoituksellinen: aktiiviset vertikaalit ensin. "Lainat"
+  on heti "Sähkön" jälkeen, koska ne ovat ne kaksi osiota, jotka oikeasti
+  tuottavat — kortit ovat yhä piilossa (lib/features.ts) ja niiden vanhat
+  artikkelit päättyvät huomautukseen eivätkä kehotteeseen.
+
+  Kategoria, jota ei ole tässä taulukossa, ei saa suodatinnappia lainkaan
+  ja jää vain "Kaikki"-näkymään. Kun uusi vertikaali avataan, sen nimi on
+  lisättävä tähän tai sen artikkelit jäävät puoliksi piiloon.
+*/
+const CATEGORIES = ["Kaikki", "Sähkö", "Lainat", "Luottokortit", "Henkilökohtainen talous", "Säästäminen", "Matkustaminen", "Vertailut"];
 
 /** Oppaiden listaus toimivalla kategoriasuodatuksella. */
 export default function BlogList({ posts }: { posts: Post[] }) {

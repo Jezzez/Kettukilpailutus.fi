@@ -8,6 +8,40 @@ import FoxPaw from "@/components/FoxPaw";
 import { FEATURES } from "@/lib/features";
 import { ENERGY_COMPARE } from "@/lib/nav";
 
+/*
+  ARTIKKELIN LOPPUKEHOTTEET VERTIKAALEITTAIN.
+
+  Sisältö on taulukossa eikä sisäkkäisissä ternäärilausekkeissa, koska
+  vertikaaleja on nyt kolme ja tulossa lisää (vakuutukset, internet).
+  Kolmiportainen ternääri jsx:n sisällä on se kohta, jossa neljäs
+  vertikaali kirjoitetaan vahingossa väärään haaraan.
+
+  Lainakehote poikkeaa sähköstä sanamuodoltaan tarkoituksella: emme
+  vertaile lainoja itse vaan ohjaamme kumppanille, joten kehote ei saa
+  luvata omaa vertailua. Väärä lupaus loppukehotteessa on kalliimpi kuin
+  vaisumpi sanamuoto, koska pettynyt kävijä ei palaa.
+*/
+const CTA = {
+  energy: {
+    href: ENERGY_COMPARE,
+    title: "Katso nyt, paljonko sinä maksat liikaa sähköstä",
+    text: "Kerro asumismuotosi, niin Kettu laskee sopimukset euroina, ei sentteinä kilowattitunnilta.",
+    button: "Kilpailuta sähkö ilmaiseksi",
+  },
+  loan: {
+    href: "/lainat",
+    title: "Älä ota ensimmäistä tarjousta",
+    text: "Kettu pyytää lainatarjoukset useasta pankista yhdellä hakemuksella. Hakeminen on maksutonta eikä sido mihinkään.",
+    button: "Vertaa lainatarjoukset",
+  },
+  cards: {
+    href: "/luottokortit#vertailu",
+    title: "Katso, mikä luottokortti sopii juuri sinun kulutukseesi",
+    text: "Vastaa kolmeen kysymykseen, niin Kettu järjestää kortit sinun käyttösi mukaan.",
+    button: "Aloita ilmainen vertailu",
+  },
+} as const;
+
 export function generateStaticParams() {
   return getPosts().map((p) => ({ slug: p.slug }));
 }
@@ -43,15 +77,27 @@ export default function PostPage({ params }: { params: { slug: string } }) {
     luottokortista, ei klikkaa sähkösopimuksia. Aihe ja kehote on
     kohdattava, tai klikki jää tekemättä.
 
-    Yhdeksän korttiaiheista artikkelia poistettiin elokuussa 2026, koska
-    korttidata on yhä keksittyä eikä korttivertailua ole olemassa: opas,
+    Yhdeksän korttiaiheista artikkelia on yhä `data/posts.json`-tiedostossa,
+    mutta korttidata on keksittyä eikä korttivertailua ole olemassa: opas,
     joka johtaa vertailuun jota ei ole, on lukijalle umpikuja ja
-    hakukoneelle ohut sivu. Kaikki jäljellä olevat artikkelit ovat
-    kategoriassa "Sähkö", joten `isEnergy` on toistaiseksi aina tosi.
-    Ehtoa ei silti poisteta: se on paikka, johon korttiartikkelit
-    palaavat, jos ja kun korttivertailu avataan oikealla datalla.
+    hakukoneelle ohut sivu. Siksi ne päättyvät alla olevaan huomautukseen
+    eivätkä kehotteeseen, ja oranssi vyö palaa niihin itsestään, kun
+    FEATURES.cards kääntyy todeksi.
   */
   const isEnergy = post.category === "Sähkö";
+  /*
+    Lainaoppaat vievät /lainat-sivulle, eivät suoraan kumppanin
+    hakemukseen. Syy on mitattavuus: kaikki neljä seurattua
+    `placement`-arvoa ovat tuolla sivulla (lib/loans.ts), ja suora linkki
+    ohittaisi ne kaikki. Lisäksi /lainat kertoo kumppanuudesta ennen
+    siirtymää, mikä on sekä rehellisempää että vähentää poistumisia
+    hakemuslomakkeelta.
+
+    FEATURES.loans on ehdossa mukana, jotta lainavertikaalin sulkeminen
+    yhdestä kytkimestä sulkee myös nämä kehotteet eikä jätä artikkeleita
+    osoittamaan sivulle, jota ei enää ole.
+  */
+  const isLoan = post.category === "Lainat" && FEATURES.loans;
   /*
     Varasuunnitelma sen varalta, että ei-sähköinen artikkeli palaa
     ennen kuin sen vertikaali on auki: silloin loppukehote osoittaisi
@@ -59,7 +105,7 @@ export default function PostPage({ params }: { params: { slug: string } }) {
     tilalle olisi houkutteleva mutta väärä, ja juuri se ele saa
     vertailusivun näyttämään liidifarmilta.
   */
-  const cardsHidden = !isEnergy && !FEATURES.cards;
+  const cardsHidden = !isEnergy && !isLoan && !FEATURES.cards;
 
   /*
     LUE MYÖS -NOSTOT.
@@ -240,20 +286,7 @@ export default function PostPage({ params }: { params: { slug: string } }) {
         </div>
       </section>
     ) : (
-    <CtaSection
-      href={isEnergy ? ENERGY_COMPARE : "/luottokortit#vertailu"}
-      title={
-        isEnergy
-          ? "Katso nyt, paljonko sinä maksat liikaa sähköstä"
-          : "Katso, mikä luottokortti sopii juuri sinun kulutukseesi"
-      }
-      text={
-        isEnergy
-          ? "Kerro asumismuotosi — Kettu laskee sopimukset euroina, ei sentteinä kilowattitunnilta."
-          : "Vastaa kolmeen kysymykseen, niin Kettu järjestää kortit sinun käyttösi mukaan."
-      }
-      button={isEnergy ? "Kilpailuta sähkö ilmaiseksi" : "Aloita ilmainen vertailu"}
-    />
+    <CtaSection {...CTA[isEnergy ? "energy" : isLoan ? "loan" : "cards"]} />
     )}
 
     </>
