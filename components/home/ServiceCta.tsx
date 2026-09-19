@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { trackAffiliateClick } from "@/lib/track";
+import PartnerLink, { type Partner } from "@/components/PartnerDialog";
 
 /*
   PALVELUN PAINIKE — YKSI KOMPONENTTI, KOLME PALVELUA.
@@ -39,6 +40,7 @@ export default function ServiceCta({
   href,
   label,
   external,
+  partner,
   placement,
   variant = "ember",
 }: {
@@ -49,6 +51,8 @@ export default function ServiceCta({
   label: string;
   /** Vieko nappi kumppanin sivulle. */
   external?: true;
+  /** Jos annettu, nappi avaa väli-ilmoituksen ennen siirtymää. */
+  partner?: Partner;
   /** Mistä kohtaa sivua klikattiin. Näkyy GA4:ssä `placement`-kenttänä. */
   placement: string;
   /**
@@ -69,6 +73,19 @@ export default function ServiceCta({
       <ArrowRight size={18} className="nudge" aria-hidden />
     </>
   );
+
+  /*
+    KUMPPANINAPPI KYSYY ENSIN. Sama haara kuin `ServiceRow`:ssa ja
+    headerissa, jotta vakuutuslinkki käyttäytyy joka paikassa samoin.
+    Ks. `components/PartnerDialog.tsx`.
+  */
+  if (partner) {
+    return (
+      <PartnerLink href={href} partner={partner} placement={placement} className={className}>
+        {inner}
+      </PartnerLink>
+    );
+  }
 
   if (external) {
     return (

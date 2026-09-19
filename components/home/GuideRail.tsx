@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import Reveal from "@/components/Reveal";
-import Eyebrow from "@/components/home/Eyebrow";
+import SectionHead from "@/components/home/SectionHead";
 import type { Post } from "@/lib/types";
 
 /*
@@ -33,26 +33,31 @@ export default function GuideRail({ posts }: { posts: Post[] }) {
   return (
     <section className="theme-light bg-mist py-16 md:py-24">
       <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
-        <Reveal>
-          <Eyebrow>Oppaat</Eyebrow>
-
-          <div className="mt-4 flex flex-col justify-between gap-4 md:flex-row md:items-end">
-            <h2 className="max-w-[18ch] font-hero text-[clamp(2rem,6vw,3.2rem)] leading-[0.98]">
-              Etkö ole vielä valmis vertailemaan?
-            </h2>
-            <Link
-              href="/blogi"
-              className="group inline-flex shrink-0 items-center gap-2 font-display text-[15px] font-bold text-accentDark"
-            >
-              Kaikki oppaat
-              <ArrowRight
-                size={17}
-                aria-hidden
-                className="transition-transform group-hover:translate-x-1"
-              />
-            </Link>
-          </div>
-        </Reveal>
+        {/*
+          OTSIKKO JA "KAIKKI OPPAAT" OVAT NYT ALLEKKAIN, EIVÄT RINNAKKAIN.
+          Rivi, jossa otsikko on vasemmalla ja linkki oikeassa reunassa, oli
+          etusivun ainoa osio jossa otsikko ei alkanut samasta kohdasta kuin
+          muissa — ja se ero ei ollut päätös vaan seuraus siitä, että linkki
+          haluttiin mahtumaan samalle riville. Keskitettynä linkki menee
+          otsikon alle, ja osio alkaa kuten kaikki muut.
+        */}
+        <SectionHead
+          eyebrow="Oppaat"
+          title="Etkö ole vielä valmis vertailemaan?"
+          lead="Sähkösopimuksen käsitteet, pörssin ja kiinteän ero ja se, mitä laskussa oikeasti maksaa. Luettavaa ennen päätöstä."
+        >
+          <Link
+            href="/blogi"
+            className="group inline-flex shrink-0 items-center gap-2 font-display text-[15px] font-bold text-accentDark"
+          >
+            Kaikki oppaat
+            <ArrowRight
+              size={17}
+              aria-hidden
+              className="transition-transform group-hover:translate-x-1"
+            />
+          </Link>
+        </SectionHead>
       </div>
 
       {/*

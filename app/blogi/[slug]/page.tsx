@@ -194,29 +194,33 @@ export default function PostPage({ params }: { params: { slug: string } }) {
         ID TULEE OTSIKOSTA, jotta osioon voi linkittää suoraan
         (`/blogi/juttu#sahkovero`). Se on myös se ankkuri, jonka Google
         näyttää hakutuloksen alla omana rivinään.
+
+        TAULUKOT NOUDATTAVAT SAMAA SOPIMUSTA: kappale, joka alkaa "| ",
+        on taulukon rivi, ja peräkkäiset rivit muodostavat yhden taulukon.
+        Ensimmäinen rivi on otsikkorivi. Ks. `toBlocks` ja `BodyTable`.
       */}
       <div className="mt-10 space-y-6">
-        {post.body.map((para, i) =>
-          para.startsWith("## ") ? (
-            <h2
-              key={i}
-              id={para
-                .slice(3)
-                .toLowerCase()
-                .replace(/[äå]/g, "a")
-                .replace(/ö/g, "o")
-                .replace(/[^a-z0-9]+/g, "-")
-                .replace(/^-|-$/g, "")}
-              className="!mt-12 scroll-mt-24 font-display text-[1.45rem] font-bold leading-tight text-ink sm:text-[1.6rem]"
-            >
-              {para.slice(3)}
-            </h2>
-          ) : (
+        {toBlocks(post.body).map((block, i) => {
+          if (block.kind === "h2") {
+            return (
+              <h2
+                key={i}
+                id={headingId(block.text)}
+                className="!mt-12 scroll-mt-24 font-display text-[1.45rem] font-bold leading-tight text-ink sm:text-[1.6rem]"
+              >
+                {block.text}
+              </h2>
+            );
+          }
+          if (block.kind === "table") {
+            return <BodyTable key={i} rows={block.rows} />;
+          }
+          return (
             <p key={i} className="text-[17px] leading-[1.75] text-ink/85">
-              <Prose text={para} />
+              <Prose text={block.text} />
             </p>
-          )
-        )}
+          );
+        })}
       </div>
 
     </article>
@@ -318,6 +322,132 @@ export default function PostPage({ params }: { params: { slug: string } }) {
  * `nofollow`in: lähdeviitteet ovat lukijaa varten, eikä sivuston
  * linkkiarvoa ole syytä vuotaa niihin.
  */
+/**
+ * VÄLIOTSIKON ANKKURI. Erotettu omaksi funktioksi, koska `toBlocks` teki
+ * render-lausekkeesta liian pitkän luettavaksi. Logiikka on sama kuin
+ * ennen: ä/å → a, ö → o, muut merkit viivoiksi.
+ */
+function headingId(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[äå]/g, "a")
+    .replace(/ö/g, "o")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+type Block =
+  | { kind: "h2"; text: string }
+  | { kind: "p"; text: string }
+  | { kind: "table"; rows: string[][] };
+
+/**
+ * `body`-TAULUKOSTA LOHKOIHIN — ryhmittely, jota `map` ei yksin osaa.
+ *
+ * MIKSI TÄMÄ VAIHE ON OLEMASSA: taulukko on monta `body`-alkiota mutta
+ * yksi `<table>`. Alkiokohtainen `map` ei näe seuraavaa riviä, joten
+ * peräkkäiset "| "-rivit on kerättävä yhteen ennen renderöintiä. Kaikki
+ * muu käyttäytyy täsmälleen kuten ennen: artikkeli, jossa ei ole yhtään
+ * "| "-riviä, tuottaa saman lohkojonon kuin vanha suora `map`.
+ *
+ * MIKSI TAULUKOITA TARVITAAN: lainaoppaassa lukijan varsinainen kysymys
+ * on vertailu (kolme laina-aikaa, kaksi vakuusvaihtoehtoa, takauksen
+ * ehdot). Kappaleena kirjoitettu vertailu vaatii lukijan pitämään neljä
+ * lukua päässään; taulukossa silmä tekee vertailun itse. Sama peruste
+ * kuin sopimuskorttien hintapalkeissa.
+ *
+ * MIKSI EI MARKDOWN-KIRJASTOA: ks. `Prose`n perustelu. Koko merkintä on
+ * kaksi sopimusta ("## " ja "| "), ja kirjasto tuo mukanaan HTML:n
+ * läpipäästön. Tässä tulkissa data-tiedostoon kirjoitettu merkki ei voi
+ * päätyä sivulle elementtinä.
+ *
+ * MUOTO: `"| Solu | Solu | Solu"`. Reunapystyviivat ovat vapaaehtoisia,
+ * tyhjät solut karsitaan päistä. Erotinrivi (`| --- | --- |`) EI ole
+ * tarpeen eikä sitä tueta: ensimmäinen rivi on aina otsikkorivi.
+ */
+function toBlocks(body: string[]): Block[] {
+  const blocks: Block[] = [];
+  for (const para of body) {
+    if (para.startsWith("## ")) {
+      blocks.push({ kind: "h2", text: para.slice(3) });
+      continue;
+    }
+    if (para.startsWith("| ")) {
+      const cells = para
+        .split("|")
+        .map((c) => c.trim())
+        .filter((c, i, a) => !(c === "" && (i === 0 || i === a.length - 1)));
+      const last = blocks[blocks.length - 1];
+      if (last && last.kind === "table") {
+        last.rows.push(cells);
+      } else {
+        blocks.push({ kind: "table", rows: [cells] });
+      }
+      continue;
+    }
+    blocks.push({ kind: "p", text: para });
+  }
+  return blocks;
+}
+
+/**
+ * LEIPÄTEKSTIN TAULUKKO.
+ *
+ * MIKSI `overflow-x-auto` KÄÄREENÄ: yli puolet lukijoista tulee
+ * puhelimella, ja nelisarakkeinen taulukko ei mahdu 360 pikseliin.
+ * Ilman vaakavieritystä taulukko venyttäisi koko sivun leveyttä, mikä
+ * rikkoo myös artikkelin muun tekstin. Vieritys rajautuu tähän kääreeseen.
+ *
+ * MIKSI EI UUSIA VÄREJÄ: otsikkorivi on `bg-night` (hiekkavyö) ja
+ * viivat `border-line`. Nämä ovat samoja tokeneita kuin korteissa, joten
+ * taulukko näyttää saman käden tekemältä myös oranssilla vyöllä, jossa
+ * molemmat kääntyvät teeman mukana.
+ *
+ * Solut ajetaan `Prose`n läpi, jotta taulukkoon voi laittaa linkin
+ * vertailuun tai lähteeseen samalla merkinnällä kuin leipätekstiin.
+ */
+function BodyTable({ rows }: { rows: string[][] }) {
+  if (rows.length === 0) return null;
+  const [head, ...body] = rows;
+  return (
+    <div className="!mt-8 overflow-x-auto rounded-2xl border border-line bg-white">
+      <table className="w-full border-collapse text-left text-[15px]">
+        <thead>
+          <tr className="bg-night">
+            {head.map((cell, i) => (
+              <th
+                key={i}
+                scope="col"
+                className="whitespace-nowrap px-4 py-3 font-semibold text-ink"
+              >
+                <Prose text={cell} />
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {body.map((row, r) => (
+            <tr key={r} className="border-t border-line">
+              {row.map((cell, c) => (
+                <td
+                  key={c}
+                  className={
+                    c === 0
+                      ? "px-4 py-3 font-medium text-ink"
+                      : "px-4 py-3 text-ink/80"
+                  }
+                >
+                  <Prose text={cell} />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 function Prose({ text }: { text: string }) {
   const parts = text.split(/(\[[^\]]+\]\([^)]+\))/g);
   return (

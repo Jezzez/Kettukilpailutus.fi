@@ -46,6 +46,26 @@ html {
     muutat toista, muuta molemmat.
   */
   background-color: #A83E0A;
+
+  /*
+    HEADERIN KORKEUS — YKSI ARVO, KOLME KÄYTTÄJÄÄ.
+
+    Header on `sticky`, eli se varaa tilaa dokumentin virrasta. Siksi sen
+    korkeus ei ole vain headerin asia: etusivun hero laskee ensimmäisen
+    ruudun korkeuden siitä (`min-h-[calc(100svh-var(--header-h))]`), ja
+    hubin osioankkurit siirtyvät sen verran alas, jottei otsikko jää
+    palkin alle (`scroll-mt-[var(--header-h)]`).
+
+    Ennen luku oli kirjoitettu käsin kolmeen tiedostoon muodossa `74px`.
+    Kun headerin korkeus muuttui 68 pikseliin, kaksi noista kolmesta olisi
+    jäänyt vanhaan arvoon, ja virhe olisi näkynyt vain kahtena asiana:
+    etusivun ensimmäinen ruutu vierii 6 px liikaa, ja ankkurilinkin otsikko
+    piiloutuu palkin taakse. Kumpaakaan ei huomaa koodia lukemalla.
+
+    MUUTA KORKEUS VAIN TÄSTÄ. `components/Header.tsx` lukee saman
+    muuttujan.
+  */
+  --header-h: 68px;
 }
 
 /* --- PINTAKERROS ---

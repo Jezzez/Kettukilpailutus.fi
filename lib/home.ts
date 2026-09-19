@@ -40,6 +40,16 @@ export interface HomeFacts {
   providerCount: number;
   /** Montako näkyvää sopimusta ei tuota palkkiota. */
   nonPartnerCount: number;
+  /**
+   * Montako näkyvää sopimusta sisältää kampanjaedun.
+   *
+   * Tämä on "miksi kilpailuttaminen kannattaa" -osion ainoa luku, ja se on
+   * siellä siksi, että se on todennettavissa: kampanjaetu on `campaign`-kenttä
+   * rivillä tai ei ole. Väite "yhtiöt tarjoavat etuja vain uusille
+   * asiakkaille" olisi sama asia sanottuna ilman näyttöä, ja se on juuri se
+   * lause, jota ei tälle sivustolle kirjoiteta.
+   */
+  campaignCount: number;
   /** Hintojen tarkistuspäivä ISO-muodossa. */
   priceDate: string;
   /** Hintaero asumismuodoittain, suurin ensin. */
@@ -91,6 +101,7 @@ export function getHomeFacts(): HomeFacts {
     planCount: plans.length,
     providerCount: new Set(plans.map((p) => p.provider)).size,
     nonPartnerCount: plans.filter((p) => p.partner === false).length,
+    campaignCount: plans.filter((p) => p.campaign).length,
     priceDate: PRICE_DATE,
     spreads: rows.map((r) => ({ ...r, ratio: r.spread / max })),
     maxSpread: max,

@@ -253,7 +253,22 @@ export default function ElectricityExperience({
     `reduce` kunnioittaa jarjestelman "vahenna liiketta" -asetusta.
   */
   const quizTopRef = useRef<HTMLDivElement>(null);
-  const quizMounted = useRef(false);
+  /*
+    VIERITYS SIDOTAAN VAIHEEN MUUTOKSEEN, EI "ONKO KOMPONENTTI JO NOUSSUT".
+
+    Tässä oli `quizMounted`-lippu, joka ohitti ensimmäisen ajon. Se on
+    oikea ajatus mutta rikki `reactStrictMode`in alla (next.config.mjs):
+    kehityksessä React ajaa jokaisen efektin kahdesti heti noustessa.
+    Ensimmäinen ajo asetti lipun ja palasi, TOINEN ajo näki lipun jo
+    päällä ja vieritti kyselyyn — eli sivu hyppäsi heron ohi joka kerta
+    kun `/sahkosopimukset` avattiin. Oire näkyi vain devissä, ja siksi
+    se selitettiin väärin linkin ankkuriksi.
+
+    Edellinen vaihe muistetaan nyt arvona. StrictModen molemmilla ajoilla
+    `step` on sama kuin `prevStep`, joten kumpikaan ei vieritä. Vasta
+    aito vaiheen vaihto tuottaa eron, ja vain silloin liikutaan.
+  */
+  const prevStep = useRef(step);
   const [submitted, setSubmitted] = useState(false);
   const [loadingResults, setLoadingResults] = useState(false);
   const showResults = !gated || submitted;
@@ -359,7 +374,8 @@ export default function ElectricityExperience({
   const reduce = useReducedMotion();
 
   useEffect(() => {
-    if (!quizMounted.current) { quizMounted.current = true; return; }
+    if (prevStep.current === step) return;
+    prevStep.current = step;
     if (!gated || submitted) return;
     quizTopRef.current?.scrollIntoView({
       behavior: reduce ? "auto" : "smooth",

@@ -1,120 +1,137 @@
 import Image from "next/image";
 import Reveal from "@/components/Reveal";
-import CountUp from "@/components/home/CountUp";
+import ServiceRow from "@/components/home/ServiceRow";
+import TailSweep from "@/components/fox/TailSweep";
 import { getServices } from "@/lib/services";
-import { fiDate, type HomeFacts } from "@/lib/home";
 
 /*
   HERO — SIVUSTON ENSIMMÄINEN RUUTU.
 
-  YKSI LUPAUS, KOLME TASAVERTAISTA OVEA. Aiemmassa versiossa herossa oli
-  kaksi painiketta, joista sähkö oli kermanvalkoinen ja lainat pelkkä
-  ääriviiva. Se oli suunniteltu valinnaksi, mutta se luettiin
-  järjestykseksi: kirkas nappi on oikea vastaus ja himmeä on varavaihtoehto.
-  Kun sivustolla on kolme kilpailutettavaa palvelua, sellainen hero mainostaa
-  yhtä ja mainitsee kaksi.
+  =====================================================================
+  UUSITTU KOKONAAN 19.9.2026. MIKÄ MUUTTUI JA MIKSI.
+  =====================================================================
 
-  Nyt kaikki kolme ovat identtisiä laattoja, jotka rakennetaan samasta
-  `getServices()`-taulukosta. Ne eivät voi eriytyä myöhemmissä muokkauksissa,
-  koska yhtään niistä ei kirjoiteta tässä tiedostossa.
+  Jessen arvio vanhasta versiosta oli "tunkkanen". Se oli oikea sana, ja
+  syy oli yksi yksittäinen kerros: koko vyön peittävä ruskea ellipsi
+  (`radial-gradient(… #8E3206 …)`), joka oli lisätty siksi, että keskitetty
+  kermanvaalea otsikko osui kermanvaalean bleiserin päälle eikä sitä
+  lukenut. Tummennus ratkaisi luettavuuden mutta maksoi koko pinnan: se
+  sekoitti brändioranssin ja ruskean yhdeksi sameaksi sävyksi, ja kettu jäi
+  sen alle 38 prosentin peitolla haamuksi. Ensimmäinen ruutu näytti siis
+  likaiselta eikä lämpimältä, ja maskotti — koko brändin erottuva tekijä —
+  oli siinä tunnistamaton.
 
-  LAATAT VIEVÄT OSIOON, EIVÄT SUORAAN ULOS. Sähkö- ja lainalaatta voisivat
-  hyvin viedä suoraan kohteeseensa, mutta vakuutuslaatta ei: sen takana on
-  kumppanin sivu, ja kävijä on kertaakaan kuulematta siitä väärässä
-  paikassa. Kun yksi laatta joutuu pysähtymään osioon, kaikki kolme
-  pysähtyvät — muuten tasavertaisuus katoaa juuri siinä kohdassa, jossa se
-  on tarkoitus näyttää. Sivustolla on `scroll-behavior: smooth`, joten
-  siirtymä on liu'utus eikä hyppy.
+  RATKAISU EI OLLUT TUMMENNUKSEN SÄÄTÄMINEN VAAN SEN TARPEEN POISTAMINEN.
+  Kun teksti ja maskotti eivät ole päällekkäin, mitään väliin laitettavaa
+  kerrosta ei tarvita. Siksi sommittelu on nyt epäsymmetrinen: teksti
+  vasemmalla, kettu omassa tilassaan oikealla. Leveällä ruudulla kettu on
+  TÄYDELLÄ peitolla ensimmäistä kertaa, ja vyö on puhdasta brändioranssia.
 
-  MASKOTTI ON TAUSTAHAHMO, EI PALSTA. Yksi tekstipalsta koko leveydeltä ja
-  kettu oikeassa reunassa: otsikko saa koko leveyden ja laatat nousevat
-  ylemmäs, eli kaikki ennen ensimmäistä klikkiä mahtuu puhelimessa yhteen
-  ruutuun.
+  MITÄ "ABSTRAKTI" TARKOITTAA TÄSSÄ. Ei uusia värejä eikä kuvituskuvia.
+  Se on geometriaa: samankeskiset kultaiset hiusviivaympyrät maskotin
+  takana. Motiivi on sisällöllinen eikä koriste — se on signaali, joka
+  leviää yhdestä pisteestä, ja tämä sivusto lähettää yhden kyselyn usealle
+  yhtiölle. Ohut viiva isossa koossa on myös se ele, joka erottaa
+  nykyaikaisen pinnan pehmeäreunaisesta liukuvärisumusta: sumu on sitä,
+  mitä jokaisella vertailusivustolla jo on.
+
+  =====================================================================
+  MIKÄ EI MUUTTUNUT, VAIKKA SOMMITTELU MUUTTUI
+  =====================================================================
+
+  KOLME RIVIÄ OVAT YHTÄ LEVEÄT KUIN ENNEN. Vanha kommentti varoitti, että
+  vasempaan palstaan siirretyt palvelurivit kutistuvat kapeiksi — niin kävi
+  aiemmassa kaksipalstaisessa versiossa. Siksi palstajako alkaa vasta
+  `lg`-koosta (1024 px), jolloin tekstipalstaan mahtuu sama `36rem` kuin
+  keskitettynä. Sitä kapeammilla ruuduilla rivit ovat koko palstan levyiset
+  kuten ennenkin. Rivit ovat heron ainoa toiminto, eikä niistä tingitä.
+
+  RIVIT RAKENNETAAN YHÄ `getServices()`-taulukosta, eli kolme palvelua
+  eivät voi eriytyä painoarvoltaan. Ks. `lib/services.ts`.
 
   YKSI KUVAELEMENTTI, EI KAHTA. Erilliset mobiili- ja työpöytäkuvat
   tarkoittaisivat kahta `priority`-kuvaa, joista selain lataa molemmat ja
-  näyttää toisen. Sama elementti responsiivisilla luokilla lataa yhden.
+  näyttää toisen. Sama `<Image>` saa eri sijainnin, koon ja peiton
+  luokilla, ja maski kytketään pois `lg`-koossa arbitrary-luokalla.
 */
 
-export default function HomeHero({ facts }: { facts: HomeFacts }) {
+export default function HomeHero() {
   const services = getServices();
-
-  /* Heron sosiaalinen todiste: yksi ajantasainen luku jokaisesta palvelusta. */
-  const stats = [
-    {
-      value: 10000,
-      prefix: "+",
-      suffix: "",
-      count: true,
-      label: "sähkösopimuksia kilpailutettu",
-    },
-    {
-      value: 1000,
-      prefix: "+",
-      suffix: "",
-      count: true,
-      label: "lainatarjouksia lähetetty",
-    },
-    {
-      value: 500,
-      prefix: "+",
-      suffix: "",
-      count: true,
-      label: "vakuutustarjouksia hyväksytty",
-    },
-  ];
 
   /*
     HERO ON PUHELIMESSA KOKO RUUDUN KORKUINEN.
 
-    `min-h-[calc(100svh-74px)]` tekee ensimmäisestä ruudusta kansikuvan:
-    otsikko, maskotti, kolme laattaa ja lukurivi kerralla, eikä alle jää
+    `min-h-[calc(100svh-var(--header-h))]` tekee ensimmäisestä ruudusta
+    kansikuvan: otsikko, kettu ja kolme riviä kerralla, eikä alle jää
     puolikasta seuraavaa osiota vetämässä katsetta pois. `svh` eikä `vh`,
     koska `vh` ei laske mobiiliselaimen osoiteriviä pois.
 
-    MIINUS 74 PIKSELIÄ ON HEADERIN KORKEUS (`components/Header.tsx`,
-    `h-[74px]`). Header on `sticky`, eli se on normaalissa virrassa ja vyö
-    alkaa vasta sen alta. Jos headerin korkeus muuttuu, muuta tämä samalla.
+    MIINUS HEADERIN KORKEUS. Header on `sticky`, eli se on normaalissa
+    virrassa ja vyö alkaa vasta sen alta. Luku tulee `--header-h`
+    -muuttujasta (app/globals.css), ei käsin kirjoitettuna.
 
     Vain puhelimessa. Työpöydällä koko ruudun korkuinen vyö ilman yhtään
     näkyvää sisältöä alla lukee mainokseksi.
   */
   return (
-    <section className="theme-ember ember-surface relative flex min-h-[calc(100svh-74px)] flex-col justify-center overflow-hidden md:min-h-0 md:block">
+    <section className="theme-ember ember-surface relative flex min-h-[calc(100svh-var(--header-h))] flex-col justify-center overflow-hidden md:block md:min-h-0">
       {/*
-        HITAASTI LIIKKUVA VALO VYÖN TAKANA. Tasainen väripinta näyttää
-        puhelimen ruudulla painetulta kuvalta. Yksi hyvin hidas,
-        pehmeäreunainen valokehä otsikon takana saa pinnan elämään ilman
-        että mikään vilkkuu. `pointer-events: none` eikä sisällön päällä,
-        joten se ei voi varastaa yhtään klikkiä. Animoi vain `transform`ia
-        ja `opacity`a, eli pyörii kompositorissa eikä hidasta vieritystä.
+        KERROS 1 — HIDAS VALO.
+
+        Tasainen väripinta näyttää painetulta kuvalta. Yksi hyvin hidas,
+        pehmeäreunainen valokehä saa pinnan elämään ilman että mikään
+        vilkkuu. Animoi vain `transform`ia ja `opacity`a, eli pyörii
+        kompositorissa eikä hidasta vieritystä. `pointer-events: none`,
+        joten se ei voi varastaa yhtään klikkiä.
+
+        KEHÄ SIIRTYI VASEMMALLE, koska otsikkokin siirtyi. Keskellä se
+        valaisi kohtaa, jossa ei enää ole tekstiä.
       */}
       <div
         aria-hidden
-        className="aurora absolute -left-[18%] -top-[26%] h-[78vw] w-[78vw] max-h-[600px] max-w-[600px] md:left-[4%] md:-top-[22%]"
+        className="aurora absolute -top-[26%] left-[6%] h-[92vw] w-[92vw] max-h-[680px] max-w-[680px] lg:left-[-8%]"
       />
 
       {/*
-        MASKOTTI TAUSTALLA.
+        TÄSSÄ OLI ABSTRAKTI MOTIIVI: VIISI SAMANKESKISTÄ KULTAKEHÄÄ
+        maskotin keskipisteestä. Jesse poisti ne 19.9.2026.
 
-        MIKSI MASKI EIKÄ PELKKÄ HAALENNUS. Pelkkä `opacity` jättää kuvalle
-        terävän pystyreunan siihen, mihin kuva loppuu, ja terävä reuna
-        keskellä oranssia pintaa lukee virheeksi. Vasemmalle häipyvä maski
-        sulattaa hahmon vyöhön ja pitää tekstin alta pois juuri sen osan
-        kuvasta, joka olisi tekstin päällä.
+        Jos joskus palautat jonkin vastaavan, muista se sääntö jonka takia
+        kehät ylipäätään olivat viivaa eivätkä pintaa: mikään vyölle
+        lisätty PINTA ei saa peittää oranssia, koska juuri se teki
+        edellisestä herosta sameahkon. Viiva ei peitä, liukuväri peittää.
+      */}
 
-        KORKEUS ON PROSENTTIA VYÖSTÄ, EI KIINTEÄ PIKSELIMÄÄRÄ. Kuva on
-        omassa `overflow-hidden`-laatikossaan, joka on ankkuroitu oikeaan
-        reunaan: se ei voi levitä vasemmalle millään näyttökoolla.
+      {/*
+        KERROS 2 — MASKOTTI.
 
-        KUVA ON KOKOVARTALOHAHMO, JOKA SEISOO VYÖN POHJALLA. Aiempi
-        `kettu-innostunut.webp` oli rajattu polvista, jolloin `bottom-0`
-        leikkasi hahmon keskeltä säärtä. `kettu-hub-hero.webp` päättyy
-        kenkiin, joten alareuna on hahmon oma eikä rajaus.
+        LEVEÄLLÄ RUUDULLA TÄYSI PEITTO. Tämä on muutoksen ydin. Kun
+        tekstipalsta on rajattu `36rem`:iin ja kettu asuu oikeassa
+        kolmanneksessa, mikään ei ole päällekkäin, joten mitään
+        tummennusta ei tarvita eikä hahmoa tarvitse haalentaa. Maskotti on
+        `CLAUDE.md`:n mukaan brändin ydin, ja tähän asti se on ollut
+        ensimmäisessä ruudussa 38 prosentin haamu.
+
+        KAPEALLA RUUDULLA HAHMO ON YHÄ TAUSTAA. Siellä teksti ja kettu
+        eivät mahdu vierekkäin, joten hahmo on oikeassa reunassa matalalla
+        peitolla ja vasemmalle häipyvällä maskilla. Maski eikä pelkkä
+        `opacity`: pelkkä peitto jättää kuvalle terävän pystyreunan siihen
+        mihin kuva loppuu, ja terävä reuna keskellä oranssia lukee
+        virheeksi.
+
+        MASKI KYTKETÄÄN POIS `lg`-KOOSSA. Se tehdään arbitrary-luokalla
+        eikä `style`-attribuutilla, koska inline-tyyliä ei voi sitoa
+        mediakyselyyn — ja täydellä peitolla vasemmalle häipyvä reuna
+        näyttäisi siltä, että kuva on latautunut puolittain.
+
+        KUVA ON KOKOVARTALOHAHMO, JOKA SEISOO VYÖN POHJALLA.
+        `kettu-hub-hero.webp` (910 × 1492) päättyy kenkiin, joten alareuna
+        on hahmon oma eikä rajaus. Siksi se voidaan ankkuroida suoraan
+        vyön alalaitaan ilman että mikään näyttää katkaistulta.
       */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 right-0 z-0 w-[88%] overflow-hidden md:w-[52%]"
+        className="pointer-events-none absolute inset-y-0 right-0 z-[1] w-[82%] overflow-hidden lg:inset-y-auto lg:bottom-0 lg:right-[3%] lg:w-[31%] lg:max-w-[400px] lg:overflow-visible"
       >
         <Image
           src="/kettu-hub-hero.webp"
@@ -122,174 +139,187 @@ export default function HomeHero({ facts }: { facts: HomeFacts }) {
           width={910}
           height={1492}
           priority
-          className="absolute bottom-0 right-[-6%] h-[86%] w-auto max-w-none object-contain opacity-[0.62] md:right-0 md:h-[96%] md:opacity-50"
-          style={{
-            WebkitMaskImage:
-              "linear-gradient(to left, #000 58%, transparent 100%)",
-            maskImage: "linear-gradient(to left, #000 58%, transparent 100%)",
-          }}
+          className="absolute bottom-0 right-[-8%] h-[84%] w-auto max-w-none object-contain opacity-[0.30] [-webkit-mask-image:linear-gradient(to_left,#000_58%,transparent_100%)] [mask-image:linear-gradient(to_left,#000_58%,transparent_100%)] lg:relative lg:right-auto lg:h-auto lg:w-full lg:opacity-100 lg:[-webkit-mask-image:none] lg:[mask-image:none]"
         />
       </div>
 
       {/*
-        TUMMENNUS MASKOTIN JA TEKSTIN VÄLISSÄ.
+        KERROS 3 — LUETTAVUUSVERHO, VAIN KAPEALLA RUUDULLA.
 
-        Tämä on se kerros, jonka takia maskotti saa olla iso. Ilman sitä on
-        vain kaksi huonoa vaihtoehtoa: haalea kettu, jolloin sivu ei
-        hätkähdytä, tai kirkas kettu otsikon alla, jolloin kermanvaalea
-        bleiseri ja kermanvaalea teksti sulavat yhteen eikä otsikkoa lue.
+        Tämä on se kerros, joka teki vanhasta herosta tunkkaisen, ja siksi
+        se on nyt kolmella tavalla rajattu: se on olemassa vain alle
+        `lg`-koon (missä hahmo ja teksti ovat päällekkäin), se kulkee
+        vasemmalta oikealle (ei koko pinnan yli), ja se haipuu kokonaan
+        läpinäkyväksi jo 78 prosentin kohdalla. Vyön oikea reuna jää siis
+        puhtaaksi oranssiksi.
 
-        Liukuväri on tumma vasemmalla ja katoaa 74 prosentin kohdalla, eli
-        siinä missä tekstipalsta loppuu ja ketun kasvot alkavat. Sävy on
-        vyön oma tumma pää (#8E3206), ei uusi väri.
+        Sävy on vyön oma tumma pää (#8E3206), ei uusi väri.
+
+        ÄLÄ PALAUTA TÄTÄ `lg`-KOKOON. Siellä sitä ei tarvita mihinkään, ja
+        juuri siellä se söi eniten: leveä ruutu on iso pinta-ala, ja koko
+        pinnan yli vedetty ruskea on iso määrä ruskeaa.
       */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 z-[1]"
+        className="pointer-events-none absolute inset-0 z-[2] lg:hidden"
         style={{
           backgroundImage:
-            "linear-gradient(96deg, #8E3206 0%, rgba(142,50,6,0.86) 26%, rgba(142,50,6,0.42) 52%, rgba(142,50,6,0) 74%)",
+            "linear-gradient(100deg, #8E3206 0%, rgba(142,50,6,0.86) 34%, rgba(142,50,6,0.42) 60%, rgba(142,50,6,0) 78%)",
         }}
       />
 
-      <div className="relative z-10 mx-auto w-full max-w-[1180px] px-4 pt-8 sm:px-6 sm:pt-12 md:pt-20">
-        <Reveal>
-          <span className="inline-flex items-center gap-2 rounded-full border border-onEmber/25 bg-[#7E2C05]/35 px-4 py-1.5 font-display text-[11px] font-bold uppercase tracking-[0.16em] text-onEmber/85">
-            <span className="h-1.5 w-1.5 rounded-full bg-gold" aria-hidden />
-            Kilpailutuspalvelu
-          </span>
-
-          {/*
-            OTSIKON LEVEYS RAJATAAN OTSIKOSTA, EI KÄÄREESTÄ. `ch`-yksikkö
-            laskee vanhemman fonttikoon mukaan, joten kääreessä se
-            laskettaisiin leipätekstistä ja koko palsta kutistuisi.
-
-            KULTAINEN LIUKUVÄRI VAIN SANASSA "liikaa", eli koko palvelun
-            lupauksen ytimessä. Liukuväri kulkee kermasta kultaan, joten
-            sana pysyy luettavana myös silloin kun selain ei osaa leikata
-            väriä tekstiin — silloin se piirtyy kermana.
-          */}
-          <h1 className="mt-6 max-w-[9ch] font-hero text-[clamp(3.1rem,12vw,5.4rem)] leading-[0.88] text-onEmber sm:max-w-[13ch]">
-            Ketuttaako maksaa{" "}
-            <span className="bg-gradient-to-br from-cream via-cream to-gold bg-clip-text text-transparent">
-              liikaa?
-            </span>
-          </h1>
-
-          {/*
-            ALARIVI KERTOO MITÄ TAPAHTUU, EI MITÄ OLEMME. Vanha rivi
-            kuvaili palvelua ("samasta paikasta, selvällä suomella") mutta
-            ei yhtäkään tekoa, joten sloganin jälkeen kävijä ei tiennyt mitä
-            napin takana tapahtuu. Nyt rivi nimeää kaikki kolme palvelua ja
-            sen, mitä ne maksavat. Ei lupausta säästöstä: rivin on pysyttävä
-            totena myös silloin, kun kävijän nykyinen sopimus on jo halvin.
-          */}
-          <p className="mt-5 max-w-[32ch] text-[17px] leading-relaxed text-onEmber/85 sm:max-w-[46ch] sm:text-[19px]">
-            Anna ketun kilpailuttaa puolestasi. Sähkösopimukset, lainat ja vakuutukset kilpailutettuna samassa paikassa.
-          </p>
-        </Reveal>
-
+      <div className="relative z-10 mx-auto w-full max-w-[1180px] px-4 pb-20 pt-10 sm:px-6 sm:pt-14 lg:py-24">
         {/*
-          KOLME LAATTAA, KAIKKI SAMAN NÄKÖISIÄ.
+          TEKSTIPALSTA ON VASEMMALLA JA VASEMPAAN TASATTU.
 
-          MIKSI RINNAKKAIN MYÖS PUHELIMESSA. Allekkain ladotut vaihtoehdot
-          eivät ole valinta vaan lista: ylin luetaan oletukseksi ja loput
-          ohitetaan. Rinnakkain ne ovat kysymys, johon on pakko vastata.
-          Kuvake päällekkäin nimen kanssa mahtuu 390 pikselillä kolmeen
-          sarakkeeseen ilman että yksikään nimi katkeaa kahdelle riville.
+          Keskitys oli aiemmin perusteltu sillä, että palvelurivit ovat
+          heron ainoa toiminto ja ne kuuluvat sinne, mihin katse laskeutuu
+          ilman etsimistä. Se pitää yhä paikkansa — mutta vasemmalle
+          tasattu pino ei ole vaikeampi löytää, koska lukeminen alkaa
+          joka tapauksessa vasemmasta reunasta. Keskityksen todellinen
+          hinta oli se, että se pakotti tekstin maskotin päälle ja
+          maskotin tummennuksen alle.
 
-          KERMANVAALEA POHJA, EI ORANSSIA. Oranssilla vyöllä oranssi laatta
-          on sama väri kuin pohja. Vaaleat laatat ovat ruudun ainoat vaaleat
-          pisteet, ja juuri se on koko vyön tarkoitus.
-
-          EMBER-ANSA: `bg-cream` + kiinteä `text-[#A83E0A]`, ei
-          `text-accentDark` — `.theme-ember`-vyöllä jälkimmäinen kääntyy
-          vaaleaksi kermaksi ja teksti katoaa pohjaan.
+          `max-w-[36rem]` on sama luku kuin palveluriveillä ennen tätä
+          muutosta, eli yksikään rivi ei kaventunut.
         */}
-        <Reveal delay={0.06}>
-          <nav aria-label="Kilpailutettavat palvelut" className="mt-8">
-            <ul className="grid grid-cols-3 gap-2 sm:gap-3">
-              {services.map(({ key, name, Icon }) => (
-                <li key={key}>
-                  <a
-                    href={`#${key}`}
-                    className="lift press sheen flex h-full flex-col items-center justify-center gap-2 rounded-xl bg-cream px-2 py-4 text-center font-display text-[14px] font-bold text-[#A83E0A] shadow-lift sm:gap-2.5 sm:py-5 sm:text-[16px]"
-                  >
-                    <Icon size={20} strokeWidth={2.2} aria-hidden />
-                    {name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          {/*
-            LUOTTAMUSRIVI HETI LAATTOJEN ALLA, EI OSIONA ALEMPANA. Kaksi
-            yleisintä syytä olla klikkaamatta ovat "joudunko maksamaan" ja
-            "joudunko antamaan tietoni". Molemmat kuuluvat samaan ruutuun
-            painikkeiden kanssa, koska alempana ne eivät ehdi vaikuttaa
-            päätökseen.
-
-            "Ei rekisteröitymistä" koskee kaikkia kolmea; "ei
-            yhteystietoja" ei koskisi, koska laina- ja vakuutushakemus
-            luonnollisesti kysyy ne. Siksi se lause on nyt sähkön omassa
-            osiossa eikä täällä.
-          */}
-          <p className="mt-4 font-display text-[13px] font-medium text-onEmber/65">
-            Ilmainen · Ei rekisteröitymistä · Päätöksen teet itse
-          </p>
-        </Reveal>
-
-        {/*
-          POLKU ON HERON POHJALLA OMANA PANEELINAAN. Maskotti on taustalla
-          myös tämän kohdalla, ja paljas teksti kuvan päällä lukisi
-          epätarkasti. Oma tummempi pinta erottaa askeleet taustasta ja
-          sulkee heron.
-
-          PUHELIMESSA ALLEKKAIN, TYÖPÖYDÄLLÄ RINNAKKAIN. Askeleet ovat
-          järjestys, eivät valinta — päinvastoin kuin yläpuolen kolme
-          laattaa, jotka ovat rinnakkain juuri siksi, että ne ovat valinta.
-          Allekkain 390 pikselillä koko rivi vie kolme tekstiriviä; kolmena
-          sarakkeena jokainen otsikko katkeaisi kahdelle ja paneeli olisi
-          korkeampi kuin lukurivi, joka siitä poistui. Hero on puhelimessa
-          tasan yhden ruudun korkuinen, joten jokainen pikseli on pois
-          laatoilta.
-        */}
-        <Reveal delay={0.12}>
-          <div className="mt-8 overflow-hidden rounded-2xl border border-onEmber/15 bg-[#7E2C05]/45 backdrop-blur-[2px] md:mt-14">
-            <div className="gold-rule" />
-            <dl className="grid grid-cols-3 divide-x divide-onEmber/15">
-              {stats.map((s, i) => (
-                <div key={s.label} className="px-3 py-4 sm:px-6 sm:py-7">
-                  <dt className="font-hero text-[1.35rem] leading-none text-onEmber sm:text-[2.2rem]">
-                    <span aria-hidden>{s.prefix}</span>
-                    <CountUp
-                      value={s.value}
-                      suffix={s.suffix}
-                      delayMs={i * 220}
-                    />
-                  </dt>
-                  <dd className="mt-1.5 max-w-[26ch] text-[11px] leading-snug text-onEmber/70 sm:mt-2 sm:text-[13px]">
-                    {s.label}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-
-          {/*
-            TARKISTUSRIVI OMANA RIVINÄÄN PANEELIN ALLA. Tämä on sivuston
-            ainoa lause, jota kilpailija ei voi kopioida: hinnat on
-            tarkistettu päivämäärällä, ja vertailussa on mukana sopimuksia,
-            joista ei tule palkkiota. Molemmat luvut lasketaan datasta
-            (`lib/home.ts`), joten rivi ei voi jäädä vanhentuneena
-            väittämään väärin.
-          */}
-          <p className="mb-5 mt-2 text-[12px] text-onEmber/55 md:mb-16 md:mt-3 md:text-[13px]">
+        <div className="max-w-[36rem]">
+          <Reveal>
+            {/*
+              PIKKUOTSIKKO KERTOO ENSIMMÄISELLÄ SEKUNNILLA MIKÄ SIVUSTO
+              TÄMÄ ON. "Kettu on sinun puolellasi" on slogan, ei toimiala:
+              sen perusteella kävijä ei tiedä tulleensa
+              kilpailutuspalveluun. Hakutuloksesta saapuva näkee tämän
+              ennen kuin lukee yhtään lausetta.
+            */}
            
-          </p>
-        </Reveal>
+
+            {/*
+              OTSIKON LEVEYS RAJATAAN OTSIKOSSA, EI KÄÄREESSÄ. `ch`-yksikkö
+              laskee vanhemman fonttikoon mukaan, joten kääreessä se
+              laskettaisiin leipätekstistä ja koko palsta kutistuisi.
+
+              KULTAINEN LIUKUVÄRI VAIN LOPPUOSASSA, eli koko palvelun
+              lupauksen ytimessä. Liukuväri kulkee kermasta kultaan, joten
+              sana pysyy luettavana myös silloin kun selain ei osaa leikata
+              väriä tekstiin: silloin se piirtyy kermana.
+            */}
+            <h1 className="mt-6 max-w-[11ch] font-hero text-[clamp(3rem,11vw,5.2rem)] leading-[0.9] text-onEmber sm:max-w-[13ch]">
+              Kettu on{" "}
+              <span className="bg-gradient-to-br from-cream via-cream to-gold bg-clip-text text-transparent">
+                sinun puolellasi.
+              </span>
+            </h1>
+
+            {/*
+              LYHYT KULTAVIIVA OTSIKON JA JOHDANTOLAUSEEN VÄLISSÄ.
+
+              Ilman sitä otsikko ja johdantolause ovat kaksi tekstilohkoa
+              peräkkäin, ja silmä lukee ne yhdeksi pitkäksi kappaleeksi,
+              jonka ensimmäinen rivi sattuu olemaan iso. Viiva sanoo
+              "otsikko loppui tähän" ilman yhtään sanaa.
+
+              Se on myös sivuston oma ele eikä lainattu: sama kultainen
+              hiusviiva merkitsee paneelien yläreunan kohdissa, joissa
+              lukee faktaa.
+            */}
+            <span aria-hidden className="mt-6 block h-[3px] w-12 rounded-full bg-gold" />
+
+            {/*
+              ALARIVI KERTOO MITÄ TAPAHTUU, EI MITÄ OLEMME.
+
+              Rivillä luki aiemmin: "Olemme neuvotelleet hinnat puolestasi
+              etukäteen, joten saat kauttamme suuren ostoyhteenliittymän
+              tuoman edun." Lause on peräisin kilpailuttaja.fi:ltä, jossa
+              se on totta: sen takana on sähkönmyynnin välittäjä, joka
+              neuvottelee sopimukset. Kettukilpailutus lukee yhtiöiden
+              julkisia hinnastoja `data/electricity.json`:iin eikä
+              neuvottele mitään, joten sama lause on täällä väärä.
+
+              Sen hinta ei olisi maineriski vaan suora rahariski: väite
+              paremmasta hinnasta "meidän kauttamme" on markkinointiväite,
+              joka on KSL 2 luvun mukaan kyettävä näyttämään toteen, ja
+              affiliate-ohjelma katkaisee kumppanuuden juuri tällaisesta.
+            */}
+            <p className="mt-5 max-w-[34ch] text-[17px] leading-relaxed text-onEmber/85 sm:max-w-[52ch] sm:text-[19px]">
+              Sähkösopimukset, lainat ja vakuutukset yhdestä paikasta. Näet
+              sähkön vuosihinnan euroina omalla kulutuksellasi, samaan hintaan
+              kuin yhtiön omalta sivulta.
+            </p>
+          </Reveal>
+
+          {/*
+            KOLME RIVIÄ ALLEKKAIN, EI KOLMEA LAATTAA RINNAKKAIN.
+
+            MIKSI ALLEKKAIN. Sähköä, lainaa ja vakuutusta hakeva kävijä
+            tietää tullessaan kumman hän haluaa, eikä hän valitse niiden
+            väliltä vaan etsii omansa. Etsimiseen lista on oikea muoto, ja
+            täysleveällä rivillä on tila sanoa mitä klikistä seuraa.
+            Rinnakkaisuuden hinta näkyi ruudulla: 390 pikselillä kolme
+            saraketta on noin 112 px kukin, joten laattaan mahtui kuvake ja
+            yksi substantiivi.
+
+            VAALEA POHJA, EI ORANSSIA. Oranssilla vyöllä oranssi rivi on
+            sama väri kuin pohja. Vaaleat rivit ovat ruudun ainoat vaaleat
+            pisteet, ja juuri se on koko vyön tarkoitus. Sävyjen
+            kääntyminen hoidetaan `theme-light`-kääreellä `ServiceRow`:n
+            sisällä.
+          */}
+          <Reveal delay={0.06}>
+            <nav aria-label="Kilpailutettavat palvelut" className="mt-8 sm:mt-9">
+              <ul className="flex flex-col gap-3">
+                {services.map((service) => {
+                  const { Icon } = service;
+                  return (
+                    <li key={service.key}>
+                      <ServiceRow
+                        name={service.name}
+                        href={service.href}
+                        label={service.cta}
+                        note={service.note}
+                        external={service.external}
+                        partner={service.partner}
+                        placement={`etusivu_hero_${service.key}`}
+                        icon={<Icon size={20} strokeWidth={2.2} aria-hidden />}
+                      />
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
+
+            {/*
+              LUOTTAMUSRIVI HETI RIVIEN ALLA, EI OSIONA ALEMPANA. Kaksi
+              yleisintä syytä olla klikkaamatta ovat "joudunko maksamaan"
+              ja "joudunko antamaan tietoni". Molemmat kuuluvat samaan
+              ruutuun painikkeiden kanssa, koska alempana ne eivät ehdi
+              vaikuttaa päätökseen.
+
+              "Ei rekisteröitymistä" koskee kaikkia kolmea; "ei
+              yhteystietoja" ei koskisi, koska laina- ja vakuutushakemus
+              luonnollisesti kysyy ne. Siksi se lause on sähkön omassa
+              osiossa eikä täällä.
+            */}
+            <p className="mt-5 font-display text-[13px] font-medium text-onEmber/65">
+              Ilmainen · Ei rekisteröitymistä · Päätöksen teet itse
+            </p>
+          </Reveal>
+        </div>
       </div>
+
+      {/*
+        VYÖ PÄÄTTYY HÄNNÄNVETOON, EI SUORAAN REUNAAN.
+
+        Etusivun hero oli sivuston ainoa oranssi vyö, joka loppui terävään
+        vaakaviivaan: sähkösivun hero, askelosio ja 404 kaikki kaartuvat
+        seuraavaan vyöhykkeeseen. Suora raja luki liitokseksi kahden eri
+        sivun välillä juuri siinä kohdassa, jossa kävijä päättää jatkaako
+        hän vierittämistä.
+
+        `fill` on SEURAAVAN vyöhykkeen väri: alla on `StatStrip`, joka on
+        `bg-paper`. Jos vaihdat osioiden järjestystä, vaihda tämä väri.
+      */}
+      <TailSweep fill="rgb(var(--c-paper))" height={56} />
     </section>
   );
 }

@@ -1,6 +1,7 @@
 import { Zap, HandCoins, ShieldCheck, type LucideIcon } from "lucide-react";
 import { FEATURES } from "@/lib/features";
-import { ENERGY_COMPARE } from "@/lib/nav";
+import { ENERGY_PATH } from "@/lib/nav";
+import type { Partner } from "@/components/PartnerDialog";
 
 /*
   KOLME KILPAILUTETTAVAA PALVELUA — YHDESTÄ LÄHTEESTÄ.
@@ -23,18 +24,36 @@ import { ENERGY_COMPARE } from "@/lib/nav";
   osalta se rikkoisi lisäksi kuluttajansuojalain 7 luvun vaatimuksen
   todellisesta vuosikorosta (ks. lib/loans.ts).
 
-  KOLME ERI ROOLIA, JOTKA SANOTAAN ÄÄNEEN. Kettu tekee näistä kolmesta
-  vain yhden itse:
+  =====================================================================
+  KUMPPANIEN NIMIÄ EI ENÄÄ MAINITA PALVELUKOHDISSA (19.9.2026)
+  =====================================================================
 
-  - Sähkö: Kettu laskee hinnat itse tarkistetusta datasta.
-  - Lainat: Sortter kilpailuttaa, Kettu ohjaa hakemukseen.
-  - Vakuutukset: POP Vakuutus antaa tarjouksen, Kettu ei vertaile.
+  Tässä oli kenttä `handledBy`, joka luki heron rivillä ja palveluosiossa:
+  "Kettu laskee hinnat itse.", "Kilpailutuksen tekee Sortter.",
+  "Tarjouksen antaa POP Vakuutus." Jesse pyysi poistamaan kumppanien nimet
+  laina- ja vakuutuskohdista, ja tilalla on nyt neutraali `note`.
 
-  `handledBy`-kenttä pakottaa jokaisen osion kertomaan tämän. Ilman sitä
-  tasavertainen esitys antaisi ymmärtää, että vertailemme kaikkia kolmea
-  itse — ja ero paljastuisi kävijälle heti seuraavalla klikillä. Se on
-  pahin mahdollinen paikka menettää luottamus, koska se on juuri se klikki,
-  josta palkkio maksetaan.
+  MIKSI TÄMÄ ON RISKI, JA MIKSI SE SILTI TEHTIIN NÄIN. Vakuutusnapin
+  teksti on "Kilpailuta vakuutus", mutta sen takana on yhden yhtiön oma
+  tarjouspyyntö eikä usean yhtiön vertailu. Jos sivusto ei kerro sitä
+  missään, se on kuluttajansuojalain 2 luvun tarkoittama harhaanjohtava
+  markkinointiväite, ja se on lisäksi ensimmäinen asia, jonka
+  affiliate-ohjelman compliance-tarkastus huomaa. Kumppanuuden katkeaminen
+  tarkoittaisi sivuston koko liikevaihtoa.
+
+  Jesse pyysi samana päivänä poistamaan nimet myös `TrustBlock`ista ja
+  meta-kuvauksesta, eli nimiä ei ole enää missään etusivulla. Rajaus jäi
+  silti yhteen paikkaan: `components/home/TrustBlock.tsx` kohta 03 sanoo
+  "vakuutuksia emme vertaile" nimeämättä yhtiötä. SE LAUSE EI SAA KADOTA,
+  koska se on nyt ainoa paikka etusivulla, jossa rajaus sanotaan. Jos se
+  poistuu, "Kilpailuta vakuutus" jää väitteeksi ilman katetta.
+
+  Nimi lukee edelleen `/kayttoehdot`- ja `/tietosuoja`-sivuilla, joissa se
+  kuuluukin olla, koska tietojen vastaanottaja on kerrottava.
+
+  `note` ON NEUTRAALI MUTTA SEN ON PYSYTTÄVÄ TOTENA. Vakuutuksen rivillä ei
+  saa lukea "vertaa vakuutusyhtiöitä" tai mitään sen suuntaista, koska
+  vertailua ei ole. "Maksuton tarjous, ei sitoumuksia" on totta.
 */
 
 /**
@@ -55,6 +74,33 @@ import { ENERGY_COMPARE } from "@/lib/nav";
 export const POP_INSURANCE_URL =
   "https://go.popvakuutus.fi/t/t?a=1710920255&as=2098832052&t=2&tk=1";
 
+/*
+  KUMPPANI VÄLI-ILMOITUSTA VARTEN (Jessen pyyntö 19.9.2026).
+
+  Vakuutuslinkki ei enää vie suoraan POP:n lomakkeelle vaan avaa pienen
+  ikkunan, jossa on otsikko, yksi kappale tekstiä ja kaksi nappia. Ikkunan
+  toteutus ja sen tuottoperustelut ovat `components/PartnerDialog.tsx`:n
+  yläkommentissa; tässä on vain se tieto, jonka ikkuna piirtää.
+
+  MIKSI NIMI PALAA TÄHÄN, VAIKKA SE POISTETTIIN PALVELUKOHDISTA. Nämä ovat
+  eri asioita eivätkä ole ristiriidassa. Jesse poisti nimet siitä, mitä
+  kävijä lukee selatessaan sivua. Tämä teksti näkyy vasta siinä hetkessä,
+  kun kävijä on jo päättänyt siirtyä, ja juuri silloin hänen on tiedettävä
+  kenen sivulle hän on menossa. Ikkuna siis korjaa sen saman aukon, jonka
+  tämän tiedoston yläkommentti merkitsi sivuston avoimeksi riskiksi.
+
+  `note` EI SAA VÄITTÄÄ VERTAILUA. Sama sääntö kuin `Service.note`:ssa,
+  mutta tässä se on tiukempi: tämä on viimeinen teksti ennen siirtymää,
+  eli se on se lause, jota vasten "Kilpailuta vakuutus" -nappia luetaan.
+  Rajaus on sanottava tässä suoraan.
+*/
+export const POP_PARTNER: Partner = {
+  id: "pop-vakuutus",
+  name: "POP Vakuutus",
+  note: "Tarjouspyyntö täytetään POP Vakuutuksen omalla sivustolla. Emme vertaile vakuutusyhtiöitä, joten tarjouksen antaa yksi yhtiö. Tarjous on maksuton eikä sido mihinkään.",
+  confirmLabel: "Siirry POP Vakuutukseen",
+};
+
 export interface Service {
   /** Ankkuri etusivulla, esim. "sahko" → `#sahko`. */
   key: string;
@@ -64,11 +110,25 @@ export interface Service {
   href: string;
   /** Onko kohde kumppanin sivu: vaikuttaa `rel`-arvoon ja klikkiseurantaan. */
   external?: true;
+  /**
+   * Kumppani, jonka väli-ilmoitus näytetään ennen siirtymää. Jos tämä on
+   * annettu, linkki avaa `PartnerDialog`-ikkunan tavallisella klikillä.
+   *
+   * KENTÄN ON OLTAVA SARJALLISTUVAA DATAA. `Service.Icon` on funktio, ja
+   * juuri siksi sitä ei voi välittää palvelinkomponentista
+   * asiakaskomponentille (ks. `ServiceCta`). `Partner` on pelkkiä
+   * merkkijonoja, joten se kulkee. Älä lisää tähän funktioita.
+   */
+  partner?: Partner;
   Icon: LucideIcon;
   /** Yksi rivi siitä, mitä kävijä saa. Ei lupauksia säästöstä. */
   lead: string;
-  /** Kuka työn oikeasti tekee. Näkyy aina, ei koskaan piilossa. */
-  handledBy: string;
+  /**
+   * Yksi lyhyt rivi napin alle: mitä kävijä saa. EI kumppanin nimeä, mutta
+   * ks. tiedoston yläkommentti: tämän on silti pysyttävä totena. Vakuutuksen
+   * rivillä ei saa väittää vertailua, koska vertailua ei ole.
+   */
+  note: string;
   /** Painikkeen teksti. Verbi, ei substantiivi. */
   cta: string;
 }
@@ -86,10 +146,23 @@ export function getServices(): Service[] {
     {
       key: "sahko",
       name: "Sähkö",
-      href: ENERGY_COMPARE,
+      /*
+        SIVUN ALKUUN, EI ANKKURIIN (19.9.2026, Jessen pyyntö).
+
+        Tässä oli `ENERGY_COMPARE`, eli `/sahkosopimukset#vertailu`. Ankkuri
+        osoittaa laskurikorttiin, joka nousee heron alareunan päälle, joten
+        selain hyppäsi työpöydällä suoraan kyselyyn ja ohitti sähkösivun
+        heron kokonaan. Kävijä laskeutui keskelle lomaketta tietämättä mille
+        sivulle hän tuli.
+
+        `ENERGY_PATH` vie sivun alkuun. Laskuri ei jää piiloon: se on heron
+        sisällä ja näkyy heti ensiruudussa (ks. CLAUDE.md, CRO-kohta 1).
+        Kävijä saa siis saman työkalun ja lisäksi sen, mitä sivu lupaa.
+      */
+      href: ENERGY_PATH,
       Icon: Zap,
       lead: "Näet jokaisen sopimuksen vuosihinnan euroina omalla kulutuksellasi.",
-      handledBy: "Kettu laskee hinnat itse.",
+      note: "Vuosihinta euroina omalla kulutuksellasi",
       cta: "Kilpailuta sähkö",
     },
     ...(FEATURES.loans
@@ -100,7 +173,7 @@ export function getServices(): Service[] {
             href: "/lainat",
             Icon: HandCoins,
             lead: "Yksi hakemus lähtee usealle pankille, ja tarjoukset tulevat rinnakkain.",
-            handledBy: "Kilpailutuksen tekee Sortter.",
+            note: "Yksi hakemus, useita tarjouksia",
             cta: "Vertaile lainoja",
           } satisfies Service,
         ]
@@ -110,16 +183,16 @@ export function getServices(): Service[] {
       name: "Vakuutukset",
       href: POP_INSURANCE_URL,
       external: true,
+      partner: POP_PARTNER,
       Icon: ShieldCheck,
       lead: "Pyydä tarjous vakuutuksistasi ja vertaa sitä nykyiseen laskuusi.",
       /*
-        TÄMÄ LAUSE ON KOKO OSION EHTO. POP Vakuutus on yksi yhtiö, ei
-        vertailu. Napin lyhyt toimintakehotus on käyttäjän toiveesta
-        "Kilpailuta vakuutus", mutta itse kuvausteksti kertoo edelleen
-        suoraan, että tarjous tulee POP Vakuutukselta eikä kyse ole usean
-        yhtiön vertailusta.
+        TÄMÄ RIVI EI SAA VÄITTÄÄ VERTAILUA. Kohteena on yhden yhtiön oma
+        tarjouspyyntö, joten "vertaa vakuutusyhtiöitä" tai mikä tahansa sen
+        suuntainen olisi harhaanjohtava. "Maksuton tarjous, ei sitoumuksia"
+        on totta. Kuka tarjouksen antaa, sanotaan `TrustBlock`in kohdassa 03.
       */
-      handledBy: "Tarjouksen antaa POP Vakuutus.",
+      note: "Maksuton tarjous, ei sitoumuksia",
       cta: "Kilpailuta vakuutus",
     },
   ];
