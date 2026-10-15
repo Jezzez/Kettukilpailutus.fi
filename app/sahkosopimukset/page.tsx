@@ -7,7 +7,8 @@ import Reveal from "@/components/Reveal";
 import SectionHead from "@/components/SectionHead";
 import CtaSection from "@/components/CtaSection";
 import TailSweep from "@/components/fox/TailSweep";
-import { annualCost, getPlans, getEnergyTopics } from "@/lib/energy";
+import AboutCard from "@/components/home/AboutCard";
+import { annualCost, getPlans } from "@/lib/energy";
 import { OG_IMAGE, SITE } from "@/lib/data";
 
 /*
@@ -76,7 +77,6 @@ const STEPS = [
 
 export default function SahkosopimuksetPage() {
   const plans = getPlans();
-  const topics = getEnergyTopics();
 
   /*
     ORGANIZATION-MERKINTÄ SIIRTYI ETUSIVULLE (`app/page.tsx`).
@@ -334,39 +334,8 @@ export default function SahkosopimuksetPage() {
         syntyy. Kävijä on jo valinnut sähkön päätyessään tänne.
       */}
 
-      {/*
-        Oppaat olivat neljä isoa korttia, jotka veivät kokonaisen ruudullisen
-        tilaa ja houkuttelivat pois vertailusta juuri ennen loppukehotusta.
-        Sisäiset linkit ovat tärkeitä hakukoneille, joten ne säilyvät —
-        mutta kevyenä rivinä, ei kilpailevana osiona.
-
-        Rivi jäi palveluvalikoiman ALAPUOLELLE tarkoituksella: se on
-        kevyin osio sivulla ja toimii siltana loppukehotukseen. Sen
-        `border-t` on nyt myös ainoa viiva palveluosion ympärillä, eli
-        se erottaa aiheet korteista ilman että kortteihin tarvitsee
-        lisätä omia reunoja.
-      */}
-      <section className="border-t border-line pb-16 pt-14">
-        <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
-          <Reveal>
-            <h2 className="font-display text-[15px] font-bold text-ink">
-              Lue lisää omasta tilanteestasi
-            </h2>
-            <div className="mt-4 flex flex-wrap gap-2.5">
-              {topics.map((t) => (
-                <Link
-                  key={t.slug}
-                  href={`/sahkosopimukset/${t.slug}`}
-                  className="group inline-flex items-center gap-2 rounded-full border border-line bg-white px-4 py-2.5 font-display text-[13.5px] font-semibold text-ink/80 transition-all hover:border-accent/45 hover:text-ink"
-                >
-                  {t.h1}
-                  <ArrowRight size={14} className="text-ink/35 transition-transform group-hover:translate-x-0.5 group-hover:text-accentDark" aria-hidden />
-                </Link>
-              ))}
-            </div>
-          </Reveal>
-        </div>
-      </section>
+      {/* Suomi-osio korvaa tilanteen mukaan luettavien oppaiden linkkirivin. */}
+      <AboutCard />
 
       </div>
 

@@ -75,8 +75,8 @@ export default function CtaSection({
       </div>
 
       <Reveal>
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-10 px-4 py-24 text-center sm:px-6 md:flex-row md:py-28 md:text-left">
-          <div className="flex-1">
+        <div className="relative mx-auto flex max-w-6xl flex-col items-center gap-10 px-4 py-24 text-center sm:px-6 md:flex-row md:py-28 md:text-left">
+          <div className="relative z-10 flex-1">
             <h2 className="mx-auto max-w-xl font-hero text-[2rem] leading-[1.08] text-cream sm:text-[2.6rem] md:mx-0">
               {title}
             </h2>
@@ -148,14 +148,14 @@ export default function CtaSection({
             `md:-mb-28`), leikkauskohta osuu tasan vyön alareunaan ja
             hahmo lukee siltä, että se nousee vyön takaa esiin.
           */}
-          <div className="relative z-20 -mb-24 shrink-0 self-end md:-mb-28 md:-mt-40">
+          <div className="hidden shrink-0 md:pointer-events-auto md:relative md:z-20 md:-mb-28 md:-mt-40 md:block">
             {/*
               `!h-` on tarkoituksellinen: FoxSlot asettaa korkeuden
               tyylimääreenä, ja vain !important-luokka voi kääntää sen
               näyttökoon mukaan. Mobiilissa hahmo pysyy maltillisena,
               leveällä ruudulla se nousee vyön yli.
             */}
-            <FoxSlot id="footer" height={500} className="!h-[300px] md:!h-[500px]" />
+            <FoxSlot id="footer" height={500} className="!h-[280px] md:!h-[500px]" />
           </div>
         </div>
       </Reveal>
