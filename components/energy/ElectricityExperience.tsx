@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from "framer-motion";
 import {
@@ -31,6 +32,7 @@ import FoxPaw from "../FoxPaw";
 import TailSweep from "../fox/TailSweep";
 import FoxSlot from "../fox/FoxSlot";
 import FoxComputing, { useFoxComputing } from "../fox/FoxComputing";
+import BouncingBall from "./BouncingBall";
 
 /**
  * Heron kolme lupausta ja niiden perustelut.
@@ -67,9 +69,15 @@ const LOADING_TIP =
 
 /* Latauksen kesto. Tämä on keinotekoinen viive konversiopolun
    kriittisimmässä kohdassa, joten jokainen sekunti maksaa poistumia.
-   Laskettu 7 000:sta 5 000:een elokuussa 2026. Jos tätä joskus koskee,
-   suunta on alaspäin, ei ylöspäin. */
-const RESULT_LOADING_MS = 5000;
+   Laskettu 7 000:sta 5 000:een elokuussa 2026 ja 5 000:sta 3 000:een
+   10.10.2026. Jos tätä joskus koskee, suunta on alaspäin, ei ylöspäin.
+
+   ÄLÄ NOSTA TÄTÄ ANIMAATION TAKIA. Mobiilin latausnäkymässä on hyppivä
+   pallo (`BouncingBall`), ja houkutus nostaa viivettä "jotta pallo ehtii
+   näkyä" on ilmeinen. Se olisi väärinpäin: pallo on olemassa odotusta
+   varten, ei odotus palloa varten. 3 000 ms riittää noin viiteen
+   hyppyyn. Jos ele tuntuu vajaalta, nopeuta hyppyä. */
+const RESULT_LOADING_MS = 3000;
 
 /**
  * Sähkön koko kokemus.
@@ -272,6 +280,18 @@ export default function ElectricityExperience({
   const [submitted, setSubmitted] = useState(false);
   const [loadingResults, setLoadingResults] = useState(false);
   const showResults = !gated || submitted;
+
+  /*
+    MOBIILIN LATAUSNÄKYMÄ PIIRRETÄÄN `document.body`:yn, ja siksi se
+    tarvitsee tiedon siitä, ollaanko jo selaimessa. Portaali on tässä
+    pakko, ei tyylivalinta: näkymä on `position: fixed`, ja laskuri
+    istuu `Reveal`-kääreen sisällä, joka animoi `transform`ia. Mikä
+    tahansa `transform` esivanhemmassa tekee siitä sisältävän lohkon myös
+    kiinteästi asemoiduille lapsille, jolloin "koko ruutu" tarkoittaisikin
+    laskurikortin kokoa.
+  */
+  const [portalReady, setPortalReady] = useState(false);
+  useEffect(() => setPortalReady(true), []);
   const quizStartedRef = useRef(false);
   const quizCompletedRef = useRef(false);
   const offersViewedRef = useRef(false);
@@ -1774,6 +1794,89 @@ export default function ElectricityExperience({
 
   return (
     <>
+      {/*
+        ==================================================================
+        MOBIILIN LATAUSNÄKYMÄ. VAIN ALLE `md`-KOON.
+        ==================================================================
+
+        MIKÄ TÄMÄ ON. Kun kysely on lähetetty, puhelimessa koko ruutu
+        vaihtuu latausnäkymäksi, jonka keskellä on hyppivä pallo. Jessen
+        pyyntö 10.10.2026: "pallo joka hyppii keskellä näyttöä mobiilissa
+        johon silmät keskittyy".
+
+        MIKSI KOKO RUUTU EIKÄ KELLUVA PALLO. Sisällön päällä leijuva
+        pallo on sama muoto kuin mainosinterstitiaali, ja juuri sen
+        muodon mobiilikäyttäjä on oppinut sulkemaan katsomatta. Koko
+        ruudun oma tila ei leiju minkään päällä: se on sivun tila, ei
+        sivulle heitetty esine. Samalla se ratkaisee vanhan ongelman,
+        jossa latauspaneeli saattoi jäädä puhelimessa ruudun ulkopuolelle
+        eikä kävijä nähnyt mitään tapahtuvan.
+
+        TYÖPÖYDÄLLÄ EI MITÄÄN UUTTA. Siellä laskurikortti on jo valmiiksi
+        näkyvissä kokonaan, eikä mikään jää ruudun ulkopuolelle. Koko
+        ruudun peittäminen olisi siellä pelkkä este.
+
+        NÄKYMÄ EI OLE DIALOGI EIKÄ SITÄ VOI SULKEA. Se katoaa itsestään
+        `RESULT_LOADING_MS`:n kuluttua. Siksi ei `role="dialog"`,
+        ei sulkunappia eikä fokusansaa, vaan `role="status"`, jonka
+        ruudunlukija lukee ja ohittaa.
+      */}
+      {portalReady &&
+        createPortal(
+          <AnimatePresence>
+            {loadingResults && (
+              <motion.div
+                className="theme-light fixed inset-0 z-[70] flex flex-col items-center justify-center bg-paper px-6 md:hidden"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: reduce ? 0 : 0.18 }}
+                role="status"
+                aria-live="polite"
+                aria-busy="true"
+              >
+                <BouncingBall />
+
+                <p className="mt-6 flex items-center gap-2.5 font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-accentDark">
+                  <LoaderCircle size={15} className="animate-spin" aria-hidden /> Kettu vertailee
+                  sopimuksia
+                </p>
+
+                <h3 className="mt-3 max-w-[16ch] text-center font-hero text-[1.9rem] leading-[1.1] text-ink">
+                  Hetki, lasken sinulle parhaat vaihtoehdot.
+                </h3>
+
+                {/*
+                  EDISTYMISPALKKI EI OLE KORISTE EIKÄ SE SAA KADOTA PALLON
+                  TIELTÄ. Pallo vie katseen mutta ei kerro, paljonko
+                  odotusta on jäljellä, ja määrittelemätön odotus tuntuu
+                  aina pidemmältä kuin yhtä pitkä määritelty. Palkin kesto
+                  on sidottu samaan vakioon kuin viive, joten se ei voi
+                  valehdella: se täyttyy täsmälleen silloin kun tulokset
+                  tulevat.
+                */}
+                <div
+                  className="mt-7 h-1.5 w-full max-w-[16rem] overflow-hidden rounded-full bg-line"
+                  aria-hidden
+                >
+                  <motion.div
+                    className="h-full rounded-full bg-accent"
+                    initial={{ width: "0%" }}
+                    animate={{ width: "100%" }}
+                    transition={{ duration: RESULT_LOADING_MS / 1000, ease: "linear" }}
+                  />
+                </div>
+
+                <p className="mt-7 max-w-[34ch] text-center text-[13.5px] leading-relaxed text-ink/70">
+                  <span className="font-display font-bold text-accentDark">Ketun vinkki: </span>
+                  {LOADING_TIP}
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>,
+          document.body,
+        )}
+
       {withHero && (
         <>
         {/*

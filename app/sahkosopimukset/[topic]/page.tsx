@@ -68,7 +68,7 @@ export default function TopicPage({ params }: { params: { topic: string } }) {
          oli oikein silloin, kun vertailu asui siellä. Nyt juuressa on hub,
          joten kolmiportainen polku vastaa oikeaa rakennetta eikä yksikään
          askel osoita samaan URLiin kahdesti. */
-      { "@type": "ListItem", position: 1, name: "Etusivu", item: SITE.url },
+      { "@type": "ListItem", position: 1, name: "Etusivu", item: `${SITE.url}/etusivu` },
       { "@type": "ListItem", position: 2, name: "Sähkösopimukset", item: `${SITE.url}${ENERGY_PATH}` },
       { "@type": "ListItem", position: 3, name: topic.h1, item: `${SITE.url}/sahkosopimukset/${topic.slug}` },
     ],
@@ -86,7 +86,7 @@ export default function TopicPage({ params }: { params: { topic: string } }) {
             JSON-LD. Jos ne eroaisivat, Google pitää rakennetta epäluotettavana
             eikä näytä murupolkua hakutuloksessa lainkaan. */}
         <nav aria-label="Murupolku" className="flex items-center gap-1.5 text-[13px] text-ink/60">
-          <Link href="/" className="hover:text-ink">Etusivu</Link>
+          <Link href="/etusivu" className="hover:text-ink">Etusivu</Link>
           <ChevronRight size={13} aria-hidden />
           <Link href={ENERGY_PATH} className="hover:text-ink">Sähkösopimukset</Link>
           <ChevronRight size={13} aria-hidden />

@@ -144,7 +144,7 @@ export default function PostPage({ params }: { params: { slug: string } }) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <nav aria-label="Murupolku" className="flex items-center gap-1 text-[13px] text-ink/60">
-        <Link href="/" className="hover:text-ink">Etusivu</Link>
+        <Link href="/etusivu" className="hover:text-ink">Etusivu</Link>
         <ChevronRight size={13} aria-hidden />
         {/* "Oppaat" eikä "Blogi": valikossa ja listasivulla osio on
             nimeltään Oppaat, ja kaksi nimeä samalle paikalle saa

@@ -91,7 +91,7 @@ export default function PlanPage({ params }: { params: { slug: string } }) {
       /* Kolme askelta: juuressa on hub ja vertailu omassa osoitteessaan,
          joten polku vastaa nyt oikeaa hierarkiaa. Pidä sama kuin näkyvä
          murupolku alla. */
-      { "@type": "ListItem", position: 1, name: "Etusivu", item: SITE.url },
+      { "@type": "ListItem", position: 1, name: "Etusivu", item: `${SITE.url}/etusivu` },
       { "@type": "ListItem", position: 2, name: "Sähkösopimukset", item: `${SITE.url}${ENERGY_PATH}` },
       { "@type": "ListItem", position: 3, name: `${plan.provider} ${plan.name}`, item: `${SITE.url}/sahkosopimukset/sopimus/${plan.slug}` },
     ],
@@ -104,7 +104,7 @@ export default function PlanPage({ params }: { params: { slug: string } }) {
 
       <div className="mx-auto max-w-4xl px-4 pt-8 sm:px-6">
         <nav aria-label="Murupolku" className="flex items-center gap-1.5 text-[13px] text-ink/60">
-          <Link href="/" className="hover:text-ink">Etusivu</Link>
+          <Link href="/etusivu" className="hover:text-ink">Etusivu</Link>
           <ChevronRight size={13} aria-hidden />
           <Link href={ENERGY_PATH} className="hover:text-ink">Sähkösopimukset</Link>
           <ChevronRight size={13} aria-hidden />

@@ -47,12 +47,12 @@ export const metadata: Metadata = {
     oikea koti on hub — ja hub ei sisällä yhtään sopimusta. Sivu
     poistuisi hausta omilla asiasanoillaan.
   */
-  alternates: { canonical: "/sahkosopimukset" },
+  alternates: { canonical: "/" },
   openGraph: {
     title: "Kilpailuta sähkösopimus – vertaa hinnat omalla kulutuksellasi",
     description:
       "Kerro kulutuksesi, niin Kettu laskee jokaisen sopimuksen todellisen vuosihinnan ja näyttää säästösi euroina.",
-    url: "/sahkosopimukset",
+    url: "/",
     // Pakko toistaa: sivun oma openGraph-lohko korvaa juuritason lohkon
     // kokonaan, jolloin kuva katoaisi. Ks. OG_IMAGE lib/data.ts.
     images: [OG_IMAGE],

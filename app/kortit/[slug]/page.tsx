@@ -70,7 +70,7 @@ export default function CardPage({ params }: { params: { slug: string } }) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Etusivu", item: SITE.url },
+      { "@type": "ListItem", position: 1, name: "Etusivu", item: `${SITE.url}/etusivu` },
       { "@type": "ListItem", position: 2, name: "Kortit", item: `${SITE.url}/#vertailu` },
       { "@type": "ListItem", position: 3, name: card.name, item: `${SITE.url}/kortit/${card.slug}` },
     ],
@@ -105,7 +105,7 @@ export default function CardPage({ params }: { params: { slug: string } }) {
       <header className="pelt-surface border-b border-line">
         <div className="relative z-[1] mx-auto max-w-4xl px-4 py-12 sm:px-6 md:py-16">
           <nav aria-label="Murupolku" className="flex items-center gap-1 text-[13px] text-ink/60">
-            <Link href="/" className="hover:text-ink">Etusivu</Link>
+            <Link href="/etusivu" className="hover:text-ink">Etusivu</Link>
             <ChevronRight size={13} aria-hidden />
             <Link href="/luottokortit#vertailu" className="hover:text-ink">Luottokortit</Link>
             <ChevronRight size={13} aria-hidden />

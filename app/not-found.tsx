@@ -53,7 +53,7 @@ export default function NotFound() {
               <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" aria-hidden />
             </Link>
             <Link
-              href="/"
+              href="/etusivu"
               className="inline-flex items-center gap-2.5 rounded-xl border border-cream/45 px-7 py-4 font-display text-[15.5px] font-bold text-cream transition-all hover:border-cream hover:bg-cream/10"
             >
               Etusivulle

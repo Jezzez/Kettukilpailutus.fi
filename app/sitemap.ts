@@ -6,34 +6,10 @@ import { getPlans, getEnergyTopics } from "@/lib/energy";
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
   return [
-    /* Etusivu on hub: se esittelee palvelut eikä sisällä yhtään hintaa,
-       joten se muuttuu vasta kun vertikaali avataan tai suljetaan.
-       `monthly` on siksi rehellinen arvio; `daily` pyytäisi Googlea
-       käymään joka päivä sivulla, joka on sama joka päivä, ja turhat
-       käynnit ovat pois muualta. Prioriteetti on silti 1: tämä on
-       brändihaun laskeutumissivu. */
-    /* KAUTTAVIIVA ON TARKOITUKSELLINEN. Etusivun canonical syntyy
-       `metadataBase`-osoitteen ja polun "/" yhdistelmänä, eli muodossa
-       `https://www.kettukilpailutus.fi/`. Tässä luki sama osoite ilman
-       päätteen kauttaviivaa, eli sivukartta ilmoitti eri merkkijonon kuin
-       sivu itse. Google osaa yhdistää ne, mutta ei ilmaiseksi: erillisenä
-       osoitteena se on yksi ylimääräinen indeksoitava rivi, ja Search
-       Consolessa se näkyy "vaihtoehtoinen sivu, jolla on oikea canonical"
-       -merkintänä. Turha epäselvyys juuri sillä sivulla, jonka pitää olla
-       selvin. */
-    { url: `${SITE.url}/`, lastModified: now, changeFrequency: "monthly", priority: 1 },
+    /* Juuriosoite on sähkösopimusten vertailu, jonka hinnat muuttuvat. */
+    { url: `${SITE.url}/`, lastModified: now, changeFrequency: "daily", priority: 1 },
+    { url: `${SITE.url}/etusivu`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
 
-    /* Sähkövertailu palasi omaan osoitteeseensa 17.8.2026, eli rivi
-       palasi myös tänne. Se on jälleen indeksoitava sivu (200, ei
-       ohjaus), ja `daily` on tässä oikea: hinnat muuttuvat.
-       Prioriteetti on sama 1 kuin etusivulla, koska tämä on se sivu,
-       jolla ansainta tapahtuu. */
-    {
-      url: `${SITE.url}/sahkosopimukset`,
-      lastModified: now,
-      changeFrequency: "daily",
-      priority: 1,
-    },
     ...(FEATURES.loans
       ? [
           {

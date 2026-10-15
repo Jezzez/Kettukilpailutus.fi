@@ -404,7 +404,7 @@ export default function Header() {
         {/* Ei `aria-label`ia: logotyyppi on oikeaa tekstiä ja merkki on
             `aria-hidden`, joten ruudunlukija lukee jo nimen. Label vain
             korvaisi sen omalla sanamuodollaan. */}
-        <Link href="/" className="flex shrink-0 items-center gap-2.5 rounded-lg">
+        <Link href="/etusivu" className="flex shrink-0 items-center gap-2.5 rounded-lg">
           <FoxMark size={30} priority />
           <span className="font-display text-[16px] font-bold uppercase leading-none tracking-[0.01em] text-ink">
             Kettukilpailutus.fi
