@@ -322,21 +322,6 @@ export default function ElectricityExperience({
   );
   const [type, setType] = useState<"spot" | "fixed" | "open" | null>(initialType);
   const [greenOnly, setGreenOnly] = useState(false);
-  /*
-    "PARAS ARVIO" POISTUI LAJITTELUSTA, TILALLE "PARAS KAMPANJA".
-
-    Tähtiarvioita ei ole enää olemassa: kumppaniyhtiöille ei löydy
-    riippumatonta arviolähdettä, joten arvio olisi keksitty luku.
-    Lajitteluvalinta, joka järjestää listan keksityn luvun mukaan, on
-    pahempi kuin puuttuva valinta — se antaa keksitylle luvulle
-    työkalun aseman.
-
-    Tilalla on lajittelu, jolle on oikea aineisto: kampanjaetu euroina
-    ensimmäiseltä vuodelta. Se on myös se lajittelu, jota kampanjoita
-    metsästävä kävijä oikeasti etsii, ja se nostaa esiin juuri ne
-    sopimukset, joissa klikki on kumppanille arvokkain.
-  */
-  const [sort, setSort] = useState<"cost" | "basic" | "campaign">("cost");
 
   /*
     KUUSI KORTTIA HETI, LOPUT NAPIN TAKAA.
@@ -352,7 +337,7 @@ export default function ElectricityExperience({
     voi tarkistaa sen itse. Piilotettu loppupää ilman lukumäärää lukisi
     karsituksi listaksi, ja karsitulta vertailulta ei kysytä neuvoa.
 
-    Tila ei palaudu järjestystä vaihdettaessa. Kerran auki avattu lista,
+    Tila ei palaudu suodatinta vaihdettaessa. Kerran auki avattu lista,
     joka sulkeutuu itsestään käyttäjän toisen valinnan takia, luetaan
     virheeksi.
   */
@@ -482,8 +467,8 @@ export default function ElectricityExperience({
     [kwh]
   );
 
-  /** Listan järjestysperuste: ensimmäisen vuoden kokonaishinta kampanjoineen.
-   *  Käytetään VAIN `filtered`-lajittelussa. Ks. `vertailuhinta` yllä. */
+  /** Listan kiinteä järjestysperuste: ensimmäisen vuoden kokonaishinta
+   *  kampanjoineen. Ks. `vertailuhinta` yllä. */
   const jarjestysHinta = useCallback(
     (p: ElectricityPlan) => annualCost(p, kwh),
     [kwh]
@@ -519,18 +504,8 @@ export default function ElectricityExperience({
       plans
         .filter((p) => (type ? p.type === type : true))
         .filter((p) => (greenOnly ? p.green : true))
-        .sort((a, b) => {
-          if (sort === "basic") return a.basicFee - b.basicFee;
-          if (sort === "campaign") {
-            const d = campaignSaving(b, kwh) - campaignSaving(a, kwh);
-            /* Tasatilanteessa (esim. kaksi kampanjatonta) halvin ensin,
-               jotta lista ei näytä satunnaiselta. */
-            if (d !== 0) return d;
-            return jarjestysHinta(a) - jarjestysHinta(b);
-          }
-          return jarjestysHinta(a) - jarjestysHinta(b);
-        }),
-    [plans, type, greenOnly, kwh, sort, jarjestysHinta]
+        .sort((a, b) => jarjestysHinta(a) - jarjestysHinta(b)),
+    [plans, type, greenOnly, jarjestysHinta]
   );
 
   const cheapestCost = useMemo(
@@ -615,23 +590,11 @@ export default function ElectricityExperience({
 
   const cheapestId = filtered.length > 1 ? cheapestPlan!.id : null;
 
-  /*
-    KETUN VALINTA NOSTETAAN LISTAN YKKÖSEKSI.
-
-    Ilman nostoa tassu istuisi kolmannessa kortissa, ja kaksi kalliimman
-    kokonaisuuden korttia olisi sen yläpuolella. Kävijä lukee ylimmän
-    kortin suosituksena riippumatta siitä, mitä siinä lukee — ensimmäinen
-    paikka ON suositus. Silloin sivu suosittelisi kahta eri sopimusta
-    yhtä aikaa, ja se ristiriita menettää klikin.
-
-    Nosto tehdään vain hintajärjestyksessä. Jos kävijä on itse valinnut
-    "Pienin perusmaksu" tai "Suurin kampanjaetu", hän on pyytänyt tietyn
-    järjestyksen eikä Ketun mielipidettä — silloin listaan ei kosketa.
-  */
+  /* Ketun valinta näytetään aina ensimmäisenä. */
   const naytettavat = useMemo(() => {
-    if (sort !== "cost" || !cheapestPlan) return filtered;
+    if (!cheapestPlan) return filtered;
     return [cheapestPlan, ...filtered.filter((p) => p.id !== cheapestPlan.id)];
-  }, [filtered, cheapestPlan, sort]);
+  }, [filtered, cheapestPlan]);
 
   /** Ankkuri, jonka ohittaminen näyttää mobiilin tulospalkin. */
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -695,12 +658,12 @@ export default function ElectricityExperience({
 
   /*
     "Kettu laskee" -tila. Laukeaa aina kun jokin laskennan lähtöarvo
-    muuttuu: kulutus, sopimustyyppi, vihreä suodatin tai järjestys.
+    muuttuu: kulutus, sopimustyyppi tai vihreä suodatin.
     Ilman tätä hinnat vain vaihtuvat, eikä käyttäjä näe että työtä
     tehtiin — ja koko sloganin lupaus ("Kettu kilpailuttaa puolestasi")
     jää käyttöliittymässä lunastamatta. Ks. FoxComputing.tsx.
   */
-  const computing = useFoxComputing(`${kwh}|${type}|${greenOnly}|${sort}`);
+  const computing = useFoxComputing(`${kwh}|${type}|${greenOnly}`);
 
   /*
     KETUN SUOSITUS = YKSI NIMETTY SOPIMUS.
@@ -2817,23 +2780,9 @@ export default function ElectricityExperience({
                 Tulokset kulutuksellasi
               </p>
               <p className="mt-1.5 font-display text-[17px] font-bold text-ink" aria-live="polite">
-                {filtered.length} sopimusta järjestyksessä
+                {filtered.length} sopimusta · halvin ensimmäisen vuoden hinta ensin
               </p>
             </div>
-            <label className="flex items-center gap-2 text-[13px] text-ink/70">
-              Järjestä
-              <select
-                value={sort}
-                onChange={(e) => setSort(e.target.value as typeof sort)}
-                /* 16 px: alle sen iOS zoomaa sivun sisään heti kun valikkoa
-                   kosketetaan, ja käyttäjä jää zoomatulle sivulle. */
-                className="rounded-xl border border-line bg-white px-3 py-2 font-display text-[16px] font-semibold text-ink transition-colors hover:border-lineDark focus:border-accent focus:outline-none"
-              >
-                <option value="cost">Halvin 1. vuosi</option>
-                <option value="basic">Pienin perusmaksu</option>
-                <option value="campaign">Suurin kampanjaetu</option>
-              </select>
-            </label>
           </div>
 
           <LayoutGroup>
@@ -2945,7 +2894,7 @@ export default function ElectricityExperience({
                       <PlanCard
                         plan={plan}
                         kwh={kwh}
-                        badge={sort === "cost" ? badge : null}
+                        badge={badge}
                         /* Ero lasketaan SAMALLA perusteella kuin kortin iso
                            luku, eli ensi kuun hinnasta. Jos nämä kaksi
                            eroaisivat, samassa kortissa lukisi kaksi lukua,
@@ -2959,7 +2908,7 @@ export default function ElectricityExperience({
                         minCost={halvinNakyva}
                         maxCost={maxShown}
                         rank={numero}
-                        strength={sort === "cost" ? vahvuus : vahvuudet.get(plan.id)}
+                        strength={vahvuus}
                       />
                     </motion.div>
                   );
