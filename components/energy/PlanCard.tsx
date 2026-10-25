@@ -5,10 +5,11 @@ import Link from "next/link";
 import { Leaf, Star, Tag, TrendingDown, TrendingUp } from "lucide-react";
 import type { ElectricityPlan } from "@/lib/energy";
 import {
-  annualCost,
   campaignMonthlyCost,
   normalAnnualCost,
   ownChargesAnnual,
+  periodCost,
+  RANK_MONTHS,
   TYPE_LABEL,
 } from "@/lib/energy";
 import AffiliateButton from "../AffiliateButton";
@@ -90,10 +91,14 @@ export default function PlanCard({
    */
   strength?: string;
 }) {
-  const yearly = annualCost(plan, kwh);
+  /** Kiinteän sopimuksen järjestysperuste: kahden vuoden kokonaishinta.
+   *  Pörssisopimukset järjestetään ison luvun mukaan, ks. `rankCost`. */
+  const locked = plan.type === "fixed";
+  const twoYears = periodCost(plan, kwh, RANK_MONTHS);
 
   /*
-    ISO LUKU ON ENSI KUUN HINTA. JÄRJESTYS ON ENSIMMÄINEN VUOSI.
+    ISO LUKU ON ENSI KUUN HINTA. PÖRSSI JÄRJESTETÄÄN SEN MUKAAN, KIINTEÄ
+    KAHDEN VUODEN HINNAN MUKAAN (ks. `rankCost`).
 
     Nämä ovat tarkoituksella eri luvut, ja ero on koko kortin idea.
 
@@ -103,8 +108,9 @@ export default function PlanCard({
     on. Nimeämätön keskiarvo isolla fontilla luetaan silti ensi kuun
     hinnaksi, joten se on sekä väärä luku että väärin luettu.
 
-    Järjestys, palkki, "Ketun valinta" ja ero nykyiseen lasketaan silti
-    ensimmäisen vuoden kokonaishinnasta. Muuten neljän kuukauden houkutin
+    Alla oleva perustelu koskee nykyään vain kiinteitä sopimuksia.
+    Pörssisopimukset järjestetään Jessen päätöksellä 25.10.2026 ison luvun
+    mukaan, vaikka neljän kuukauden houkutin
     päihittää vuoden kestävän alennuksen: Aalto Luotsi nousi kerran
     ykköseksi hinnalla 31,6 €/kk vaikka maksaa ensimmäisenä vuonna 504 €
     ja sen jälkeen 47,2 €/kk, ja halvin sopimus oli kahdeksantena.
@@ -113,7 +119,7 @@ export default function PlanCard({
     mukaisessa järjestyksessä. Kampanjakortti voi näyttää halvemmalta
     kuin yläpuolinen ja olla silti alempana. Juuri sen näkeminen on
     lukijalle se hyödyllinen havainto, ja kortti selittää sen itse
-    kahdella rivillä: "sitten X €/kk" ja "Y € vuodessa".
+    kahdella rivillä: "Y € / 2 vuotta" ja "sitten X €/kk".
   */
   const monthly = campaignMonthlyCost(plan, kwh);
 
@@ -349,7 +355,7 @@ export default function PlanCard({
                 <FoxPaw size={11} /> Ketun valinta
               </span>
               <span className="shrink-0 font-data text-[10.5px] font-bold leading-none text-goldInk">
-                Paras 1. vuosi
+                {locked ? "Halvin 2 vuodessa" : "Halvin nyt"}
               </span>
             </>
           )}
@@ -545,7 +551,7 @@ export default function PlanCard({
             {/*
               KAKSI PAKOLLISTA LUKUA YHDELLÄ RIVILLÄ.
 
-              "X € 1. vuosi" on listan järjestysperuste, eli ainoa selitys
+              "X € / 2 vuotta" (vain kiinteät) on listan järjestysperuste, eli ainoa selitys
               sille miksi rivi voi olla eri kohdassa kuin sen iso luku
               antaisi olettaa. "Sitten Y €/kk" kertoo mihin kampanjahinta
               nousee. Kumpaakaan ei saa poistaa eikä piilottaa: silloin sivu
@@ -554,32 +560,38 @@ export default function PlanCard({
             */}
             <p className="mt-1.5 text-[11.5px] leading-snug text-ink/60">
               <span className="font-data font-semibold text-ink/75">
-                {yearly.toLocaleString("fi-FI", { maximumFractionDigits: 0 })} €
-              </span>{" "}
-              1. vuosi
+                {locked
+                  ? `${twoYears.toLocaleString("fi-FI", { maximumFractionDigits: 0 })} €`
+                  : null}
+              </span>
+              {locked ? " / 2 vuotta" : null}
               {campaign && normalMonthly !== null ? (
                 <>
-                  <span className="mx-1.5 text-cream/40" aria-hidden>
-                    ·
-                  </span>
+                  {locked ? (
+                    <span className="mx-1.5 text-cream/40" aria-hidden>
+                      ·
+                    </span>
+                  ) : null}
                   {/* `whitespace-nowrap`: ilman sitä rivi katkesi puhelimessa
                       niin, että "kk" jäi yksin seuraavalle riville. Luku ja
                       sen yksikkö ovat yksi asia. */}
                   <span className="whitespace-nowrap">
-                    sitten{" "}
+                    {locked ? "sitten" : "Sitten"}{" "}
                     <span className="font-data font-bold text-ink/80">
                       {money(normalMonthly)} €
                     </span>{" "}
                     / kk
                   </span>
                 </>
-              ) : (
+              ) : locked ? (
                 <>
                   <span className="mx-1.5 text-cream/40" aria-hidden>
                     ·
                   </span>
                   laskettu kulutuksellasi
                 </>
+              ) : (
+                "Laskettu kulutuksellasi"
               )}
             </p>
           </div>

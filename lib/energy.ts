@@ -1,6 +1,23 @@
 import electricityJson from "@/data/electricity.json";
 import topicsJson from "@/data/energy-topics.json";
 
+/*
+  ======================================================================
+  HINTOJEN TARKISTUS: LUE `CLAUDE.md`, OSIO "Hintojen tarkistus".
+  ======================================================================
+
+  Siella on se tieto, jota ei voi paatella taman tiedoston koodista:
+  mitka kumppanisivut ovat JS-renderoityja ja vaativat selaimen, missa
+  hinta on valilehden takana, missa jarjestyksessa Fortumin luvut tulevat,
+  ja mita jokaisen paivityksen jalkeen on ajettava.
+
+  YKSI SAANTO TAHAN NAKYVIIN, KOSKA SE ON JO KERRAN MAKSANUT:
+  jos kumppanin sivu antaa tarjoukselle PAATTYMISPAIVAN, lukua ei viedä
+  tuotantoon ilman etta uusintatarkistus on sovittu samalla. Hehkun
+  13.10.2026 paattynyt tarjous jai sivustolle 12 paivaksi, ja vertailu
+  naytti kumppanin halvempana kuin se oli.
+*/
+
 /**
  * Yhtion oma kampanja — se, mita kumppani mainostaa omalla sivullaan.
  *
@@ -124,6 +141,18 @@ export interface ElectricityPlan {
    * hinnan muualta. Se on tällä sivustolla kallein mahdollinen virhe.
    */
   hidden?: boolean;
+  /**
+   * Vuosikulutuksen yläraja (kWh): sopimusta myydään vain kohteisiin,
+   * joiden kulutus on ALLE tämän. Luettu yhtiön omalta sivulta, esim.
+   * "Alle 7 000 kWh vuosikulutuksen kohteisiin".
+   *
+   * MIKSI KENTTÄ EIKÄ PELKKÄ TEKSTIRIVI: raja oli ennen vain `cons`-
+   * tekstissä, ja sähkölämmitteisen talon kävijälle listattiin
+   * sopimuksia, joita hän ei voi tehdä. Klikki sellaiseen on hukattu
+   * klikki: yhtiö hylkää tilauksen, palkkiota ei tule, ja kävijä oppii
+   * ettei vertailun järjestykseen voi luottaa. Ks. `availableAt`.
+   */
+  kwhLimit?: number;
   /** Yhtiön kotipaikka. Tarkistettu tieto myös silloin, kun hinta ei ole. */
   region?: string;
   gradient: [string, string];
@@ -281,16 +310,30 @@ export function normalAnnualCost(plan: ElectricityPlan, kwhPerYear: number): num
  * pienemman hyodyn kuin tama laskee. Virhe on samansuuntainen kaikilla
  * sopimuksilla, joten jarjestys sailyy, ja tarkempi malli vaatisi
  * kuukausiprofiilin, jota ei ole tarkistettuna olemassa.
+ *
+ * HUOM 25.10.2026: listan JARJESTYS ei ole enaa tama vaan `rankCost`
+ * (porssi nykyhinnalla, kiintea 24 kk:n hinnalla).
+ * Ensimmainen vuosi jaa naytettavaksi luvuksi sopimussivuille.
  */
 export function annualCost(plan: ElectricityPlan, kwhPerYear: number): number {
-  const c = plan.campaign;
-  if (!c) return normalAnnualCost(plan, kwhPerYear);
+  return periodCost(plan, kwhPerYear, 12);
+}
 
-  const months = Math.max(0, Math.min(c.months, 12));
-  const rest = 12 - months;
+/**
+ * Kokonaishinta (€) sopimuksen ensimmäisiltä `periodMonths` kuukaudelta,
+ * kampanja mukaan luettuna täsmälleen sen keston verran.
+ */
+export function periodCost(
+  plan: ElectricityPlan,
+  kwhPerYear: number,
+  periodMonths: number
+): number {
   const kwhPerMonth = kwhPerYear / 12;
+  const c = plan.campaign;
+  const months = c ? Math.max(0, Math.min(c.months, periodMonths)) : 0;
+  const rest = periodMonths - months;
 
-  const campFee = c.basicFee ?? plan.basicFee;
+  const campFee = c?.basicFee ?? plan.basicFee;
   const campEnergy = campaignPrice(plan);
   const normEnergy = effectivePrice(plan);
 
@@ -300,6 +343,46 @@ export function annualCost(plan: ElectricityPlan, kwhPerYear: number): number {
     (campEnergy * kwhPerMonth * months) / 100 +
     (normEnergy * kwhPerMonth * rest) / 100
   );
+}
+
+/**
+ * Kiinteän sopimuksen vertailujakso kuukausina: kiinteiden sopimusten
+ * kesto. Ks. `rankCost`.
+ */
+export const RANK_MONTHS = 24;
+
+/**
+ * Listan järjestysperuste ja Ketun valinnan mittari, euroina kuukaudessa.
+ *
+ * KAKSI SÄÄNTÖÄ SOPIMUSTYYPIN MUKAAN, Jessen päätös 25.10.2026:
+ *
+ * - Pörssisopimus (ja toistaiseksi voimassa oleva): tämän hetken hinta,
+ *   eli ensi kuun lasku kampanjoineen (`campaignMonthlyCost`). Sopimuksen
+ *   voi vaihtaa milloin tahansa, joten se arvioidaan sillä, mitä se
+ *   maksaa nyt.
+ * - Kiinteä sopimus: 24 kuukauden kokonaishinta jaettuna kuukausille.
+ *   Hinta on lukossa koko kauden, joten sitä arvioidaan koko kaudella.
+ *
+ * Molemmat ovat euroja kuukaudessa, joten "Kaikki"-näkymän sekalista
+ * voidaan järjestää yhdellä asteikolla.
+ *
+ * TIEDOSTETTU HINTA: pörssipuolella lyhyt kampanja nousee pitkän ohi.
+ * 25.10.2026 hinnoilla neljän kuukauden Aalto Luotsi ja Sähkötytöt
+ * Pörssi asettuvat kärkeen, vaikka ne ovat kampanjan jälkeen vertailun
+ * kalleimpia pörssisopimuksia. Ennen kahden vuoden järjestystä tämä
+ * kuvio oli jo kerran käytössä ja poistettiin. Nyt se on valittu
+ * tietoisesti, ja kortin "sitten X €/kk" -rivi on ainoa, joka kertoo
+ * kävijälle hinnan nousun. SITÄ RIVIÄ EI SAA POISTAA.
+ */
+export function rankCost(plan: ElectricityPlan, kwhPerYear: number): number {
+  return plan.type === "fixed"
+    ? periodCost(plan, kwhPerYear, RANK_MONTHS) / RANK_MONTHS
+    : campaignMonthlyCost(plan, kwhPerYear);
+}
+
+/** Voiko sopimuksen tehdä tällä vuosikulutuksella. Ks. `kwhLimit`. */
+export function availableAt(plan: ElectricityPlan, kwhPerYear: number): boolean {
+  return plan.kwhLimit === undefined || kwhPerYear < plan.kwhLimit;
 }
 
 /**
@@ -362,11 +445,8 @@ export function campaignSaving(plan: ElectricityPlan, kwhPerYear: number): numbe
  * perusmaksua, ja sivu silti ilmoitti ettei halvempaa ole, koska Cheapin
  * vuosikeskiarvoon sisaltyi kampanjan jalkeinen hinta.
  *
- * LISTAN JARJESTYS ON SILTI `annualCost`. Pelkalla kampanjahinnalla
- * jarjestettyna neljan kuukauden houkutin nousee vuoden kestavan
- * alennuksen ohi: Aalto Luotsi oli ykkonen hinnalla 31,6 €/kk vaikka
- * maksaa ensimmaisena vuonna 504 € ja sen jalkeen 47,2 €/kk. Kortti
- * kertoo molemmat luvut, joten lukija nakee eron itse.
+ * Porssisopimukset myos jarjestetaan taman mukaan, kiinteat 24 kk:n
+ * hinnalla. Ks. `rankCost`.
  *
  * Jos kampanjaa ei ole, palautetaan normaali kuukausihinta.
  */

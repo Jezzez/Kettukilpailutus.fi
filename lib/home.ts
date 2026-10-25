@@ -17,7 +17,7 @@
   sijaan, että korvaisi sen.
 */
 
-import { annualCost, getPlans, DWELLINGS, PRICE_DATE } from "@/lib/energy";
+import { annualCost, availableAt, getPlans, DWELLINGS, PRICE_DATE } from "@/lib/energy";
 
 export interface SpreadRow {
   /** Asumismuodon avain, sama kuin `DWELLINGS`-taulukossa. */
@@ -84,7 +84,10 @@ export function getHomeFacts(): HomeFacts {
   const shown = ["kerrostalo", "rivitalo", "sahkolammitys"];
 
   const rows = DWELLINGS.filter((d) => shown.includes(d.key)).map((d) => {
-    const costs = plans.map((p) => annualCost(p, d.kwh));
+    /* Vain sopimukset, jotka tällä kulutuksella voi tehdä. Ks. `kwhLimit`. */
+    const costs = plans
+      .filter((p) => availableAt(p, d.kwh))
+      .map((p) => annualCost(p, d.kwh));
     const spread = Math.max(...costs) - Math.min(...costs);
     return {
       key: d.key,

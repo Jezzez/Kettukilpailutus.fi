@@ -87,7 +87,7 @@ export default function TrustBlock({ facts }: { facts: HomeFacts }) {
     },
     {
       title: "Palkkio ei vaikuta järjestykseen",
-      body: `Sopimukset järjestyvät ensimmäisen vuoden hinnan mukaan sinun kulutuksellasi. Vertailun ${facts.planCount} sopimuksesta ${facts.nonPartnerCount} on sellaisia, joista emme saa euroakaan, ja ne ovat listassa siitä huolimatta.`,
+      body: `Pörssisopimukset järjestyvät tämän hetken hinnan ja kiinteät sopimukset kahden vuoden kokonaishinnan mukaan, molemmat sinun kulutuksellasi. Vertailun ${facts.planCount} sopimuksesta ${facts.nonPartnerCount} on sellaisia, joista emme saa euroakaan, ja ne ovat listassa siitä huolimatta.`,
     },
     {
       title: "Kerromme, mitä laskemme itse",

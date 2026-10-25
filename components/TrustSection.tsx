@@ -32,7 +32,7 @@ const POINTS = [
   {
     icon: Scale,
     title: "Näin vertailu järjestetään",
-    text: "Järjestys perustuu hintaan, joka lasketaan sinun omalla kulutuksellasi — kampanjaetu mukaan luettuna ensimmäiseltä vuodelta. Ketun valinta -merkin saa se sopimus, jonka vuosihinta on tällä laskennalla pienin. Raha ei vaikuta järjestykseen.",
+    text: "Järjestys perustuu hintaan, joka lasketaan sinun omalla kulutuksellasi. Pörssisopimukset järjestetään tämän hetken hinnan mukaan kampanjat mukaan luettuina, ja kortissa näkyy myös hinta kampanjan jälkeen. Kiinteät sopimukset järjestetään koko kahden vuoden sopimuskauden hinnan mukaan. Ketun valinta -merkin saa se sopimus, joka on tällä laskennalla edullisin. Raha ei vaikuta järjestykseen.",
   },
   {
     icon: HandCoins,

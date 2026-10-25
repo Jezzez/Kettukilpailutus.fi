@@ -8,7 +8,7 @@ import SectionHead from "@/components/SectionHead";
 import CtaSection from "@/components/CtaSection";
 import TailSweep from "@/components/fox/TailSweep";
 import AboutCard from "@/components/home/AboutCard";
-import { annualCost, getPlans } from "@/lib/energy";
+import { availableAt, getPlans, rankCost } from "@/lib/energy";
 import { OG_IMAGE, SITE } from "@/lib/data";
 
 /*
@@ -110,7 +110,7 @@ export default function SahkosopimuksetPage() {
     tämä lista kertoo Googlelle että ne kuuluvat yhteen kokonaisuuteen
     tämän sivun alla.
 
-    JÄRJESTYS ON SAMA KUIN RUUDULLA: ensimmäinen vuosi halvimmasta
+    JÄRJESTYS ON SAMA KUIN RUUDULLA (`rankCost`): halvimmasta
     kalleimpaan oletuskulutuksella 1 500 kWh. Merkintä, jonka järjestys
     poikkeaa näkyvästä listasta, on ristiriita sivun oman sisällön
     kanssa, ja sellainen luetaan manipulaatioyritykseksi.
@@ -129,8 +129,9 @@ export default function SahkosopimuksetPage() {
     name: "Sähkösopimusten vertailu",
     numberOfItems: plans.length,
     itemListOrder: "https://schema.org/ItemListOrderAscending",
-    itemListElement: [...plans]
-      .sort((a, b) => annualCost(a, 1500) - annualCost(b, 1500))
+    itemListElement: plans
+      .filter((p) => availableAt(p, 1500))
+      .sort((a, b) => rankCost(a, 1500) - rankCost(b, 1500))
       .map((p, i) => ({
         "@type": "ListItem",
         position: i + 1,

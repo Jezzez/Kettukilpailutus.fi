@@ -12,6 +12,8 @@ import type { ElectricityPlan } from "@/lib/energy";
 import { trackEvent } from "@/lib/analytics";
 import {
   annualCost,
+  availableAt,
+  rankCost,
   ASSUMED_SPOT_AVG,
   campaignMonthlyCost,
   campaignSaving,
@@ -448,30 +450,41 @@ export default function ElectricityExperience({
     vaihda" -verdikti lasketaan kaikki tästä yhdestä luvusta, jolloin
     kummallakin puolella vertailua on sama aikaikkuna.
 
-    JÄRJESTYS ON SILTI VUOSIHINNASSA, ks. `jarjestysHinta`. Kampanjahinta
-    ei tiedä kampanjan pituudesta mitään, joten pelkällä sillä
-    järjestettynä neljän kuukauden houkutin nousee vuoden kestävän
-    alennuksen ohi: Aalto Luotsi oli 7 000 kWh:lla ykkönen hinnalla
-    31,6 €/kk vaikka maksaa ensimmäisenä vuonna 504 € ja sen jälkeen
-    47,2 €/kk, ja halvin sopimus oli kahdeksantena.
+    JÄRJESTYS RIIPPUU SOPIMUSTYYPISTÄ, ks. `jarjestysHinta` ja `rankCost`
+    (lib/energy.ts): pörssisopimukset tämän hetken hinnalla eli juuri
+    tällä luvulla, kiinteät 24 kuukauden keskihinnalla.
 
-    TIETOINEN SEURAUS: lista ei ole ison luvun mukaisessa järjestyksessä,
-    ja "Ketun valinta" voi osua muuhun kuin listan ensimmäiseen korttiin.
-    Kortti selittää eron itse kahdella luvulla, "Sitten X €/kk" ja
-    "Y € vuodessa". Näitä kahta riviä ei saa poistaa: ilman niitä
-    järjestys näyttää satunnaiselta, ja satunnaiselta näyttävä
-    hintajärjestys on nopein tapa menettää lukijan luottamus.
+    TIETOINEN SEURAUS: pörssin kärkeen nousee lyhyin kampanja, vaikka se
+    olisi kampanjan jälkeen kallis. Kortin "sitten X €/kk" on ainoa rivi,
+    joka kertoo sen kävijälle, eikä sitä saa poistaa. Kiinteillä kortti
+    näyttää "Y € / 2 vuotta", joka on niiden järjestysperuste.
   */
   const vertailuhinta = useCallback(
     (p: ElectricityPlan) => campaignMonthlyCost(p, kwh) * 12,
     [kwh]
   );
 
-  /** Listan kiinteä järjestysperuste: ensimmäisen vuoden kokonaishinta
-   *  kampanjoineen. Ks. `vertailuhinta` yllä. */
+  /** Listan järjestysperuste €/kk: pörssi nykyhinnalla, kiinteä
+   *  24 kuukauden keskihinnalla. Ks. `rankCost`. */
   const jarjestysHinta = useCallback(
-    (p: ElectricityPlan) => annualCost(p, kwh),
+    (p: ElectricityPlan) => rankCost(p, kwh),
     [kwh]
+  );
+
+  /*
+    VAIN SOPIMUKSET, JOTKA KÄVIJÄ VOI OIKEASTI TEHDÄ.
+
+    Osa kiinteistä sopimuksista myydään vain alle 7 000 tai 10 000 kWh
+    kohteisiin. Ennen raja luki vain kortin miinuksissa, ja
+    sähkölämmitteisen talon kävijälle tarjottiin sopimusta, jonka yhtiö
+    hylkää. Siitä ei tule palkkiota, ja kävijä oppii, ettei listan
+    kärkeen voi luottaa. Suodatus tehdään ennen kaikkea muuta, jotta myös
+    "älä vaihda" -päätös ja halvin-vertailu katsovat vain saatavilla
+    olevia sopimuksia.
+  */
+  const saatavilla = useMemo(
+    () => plans.filter((p) => availableAt(p, kwh)),
+    [plans, kwh]
   );
 
   /*
@@ -484,9 +497,10 @@ export default function ElectricityExperience({
        juuri itse kirjoitti, ja jos suositus häviää sille, koko sivu
        menettää uskottavuutensa yhdessä sekunnissa.
 
-    2. EHDOKKAISTA VALITAAN HALVIN ENSI KUUSSA. Sama mittari kuin
-       korttien isot luvut ja säästöluku, joten paneeli ja kortti eivät
-       voi näyttää eri hintaa samasta sopimuksesta.
+    2. EHDOKKAISTA VALITAAN HALVIN LISTAN JÄRJESTYSPERUSTEELLA
+       (`rankCost`): pörssi nykyhinnalla, kiinteä 24 kk:n hinnalla.
+       Valinta on siis aina ensimmäinen niistä korteista, jotka voittavat
+       kävijän hinnan.
 
     Painokertoimia ei ole. Molemmat säännöt voi tarkistaa korttien omista
     luvuista, ja se on tämän sivun ainoa kilpailuetu.
@@ -494,32 +508,32 @@ export default function ElectricityExperience({
     Jos kävijä ei ole kertonut omaa hintaansa, sääntö 1 ei voi rajata
     mitään, ja tassu menee halvimpaan ensi kuun hintaan.
 
-    HUOM: lista järjestetään vuosihinnalla (`jarjestysHinta`), joten
-    tassu ei ole aina listan ensimmäisessä kortissa. Se on tietoinen
-    valinta, ks. `vertailuhinta`-kommentti.
+    HUOM: kun kävijä on antanut oman hintansa, tassu on ensimmäinen
+    sääntö 1:n läpäisevä kortti eikä välttämättä listan halvin. Siksi
+    valinta nostetaan listan kärkeen, ks. `naytettavat`.
   */
 
   const filtered = useMemo(
     () =>
-      plans
+      saatavilla
         .filter((p) => (type ? p.type === type : true))
         .filter((p) => (greenOnly ? p.green : true))
         .sort((a, b) => jarjestysHinta(a) - jarjestysHinta(b)),
-    [plans, type, greenOnly, jarjestysHinta]
+    [saatavilla, type, greenOnly, jarjestysHinta]
   );
 
   const cheapestCost = useMemo(
-    () => Math.min(...plans.map((p) => vertailuhinta(p))),
-    [plans, vertailuhinta]
+    () => Math.min(...saatavilla.map((p) => vertailuhinta(p))),
+    [saatavilla, vertailuhinta]
   );
 
   /** Koko aineiston halvin ensi kuun hinnalla, suodattimista riippumatta.
    *  Nimetty luku "älä vaihda" -laatikkoon: nimetön vertailuluku on
    *  tarkistamaton väite, nimetty on listasta tarkistettavissa sekunnissa. */
   const cheapestNowPlan = useMemo(() => {
-    if (plans.length === 0) return null;
-    return [...plans].sort((a, b) => vertailuhinta(a) - vertailuhinta(b))[0];
-  }, [plans, vertailuhinta]);
+    if (saatavilla.length === 0) return null;
+    return [...saatavilla].sort((a, b) => vertailuhinta(a) - vertailuhinta(b))[0];
+  }, [saatavilla, vertailuhinta]);
 
   const maxShown = Math.max(...filtered.map((p) => vertailuhinta(p)), 1);
 
@@ -562,8 +576,14 @@ export default function ElectricityExperience({
         ? filtered
         : filtered.filter((p) => vertailuhinta(p) < currentAnnual);
 
-    /* Sääntö 2 — ehdokkaista se, jonka ENSIMMÄINEN VUOSI on halvin.
-       Tämä on ainoa kohta, jossa suositus ei katso ensi kuuta.
+    /* Sääntö 2 — ehdokkaista halvin listan järjestysperusteella
+       (`rankCost`). Pörssisopimuksilla se on ensi kuun hinta, kiinteillä
+       24 kuukauden keskihinta.
+
+       Alla oleva perustelu on ajalta, jolloin pörssisopimuksetkin
+       arvioitiin vuoden tai kahden hinnalla. Jesse päätti 25.10.2026, että
+       pörssi arvioidaan nykyhinnalla. Perustelu jää tähän, jotta päätöksen
+       hinta on näkyvissä seuraavalle lukijalle.
        Syy: sääntö 1 takaa jo, ettei ehdokas ole nykyistä kalliimpi ensi
        kuussa, joten ensi kuun hinnalla valitseminen ei enää suojaa
        mitään — se vain nostaisi esiin lyhimmän kampanjan. Käytännössä
@@ -572,7 +592,9 @@ export default function ElectricityExperience({
        ensimmäisenä vuonna 89 € vähemmän. Syöttihinnan suosittelu on
        tälle sivustolle kalliimpi virhe kuin muutaman euron ero
        otsikkoluvussa: palkkio maksetaan sopimuksesta, ja peruttu
-       sopimus vie palkkion mukanaan.
+       sopimus vie palkkion mukanaan. Samasta syystä jakso on kaksi
+       vuotta eikä yksi: vuoden mittainen ilmainen perusmaksu oli
+       muuten sama syötti pidemmällä siimalla.
 
        Järjestys tehdään uudelleen näkyviin, jotta sääntö ei ole
        riippuvainen siitä mitä ylempänä sattuu tapahtumaan. */
@@ -583,8 +605,8 @@ export default function ElectricityExperience({
     /* Yksikään tämän tyypin sopimus ei voita asiakkaan hintaa. `alreadyGood`
        katsoo koko aineistoa ja tämä lista on tyypillä rajattu, joten tähän
        päädytään myös silloin kun jokin toisen tyypin sopimus olisi
-       halvempi. Fallbackina listan halvin ensimmäinen vuosi, samalla
-       säännöllä kuin yllä. */
+       halvempi. Fallbackina listan ensimmäinen, samalla säännöllä kuin
+       yllä. */
     return [...filtered].sort((a, b) => jarjestysHinta(a) - jarjestysHinta(b))[0];
   }, [filtered, currentAnnual, vertailuhinta, jarjestysHinta]);
 
@@ -801,9 +823,10 @@ export default function ElectricityExperience({
            tämä siis välttämättä ole koko listan halvin.
            Sen sanominen ääneen on halvempaa kuin se, että lukija laskee
            korteista perässä ja huomaa väitteen ontuvan. */
-        currentAnnual === null
-          ? "Halvin ensimmäinen vuosi"
-          : "Halvin vuosi niistä, jotka voittavat hintasi jo ensi kuussa",
+        (recommendedPlan.type === "fixed"
+          ? "Halvin kahden vuoden aikana"
+          : "Halvin hinta juuri nyt") +
+          (currentAnnual === null ? "" : " niistä, jotka voittavat hintasi jo ensi kuussa"),
         recommendedPlan.fixedTermMonths
           ? `Hinta lukossa ${recommendedPlan.fixedTermMonths} kk`
           : "Ei määräaikaisuutta",
@@ -2780,7 +2803,12 @@ export default function ElectricityExperience({
                 Tulokset kulutuksellasi
               </p>
               <p className="mt-1.5 font-display text-[17px] font-bold text-ink" aria-live="polite">
-                {filtered.length} sopimusta · halvin ensimmäisen vuoden hinta ensin
+                {filtered.length} sopimusta ·{" "}
+                {type === "fixed"
+                  ? "halvin kahden vuoden hinta ensin"
+                  : type === null
+                    ? "pörssi nykyhinnalla, kiinteät kahden vuoden hinnalla"
+                    : "halvin hinta nyt ensin"}
               </p>
             </div>
           </div>
