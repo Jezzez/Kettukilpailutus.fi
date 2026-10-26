@@ -6,7 +6,7 @@ import Image from "next/image";
 import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from "framer-motion";
 import {
   ArrowLeft, ArrowRight, Building2, Check, ChevronDown, Flame, Home, House, Info, Leaf,
-  LoaderCircle, Lock, Pencil, Plug, RefreshCw, ShieldCheck, Timer, TrendingDown, Wallet, X,
+  Lock, Pencil, Plug, RefreshCw, ShieldCheck, Timer, TrendingDown, Wallet, X,
 } from "lucide-react";
 import type { ElectricityPlan } from "@/lib/energy";
 import { trackEvent } from "@/lib/analytics";
@@ -34,7 +34,8 @@ import FoxPaw from "../FoxPaw";
 import TailSweep from "../fox/TailSweep";
 import FoxSlot from "../fox/FoxSlot";
 import FoxComputing, { useFoxComputing } from "../fox/FoxComputing";
-import BouncingBall from "./BouncingBall";
+import LoadingFacts, { IOS_EASE, IOS_FONT } from "./LoadingFacts";
+import LampFox, { preloadLampFox } from "../fox/LampFox";
 
 /**
  * Heron kolme lupausta ja niiden perustelut.
@@ -66,20 +67,21 @@ const HERO_CLAIMS = [
   },
 ] as const;
 
-const LOADING_TIP =
-  "Vuonna 1879 Edisonin työryhmä esitteli käytännöllisen hehkulampun. Ratkaisu syntyi monen keksijän aiemman työn pohjalta.";
-
 /* Latauksen kesto. Tämä on keinotekoinen viive konversiopolun
    kriittisimmässä kohdassa, joten jokainen sekunti maksaa poistumia.
    Laskettu 7 000:sta 5 000:een elokuussa 2026 ja 5 000:sta 3 000:een
    10.10.2026. Jos tätä joskus koskee, suunta on alaspäin, ei ylöspäin.
 
-   ÄLÄ NOSTA TÄTÄ ANIMAATION TAKIA. Mobiilin latausnäkymässä on hyppivä
-   pallo (`BouncingBall`), ja houkutus nostaa viivettä "jotta pallo ehtii
-   näkyä" on ilmeinen. Se olisi väärinpäin: pallo on olemassa odotusta
-   varten, ei odotus palloa varten. 3 000 ms riittää noin viiteen
-   hyppyyn. Jos ele tuntuu vajaalta, nopeuta hyppyä. */
-const RESULT_LOADING_MS = 3000;
+   NOSTETTU 3 000 → 4 000 → 5 500 ms 26.10.2026 Jessen pyynnöstä, jotta
+   ketun video (LampFox.tsx) ehtii loppuun: lamppu syttyy noin 3,2 s
+   kohdalla ja viimeinen 1,5 s on ketun innostunut reaktio. Video on
+   5,2 s pitkä, joten tätä ei kannata laskea sen alle rajaamatta videota.
+   Tiedostettu hinta: tämä on ainoa kohta, jossa viivettä on nostettu,
+   ja jokainen lisäsekunti tässä kohdassa maksaa poistumia. Jos
+   poistumat kyselyn ja tulosten välillä kasvavat (GA4: kyselyn
+   valmistuminen vs. `offers_viewed`), palauta 3 000 ja rajaa video
+   lyhyemmäksi. */
+const RESULT_LOADING_MS = 5500;
 
 /**
  * Sähkön koko kokemus.
@@ -263,6 +265,11 @@ export default function ElectricityExperience({
     `reduce` kunnioittaa jarjestelman "vahenna liiketta" -asetusta.
   */
   const quizTopRef = useRef<HTMLDivElement>(null);
+  /** Työpöydän latauspaneeli. Vieritetään kokonaan näkyviin latauksen
+   *  alkaessa: lampun syttyminen on paneelin yläosassa, ja kiinteä
+   *  yläpalkki peitti sen juuri sillä hetkellä, kun se on koko
+   *  latauksen huipennus. */
+  const loadingPanelRef = useRef<HTMLDivElement>(null);
   /*
     VIERITYS SIDOTAAN VAIHEEN MUUTOKSEEN, EI "ONKO KOMPONENTTI JO NOUSSUT".
 
@@ -281,6 +288,9 @@ export default function ElectricityExperience({
   const prevStep = useRef(step);
   const [submitted, setSubmitted] = useState(false);
   const [loadingResults, setLoadingResults] = useState(false);
+  /** Hetki heti latauksen jälkeen, jolloin kortit tulevat porrastetusti.
+   *  Vain silloin: suodattimen vaihdossa porrastus hidastaisi listaa. */
+  const [revealing, setRevealing] = useState(false);
   const showResults = !gated || submitted;
 
   /*
@@ -389,6 +399,22 @@ export default function ElectricityExperience({
       block: "start",
     });
   }, [step, gated, submitted, reduce]);
+
+  /* Ketun video välimuistiin heti kun kysely on aloitettu, ks.
+     `preloadLampFox`. Myös mobiilissa: video on siellä latausruudun
+     keskipiste, ja ilman esilatausta se ei ehtisi 5,5 sekunnissa. */
+  useEffect(() => {
+    if (!gated || step < 2) return;
+    preloadLampFox();
+  }, [gated, step]);
+
+  useEffect(() => {
+    if (!loadingResults) return;
+    /* Vain työpöydällä: mobiilissa lataus on koko ruudun näkymä. */
+    if (typeof window !== "undefined" && window.matchMedia("(min-width: 768px)").matches) {
+      loadingPanelRef.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+    }
+  }, [loadingResults, reduce]);
 
   /* Uusi vaihe alkaa aina puhtaalta pöydältä: edellisen vaiheen
      estoteksti ei saa seurata mukana seuraavaan kysymykseen. */
@@ -1488,6 +1514,8 @@ export default function ElectricityExperience({
     resultTimer.current = setTimeout(() => {
       setLoadingResults(false);
       setSubmitted(true);
+      setRevealing(true);
+      resultTimer.current = setTimeout(() => setRevealing(false), 1200);
       markQuizCompleted();
     }, RESULT_LOADING_MS);
   };
@@ -1718,46 +1746,41 @@ export default function ElectricityExperience({
   );
 
   const loadingPanel = (
-    <div className="overflow-hidden rounded-2xl border border-gold/30 bg-mist sm:rounded-[20px]">
+    <div ref={loadingPanelRef} className="scroll-mt-24 overflow-hidden rounded-2xl border border-gold/30 bg-mist sm:rounded-[20px]">
       <div className="grid items-stretch md:grid-cols-[0.72fr_1.28fr]">
-        <div className="pelt-surface relative flex h-44 items-center justify-center overflow-hidden border-b border-gold/25 md:h-auto md:min-h-[320px] md:border-b-0 md:border-r">
-          <FoxSlot
-            id="laskuri"
-            height={330}
-            className="pointer-events-none -mb-20 -mt-8 drop-shadow-[0_12px_24px_rgba(90,45,10,0.16)] md:absolute md:inset-y-0 md:left-1/2 md:mb-0 md:mt-0 md:!h-full md:-translate-x-1/2"
+        {/* Paneeli korotettu 320 → 460 px (Jessen pyyntö 26.10.2026), jotta
+            lampun syttyminen näkyy isona. Kettu kiertää lamppua videolla,
+            lamppu syttyy ja kettu innostuu, ks. LampFox.tsx.
+            `bg-mist` eikä `pelt-surface`: videon tausta on mist-sävyä, ja
+            kuvioitu pinta erottaisi videon suorakulmion reunat. */}
+        <div className="relative flex h-44 items-center justify-center overflow-hidden border-b border-gold/25 bg-mist md:h-auto md:min-h-[460px] md:border-b-0 md:border-r">
+          <LampFox
+            className="-mb-20 -mt-8 h-[330px] md:absolute md:inset-y-0 md:left-1/2 md:mb-0 md:mt-0 md:!h-full md:-translate-x-1/2"
           />
         </div>
 
-        <div className="flex flex-col justify-center p-5 text-center sm:p-7 md:min-h-[320px] md:p-9 md:text-left" role="status" aria-live="polite">
-          <p className="flex items-center justify-center gap-2.5 font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-accentDark md:justify-start">
-            <LoaderCircle size={16} className="animate-spin" aria-hidden /> Kettu vertailee sopimuksia
+        {/* iOS-henkinen oikea palsta (Jessen toive 26.10.2026), ks.
+            LoadingFacts.tsx: järjestelmäfontti, toissijainen tunniste
+            harmaana eikä versaalina, iso lihavoitu otsikko, lasikortti ja
+            kapselin muotoinen edistymispalkki. */}
+        <div className={`relative flex flex-col justify-center p-5 text-center sm:p-7 md:min-h-[460px] md:p-10 md:text-left ${IOS_FONT}`} role="status" aria-live="polite">
+          <p className="flex items-center justify-center gap-1.5 text-[13px] font-semibold tracking-[-0.005em] text-ink/45 md:justify-start">
+            <FoxPaw size={12} /> Kettu kilpailuttaa
           </p>
-          <h3 className="mt-3 hidden font-hero text-[2.1rem] leading-[1.1] text-ink md:block">
-            Hetki — lasken sinulle parhaat vaihtoehdot.
+          <h3 className="mt-1 hidden text-[30px] font-bold leading-[1.12] tracking-[-0.025em] text-ink md:block">
+            Hetki, lasken sinulle parhaat vaihtoehdot.
           </h3>
 
-          {/* Tässä oli laskuri "n hakuehtoihisi sopivaa sopimusta löytynyt".
-              Se poistettiin: luku juoksi ylöspäin ajastimella eikä haun
-              etenemisestä, eli se esitti laskennaksi jotain, mitä ei
-              tapahtunut. Sivun koko myyntiargumentti on, että luvut
-              pitävät paikkansa, ja silloin lataus­ruutukaan ei saa näyttää
-              laskevansa. */}
+          {/* Vaihtuvat faktat, ei laskelmia sopimuksista (Jessen pyyntö
+              26.10.2026). Mobiilissa sama on koko ruudun näkymässä. */}
+          <LoadingFacts className="mt-6 hidden max-w-[28rem] md:block" />
 
-          <div className="relative mt-3 rounded-2xl border border-line bg-white px-4 py-4 shadow-card sm:px-5 md:mt-5">
-            <span className="absolute -top-2 left-1/2 h-4 w-4 -translate-x-1/2 rotate-45 border-l border-t border-line bg-white md:hidden" aria-hidden />
-            <span className="absolute -left-2 top-5 hidden h-4 w-4 rotate-45 border-b border-l border-line bg-white md:block" aria-hidden />
-            <p className="relative text-center text-[14px] leading-relaxed text-ink/80 md:text-left">
-              <span className="font-display font-bold text-accentDark">Ketun vinkki: </span>
-              {LOADING_TIP}
-            </p>
-          </div>
-
-          <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-line md:mt-5" aria-hidden>
+          <div className="mt-7 hidden h-1 w-40 overflow-hidden rounded-full bg-ink/[0.08] md:block" aria-hidden>
             <motion.div
               className="h-full rounded-full bg-accent"
               initial={{ width: "0%" }}
               animate={{ width: "100%" }}
-              transition={{ duration: RESULT_LOADING_MS / 1000, ease: "linear" }}
+              transition={{ duration: reduce ? 0 : RESULT_LOADING_MS / 1000, ease: "linear" }}
             />
           </div>
         </div>
@@ -1786,21 +1809,25 @@ export default function ElectricityExperience({
         ==================================================================
 
         MIKÄ TÄMÄ ON. Kun kysely on lähetetty, puhelimessa koko ruutu
-        vaihtuu latausnäkymäksi, jonka keskellä on hyppivä pallo. Jessen
-        pyyntö 10.10.2026: "pallo joka hyppii keskellä näyttöä mobiilissa
-        johon silmät keskittyy".
+        vaihtuu latausnäkymäksi: ketun video, otsikko ja vaihtuvat Ketun
+        vinkit (`LoadingFacts`, Jessen valinta 26.10.2026). Välissä
+        kokeiltiin hintakisaa, sopimuslaskuria ja revontulia; ne
+        poistettiin, ja Jesse halusi pois kaikki laskelmat sopimuksista.
 
-        MIKSI KOKO RUUTU EIKÄ KELLUVA PALLO. Sisällön päällä leijuva
-        pallo on sama muoto kuin mainosinterstitiaali, ja juuri sen
+        MOBIILI ENSIN. Video, otsikko, yksi vinkkikortti ja aikapalkki.
+        Videon korkeus on rajattu `min(40vh, 340px)`, jotta kaikki mahtuu
+        myös 640 px korkeaan ruutuun ilman vieritystä.
+        Koko näkymä mahtuu 640 px korkeaan ruutuun ilman vieritystä:
+        vieritettävä latausruutu ei ole latausruutu.
+
+        MIKSI KOKO RUUTU EIKÄ KELLUVA LAATIKKO. Sisällön päällä leijuva
+        laatikko on sama muoto kuin mainosinterstitiaali, ja juuri sen
         muodon mobiilikäyttäjä on oppinut sulkemaan katsomatta. Koko
         ruudun oma tila ei leiju minkään päällä: se on sivun tila, ei
-        sivulle heitetty esine. Samalla se ratkaisee vanhan ongelman,
-        jossa latauspaneeli saattoi jäädä puhelimessa ruudun ulkopuolelle
-        eikä kävijä nähnyt mitään tapahtuvan.
+        sivulle heitetty esine.
 
-        TYÖPÖYDÄLLÄ EI MITÄÄN UUTTA. Siellä laskurikortti on jo valmiiksi
-        näkyvissä kokonaan, eikä mikään jää ruudun ulkopuolelle. Koko
-        ruudun peittäminen olisi siellä pelkkä este.
+        TYÖPÖYDÄLLÄ samat vinkit ovat laskurikortin sisällä (`loadingPanel`),
+        koska siellä kortti on jo valmiiksi kokonaan näkyvissä.
 
         NÄKYMÄ EI OLE DIALOGI EIKÄ SITÄ VOI SULKEA. Se katoaa itsestään
         `RESULT_LOADING_MS`:n kuluttua. Siksi ei `role="dialog"`,
@@ -1812,51 +1839,63 @@ export default function ElectricityExperience({
           <AnimatePresence>
             {loadingResults && (
               <motion.div
-                className="theme-light fixed inset-0 z-[70] flex flex-col items-center justify-center bg-paper px-6 md:hidden"
+                className={`theme-light fixed inset-0 z-[70] flex flex-col items-center justify-center bg-mist px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))] md:hidden ${IOS_FONT}`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: reduce ? 0 : 0.18 }}
+                exit={{ opacity: 0, scale: reduce ? 1 : 0.98 }}
+                transition={{ duration: reduce ? 0 : 0.45, ease: IOS_EASE }}
                 role="status"
                 aria-live="polite"
                 aria-busy="true"
               >
-                <BouncingBall />
-
-                <p className="mt-6 flex items-center gap-2.5 font-display text-[11.5px] font-bold uppercase tracking-[0.18em] text-accentDark">
-                  <LoaderCircle size={15} className="animate-spin" aria-hidden /> Kettu vertailee
-                  sopimuksia
-                </p>
-
-                <h3 className="mt-3 max-w-[16ch] text-center font-hero text-[1.9rem] leading-[1.1] text-ink">
-                  Hetki, lasken sinulle parhaat vaihtoehdot.
-                </h3>
-
-                {/*
-                  EDISTYMISPALKKI EI OLE KORISTE EIKÄ SE SAA KADOTA PALLON
-                  TIELTÄ. Pallo vie katseen mutta ei kerro, paljonko
-                  odotusta on jäljellä, ja määrittelemätön odotus tuntuu
-                  aina pidemmältä kuin yhtä pitkä määritelty. Palkin kesto
-                  on sidottu samaan vakioon kuin viive, joten se ei voi
-                  valehdella: se täyttyy täsmälleen silloin kun tulokset
-                  tulevat.
-                */}
-                <div
-                  className="mt-7 h-1.5 w-full max-w-[16rem] overflow-hidden rounded-full bg-line"
-                  aria-hidden
-                >
+                {/* iOS-henkinen latausruutu (Jessen toive 26.10.2026):
+                    ketun video ylhäällä, sen alla iso otsikko, lasikortti
+                    vaihtuvine vinkkeineen ja kapselipalkki. Tausta on
+                    `bg-mist`, koska videon tausta on samaa sävyä: muuten
+                    videon suorakulmio erottuisi ruudulta. Osat nousevat
+                    esiin porrastetusti, kuten iOS:n näkymät. */}
+                <div className="w-full max-w-[24rem]">
                   <motion.div
-                    className="h-full rounded-full bg-accent"
-                    initial={{ width: "0%" }}
-                    animate={{ width: "100%" }}
-                    transition={{ duration: RESULT_LOADING_MS / 1000, ease: "linear" }}
-                  />
-                </div>
+                    initial={reduce ? false : { opacity: 0, scale: 0.96 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.6, ease: IOS_EASE }}
+                  >
+                    <LampFox className="mx-auto h-[min(40vh,340px)]" />
+                  </motion.div>
 
-                <p className="mt-7 max-w-[34ch] text-center text-[13.5px] leading-relaxed text-ink/70">
-                  <span className="font-display font-bold text-accentDark">Ketun vinkki: </span>
-                  {LOADING_TIP}
-                </p>
+                  <motion.div
+                    initial={reduce ? false : { opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.08, ease: IOS_EASE }}
+                  >
+                    <p className="mt-3 flex items-center justify-center gap-1.5 text-[13px] font-semibold tracking-[-0.005em] text-ink/45">
+                      <FoxPaw size={12} /> Kettu kilpailuttaa
+                    </p>
+                    <h3 className="mx-auto mt-1 max-w-[15ch] text-center text-[28px] font-bold leading-[1.12] tracking-[-0.025em] text-ink">
+                      Hetki, lasken sinulle parhaat vaihtoehdot.
+                    </h3>
+                  </motion.div>
+
+                  <motion.div
+                    initial={reduce ? false : { opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.16, ease: IOS_EASE }}
+                  >
+                    <LoadingFacts className="mt-5" />
+                  </motion.div>
+
+                  {/* Aikapalkki: ainoa asia, joka kertoo odotuksen pituuden.
+                      Kesto on sidottu samaan vakioon kuin viive, joten se
+                      täyttyy täsmälleen silloin kun tulokset tulevat. */}
+                  <div className="mx-auto mt-6 h-1 w-28 overflow-hidden rounded-full bg-ink/[0.08]" aria-hidden>
+                    <motion.div
+                      className="h-full rounded-full bg-accent"
+                      initial={{ width: "0%" }}
+                      animate={{ width: "100%" }}
+                      transition={{ duration: reduce ? 0 : RESULT_LOADING_MS / 1000, ease: "linear" }}
+                    />
+                  </div>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>,
@@ -2914,10 +2953,18 @@ export default function ElectricityExperience({
                     <motion.div
                       key={plan.id}
                       layout={!reduce}
-                      initial={reduce ? false : { opacity: 0, scale: 0.97 }}
-                      animate={{ opacity: 1, scale: 1 }}
+                      initial={reduce ? false : revealing ? { opacity: 0, y: 18 } : { opacity: 0, scale: 0.97 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={reduce ? undefined : { opacity: 0, scale: 0.97 }}
-                      transition={{ type: "spring", stiffness: 320, damping: 32 }}
+                      /* Latauksen jälkeen kortit nousevat yksi kerrallaan
+                         kisan järjestyksessä: sama järjestys, joka juuri
+                         nähtiin maalissa, jatkuu listana. */
+                      transition={{
+                        type: "spring",
+                        stiffness: 320,
+                        damping: 32,
+                        delay: revealing && !reduce ? Math.min(i, 6) * 0.07 : 0,
+                      }}
                     >
                       <PlanCard
                         plan={plan}
